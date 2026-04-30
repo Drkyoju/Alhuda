@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>المكتبة الثلاثية - أسئله تعليميه</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* ALL YOUR CSS – same as before */
+  </style>
+</head>
+<body>
+  <!-- All screens exactly as in the last full version, no changes -->
+  <!-- IMPORTANT: the <script> below is the ONLY one that talks to Supabase -->
+
+  <script>
+    // ✅ SAFE SUPABASE INIT – never declares 'supabase' twice
+    var supabase = (function() {
+      if (window.__sb) return window.__sb;
+      const client = window.supabase.createClient(
+        'https://smcyaqwxbmhshhhhdece.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtY3lhcXd4Ym1oc2hoaGhkZWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NDE2OTksImV4cCI6MjA5MzExNzY5OX0.EP1S9D8BvBWmihQ-fU8MHLVTqOG1pE6C7PpVC2lizgA'
+      );
+      window.__sb = client;
+      return client;
+    })();
+
+    console.log('✅ Supabase ready', supabase);
+
+    // ... rest of your JavaScript (loadQuestions, doLogin, game, etc.) exactly as before ...
+    // DO NOT add any other line that says supabase = ... or const supabase = ...
+  </script>
+</body>
+</html>
