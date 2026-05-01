@@ -148,7 +148,7 @@
   </div>
 </div>
 
-<!-- GAME SCREEN (same as before, with data-lang attributes added to relevant parts) -->
+<!-- GAME SCREEN -->
 <div id="game" class="screen">
   <div class="top-bar">
     <button style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--gray);" onclick="goHome()">✕</button>
@@ -181,7 +181,7 @@
 <div id="results" class="screen">
   <div style="font-size:60px;" id="res-icon">🎉</div>
   <div style="font-size:24px;font-weight:900;color:white;" id="res-title" data-lang="resultTitle">أحسنت!</div>
-  <div style="font-size:13px;color:rgba(255,255,255,.9);margin-bottom:14px;" id="res-sub" data-lang="resultSub"></div>
+  <div style="font-size:13px;color:rgba(255,255,255,.9);margin-bottom:14px;" id="res-sub"></div>
   <div class="stats-grid">
     <div class="stat-card"><div>⭐</div><div style="font-size:18px;font-weight:900;" id="fin-score">0</div><div data-lang="scoreLabel">نقاط</div></div>
     <div class="stat-card"><div>✅</div><div style="font-size:18px;font-weight:900;" id="fin-correct">0</div><div data-lang="correctLabel">صحيحة</div></div>
@@ -204,17 +204,17 @@
   <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;" data-lang="homeBtn">🏠 الرئيسية</button>
 </div>
 
-<!-- LEADERBOARD -->
+<!-- LEADERBOARD SCREEN -->
 <div id="leaderboard-screen" class="screen" style="background:var(--bg);padding:16px;">
   <div class="card"><h3 style="text-align:center;margin-bottom:12px;" data-lang="leaderboardTitle">🏆 لوحة المتصدرين</h3><div id="lb-list"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;" data-lang="homeBtn">🏠 الرئيسية</button></div>
 </div>
 
-<!-- PROFILE -->
+<!-- PROFILE SCREEN -->
 <div id="profile-screen" class="screen" style="background:var(--bg);padding:16px;">
   <div class="card"><h3 style="text-align:center;margin-bottom:12px;" data-lang="profileTitle">👤 ملفي الشخصي</h3><div id="profile-content"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;" data-lang="homeBtn">🏠 الرئيسية</button></div>
 </div>
 
-<!-- CHALLENGE -->
+<!-- CHALLENGE SCREEN -->
 <div id="challenge-screen" class="screen" style="background:var(--bg);padding:16px;">
   <div class="card" style="text-align:center;">
     <h3 data-lang="challengeTitle">⚔️ تحدي الأصدقاء</h3>
@@ -229,7 +229,7 @@
   </div>
 </div>
 
-<!-- ADMIN -->
+<!-- ADMIN SCREEN -->
 <div id="admin" class="screen" style="background:#F0F4FF;padding:0;">
   <div style="width:100%;background:linear-gradient(135deg,#1d6fa4,#1CB0F6);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;color:white;position:sticky;top:0;z-index:100;">
     <h2 style="font-size:16px;" data-lang="adminTitle">⚙️ إدارة الأسئلة</h2>
@@ -244,6 +244,7 @@
 <div class="combo" id="combo">🔥 سلسلة!</div>
 
 <script>
+  // ==================== SUPABASE & GLOBAL STATE ====================
   const SUPABASE_URL = 'https://smcyaqwxbmhshhhhdece.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtY3lhcXd4Ym1oc2hoaGhkZWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NDE2OTksImV4cCI6MjA5MzExNzY5OX0.EP1S9D8BvBWmihQ-fU8MHLVTqOG1pE6C7PpVC2lizgA';
   var supabase = (function() {
@@ -262,124 +263,68 @@
   };
   let loginTab='student', trainingMode=false, cl='ar';
 
-  // Full translation dictionary
+  // ==================== TRANSLATION ====================
   const LANG = {
     ar: {
-      loginTitle: 'أسئله تعليميه',
-      loginSub: 'ثلاثة كتب - اختر كتابك',
-      studentTab: '👩‍🎓 طالبة',
-      teacherTab: '👩‍🏫 معلمة',
-      loginCardTitle: 'دخول الطالبات',
-      studentPlaceholder: 'اكتبي اسمك هنا...',
-      teacherEmail: 'البريد الإلكتروني',
-      teacherPass: 'كلمة المرور',
-      loginButton: 'دخول 🎮',
-      welcomeTitle: 'أسئله تعليميه',
-      welcomeSub: 'تعلّم بطريقة ممتعة! 🌟',
-      qCountLabel: 'عدد الأسئلة:',
-      startGameBtn: 'ابدأ اللعبة 🎮',
-      leaderboardBtn: '🏆 المتصدرين',
-      profileBtn: '👤 ملفي',
-      challengeBtn: '⚔️ تحدي',
-      logoutBtn: '🚪 خروج',
-      adminLink: '⚙️ إدارة',
-      trainingModeActive: '🎯 وضع التدريب',
-      showAnswerBtn: '💡 إظهار الإجابة',
-      nextBtn: 'متابعة',
-      resultTitle: 'أحسنت!',
-      resultSubGood: 'نتيجة رائعة!',
-      resultSubOk: 'واصل المحاولة!',
-      scoreLabel: 'نقاط',
-      correctLabel: 'صحيحة',
-      streakLabel: 'سلسلة',
-      playAgainBtn: 'العب مجدداً 🎮',
-      homeBtn: '🏠 الرئيسية',
-      gameoverTitle: 'انتهت المحاولات!',
-      tryAgainBtn: 'حاول مجدداً 🔄',
-      leaderboardTitle: '🏆 لوحة المتصدرين',
-      profileTitle: '👤 ملفي الشخصي',
-      challengeTitle: '⚔️ تحدي الأصدقاء',
-      challengeDesc: 'أنشئي رمز تحدي وشاركيه مع صديقتك!',
-      challengePlaceholder: 'أدخلي رمز التحدي...',
-      createChallengeBtn: 'إنشاء تحدي',
-      joinChallengeBtn: 'دخول التحدي',
-      adminTitle: '⚙️ إدارة الأسئلة',
-      backBtn: '← رجوع',
-      adminDesc: 'يمكن للمعلمة إدارة الأسئلة من لوحة Supabase مباشرة.',
-      correct: 'إجابة صحيحة! 🎉',
-      wrong: 'إجابة خاطئة!',
-      training: '🏋️ تدريب',
-      trainingActive: '🏋️ تدريب (مفعل)',
+      loginTitle: 'أسئله تعليميه', loginSub: 'ثلاثة كتب - اختر كتابك',
+      studentTab: '👩‍🎓 طالبة', teacherTab: '👩‍🏫 معلمة',
+      loginCardTitle: 'دخول الطالبات', studentPlaceholder: 'اكتبي اسمك هنا...',
+      teacherEmail: 'البريد الإلكتروني', teacherPass: 'كلمة المرور',
+      loginButton: 'دخول 🎮', welcomeTitle: 'أسئله تعليميه',
+      welcomeSub: 'تعلّم بطريقة ممتعة! 🌟', qCountLabel: 'عدد الأسئلة:',
+      startGameBtn: 'ابدأ اللعبة 🎮', leaderboardBtn: '🏆 المتصدرين',
+      profileBtn: '👤 ملفي', challengeBtn: '⚔️ تحدي', logoutBtn: '🚪 خروج',
+      adminLink: '⚙️ إدارة', trainingModeActive: '🎯 وضع التدريب',
+      showAnswerBtn: '💡 إظهار الإجابة', nextBtn: 'متابعة',
+      resultTitle: 'أحسنت!', scoreLabel: 'نقاط', correctLabel: 'صحيحة', streakLabel: 'سلسلة',
+      playAgainBtn: 'العب مجدداً 🎮', homeBtn: '🏠 الرئيسية',
+      gameoverTitle: 'انتهت المحاولات!', tryAgainBtn: 'حاول مجدداً 🔄',
+      leaderboardTitle: '🏆 لوحة المتصدرين', profileTitle: '👤 ملفي الشخصي',
+      challengeTitle: '⚔️ تحدي الأصدقاء', challengeDesc: 'أنشئي رمز تحدي وشاركيه مع صديقتك!',
+      challengePlaceholder: 'أدخلي رمز التحدي...', createChallengeBtn: 'إنشاء تحدي',
+      joinChallengeBtn: 'دخول التحدي', adminTitle: '⚙️ إدارة الأسئلة',
+      backBtn: '← رجوع', adminDesc: 'يمكن للمعلمة إدارة الأسئلة من لوحة Supabase مباشرة.',
+      correct: 'إجابة صحيحة! 🎉', wrong: 'إجابة خاطئة!',
+      training: '🏋️ تدريب', trainingActive: '🏋️ تدريب (مفعل)',
       noQuestions: 'لا توجد أسئلة.'
     },
     id: {
-      loginTitle: 'Perpustakaan Tiga Buku',
-      loginSub: 'Tiga buku - pilih bukumu',
-      studentTab: '👩‍🎓 Siswi',
-      teacherTab: '👩‍🏫 Guru',
-      loginCardTitle: 'Masuk Siswi',
-      studentPlaceholder: 'Tulis namamu...',
-      teacherEmail: 'Email',
-      teacherPass: 'Kata sandi',
-      loginButton: 'Masuk 🎮',
-      welcomeTitle: 'Perpustakaan Tiga Buku',
-      welcomeSub: 'Belajar dengan cara yang menyenangkan! 🌟',
-      qCountLabel: 'Jumlah soal:',
-      startGameBtn: 'Mulai Game 🎮',
-      leaderboardBtn: '🏆 Papan Skor',
-      profileBtn: '👤 Profilku',
-      challengeBtn: '⚔️ Tantangan',
-      logoutBtn: '🚪 Keluar',
-      adminLink: '⚙️ Kelola',
-      trainingModeActive: '🎯 Mode Latihan',
-      showAnswerBtn: '💡 Tampilkan Jawaban',
-      nextBtn: 'Lanjut',
-      resultTitle: 'Bagus!',
-      resultSubGood: 'Hasil bagus!',
-      resultSubOk: 'Terus berlatih!',
-      scoreLabel: 'Skor',
-      correctLabel: 'Benar',
-      streakLabel: 'Streak',
-      playAgainBtn: 'Main Lagi 🎮',
-      homeBtn: '🏠 Beranda',
-      gameoverTitle: 'Kesempatan Habis!',
-      tryAgainBtn: 'Coba Lagi 🔄',
-      leaderboardTitle: '🏆 Papan Skor',
-      profileTitle: '👤 Profilku',
-      challengeTitle: '⚔️ Tantang Teman',
-      challengeDesc: 'Buat kode tantangan dan bagikan ke temanmu!',
-      challengePlaceholder: 'Masukkan kode tantangan...',
-      createChallengeBtn: 'Buat Tantangan',
-      joinChallengeBtn: 'Gabung Tantangan',
-      adminTitle: '⚙️ Kelola Soal',
-      backBtn: '← Kembali',
-      adminDesc: 'Guru dapat mengelola soal langsung dari dasbor Supabase.',
-      correct: 'Jawaban Benar! 🎉',
-      wrong: 'Jawaban Salah!',
-      training: '🏋️ Latihan',
-      trainingActive: '🏋️ Latihan (Aktif)',
+      loginTitle: 'Perpustakaan Tiga Buku', loginSub: 'Tiga buku - pilih bukumu',
+      studentTab: '👩‍🎓 Siswi', teacherTab: '👩‍🏫 Guru',
+      loginCardTitle: 'Masuk Siswi', studentPlaceholder: 'Tulis namamu...',
+      teacherEmail: 'Email', teacherPass: 'Kata sandi',
+      loginButton: 'Masuk 🎮', welcomeTitle: 'Perpustakaan Tiga Buku',
+      welcomeSub: 'Belajar dengan cara yang menyenangkan! 🌟', qCountLabel: 'Jumlah soal:',
+      startGameBtn: 'Mulai Game 🎮', leaderboardBtn: '🏆 Papan Skor',
+      profileBtn: '👤 Profilku', challengeBtn: '⚔️ Tantangan', logoutBtn: '🚪 Keluar',
+      adminLink: '⚙️ Kelola', trainingModeActive: '🎯 Mode Latihan',
+      showAnswerBtn: '💡 Tampilkan Jawaban', nextBtn: 'Lanjut',
+      resultTitle: 'Bagus!', scoreLabel: 'Skor', correctLabel: 'Benar', streakLabel: 'Streak',
+      playAgainBtn: 'Main Lagi 🎮', homeBtn: '🏠 Beranda',
+      gameoverTitle: 'Kesempatan Habis!', tryAgainBtn: 'Coba Lagi 🔄',
+      leaderboardTitle: '🏆 Papan Skor', profileTitle: '👤 Profilku',
+      challengeTitle: '⚔️ Tantang Teman', challengeDesc: 'Buat kode tantangan dan bagikan ke temanmu!',
+      challengePlaceholder: 'Masukkan kode tantangan...', createChallengeBtn: 'Buat Tantangan',
+      joinChallengeBtn: 'Gabung Tantangan', adminTitle: '⚙️ Kelola Soal',
+      backBtn: '← Kembali', adminDesc: 'Guru dapat mengelola soal langsung dari dasbor Supabase.',
+      correct: 'Jawaban Benar! 🎉', wrong: 'Jawaban Salah!',
+      training: '🏋️ Latihan', trainingActive: '🏋️ Latihan (Aktif)',
       noQuestions: 'Tidak ada soal.'
     }
   };
+  function t(k) { return LANG[cl]?.[k] || LANG.ar[k] || k; }
 
-  function t(key) { return LANG[cl]?.[key] || LANG.ar[key] || key; }
-
-  // Apply translation to all data-lang elements
   function applyLang() {
     document.querySelectorAll('[data-lang]').forEach(el => {
       const key = el.getAttribute('data-lang');
-      if (el.placeholder !== undefined) {
-        el.placeholder = t(key);
-      } else {
-        el.textContent = t(key);
-      }
+      if (el.placeholder !== undefined) el.placeholder = t(key);
+      else el.textContent = t(key);
     });
-    // Update dynamic elements that depend on state
     document.getElementById('lang-toggle').textContent = cl==='ar'?'🇮🇩 Bahasa':'🇸🇦 العربية';
     document.getElementById('training-btn').textContent = t(trainingMode?'trainingActive':'training');
-    // Buttons with icons that should keep icon and change text can be handled individually if needed, but data-lang covers most.
   }
 
+  // ==================== DATA LOADING ====================
   async function loadQuestions(lang='ar') {
     const { data, error } = await supabase.from('questions').select('*').eq('language', lang);
     if (error) { console.error(error); return; }
@@ -398,16 +343,216 @@
     cl = cl==='ar'?'id':'ar';
     await loadQuestions(cl);
     applyLang();
-    // If game is running, restart it with new language questions
+    // If game is active, restart with new language questions
     if (document.getElementById('game').classList.contains('active')) {
       startGame();
     }
   }
 
-  // ... (all other functions remain the same as the previous fully working version, 
-  //      including doLogin, selectBook, selectLevel, startGame, renderQ, pick, nextQ, endGame, etc.)
-  //      I'm omitting them here for brevity, but they are exactly as in the last known good version.
+  function getAllQuestions(book) {
+    if (book==='tawheed') return QUESTIONS.tawheed||[];
+    if (book==='usool') return QUESTIONS.usool||[];
+    if (book==='nawawi') return QUESTIONS.nawawi||[];
+    if (book==='merge3') return [...(QUESTIONS.tawheed||[]),...(QUESTIONS.usool||[]),...(QUESTIONS.nawawi||[])];
+    return [];
+  }
 
+  function getQuestionsForGame() {
+    const pool = getAllQuestions(state.book).filter(q => q.level===state.level);
+    if (pool.length===0) return [];
+    const count = Math.min(parseInt(document.getElementById('q-count-input').value)||20, pool.length, 50);
+    const seed = (state.book==='tawheed'?1:state.book==='usool'?2:state.book==='nawawi'?4:7)*10000+state.subLevel*1000+state.bankVersion*100;
+    const shuffled = seededShuffle([...pool], seed);
+    const start = ((state.subLevel-1)*count+(state.bankVersion-1)*count*3)%shuffled.length;
+    const seen = new Set(); let sel=[];
+    for (let i=0; i<count*2 && sel.length<count; i++) {
+      const idx = (start+i)%shuffled.length;
+      if (!seen.has(shuffled[idx].id)) { sel.push(shuffled[idx]); seen.add(shuffled[idx].id); }
+    }
+    const rem = shuffled.filter(q => !seen.has(q.id));
+    while (sel.length<count && rem.length>0) sel.push(rem.shift());
+    return sel.slice(0, count);
+  }
+  function seededShuffle(arr,seed) { const a=[...arr]; let s=seed; for (let i=a.length-1; i>0; i--) { s=(s*16807+0)%2147483647; const j=s%(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+  // ==================== SCREEN UTILITIES ====================
+  function show(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+  function goHome() {
+    document.getElementById('welcome-user').textContent = state.userType==='teacher'?'👩‍🏫 '+state.userName:'👩‍🎓 '+state.userName;
+    document.getElementById('admin-link').style.display = state.userType==='teacher'?'inline':'none';
+    updateBookButtons(); updateSubLevels(); show('welcome');
+  }
+  function logout() { state.user=null; state.userType=''; state.userName=''; show('login-screen'); setLoginTab('student'); }
+
+  function setLoginTab(t) {
+    loginTab=t;
+    const sTab=document.getElementById('tab-student'), tTab=document.getElementById('tab-teacher');
+    sTab.style.background = t==='student'?'white':'transparent'; sTab.style.color = t==='student'?'var(--text)':'var(--gray)';
+    tTab.style.background = t==='teacher'?'white':'transparent'; tTab.style.color = t==='teacher'?'var(--text)':'var(--gray)';
+    document.getElementById('login-title').textContent = t==='student'?t('loginCardTitle'):'دخول المعلمات';
+    document.getElementById('login-email').style.display = t==='teacher'?'block':'none';
+    document.getElementById('login-pass').style.display = t==='teacher'?'block':'none';
+    document.getElementById('login-name').style.display = t==='teacher'?'none':'block';
+  }
+
+  // ==================== AUTH ====================
+  async function doLogin() {
+    if (loginTab==='student') {
+      const name = document.getElementById('login-name').value.trim();
+      if (!name) return alert(t('noQuestions')); // using any available translation
+      const { data, error } = await supabase.auth.signInAnonymously();
+      if (error) return alert('خطأ: '+error.message);
+      await supabase.from('profiles').upsert({ id:data.user.id, name, role:'student' });
+      state.user = data.user; state.userType='student'; state.userName=name;
+      goHome();
+    } else {
+      const email = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('login-pass').value.trim();
+      if (!email||!pass) return alert('أدخلي البريد وكلمة المرور');
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password:pass });
+      if (error) return alert('بيانات غير صحيحة: '+error.message);
+      const { data:profile } = await supabase.from('profiles').select('*').eq('id',data.user.id).single();
+      if (!profile||profile.role!=='teacher') return alert('لستِ معلمة');
+      state.user = data.user; state.userType='teacher'; state.userName=profile.name;
+      goHome();
+    }
+  }
+
+  // ==================== BOOK / LEVEL / SUBLEVEL ====================
+  function selectBook(b) { state.book=b; state.level='easy'; state.subLevel=1; updateBookButtons(); updateSubLevels(); }
+  function updateBookButtons() { document.querySelectorAll('.book-btn').forEach(b=>b.classList.remove('sel')); const btn=document.getElementById('book-btn-'+state.book); if(btn) btn.classList.add('sel'); }
+  function selectLevel(l) { state.level=l; state.subLevel=1; document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('sel')); document.getElementById('btn-'+l).classList.add('sel'); updateSubLevels(); }
+  function selectSubLevel(sl) { state.subLevel=sl; updateSubLevels(); }
+  function updateSubLevels() { const c=document.getElementById('sublevel-container'); const total=state.level==='easy'?4:3; let h=''; for(let i=1;i<=total;i++) { h+=`<button class="sublevel-btn${state.subLevel===i?' sel':''}" onclick="selectSubLevel(${i})">المرحلة ${i}</button>`; } c.innerHTML=h; c.style.display='flex'; }
+
+  // ==================== GAME FLOW ====================
+  function startCountdown() { const ov=document.getElementById('countdown-overlay'); const num=document.getElementById('countdown-num'); ov.style.display='flex'; let n=3; num.textContent=n; const iv=setInterval(()=>{ n--; if(n<=0){ clearInterval(iv); ov.style.display='none'; startGame(); } else num.textContent=n; },600); }
+
+  function startGame() {
+    state.questions = state.challengeMode ? (window.challengeCache?.[state.challengeCode]||[]) : getQuestionsForGame();
+    if (state.questions.length===0) { alert(t('noQuestions')); state.challengeMode=false; return; }
+    state.idx=0; state.score=0; state.hearts=5; state.streak=0; state.maxStreak=0; state.correct=0; state.wrong=0; state.answered=false; state.total=state.questions.length;
+    renderHearts(); updateScore(); updateProgress();
+    const fb = document.getElementById('feedback'); fb.classList.remove('show','ok','bad'); fb.style.display='none';
+    document.getElementById('training-bar').style.display = trainingMode?'block':'none';
+    document.getElementById('show-answer-btn').style.display = 'none';
+    show('game'); renderQ();
+  }
+
+  function renderQ() {
+    if (state.idx>=state.questions.length) { endGame(); return; }
+    const q = state.questions[state.idx]; state.answered = false;
+    document.getElementById('q-num').textContent = `السؤال ${state.idx+1} من ${state.total}`;
+    document.getElementById('q-text').textContent = q.q;
+    document.getElementById('q-type-badge').style.display = q.type==='tf'?'inline-block':'none';
+    updateProgress();
+    const grid = document.getElementById('ans-grid'); grid.innerHTML = '';
+    if (q.type==='tf') {
+      ['صح ✓','خطأ ✗'].forEach((t,i) => {
+        const btn = document.createElement('button'); btn.className='ans-btn'; btn.textContent=t; btn.dataset.ok=(i===0)===q.tf;
+        btn.onclick = () => pick(btn, (i===0)===q.tf); grid.appendChild(btn);
+      });
+    } else {
+      const sh = shuffleArr([0,1,2,3].slice(0,(q.a||[]).length));
+      sh.forEach(i => {
+        const btn = document.createElement('button'); btn.className='ans-btn'; btn.textContent=q.a[i]; btn.dataset.ok=i===q.c;
+        btn.onclick = () => pick(btn, i===q.c); grid.appendChild(btn);
+      });
+    }
+  }
+
+  function pick(btn, isOk) {
+    if (state.answered) return;
+    state.answered = true;
+    document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+    const fb = document.getElementById('feedback');
+    if (isOk) {
+      btn.classList.add('correct');
+      if (!trainingMode) {
+        state.streak++; state.correct++;
+        const pts = 10+Math.min(state.streak*2,20); state.score+=pts;
+        if (state.streak > state.maxStreak) state.maxStreak = state.streak;
+        updateScore();
+        if (state.streak>=3) showCombo(state.streak);
+      }
+      fb.className = 'feedback show ok';
+      document.getElementById('fb-icon').textContent = '🎉';
+      document.getElementById('fb-title').textContent = t('correct');
+    } else {
+      btn.classList.add('wrong');
+      if (!trainingMode) {
+        state.hearts--; state.streak=0; state.wrong++;
+        renderHearts();
+        if (state.hearts<=0) { setTimeout(()=>endGame(),1500); return; }
+      }
+      document.getElementById('show-answer-btn').style.display = trainingMode?'block':'none';
+      fb.className = 'feedback show bad';
+      document.getElementById('fb-icon').textContent = '😢';
+      document.getElementById('fb-title').textContent = t('wrong');
+    }
+    fb.style.display = 'block';
+    document.getElementById('fb-exp').textContent = state.questions[state.idx].exp||'';
+    document.getElementById('btn-cont').textContent = t('nextBtn');
+  }
+
+  function nextQ() {
+    const fb = document.getElementById('feedback'); fb.classList.remove('show','ok','bad'); fb.style.display='none';
+    state.idx++;
+    if (state.idx>=state.questions.length) { endGame(); return; }
+    renderQ();
+  }
+  function revealAnswer() { document.getElementById('show-answer-btn').style.display='none'; }
+
+  async function endGame() {
+    const pct = state.correct/Math.max(1,state.total);
+    if (state.hearts<=0) {
+      document.getElementById('go-score').textContent=state.score; document.getElementById('go-cor').textContent=state.correct; document.getElementById('go-wr').textContent=state.wrong;
+      show('gameover');
+    } else {
+      document.getElementById('res-icon').textContent = pct>=.7?'🎉':'📚';
+      document.getElementById('res-title').textContent = t('resultTitle');
+      document.getElementById('res-sub').textContent = pct>=.7?'نتيجة رائعة!':'واصل المحاولة!';
+      document.getElementById('fin-score').textContent=state.score; document.getElementById('fin-correct').textContent=state.correct+'/'+state.total; document.getElementById('fin-streak').textContent=state.maxStreak;
+      if (pct>=.7) launchConfetti();
+      show('results');
+    }
+    if (state.user) { await supabase.from('scores').insert({ user_id:state.user.id, book:state.book, level:state.level, sub_level:state.subLevel, score:state.score, correct:state.correct, total:state.total }); }
+    if (state.challengeMode) saveChallengeResult();
+    state.challengeMode = false;
+  }
+
+  // ==================== HELPERS ====================
+  function shuffleArr(arr) { const a=[...arr]; for (let i=a.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function updateScore() { document.getElementById('score-display').textContent=state.score; }
+  function updateProgress() { document.getElementById('progress-bar').style.width=(state.idx/Math.max(1,state.total)*100)+'%'; }
+  function renderHearts() { const c=document.getElementById('hearts'); c.innerHTML=''; for (let i=0; i<5; i++) { c.innerHTML+=`<span style="font-size:15px;transition:.3s;${i>=state.hearts?'filter:grayscale(1)opacity(.35);transform:scale(.7);':''}">❤️</span>`; } }
+  function showCombo(s) { const c=document.getElementById('combo'); c.textContent='🔥 سلسلة × '+s+'!'; c.classList.add('show'); setTimeout(()=>c.classList.remove('show'),2000); }
+  function launchConfetti() { const w=document.getElementById('confetti-wrap'); const cols=['#FF4B4B','#58CC02','#FFD900','#1CB0F6','#CE82FF','#FF9600']; for (let i=0; i<40; i++) { setTimeout(()=>{ const p=document.createElement('div'); p.className='cp'; p.style.left=Math.random()*100+'vw'; p.style.top='-20px'; p.style.background=cols[Math.floor(Math.random()*cols.length)]; p.style.animationDuration=(1.5+Math.random()*1.5)+'s'; p.style.width=(8+Math.random()*10)+'px'; p.style.height=(8+Math.random()*10)+'px'; w.appendChild(p); setTimeout(()=>p.remove(),3000); },i*30); } }
+  function toggleTrainingMode() { trainingMode=!trainingMode; document.getElementById('training-btn').textContent = t(trainingMode?'trainingActive':'training'); }
+
+  // ==================== LEADERBOARD & PROFILE ====================
+  async function showLeaderboard() {
+    const { data } = await supabase.from('scores').select('*, profiles(name)').order('score',{ascending:false}).limit(20);
+    const list = document.getElementById('lb-list');
+    list.innerHTML = data?.length ? data.map((s,i)=>`<div class="lb-row ${i===0?'top1':''}"><span>${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span style="flex:1;">${s.profiles?.name||'مجهول'}</span><span>⭐${s.score}</span></div>`).join('') : '<p style="text-align:center;color:var(--gray);">لا توجد نتائج بعد.</p>';
+    show('leaderboard-screen');
+  }
+  function showProfile() { document.getElementById('profile-content').innerHTML=`<p>👤 <strong>${state.userName}</strong></p>`; show('profile-screen'); }
+
+  // ==================== CHALLENGE ====================
+  function startChallenge() { show('challenge-screen'); }
+  function createChallenge() { const code='CH'+Date.now().toString(36).toUpperCase(); state.challengeCode=code; state.challengeMode=true; window.challengeCache=window.challengeCache||{}; window.challengeCache[code]=getQuestionsForGame(); document.getElementById('challenge-msg').innerHTML='✅ رمز التحدي: <strong style="font-size:20px;">'+code+'</strong>'; }
+  function joinChallenge() { const code=document.getElementById('challenge-code').value.trim().toUpperCase(); const qs=window.challengeCache?.[code]; if (!qs) { document.getElementById('challenge-msg').textContent='❌ رمز غير صالح'; return; } state.challengeCode=code; state.challengeMode=true; state.questions=qs; state.total=qs.length; document.getElementById('challenge-msg').textContent='✅ تم الدخول! اذهبي للرئيسية.'; }
+  function saveChallengeResult() {}
+
+  // ==================== ADMIN ====================
+  function openAdmin() { if (state.userType!=='teacher') return; show('admin'); }
+
+  // ==================== FONT SIZE ====================
+  function adjustFontSize(size) { document.documentElement.style.setProperty('--base-font-size',size+'px'); document.getElementById('fs-label').textContent=size+'px'; localStorage.setItem('fontSize',size); }
+  (function() { const s=localStorage.getItem('fontSize')||16; adjustFontSize(s); document.getElementById('font-size-slider').value=s; })();
+
+  // ==================== INIT ====================
   async function init() {
     await loadQuestions('ar');
     show('login-screen');
