@@ -277,6 +277,10 @@
     cl = cl==='ar'?'id':'ar';
     applyLang();
     await loadQuestions(cl);
+    // If a game is active, restart it with the new language
+    if (document.getElementById('game').classList.contains('active')) {
+      startGame();
+    }
   }
 
   function getAllQuestions(book) {
