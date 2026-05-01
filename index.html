@@ -411,8 +411,19 @@ function pick(btn, isOk) {
   document.getElementById('fb-exp').textContent = state.questions[state.idx].exp || '';
 }
 
-function nextQ() { state.idx++; if (state.idx >= state.questions.length) { endGame(); return; } renderQ(); }
-function revealAnswer() { document.getElementById('show-answer-btn').style.display = 'none'; }
+function nextQ() {
+  // forcefully hide the feedback panel
+  const fb = document.getElementById('feedback');
+  fb.classList.remove('show', 'ok', 'bad');
+  fb.style.transform = 'translateY(100%)';
+  document.getElementById('fb-icon').textContent = '';
+  document.getElementById('fb-title').textContent = '';
+  document.getElementById('fb-exp').textContent = '';
+  
+  state.idx++;
+  if (state.idx >= state.questions.length) { endGame(); return; }
+  renderQ();
+}
 
 async function endGame() {
   const pct = state.correct / Math.max(1, state.total);
