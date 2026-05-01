@@ -60,8 +60,8 @@
     .ans-btn.wrong { border-color:var(--red)!important; background:var(--red-light)!important; animation:shake .4s; }
     @keyframes pop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-    .feedback { position:fixed; bottom:0; left:0; right:0; max-width:640px; margin:0 auto; padding:16px; border-top:3px solid transparent; transform:translateY(100%); transition:transform .4s; z-index:200; }
-    .feedback.show { transform:translateY(0); }
+    .feedback { position:fixed; bottom:0; left:0; right:0; max-width:640px; margin:0 auto; padding:16px; border-top:3px solid transparent; display:none; z-index:200; }
+    .feedback.show { display:block; }
     .feedback.ok { background:var(--green-light); border-color:var(--green); }
     .feedback.bad { background:var(--red-light); border-color:var(--red); }
     #results, #gameover { text-align:center; padding:24px 16px; }
@@ -85,10 +85,8 @@
 </head>
 <body>
 
-<!-- Language toggle -->
 <button onclick="toggleLang()" id="lang-toggle" style="position:fixed;top:10px;left:10px;z-index:2000;background:white;border:2px solid var(--border);border-radius:16px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;">🇮🇩 Bahasa</button>
 
-<!-- Settings bar -->
 <div class="settings-bar">
   <span>🔤</span>
   <input type="range" min="12" max="24" value="16" oninput="adjustFontSize(this.value)" id="font-size-slider">
@@ -96,15 +94,15 @@
   <button class="btn btn-sm btn-white" onclick="toggleTrainingMode()" id="training-btn">🏋️ تدريب</button>
 </div>
 
-<!-- Countdown -->
 <div id="countdown-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1500;align-items:center;justify-content:center;font-size:90px;font-weight:900;color:white;">
   <span id="countdown-num">3</span>
 </div>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN -->
 <div id="login-screen" class="screen active">
   <div style="font-size:40px;">📚</div>
   <div style="font-size:24px;font-weight:900;color:white;">أسئله تعليميه</div>
+  <div style="font-size:13px;color:rgba(255,255,255,.8);margin-bottom:16px;">ثلاثة كتب - اختر كتابك</div>
   <div class="card">
     <div style="display:flex;gap:4px;margin-bottom:14px;background:var(--bg);border-radius:10px;padding:3px;">
       <button class="btn btn-sm" onclick="setLoginTab('student')" id="tab-student" style="flex:1;background:white;color:var(--text);">👩‍🎓 طالبة</button>
@@ -119,7 +117,7 @@
   </div>
 </div>
 
-<!-- WELCOME SCREEN -->
+<!-- WELCOME -->
 <div id="welcome" class="screen">
   <span style="background:rgba(255,255,255,.2);color:white;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;" id="welcome-user">👩‍🎓 طالبة</span>
   <div class="welcome-title">أسئله تعليميه</div>
@@ -150,7 +148,7 @@
   </div>
 </div>
 
-<!-- GAME SCREEN -->
+<!-- GAME -->
 <div id="game" class="screen">
   <div class="top-bar">
     <button style="background:none;border:none;font-size:18px;cursor:pointer;color:var(--gray);" onclick="goHome()">✕</button>
@@ -179,7 +177,7 @@
   </div>
 </div>
 
-<!-- RESULTS SCREEN -->
+<!-- RESULTS -->
 <div id="results" class="screen">
   <div style="font-size:60px;" id="res-icon">🎉</div>
   <div style="font-size:24px;font-weight:900;color:white;" id="res-title">أحسنت!</div>
@@ -193,7 +191,7 @@
   <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
 </div>
 
-<!-- GAMEOVER SCREEN -->
+<!-- GAMEOVER -->
 <div id="gameover" class="screen">
   <div style="font-size:55px;">💔</div>
   <div style="font-size:24px;font-weight:900;color:white;">انتهت المحاولات!</div>
@@ -250,10 +248,16 @@
   let loginTab='student', trainingMode=false, cl='ar';
 
   const LANG = {
-    ar: { correct:'إجابة صحيحة! 🎉', wrong:'إجابة خاطئة!', next:'متابعة' },
-    id: { correct:'Jawaban Benar! 🎉', wrong:'Jawaban Salah!', next:'Lanjut' }
+    ar: { correct:'إجابة صحيحة! 🎉', wrong:'إجابة خاطئة!', next:'متابعة', training:'🏋️ تدريب', trainingActive:'🏋️ تدريب (مفعل)', loginTitle:'دخول الطالبات' },
+    id: { correct:'Jawaban Benar! 🎉', wrong:'Jawaban Salah!', next:'Lanjut', training:'🏋️ Latihan', trainingActive:'🏋️ Latihan (Aktif)', loginTitle:'Masuk Siswi' }
   };
   function t(k) { return LANG[cl]?.[k] || LANG.ar[k] || k; }
+  function applyLang() {
+    document.getElementById('lang-toggle').textContent = cl==='ar'?'🇮🇩 Bahasa':'🇸🇦 العربية';
+    document.getElementById('training-btn').textContent = t(trainingMode?'trainingActive':'training');
+    document.getElementById('login-title').textContent = t('loginTitle');
+    document.getElementById('btn-cont').textContent = t('next');
+  }
 
   async function loadQuestions(lang='ar') {
     const { data, error } = await supabase.from('questions').select('*').eq('language', lang);
@@ -271,7 +275,7 @@
 
   async function toggleLang() {
     cl = cl==='ar'?'id':'ar';
-    document.getElementById('lang-toggle').textContent = cl==='ar'?'🇮🇩 Bahasa':'🇸🇦 العربية';
+    applyLang();
     await loadQuestions(cl);
   }
 
@@ -314,7 +318,7 @@
     document.getElementById('tab-student').style.color = t==='student'?'var(--text)':'var(--gray)';
     document.getElementById('tab-teacher').style.background = t==='teacher'?'white':'transparent';
     document.getElementById('tab-teacher').style.color = t==='teacher'?'var(--text)':'var(--gray)';
-    document.getElementById('login-title').textContent = t==='student'?'دخول الطالبات':'دخول المعلمات';
+    document.getElementById('login-title').textContent = t==='student'?t('loginTitle'):'دخول المعلمات';
     document.getElementById('login-email').style.display = t==='teacher'?'block':'none';
     document.getElementById('login-pass').style.display = t==='teacher'?'block':'none';
     document.getElementById('login-name').style.display = t==='teacher'?'none':'block';
@@ -355,8 +359,9 @@
     if (state.questions.length===0) { alert('لا توجد أسئلة.'); state.challengeMode=false; return; }
     state.idx=0; state.score=0; state.hearts=5; state.streak=0; state.maxStreak=0; state.correct=0; state.wrong=0; state.answered=false; state.total=state.questions.length;
     renderHearts(); updateScore(); updateProgress();
-    document.getElementById('feedback').classList.remove('show','ok','bad');
-    document.getElementById('feedback').style.transform = 'translateY(100%)';
+    const fb = document.getElementById('feedback');
+    fb.classList.remove('show','ok','bad');
+    fb.style.display = 'none';
     document.getElementById('training-bar').style.display = trainingMode?'block':'none';
     document.getElementById('show-answer-btn').style.display = 'none';
     show('game'); renderQ();
@@ -413,6 +418,7 @@
       document.getElementById('fb-icon').textContent = '😢';
       document.getElementById('fb-title').textContent = t('wrong');
     }
+    fb.style.display = 'block';
     document.getElementById('fb-exp').textContent = state.questions[state.idx].exp||'';
     document.getElementById('btn-cont').textContent = t('next');
   }
@@ -420,7 +426,7 @@
   function nextQ() {
     const fb = document.getElementById('feedback');
     fb.classList.remove('show','ok','bad');
-    fb.style.transform = 'translateY(100%)';
+    fb.style.display = 'none';
     state.idx++;
     if (state.idx >= state.questions.length) { endGame(); return; }
     renderQ();
@@ -452,7 +458,7 @@
   function renderHearts() { const c=document.getElementById('hearts'); c.innerHTML=''; for (let i=0; i<5; i++) { c.innerHTML+=`<span style="font-size:15px;transition:.3s;${i>=state.hearts?'filter:grayscale(1)opacity(.35);transform:scale(.7);':''}">❤️</span>`; } }
   function showCombo(s) { const c=document.getElementById('combo'); c.textContent='🔥 سلسلة × '+s+'!'; c.classList.add('show'); setTimeout(()=>c.classList.remove('show'),2000); }
   function launchConfetti() { const w=document.getElementById('confetti-wrap'); const cols=['#FF4B4B','#58CC02','#FFD900','#1CB0F6','#CE82FF','#FF9600']; for (let i=0; i<40; i++) { setTimeout(()=>{ const p=document.createElement('div'); p.className='cp'; p.style.left=Math.random()*100+'vw'; p.style.top='-20px'; p.style.background=cols[Math.floor(Math.random()*cols.length)]; p.style.animationDuration=(1.5+Math.random()*1.5)+'s'; p.style.width=(8+Math.random()*10)+'px'; p.style.height=(8+Math.random()*10)+'px'; w.appendChild(p); setTimeout(()=>p.remove(),3000); },i*30); } }
-  function toggleTrainingMode() { trainingMode=!trainingMode; document.getElementById('training-btn').textContent = trainingMode?'🏋️ تدريب (مفعل)':'🏋️ تدريب'; }
+  function toggleTrainingMode() { trainingMode=!trainingMode; document.getElementById('training-btn').textContent = t(trainingMode?'trainingActive':'training'); }
 
   async function showLeaderboard() {
     const { data } = await supabase.from('scores').select('*, profiles(name)').order('score',{ascending:false}).limit(20);
@@ -475,6 +481,7 @@
     show('login-screen');
     setLoginTab('student');
     selectLevel('easy');
+    applyLang();
   }
   init();
 </script>
