@@ -96,6 +96,23 @@
     @media(max-width:500px) { .site-logo { max-width:50px; top:6px; left:6px; } }
     .q-num-text { font-size:18px; color:var(--gray); font-weight:700; margin-bottom:2px; }
     .stage-info { font-size:13px; color:var(--blue); font-weight:700; margin-bottom:6px; }
+    /* زر المرحلة التالية المعطل */
+    #next-level-btn:disabled {
+      background: #ccc !important;
+      box-shadow: 0 4px 0 #aaa !important;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+    .lock-reason {
+      display: inline-block;
+      color: #856404;
+      background: #fff3cd;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
@@ -203,7 +220,8 @@
     <div class="stat-card"><div>🔥</div><div style="font-size:18px;font-weight:900;" id="fin-streak">0</div><div>سلسلة</div></div>
   </div>
   <button class="btn btn-gold" onclick="startCountdown()" style="max-width:220px;">العب مجدداً 🎮</button>
-  <button id="next-level-btn" class="btn btn-blue btn-sm" onclick="goToNextLevel()" style="max-width:220px; margin-top:8px; display:none;">⏩ الانتقال للمرحلة التالية (15 سؤال)</button>
+  <button id="next-level-btn" class="btn btn-blue btn-sm" style="max-width:220px; margin-top:8px; display:none;" onclick="goToNextLevel()">⏩ المرحلة التالية</button>
+  <span id="next-level-lock-reason" class="lock-reason" style="display:none;"></span>
   <button id="review-wrong-btn" class="btn btn-orange btn-sm" onclick="reviewWrongAnswers()" style="max-width:220px; margin-top:8px; display:none;">🔁 مراجعة الأخطاء</button>
   <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
 </div>
@@ -554,18 +572,31 @@
       document.getElementById('res-icon').textContent = pct>=.7?'🎉':'📚';
       document.getElementById('res-title').textContent = 'أحسنت!';
 
-      // Message based on unlocking next level
       const msgEl = document.getElementById('res-message');
       const nextBtn = document.getElementById('next-level-btn');
-      if (passed && hasNext) {
-        msgEl.textContent = '🎉 ممتاز! المرحلة التالية مفتوحة الآن.';
+      const reasonSpan = document.getElementById('next-level-lock-reason');
+
+      // Always show next level button if there is a next level
+      if (hasNext) {
         nextBtn.style.display = 'inline-block';
-      } else if (!hasNext && passed) {
-        msgEl.textContent = '🎉 أكملت جميع المراحل!';
-        nextBtn.style.display = 'none';
+        if (passed) {
+          nextBtn.disabled = false;
+          nextBtn.style.opacity = '1';
+          nextBtn.style.pointerEvents = 'auto';
+          reasonSpan.style.display = 'none';
+          msgEl.textContent = '🎉 ممتاز! المرحلة التالية مفتوحة الآن.';
+        } else {
+          nextBtn.disabled = true;
+          nextBtn.style.opacity = '0.6';
+          nextBtn.style.pointerEvents = 'none';
+          reasonSpan.textContent = '🔒 تحتاجين 70% على الأقل لفتح المرحلة التالية';
+          reasonSpan.style.display = 'inline-block';
+          msgEl.textContent = '';
+        }
       } else {
-        msgEl.textContent = '';
         nextBtn.style.display = 'none';
+        reasonSpan.style.display = 'none';
+        msgEl.textContent = '🎉 أكملت جميع المراحل!';
       }
 
       document.getElementById('fin-score').textContent=state.score;
