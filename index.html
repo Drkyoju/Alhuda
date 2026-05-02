@@ -52,16 +52,25 @@
     .top-bar { width:100%; padding:10px 14px; display:flex; align-items:center; gap:6px; border-bottom:2px solid var(--border); background:white; position:sticky; top:0; z-index:100; }
     .progress-wrap { flex:1; height:10px; background:var(--border); border-radius:5px; overflow:hidden; }
     .progress-bar { height:100%; background:linear-gradient(90deg,var(--green),#82E000); border-radius:5px; transition:width .5s; width:0%; }
-    .q-area { padding:18px 14px; width:100%; flex:1; }
-    .q-box { background:var(--bg); border:3px solid var(--border); border-radius:14px; padding:14px 16px; font-size:1.1em; font-weight:700; color:var(--text); line-height:1.6; margin-bottom:14px; }
-    .ans-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    @media(max-width:500px) { .ans-grid { grid-template-columns:1fr; } .welcome-title { font-size:1.5em; } }
+    .q-area { padding:12px 10px; width:100%; flex:1; overflow-y:auto; }
+    .q-box { background:var(--bg); border:3px solid var(--border); border-radius:14px; padding:12px 14px; font-size:1em; font-weight:700; color:var(--text); line-height:1.5; margin-bottom:10px; }
+    .ans-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px; }
+    @media(max-width:500px) {
+      .ans-grid { grid-template-columns:1fr; }
+      .welcome-title { font-size:1.5em; }
+      .q-box { font-size:0.95em; padding:10px 12px; }
+      .ans-btn { padding:10px 8px; font-size:0.9em; }
+      .btn { padding:10px 16px; font-size:0.95em; }
+      .top-bar { padding:8px 10px; }
+      .feedback { padding:12px; }
+      .settings-bar { bottom:60px; }
+    }
     .ans-btn { background:white; border:3px solid var(--border); border-radius:10px; padding:12px 10px; font-size:1em; font-weight:700; cursor:pointer; color:var(--text); text-align:center; transition:.15s; box-shadow:0 3px 0 var(--border); min-height:50px; display:flex; align-items:center; justify-content:center; }
     .ans-btn.correct { border-color:var(--green)!important; background:var(--green-light)!important; animation:pop .4s; }
     .ans-btn.wrong { border-color:var(--red)!important; background:var(--red-light)!important; animation:shake .4s; }
     @keyframes pop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
     @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
-    .feedback { position:fixed; bottom:0; left:0; right:0; max-width:640px; margin:0 auto; padding:16px; border-top:3px solid transparent; display:none; z-index:200; }
+    .feedback { position:fixed; bottom:0; left:0; right:0; max-width:640px; margin:0 auto; padding:12px; border-top:3px solid transparent; display:none; z-index:200; }
     .feedback.show { display:block; }
     .feedback.ok { background:var(--green-light); border-color:var(--green); }
     .feedback.bad { background:var(--red-light); border-color:var(--red); }
@@ -77,20 +86,16 @@
     .combo.show { transform:translateX(-50%)translateY(0); }
     .lb-row { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; margin-bottom:3px; font-weight:700; font-size:13px; }
     .lb-row.top1 { background:#fff9e6; border:2px solid var(--gold); }
-    .settings-bar { position:fixed; bottom:20px; left:20px; background:var(--white); border-radius:20px; padding:10px 16px; box-shadow:0 4px 16px rgba(0,0,0,.15); z-index:999; display:flex; align-items:center; gap:10px; font-size:.9em; font-weight:700; }
-    .settings-bar input[type=range] { width:100px; accent-color:var(--green); }
-    @media(max-width:500px) {
-      .settings-bar { bottom:80px; left:10px; z-index:199; padding:8px 12px; font-size:.8em; }
-      .settings-bar input[type=range] { width:80px; }
-      .feedback { z-index:200; }
-    }
-    .training-bar { background:#fff3cd; padding:6px 12px; border-radius:10px; text-align:center; font-weight:700; font-size:.9em; color:#856404; }
+    .settings-bar { position:fixed; bottom:20px; left:20px; background:var(--white); border-radius:20px; padding:8px 12px; box-shadow:0 4px 16px rgba(0,0,0,.15); z-index:199; display:flex; align-items:center; gap:6px; font-size:.8em; font-weight:700; }
+    .settings-bar input[type=range] { width:80px; accent-color:var(--green); }
+    @media(max-width:500px) { .settings-bar { bottom:60px; left:10px; } }
+    .training-bar { background:#fff3cd; padding:6px 12px; border-radius:10px; text-align:center; font-weight:700; font-size:.85em; color:#856404; }
     .badge { display:inline-block; padding:4px 10px; border-radius:12px; font-size:.8em; font-weight:700; }
     .badge-blue { background:#EEF6FF; color:var(--blue); }
-    .site-logo { position:fixed; top:10px; left:10px; z-index:100; max-width:120px; height:auto; border-radius:8px; }
-    @media(max-width:500px) { .site-logo { max-width:60px; top:6px; left:6px; } }
-    .q-num-text { font-size:20px; color:var(--gray); font-weight:700; margin-bottom:4px; }
-    .stage-info { font-size:14px; color:var(--blue); font-weight:700; margin-bottom:8px; }
+    .site-logo { position:fixed; top:10px; left:10px; z-index:100; max-width:100px; height:auto; border-radius:8px; }
+    @media(max-width:500px) { .site-logo { max-width:50px; top:6px; left:6px; } }
+    .q-num-text { font-size:18px; color:var(--gray); font-weight:700; margin-bottom:2px; }
+    .stage-info { font-size:13px; color:var(--blue); font-weight:700; margin-bottom:6px; }
   </style>
 </head>
 <body>
@@ -173,17 +178,17 @@
     <span id="q-type-badge" style="display:none;font-size:11px;background:var(--purple);color:white;padding:3px 8px;border-radius:10px;">✅ صح أو خطأ</span>
     <div class="q-box" id="q-text">...</div>
     <div class="ans-grid" id="ans-grid"></div>
-    <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:10px;" onclick="revealAnswer()">💡 إظهار الإجابة الصحيحة</button>
+    <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:0;" onclick="revealAnswer()">💡 إظهار الإجابة الصحيحة</button>
   </div>
   <div class="feedback" id="feedback">
-    <div style="display:flex; align-items:flex-start; gap:12px;">
-      <div style="font-size:26px;" id="fb-icon"></div>
+    <div style="display:flex; align-items:flex-start; gap:8px;">
+      <div style="font-size:22px;" id="fb-icon"></div>
       <div style="flex:1;">
-        <div style="font-weight:900; margin-bottom:4px;" id="fb-title"></div>
-        <div style="font-size:14px; color:var(--text); line-height:1.5;" id="fb-exp"></div>
+        <div style="font-weight:900; margin-bottom:3px;" id="fb-title"></div>
+        <div style="font-size:13px; color:var(--text); line-height:1.4;" id="fb-exp"></div>
       </div>
     </div>
-    <button class="btn btn-green" onclick="nextQ()" style="width:100%; margin-top:12px;" id="btn-cont">متابعة</button>
+    <button class="btn btn-green" onclick="nextQ()" style="width:100%; margin-top:8px; padding:10px;" id="btn-cont">متابعة</button>
   </div>
 </div>
 
@@ -191,13 +196,14 @@
 <div id="results" class="screen">
   <div style="font-size:60px;" id="res-icon">🎉</div>
   <div style="font-size:24px;font-weight:900;color:white;" id="res-title">أحسنت!</div>
-  <div style="font-size:13px;color:rgba(255,255,255,.9);margin-bottom:14px;" id="res-sub"></div>
+  <div style="font-size:15px;color:rgba(255,255,255,.9);margin:8px 0;" id="res-message"></div>
   <div class="stats-grid">
     <div class="stat-card"><div>⭐</div><div style="font-size:18px;font-weight:900;" id="fin-score">0</div><div>نقاط</div></div>
     <div class="stat-card"><div>✅</div><div style="font-size:18px;font-weight:900;" id="fin-correct">0</div><div>صحيحة</div></div>
     <div class="stat-card"><div>🔥</div><div style="font-size:18px;font-weight:900;" id="fin-streak">0</div><div>سلسلة</div></div>
   </div>
   <button class="btn btn-gold" onclick="startCountdown()" style="max-width:220px;">العب مجدداً 🎮</button>
+  <button id="next-level-btn" class="btn btn-blue btn-sm" onclick="goToNextLevel()" style="max-width:220px; margin-top:8px; display:none;">⏩ الانتقال للمرحلة التالية (15 سؤال)</button>
   <button id="review-wrong-btn" class="btn btn-orange btn-sm" onclick="reviewWrongAnswers()" style="max-width:220px; margin-top:8px; display:none;">🔁 مراجعة الأخطاء</button>
   <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
 </div>
@@ -275,29 +281,6 @@
   };
   let loginTab='student', trainingMode=false;
 
-  // ==================== SEEN QUESTIONS TRACKING ====================
-  function getSeenQuestions() {
-    if (!state.user) return {};
-    const key = 'seen_' + state.user.id;
-    return JSON.parse(localStorage.getItem(key) || '{}');
-  }
-  function markQuestionsSeen(ids) {
-    if (!state.user) return;
-    const key = 'seen_' + state.user.id;
-    const seen = getSeenQuestions();
-    const bookLevelKey = `${state.book}_${state.level}`;
-    if (!seen[bookLevelKey]) seen[bookLevelKey] = [];
-    ids.forEach(id => { if (!seen[bookLevelKey].includes(id)) seen[bookLevelKey].push(id); });
-    localStorage.setItem(key, JSON.stringify(seen));
-  }
-  function filterSeenQuestions(pool) {
-    const seen = getSeenQuestions();
-    const bookLevelKey = `${state.book}_${state.level}`;
-    const seenIds = seen[bookLevelKey] || [];
-    const filtered = pool.filter(q => !seenIds.includes(q.id));
-    return filtered.length > 0 ? filtered : pool; // fallback to all if all seen
-  }
-
   // ==================== LEVEL LOCKING ====================
   function getCompletedLevels() {
     if (!state.user) return {};
@@ -325,6 +308,29 @@
     return (completed[prevKey] || 0) < 0.7;
   }
 
+  // ==================== SEEN QUESTIONS TRACKING (anti-repetition) ====================
+  function getSeenQuestions() {
+    if (!state.user) return {};
+    const key = 'seen_' + state.user.id;
+    return JSON.parse(localStorage.getItem(key) || '{}');
+  }
+  function markQuestionsSeen(ids) {
+    if (!state.user) return;
+    const key = 'seen_' + state.user.id;
+    const seen = getSeenQuestions();
+    const bookLevelKey = `${state.book}_${state.level}`;
+    if (!seen[bookLevelKey]) seen[bookLevelKey] = [];
+    ids.forEach(id => { if (!seen[bookLevelKey].includes(id)) seen[bookLevelKey].push(id); });
+    localStorage.setItem(key, JSON.stringify(seen));
+  }
+  function filterSeenQuestions(pool) {
+    const seen = getSeenQuestions();
+    const bookLevelKey = `${state.book}_${state.level}`;
+    const seenIds = seen[bookLevelKey] || [];
+    const filtered = pool.filter(q => !seenIds.includes(q.id));
+    return filtered.length > 0 ? filtered : pool;
+  }
+
   // ==================== DATA LOADING ====================
   async function loadQuestions() {
     const { data, error } = await supabase.from('questions').select('*').eq('language', 'ar');
@@ -334,7 +340,8 @@
       fmt[q.book].push({
         id:q.id, book:q.book, cat:q.chapter, level:q.level, type:q.type,
         q:q.question_text, a:q.type==='mc'?q.options:null,
-        c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation
+        c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation,
+        sub_level: q.sub_level || 1
       });
     });
     QUESTIONS = fmt;
@@ -346,10 +353,13 @@
     const all = getAllQuestions(state.book).filter(q => q.level===state.level);
     if (all.length===0) return [];
     let pool = filterSeenQuestions(all);
-    if (pool.length === 0) pool = all; // fallback
-    const count = Math.min(parseInt(document.getElementById('q-count-input').value)||20, pool.length, 50);
+    if (pool.length === 0) pool = all;
+    // Prioritize questions matching current sub_level if available
+    const subPool = pool.filter(q => q.sub_level === state.subLevel);
+    const finalPool = subPool.length > 0 ? subPool : pool;
+    const count = Math.min(parseInt(document.getElementById('q-count-input').value)||20, finalPool.length, 50);
     const seed = (state.book==='usool'?1:state.book==='tawheed'?2:state.book==='nawawi'?3:4)*10000+state.subLevel*1000+state.bankVersion*100;
-    const shuffled = seededShuffle([...pool], seed);
+    const shuffled = seededShuffle([...finalPool], seed);
     const start = ((state.subLevel-1)*count+(state.bankVersion-1)*count*3)%shuffled.length;
     const seenSet = new Set(); let sel=[];
     for (let i=0; i<count*2 && sel.length<count; i++) {
@@ -362,7 +372,6 @@
   }
   function seededShuffle(arr,seed) { const a=[...arr]; let s=seed; for (let i=a.length-1; i>0; i--) { s=(s*16807+0)%2147483647; const j=s%(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
-  // ==================== UI HELPERS ====================
   function show(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
   function goHome() {
     document.getElementById('welcome-user').textContent = state.userType==='teacher'?'👩‍🏫 '+state.userName:'👩‍🎓 '+state.userName;
@@ -382,7 +391,6 @@
     document.getElementById('login-name').style.display = t==='teacher'?'none':'block';
   }
 
-  // ==================== AUTH ====================
   async function doLogin() {
     if (loginTab==='student') {
       const name = document.getElementById('login-name').value.trim();
@@ -431,7 +439,6 @@
     c.innerHTML=h; c.style.display='flex';
   }
 
-  // ==================== GAME ====================
   function startCountdown() { const ov=document.getElementById('countdown-overlay'); const num=document.getElementById('countdown-num'); ov.style.display='flex'; let n=3; num.textContent=n; const iv=setInterval(()=>{ n--; if(n<=0){ clearInterval(iv); ov.style.display='none'; startGame(); } else num.textContent=n; },600); }
 
   function startGame() {
@@ -443,7 +450,6 @@
     const fb = document.getElementById('feedback'); fb.classList.remove('show','ok','bad'); fb.style.display='none';
     document.getElementById('training-bar').style.display = trainingMode?'block':'none';
     document.getElementById('show-answer-btn').style.display = 'none';
-    // Show stage info
     const bookNames = { usool:'📗 الأصول الثلاثة', tawheed:'📖 كتاب التوحيد', nawawi:'📘 الأربعون النووية' };
     const levelNames = { easy:'مبتدئ', medium:'متوسط', hard:'متقدم' };
     document.getElementById('stage-info').textContent = `${bookNames[state.book]} – ${levelNames[state.level]} – المرحلة ${state.subLevel}`;
@@ -523,24 +529,45 @@
 
   async function endGame() {
     const pct = state.correct/Math.max(1,state.total);
-    if (pct >= 0.7 && !trainingMode && !state.challengeMode) {
+    const totalSubLevels = state.level==='easy'?4:3;
+    const hasNext = (state.subLevel < totalSubLevels);
+    const passed = (pct >= 0.7 && !trainingMode && !state.challengeMode);
+
+    if (passed) {
       markLevelCompleted(state.book, state.level, state.subLevel, pct);
     }
-    // Mark seen questions only if not training
+
+    // Mark seen questions
     if (!trainingMode) {
       markQuestionsSeen(state.questions.map(q=>q.id));
     }
 
     if (state.hearts<=0) {
+      // Game over (hearts lost)
       document.getElementById('go-score').textContent=state.score;
       document.getElementById('go-cor').textContent=state.correct;
       document.getElementById('go-wr').textContent=state.wrong;
       show('gameover');
       document.getElementById('review-wrong-btn-go').style.display = state.wrongQuestions.length ? 'inline-block' : 'none';
     } else {
+      // Win
       document.getElementById('res-icon').textContent = pct>=.7?'🎉':'📚';
       document.getElementById('res-title').textContent = 'أحسنت!';
-      document.getElementById('res-sub').textContent = pct>=.7?'نتيجة رائعة!':'واصل المحاولة!';
+
+      // Message based on unlocking next level
+      const msgEl = document.getElementById('res-message');
+      const nextBtn = document.getElementById('next-level-btn');
+      if (passed && hasNext) {
+        msgEl.textContent = '🎉 ممتاز! المرحلة التالية مفتوحة الآن.';
+        nextBtn.style.display = 'inline-block';
+      } else if (!hasNext && passed) {
+        msgEl.textContent = '🎉 أكملت جميع المراحل!';
+        nextBtn.style.display = 'none';
+      } else {
+        msgEl.textContent = '';
+        nextBtn.style.display = 'none';
+      }
+
       document.getElementById('fin-score').textContent=state.score;
       document.getElementById('fin-correct').textContent=state.correct+'/'+state.total;
       document.getElementById('fin-streak').textContent=state.maxStreak;
@@ -553,6 +580,17 @@
     state.challengeMode = false;
   }
 
+  function goToNextLevel() {
+    const totalSubLevels = state.level==='easy'?4:3;
+    const next = state.subLevel + 1;
+    if (next > totalSubLevels) return;
+    state.subLevel = next;
+    // Set question count to 15
+    document.getElementById('q-count-input').value = 15;
+    updateSubLevels();
+    startCountdown();
+  }
+
   function reviewWrongAnswers() {
     if (state.wrongQuestions.length === 0) return;
     state.questions = state.wrongQuestions;
@@ -561,7 +599,6 @@
     startGame();
   }
 
-  // ==================== HELPERS ====================
   function shuffleArr(arr) { const a=[...arr]; for (let i=a.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
   function updateScore() { document.getElementById('score-display').textContent=state.score; }
   function updateProgress() { document.getElementById('progress-bar').style.width=(state.idx/Math.max(1,state.total)*100)+'%'; }
@@ -570,7 +607,6 @@
   function launchConfetti() { const w=document.getElementById('confetti-wrap'); const cols=['#FF4B4B','#58CC02','#FFD900','#1CB0F6','#CE82FF','#FF9600']; for (let i=0; i<40; i++) { setTimeout(()=>{ const p=document.createElement('div'); p.className='cp'; p.style.left=Math.random()*100+'vw'; p.style.top='-20px'; p.style.background=cols[Math.floor(Math.random()*cols.length)]; p.style.animationDuration=(1.5+Math.random()*1.5)+'s'; p.style.width=(8+Math.random()*10)+'px'; p.style.height=(8+Math.random()*10)+'px'; w.appendChild(p); setTimeout(()=>p.remove(),3000); },i*30); } }
   function toggleTrainingMode() { trainingMode=!trainingMode; document.getElementById('training-btn').textContent = trainingMode?'🏋️ تدريب (مفعل)':'🏋️ تدريب'; }
 
-  // ==================== LEADERBOARD & PROFILE ====================
   async function showLeaderboard() {
     const { data } = await supabase.from('scores').select('*, profiles(name)').order('score',{ascending:false}).limit(20);
     const list = document.getElementById('lb-list');
@@ -578,17 +614,12 @@
     show('leaderboard-screen');
   }
   function showProfile() { document.getElementById('profile-content').innerHTML=`<p>👤 <strong>${state.userName}</strong></p>`; show('profile-screen'); }
-
-  // ==================== CHALLENGE ====================
   function startChallenge() { show('challenge-screen'); }
   function createChallenge() { const code='CH'+Date.now().toString(36).toUpperCase(); state.challengeCode=code; state.challengeMode=true; window.challengeCache=window.challengeCache||{}; window.challengeCache[code]=getQuestionsForGame(); document.getElementById('challenge-msg').innerHTML='✅ رمز التحدي: <strong style="font-size:20px;">'+code+'</strong>'; }
   function joinChallenge() { const code=document.getElementById('challenge-code').value.trim().toUpperCase(); const qs=window.challengeCache?.[code]; if (!qs) { document.getElementById('challenge-msg').textContent='❌ رمز غير صالح'; return; } state.challengeCode=code; state.challengeMode=true; state.questions=qs; state.total=qs.length; document.getElementById('challenge-msg').textContent='✅ تم الدخول! اذهبي للرئيسية.'; }
   function saveChallengeResult() {}
-
-  // ==================== ADMIN ====================
   function openAdmin() { if (state.userType!=='teacher') return; show('admin'); }
 
-  // ==================== FONT SIZE ====================
   function adjustFontSize(size) { document.documentElement.style.setProperty('--base-font-size',size+'px'); document.getElementById('fs-label').textContent=size+'px'; localStorage.setItem('fontSize',size); }
   (function() { const s=localStorage.getItem('fontSize')||16; adjustFontSize(s); document.getElementById('font-size-slider').value=s; })();
 
