@@ -87,11 +87,10 @@
     .training-bar { background:#fff3cd; padding:6px 12px; border-radius:10px; text-align:center; font-weight:700; font-size:.9em; color:#856404; }
     .badge { display:inline-block; padding:4px 10px; border-radius:12px; font-size:.8em; font-weight:700; }
     .badge-blue { background:#EEF6FF; color:var(--blue); }
-    /* Logo */
     .site-logo { position:fixed; top:10px; left:10px; z-index:100; max-width:120px; height:auto; border-radius:8px; }
     @media(max-width:500px) { .site-logo { max-width:60px; top:6px; left:6px; } }
-    /* Enlarged question number */
     .q-num-text { font-size:20px; color:var(--gray); font-weight:700; margin-bottom:4px; }
+    .stage-info { font-size:14px; color:var(--blue); font-weight:700; margin-bottom:8px; }
   </style>
 </head>
 <body>
@@ -133,14 +132,11 @@
   <span style="background:rgba(255,255,255,.2);color:white;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;" id="welcome-user">👩‍🎓 طالبة</span>
   <div class="welcome-title">أسئله تعليميه</div>
   <p style="color:rgba(255,255,255,.8);font-size:13px;margin-bottom:10px;">تعلّم بطريقة ممتعة! 🌟</p>
-
-  <!-- Book selection (Usool first, then Tawheed, then Nawawi) -->
   <div class="book-select-row">
     <button class="book-btn sel" onclick="selectBook('usool')" id="book-btn-usool">📗 الأصول الثلاثة</button>
     <button class="book-btn" onclick="selectBook('tawheed')" id="book-btn-tawheed">📖 كتاب التوحيد</button>
     <button class="book-btn" onclick="selectBook('nawawi')" id="book-btn-nawawi">📘 الأربعون النووية</button>
   </div>
-
   <div class="level-row">
     <button class="level-btn sel" onclick="selectLevel('easy')" id="btn-easy">🟢 مبتدئ</button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium">🟡 متوسط</button>
@@ -171,6 +167,7 @@
   </div>
   <div class="q-area">
     <div id="training-bar" class="training-bar" style="display:none;">🎯 وضع التدريب – مراجعة الأخطاء</div>
+    <div class="stage-info" id="stage-info"></div>
     <div class="q-num-text" id="q-num"></div>
     <span class="badge badge-blue" id="q-book-badge" style="margin-bottom:6px;"></span>
     <span id="q-type-badge" style="display:none;font-size:11px;background:var(--purple);color:white;padding:3px 8px;border-radius:10px;">✅ صح أو خطأ</span>
@@ -221,20 +218,12 @@
 
 <!-- LEADERBOARD SCREEN -->
 <div id="leaderboard-screen" class="screen" style="background:var(--bg);padding:16px;">
-  <div class="card">
-    <h3 style="text-align:center;margin-bottom:12px;">🏆 لوحة المتصدرين</h3>
-    <div id="lb-list"></div>
-    <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button>
-  </div>
+  <div class="card"><h3 style="text-align:center;margin-bottom:12px;">🏆 لوحة المتصدرين</h3><div id="lb-list"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button></div>
 </div>
 
 <!-- PROFILE SCREEN -->
 <div id="profile-screen" class="screen" style="background:var(--bg);padding:16px;">
-  <div class="card">
-    <h3 style="text-align:center;margin-bottom:12px;">👤 ملفي الشخصي</h3>
-    <div id="profile-content"></div>
-    <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button>
-  </div>
+  <div class="card"><h3 style="text-align:center;margin-bottom:12px;">👤 ملفي الشخصي</h3><div id="profile-content"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button></div>
 </div>
 
 <!-- CHALLENGE SCREEN -->
@@ -286,6 +275,29 @@
   };
   let loginTab='student', trainingMode=false;
 
+  // ==================== SEEN QUESTIONS TRACKING ====================
+  function getSeenQuestions() {
+    if (!state.user) return {};
+    const key = 'seen_' + state.user.id;
+    return JSON.parse(localStorage.getItem(key) || '{}');
+  }
+  function markQuestionsSeen(ids) {
+    if (!state.user) return;
+    const key = 'seen_' + state.user.id;
+    const seen = getSeenQuestions();
+    const bookLevelKey = `${state.book}_${state.level}`;
+    if (!seen[bookLevelKey]) seen[bookLevelKey] = [];
+    ids.forEach(id => { if (!seen[bookLevelKey].includes(id)) seen[bookLevelKey].push(id); });
+    localStorage.setItem(key, JSON.stringify(seen));
+  }
+  function filterSeenQuestions(pool) {
+    const seen = getSeenQuestions();
+    const bookLevelKey = `${state.book}_${state.level}`;
+    const seenIds = seen[bookLevelKey] || [];
+    const filtered = pool.filter(q => !seenIds.includes(q.id));
+    return filtered.length > 0 ? filtered : pool; // fallback to all if all seen
+  }
+
   // ==================== LEVEL LOCKING ====================
   function getCompletedLevels() {
     if (!state.user) return {};
@@ -302,6 +314,7 @@
     if (!completed[key] || completed[key] < percent) {
       completed[key] = percent;
       setCompletedLevels(completed);
+      console.log(`🔓 تم فتح المرحلة التالية (${key}) بنسبة ${Math.round(percent*100)}%`);
     }
   }
   function isLevelLocked(book, level, subLevel) {
@@ -321,37 +334,35 @@
       fmt[q.book].push({
         id:q.id, book:q.book, cat:q.chapter, level:q.level, type:q.type,
         q:q.question_text, a:q.type==='mc'?q.options:null,
-        c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation,
-        sub_level: q.sub_level || 1
+        c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation
       });
     });
     QUESTIONS = fmt;
   }
 
-  function getAllQuestions(book) {
-    return QUESTIONS[book] || [];
-  }
+  function getAllQuestions(book) { return QUESTIONS[book] || []; }
 
   function getQuestionsForGame() {
-    const pool = getAllQuestions(state.book).filter(q => q.level===state.level && q.sub_level === state.subLevel);
-    const finalPool = pool.length > 0 ? pool : getAllQuestions(state.book).filter(q => q.level===state.level);
-    if (finalPool.length===0) return [];
-    const count = Math.min(parseInt(document.getElementById('q-count-input').value)||20, finalPool.length, 50);
+    const all = getAllQuestions(state.book).filter(q => q.level===state.level);
+    if (all.length===0) return [];
+    let pool = filterSeenQuestions(all);
+    if (pool.length === 0) pool = all; // fallback
+    const count = Math.min(parseInt(document.getElementById('q-count-input').value)||20, pool.length, 50);
     const seed = (state.book==='usool'?1:state.book==='tawheed'?2:state.book==='nawawi'?3:4)*10000+state.subLevel*1000+state.bankVersion*100;
-    const shuffled = seededShuffle([...finalPool], seed);
+    const shuffled = seededShuffle([...pool], seed);
     const start = ((state.subLevel-1)*count+(state.bankVersion-1)*count*3)%shuffled.length;
-    const seen = new Set(); let sel=[];
+    const seenSet = new Set(); let sel=[];
     for (let i=0; i<count*2 && sel.length<count; i++) {
       const idx = (start+i)%shuffled.length;
-      if (!seen.has(shuffled[idx].id)) { sel.push(shuffled[idx]); seen.add(shuffled[idx].id); }
+      if (!seenSet.has(shuffled[idx].id)) { sel.push(shuffled[idx]); seenSet.add(shuffled[idx].id); }
     }
-    const rem = shuffled.filter(q => !seen.has(q.id));
+    const rem = shuffled.filter(q => !seenSet.has(q.id));
     while (sel.length<count && rem.length>0) sel.push(rem.shift());
     return sel.slice(0, count);
   }
   function seededShuffle(arr,seed) { const a=[...arr]; let s=seed; for (let i=a.length-1; i>0; i--) { s=(s*16807+0)%2147483647; const j=s%(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
-  // ==================== SCREEN UTILITIES ====================
+  // ==================== UI HELPERS ====================
   function show(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
   function goHome() {
     document.getElementById('welcome-user').textContent = state.userType==='teacher'?'👩‍🏫 '+state.userName:'👩‍🎓 '+state.userName;
@@ -394,7 +405,6 @@
     }
   }
 
-  // ==================== BOOK / LEVEL / SUBLEVEL ====================
   function selectBook(b) { state.book=b; state.level='easy'; state.subLevel=1; updateBookButtons(); updateSubLevels(); }
   function updateBookButtons() {
     document.querySelectorAll('.book-btn').forEach(b=>b.classList.remove('sel'));
@@ -418,22 +428,25 @@
       const locked = isLevelLocked(state.book, state.level, i);
       h += `<button class="sublevel-btn${state.subLevel===i?' sel':''}${locked?' locked':''}" onclick="selectSubLevel(${i})">${locked?'🔒 ':''}المرحلة ${i}</button>`;
     }
-    c.innerHTML=h;
-    c.style.display='flex';
+    c.innerHTML=h; c.style.display='flex';
   }
 
-  // ==================== GAME FLOW ====================
+  // ==================== GAME ====================
   function startCountdown() { const ov=document.getElementById('countdown-overlay'); const num=document.getElementById('countdown-num'); ov.style.display='flex'; let n=3; num.textContent=n; const iv=setInterval(()=>{ n--; if(n<=0){ clearInterval(iv); ov.style.display='none'; startGame(); } else num.textContent=n; },600); }
 
   function startGame() {
     state.questions = state.challengeMode ? (window.challengeCache?.[state.challengeCode]||[]) : getQuestionsForGame();
-    if (state.questions.length===0) { alert('لا توجد أسئلة لهذه المرحلة. الرجاء إضافة أسئلة بقيمة sub_level = ' + state.subLevel); state.challengeMode=false; return; }
+    if (state.questions.length===0) { alert('لا توجد أسئلة جديدة. حاول مجدداً أو غيّر الإعدادات.'); state.challengeMode=false; return; }
     state.idx=0; state.score=0; state.hearts=5; state.streak=0; state.maxStreak=0; state.correct=0; state.wrong=0; state.answered=false; state.total=state.questions.length;
     state.wrongQuestions = [];
     renderHearts(); updateScore(); updateProgress();
     const fb = document.getElementById('feedback'); fb.classList.remove('show','ok','bad'); fb.style.display='none';
     document.getElementById('training-bar').style.display = trainingMode?'block':'none';
     document.getElementById('show-answer-btn').style.display = 'none';
+    // Show stage info
+    const bookNames = { usool:'📗 الأصول الثلاثة', tawheed:'📖 كتاب التوحيد', nawawi:'📘 الأربعون النووية' };
+    const levelNames = { easy:'مبتدئ', medium:'متوسط', hard:'متقدم' };
+    document.getElementById('stage-info').textContent = `${bookNames[state.book]} – ${levelNames[state.level]} – المرحلة ${state.subLevel}`;
     show('game'); renderQ();
   }
 
@@ -504,12 +517,7 @@
 
   function revealAnswer() {
     const btns = document.querySelectorAll('.ans-btn');
-    btns.forEach(b => {
-      if (b.dataset.ok === 'true') {
-        b.classList.add('correct');
-        b.style.animation = 'pop .4s cubic-bezier(.34,1.56,.64,1)';
-      }
-    });
+    btns.forEach(b => { if (b.dataset.ok === 'true') b.classList.add('correct'); });
     document.getElementById('show-answer-btn').style.display = 'none';
   }
 
@@ -517,6 +525,10 @@
     const pct = state.correct/Math.max(1,state.total);
     if (pct >= 0.7 && !trainingMode && !state.challengeMode) {
       markLevelCompleted(state.book, state.level, state.subLevel, pct);
+    }
+    // Mark seen questions only if not training
+    if (!trainingMode) {
+      markQuestionsSeen(state.questions.map(q=>q.id));
     }
 
     if (state.hearts<=0) {
@@ -580,7 +592,6 @@
   function adjustFontSize(size) { document.documentElement.style.setProperty('--base-font-size',size+'px'); document.getElementById('fs-label').textContent=size+'px'; localStorage.setItem('fontSize',size); }
   (function() { const s=localStorage.getItem('fontSize')||16; adjustFontSize(s); document.getElementById('font-size-slider').value=s; })();
 
-  // ==================== INIT ====================
   async function init() {
     await loadQuestions();
     show('login-screen');
