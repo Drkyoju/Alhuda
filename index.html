@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>المكتبة الثلاثية - أسئله تعليميه</title>
+  <title>أسئله تعليميه – المكتبة الثلاثية</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
@@ -79,25 +79,17 @@
     .lb-row.top1 { background:#fff9e6; border:2px solid var(--gold); }
     .settings-bar { position:fixed; bottom:20px; left:20px; background:var(--white); border-radius:20px; padding:10px 16px; box-shadow:0 4px 16px rgba(0,0,0,.15); z-index:999; display:flex; align-items:center; gap:10px; font-size:.9em; font-weight:700; }
     .settings-bar input[type=range] { width:100px; accent-color:var(--green); }
-    /* Mobile fix: lower z-index so feedback panel appears above, and reposition to avoid overlap */
     @media(max-width:500px) {
       .settings-bar { bottom:80px; left:10px; z-index:199; padding:8px 12px; font-size:.8em; }
       .settings-bar input[type=range] { width:80px; }
-      .feedback { z-index:200; } /* ensure feedback stays above */
+      .feedback { z-index:200; }
     }
     .training-bar { background:#fff3cd; padding:6px 12px; border-radius:10px; text-align:center; font-weight:700; font-size:.9em; color:#856404; }
     .badge { display:inline-block; padding:4px 10px; border-radius:12px; font-size:.8em; font-weight:700; }
     .badge-blue { background:#EEF6FF; color:var(--blue); }
-    /* Logo */
-    .site-logo { position:fixed; top:10px; left:10px; z-index:2001; max-width:80px; height:auto; border-radius:8px; }
   </style>
 </head>
 <body>
-
-<!-- Logo (replace src with your actual image path) -->
-<img src="images.jpeg" alt="شعار الجمعية" class="site-logo">
-
-<button onclick="toggleLang()" id="lang-toggle" style="position:fixed;top:10px;left:100px;z-index:2000;background:white;border:2px solid var(--border);border-radius:16px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;">🇮🇩 Bahasa</button>
 
 <div class="settings-bar">
   <span>🔤</span>
@@ -113,27 +105,27 @@
 <!-- LOGIN SCREEN -->
 <div id="login-screen" class="screen active">
   <div style="font-size:40px;">📚</div>
-  <div style="font-size:24px;font-weight:900;color:white;" data-lang="loginTitle">أسئله تعليميه</div>
-  <div style="font-size:13px;color:rgba(255,255,255,.8);margin-bottom:16px;" data-lang="loginSub">ثلاثة كتب - اختر كتابك</div>
+  <div style="font-size:24px;font-weight:900;color:white;">أسئله تعليميه</div>
+  <div style="font-size:13px;color:rgba(255,255,255,.8);margin-bottom:16px;">ثلاثة كتب - اختر كتابك</div>
   <div class="card">
     <div style="display:flex;gap:4px;margin-bottom:14px;background:var(--bg);border-radius:10px;padding:3px;">
-      <button class="btn btn-sm" onclick="setLoginTab('student')" id="tab-student" style="flex:1;background:white;color:var(--text);" data-lang="studentTab">👩‍🎓 طالبة</button>
-      <button class="btn btn-sm" onclick="setLoginTab('teacher')" id="tab-teacher" style="flex:1;background:transparent;color:var(--gray);" data-lang="teacherTab">👩‍🏫 معلمة</button>
+      <button class="btn btn-sm" onclick="setLoginTab('student')" id="tab-student" style="flex:1;background:white;color:var(--text);">👩‍🎓 طالبة</button>
+      <button class="btn btn-sm" onclick="setLoginTab('teacher')" id="tab-teacher" style="flex:1;background:transparent;color:var(--gray);">👩‍🏫 معلمة</button>
     </div>
-    <h2 id="login-title" data-lang="loginCardTitle">دخول الطالبات</h2>
-    <input type="text" class="input" id="login-name" data-lang="studentPlaceholder" placeholder="اكتبي اسمك هنا...">
-    <input type="email" class="input" id="login-email" data-lang="teacherEmail" placeholder="البريد الإلكتروني" style="display:none;">
-    <input type="password" class="input" id="login-pass" data-lang="teacherPass" placeholder="كلمة المرور" style="display:none;">
+    <h2 id="login-title">دخول الطالبات</h2>
+    <input type="text" class="input" id="login-name" placeholder="اكتبي اسمك هنا...">
+    <input type="email" class="input" id="login-email" placeholder="البريد الإلكتروني" style="display:none;">
+    <input type="password" class="input" id="login-pass" placeholder="كلمة المرور" style="display:none;">
     <p style="color:var(--red);font-size:11px;" id="login-err"></p>
-    <button class="btn btn-green" onclick="doLogin()" style="width:100%;" data-lang="loginButton">دخول 🎮</button>
+    <button class="btn btn-green" onclick="doLogin()" style="width:100%;">دخول 🎮</button>
   </div>
 </div>
 
 <!-- WELCOME SCREEN -->
 <div id="welcome" class="screen">
   <span style="background:rgba(255,255,255,.2);color:white;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;" id="welcome-user">👩‍🎓 طالبة</span>
-  <div class="welcome-title" data-lang="welcomeTitle">أسئله تعليميه</div>
-  <p style="color:rgba(255,255,255,.8);font-size:13px;margin-bottom:10px;" data-lang="welcomeSub">تعلّم بطريقة ممتعة! 🌟</p>
+  <div class="welcome-title">أسئله تعليميه</div>
+  <p style="color:rgba(255,255,255,.8);font-size:13px;margin-bottom:10px;">تعلّم بطريقة ممتعة! 🌟</p>
   <div class="book-select-row">
     <button class="book-btn sel" onclick="selectBook('tawheed')" id="book-btn-tawheed">📖 كتاب التوحيد</button>
     <button class="book-btn" onclick="selectBook('usool')" id="book-btn-usool">📗 الأصول الثلاثة</button>
@@ -147,16 +139,16 @@
   </div>
   <div id="sublevel-container" class="sublevel-row"></div>
   <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:8px;">
-    <label style="color:white; font-weight:700;" data-lang="qCountLabel">عدد الأسئلة:</label>
+    <label style="color:white; font-weight:700;">عدد الأسئلة:</label>
     <input type="number" id="q-count-input" min="5" max="50" value="20" style="width:70px; padding:6px; border-radius:8px; border:2px solid var(--border); text-align:center;">
   </div>
-  <button class="btn btn-gold" id="btn-start-game" onclick="startCountdown()" data-lang="startGameBtn">ابدأ اللعبة 🎮</button>
+  <button class="btn btn-gold" id="btn-start-game" onclick="startCountdown()">ابدأ اللعبة 🎮</button>
   <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:12px;">
-    <button class="btn btn-sm btn-white" onclick="showLeaderboard()" data-lang="leaderboardBtn">🏆 المتصدرين</button>
-    <button class="btn btn-sm btn-white" onclick="showProfile()" data-lang="profileBtn">👤 ملفي</button>
-    <button class="btn btn-sm btn-white" onclick="startChallenge()" data-lang="challengeBtn">⚔️ تحدي</button>
-    <button class="btn btn-sm btn-white" onclick="logout()" data-lang="logoutBtn">🚪 خروج</button>
-    <span id="admin-link" style="display:none;color:rgba(255,255,255,.7);font-size:11px;cursor:pointer;text-decoration:underline;" onclick="openAdmin()" data-lang="adminLink">⚙️ إدارة</span>
+    <button class="btn btn-sm btn-white" onclick="showLeaderboard()">🏆 المتصدرين</button>
+    <button class="btn btn-sm btn-white" onclick="showProfile()">👤 ملفي</button>
+    <button class="btn btn-sm btn-white" onclick="startChallenge()">⚔️ تحدي</button>
+    <button class="btn btn-sm btn-white" onclick="logout()">🚪 خروج</button>
+    <span id="admin-link" style="display:none;color:rgba(255,255,255,.7);font-size:11px;cursor:pointer;text-decoration:underline;" onclick="openAdmin()">⚙️ إدارة</span>
   </div>
 </div>
 
@@ -169,13 +161,13 @@
     <span style="background:var(--gold);padding:3px 8px;border-radius:12px;font-weight:900;font-size:12px;">⭐ <span id="score-display">0</span></span>
   </div>
   <div class="q-area">
-    <div id="training-bar" class="training-bar" style="display:none;" data-lang="trainingModeActive">🎯 وضع التدريب</div>
+    <div id="training-bar" class="training-bar" style="display:none;">🎯 وضع التدريب</div>
     <div style="font-size:10px;color:var(--gray);" id="q-num"></div>
     <span class="badge badge-blue" id="q-book-badge" style="margin-bottom:6px;"></span>
     <span id="q-type-badge" style="display:none;font-size:11px;background:var(--purple);color:white;padding:3px 8px;border-radius:10px;">✅ صح أو خطأ</span>
     <div class="q-box" id="q-text">...</div>
     <div class="ans-grid" id="ans-grid"></div>
-    <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:10px;" onclick="revealAnswer()" data-lang="showAnswerBtn">💡 إظهار الإجابة</button>
+    <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:10px;" onclick="revealAnswer()">💡 إظهار الإجابة</button>
   </div>
   <div class="feedback" id="feedback">
     <div style="display:flex; align-items:flex-start; gap:12px;">
@@ -185,72 +177,72 @@
         <div style="font-size:14px; color:var(--text); line-height:1.5;" id="fb-exp"></div>
       </div>
     </div>
-    <button class="btn btn-green" onclick="nextQ()" style="width:100%; margin-top:12px;" id="btn-cont" data-lang="nextBtn">متابعة</button>
+    <button class="btn btn-green" onclick="nextQ()" style="width:100%; margin-top:12px;" id="btn-cont">متابعة</button>
   </div>
 </div>
 
 <!-- RESULTS SCREEN -->
 <div id="results" class="screen">
   <div style="font-size:60px;" id="res-icon">🎉</div>
-  <div style="font-size:24px;font-weight:900;color:white;" id="res-title" data-lang="resultTitle">أحسنت!</div>
+  <div style="font-size:24px;font-weight:900;color:white;" id="res-title">أحسنت!</div>
   <div style="font-size:13px;color:rgba(255,255,255,.9);margin-bottom:14px;" id="res-sub"></div>
   <div class="stats-grid">
-    <div class="stat-card"><div>⭐</div><div style="font-size:18px;font-weight:900;" id="fin-score">0</div><div data-lang="scoreLabel">نقاط</div></div>
-    <div class="stat-card"><div>✅</div><div style="font-size:18px;font-weight:900;" id="fin-correct">0</div><div data-lang="correctLabel">صحيحة</div></div>
-    <div class="stat-card"><div>🔥</div><div style="font-size:18px;font-weight:900;" id="fin-streak">0</div><div data-lang="streakLabel">سلسلة</div></div>
+    <div class="stat-card"><div>⭐</div><div style="font-size:18px;font-weight:900;" id="fin-score">0</div><div>نقاط</div></div>
+    <div class="stat-card"><div>✅</div><div style="font-size:18px;font-weight:900;" id="fin-correct">0</div><div>صحيحة</div></div>
+    <div class="stat-card"><div>🔥</div><div style="font-size:18px;font-weight:900;" id="fin-streak">0</div><div>سلسلة</div></div>
   </div>
-  <button class="btn btn-gold" onclick="startCountdown()" style="max-width:220px;" data-lang="playAgainBtn">العب مجدداً 🎮</button>
-  <button id="review-wrong-btn" class="btn btn-orange btn-sm" onclick="reviewWrongAnswers()" style="max-width:220px; margin-top:8px; display:none;" data-lang="reviewWrongBtn">🔁 مراجعة الأخطاء</button>
-  <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;" data-lang="homeBtn">🏠 الرئيسية</button>
+  <button class="btn btn-gold" onclick="startCountdown()" style="max-width:220px;">العب مجدداً 🎮</button>
+  <button id="review-wrong-btn" class="btn btn-orange btn-sm" onclick="reviewWrongAnswers()" style="max-width:220px; margin-top:8px; display:none;">🔁 مراجعة الأخطاء</button>
+  <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
 </div>
 
 <!-- GAMEOVER SCREEN -->
 <div id="gameover" class="screen">
   <div style="font-size:55px;">💔</div>
-  <div style="font-size:24px;font-weight:900;color:white;" data-lang="gameoverTitle">انتهت المحاولات!</div>
+  <div style="font-size:24px;font-weight:900;color:white;">انتهت المحاولات!</div>
   <div class="stats-grid" style="max-width:260px;margin:0 auto 16px;">
     <div class="stat-card"><div>⭐</div><div style="font-weight:900;" id="go-score">0</div></div>
     <div class="stat-card"><div>✅</div><div style="font-weight:900;" id="go-cor">0</div></div>
     <div class="stat-card"><div>❌</div><div style="font-weight:900;" id="go-wr">0</div></div>
   </div>
-  <button class="btn btn-gold" onclick="startCountdown()" style="max-width:220px;" data-lang="tryAgainBtn">حاول مجدداً 🔄</button>
-  <button id="review-wrong-btn-go" class="btn btn-orange btn-sm" onclick="reviewWrongAnswers()" style="max-width:220px; margin-top:8px; display:none;" data-lang="reviewWrongBtn">🔁 مراجعة الأخطاء</button>
-  <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;" data-lang="homeBtn">🏠 الرئيسية</button>
+  <button class="btn btn-gold" onclick="startCountdown()" style="max-width:220px;">حاول مجدداً 🔄</button>
+  <button id="review-wrong-btn-go" class="btn btn-orange btn-sm" onclick="reviewWrongAnswers()" style="max-width:220px; margin-top:8px; display:none;">🔁 مراجعة الأخطاء</button>
+  <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
 </div>
 
 <!-- LEADERBOARD SCREEN -->
 <div id="leaderboard-screen" class="screen" style="background:var(--bg);padding:16px;">
-  <div class="card"><h3 style="text-align:center;margin-bottom:12px;" data-lang="leaderboardTitle">🏆 لوحة المتصدرين</h3><div id="lb-list"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;" data-lang="homeBtn">🏠 الرئيسية</button></div>
+  <div class="card"><h3 style="text-align:center;margin-bottom:12px;">🏆 لوحة المتصدرين</h3><div id="lb-list"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button></div>
 </div>
 
 <!-- PROFILE SCREEN -->
 <div id="profile-screen" class="screen" style="background:var(--bg);padding:16px;">
-  <div class="card"><h3 style="text-align:center;margin-bottom:12px;" data-lang="profileTitle">👤 ملفي الشخصي</h3><div id="profile-content"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;" data-lang="homeBtn">🏠 الرئيسية</button></div>
+  <div class="card"><h3 style="text-align:center;margin-bottom:12px;">👤 ملفي الشخصي</h3><div id="profile-content"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button></div>
 </div>
 
 <!-- CHALLENGE SCREEN -->
 <div id="challenge-screen" class="screen" style="background:var(--bg);padding:16px;">
   <div class="card" style="text-align:center;">
-    <h3 data-lang="challengeTitle">⚔️ تحدي الأصدقاء</h3>
-    <p style="font-size:12px;color:var(--gray);margin:6px 0;" data-lang="challengeDesc">أنشئي رمز تحدي وشاركيه مع صديقتك!</p>
-    <input type="text" class="input" id="challenge-code" data-lang="challengePlaceholder" placeholder="أدخلي رمز التحدي...">
+    <h3>⚔️ تحدي الأصدقاء</h3>
+    <p style="font-size:12px;color:var(--gray);margin:6px 0;">أنشئي رمز تحدي وشاركيه مع صديقتك!</p>
+    <input type="text" class="input" id="challenge-code" placeholder="أدخلي رمز التحدي...">
     <div style="display:flex;gap:6px;justify-content:center;margin-top:8px;">
-      <button class="btn btn-gold btn-sm" onclick="createChallenge()" data-lang="createChallengeBtn">إنشاء تحدي</button>
-      <button class="btn btn-orange btn-sm" onclick="joinChallenge()" data-lang="joinChallengeBtn">دخول التحدي</button>
+      <button class="btn btn-gold btn-sm" onclick="createChallenge()">إنشاء تحدي</button>
+      <button class="btn btn-orange btn-sm" onclick="joinChallenge()">دخول التحدي</button>
     </div>
     <div id="challenge-msg" style="margin-top:8px;font-weight:700;font-size:12px;"></div>
-    <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:8px;" data-lang="homeBtn">🏠 الرئيسية</button>
+    <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:8px;">🏠 الرئيسية</button>
   </div>
 </div>
 
 <!-- ADMIN SCREEN -->
 <div id="admin" class="screen" style="background:#F0F4FF;padding:0;">
   <div style="width:100%;background:linear-gradient(135deg,#1d6fa4,#1CB0F6);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;color:white;position:sticky;top:0;z-index:100;">
-    <h2 style="font-size:16px;" data-lang="adminTitle">⚙️ إدارة الأسئلة</h2>
-    <button onclick="goHome()" style="background:rgba(255,255,255,.2);border:none;color:white;padding:5px 12px;border-radius:8px;font-size:12px;font-family:'Tajawal',sans-serif;cursor:pointer;" data-lang="backBtn">← رجوع</button>
+    <h2 style="font-size:16px;">⚙️ إدارة الأسئلة</h2>
+    <button onclick="goHome()" style="background:rgba(255,255,255,.2);border:none;color:white;padding:5px 12px;border-radius:8px;font-size:12px;font-family:'Tajawal',sans-serif;cursor:pointer;">← رجوع</button>
   </div>
   <div style="max-width:760px;margin:0 auto;padding:14px;width:100%;">
-    <p style="text-align:center;color:var(--gray);" data-lang="adminDesc">يمكن للمعلمة إدارة الأسئلة من لوحة Supabase مباشرة.</p>
+    <p style="text-align:center;color:var(--gray);">يمكن للمعلمة إدارة الأسئلة من لوحة Supabase مباشرة.</p>
   </div>
 </div>
 
@@ -258,7 +250,6 @@
 <div class="combo" id="combo">🔥 سلسلة!</div>
 
 <script>
-  // ==================== SUPABASE & GLOBAL STATE ====================
   const SUPABASE_URL = 'https://smcyaqwxbmhshhhhdece.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtY3lhcXd4Ym1oc2hoaGhkZWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NDE2OTksImV4cCI6MjA5MzExNzY5OX0.EP1S9D8BvBWmihQ-fU8MHLVTqOG1pE6C7PpVC2lizgA';
   var supabase = (function() {
@@ -276,72 +267,9 @@
     challengeMode:false, challengeCode:'',
     wrongQuestions:[]
   };
-  let loginTab='student', trainingMode=false, cl='ar';
+  let loginTab='student', trainingMode=false;
 
-  // ==================== TRANSLATION ====================
-  const LANG = {
-    ar: {
-      loginTitle: 'أسئله تعليميه', loginSub: 'ثلاثة كتب - اختر كتابك',
-      studentTab: '👩‍🎓 طالبة', teacherTab: '👩‍🏫 معلمة',
-      loginCardTitle: 'دخول الطالبات', studentPlaceholder: 'اكتبي اسمك هنا...',
-      teacherEmail: 'البريد الإلكتروني', teacherPass: 'كلمة المرور',
-      loginButton: 'دخول 🎮', welcomeTitle: 'أسئله تعليميه',
-      welcomeSub: 'تعلّم بطريقة ممتعة! 🌟', qCountLabel: 'عدد الأسئلة:',
-      startGameBtn: 'ابدأ اللعبة 🎮', leaderboardBtn: '🏆 المتصدرين',
-      profileBtn: '👤 ملفي', challengeBtn: '⚔️ تحدي', logoutBtn: '🚪 خروج',
-      adminLink: '⚙️ إدارة', trainingModeActive: '🎯 وضع التدريب',
-      showAnswerBtn: '💡 إظهار الإجابة', nextBtn: 'متابعة',
-      resultTitle: 'أحسنت!', scoreLabel: 'نقاط', correctLabel: 'صحيحة', streakLabel: 'سلسلة',
-      playAgainBtn: 'العب مجدداً 🎮', homeBtn: '🏠 الرئيسية',
-      gameoverTitle: 'انتهت المحاولات!', tryAgainBtn: 'حاول مجدداً 🔄',
-      leaderboardTitle: '🏆 لوحة المتصدرين', profileTitle: '👤 ملفي الشخصي',
-      challengeTitle: '⚔️ تحدي الأصدقاء', challengeDesc: 'أنشئي رمز تحدي وشاركيه مع صديقتك!',
-      challengePlaceholder: 'أدخلي رمز التحدي...', createChallengeBtn: 'إنشاء تحدي',
-      joinChallengeBtn: 'دخول التحدي', adminTitle: '⚙️ إدارة الأسئلة',
-      backBtn: '← رجوع', adminDesc: 'يمكن للمعلمة إدارة الأسئلة من لوحة Supabase مباشرة.',
-      correct: 'إجابة صحيحة! 🎉', wrong: 'إجابة خاطئة!',
-      training: '🏋️ تدريب', trainingActive: '🏋️ تدريب (مفعل)',
-      noQuestions: 'لا توجد أسئلة.', reviewWrongBtn: '🔁 مراجعة الأخطاء',
-      lockedMsg: '🔒 يجب إنهاء المرحلة السابقة بنسبة 70% على الأقل'
-    },
-    id: {
-      loginTitle: 'Perpustakaan Tiga Buku', loginSub: 'Tiga buku - pilih bukumu',
-      studentTab: '👩‍🎓 Siswi', teacherTab: '👩‍🏫 Guru',
-      loginCardTitle: 'Masuk Siswi', studentPlaceholder: 'Tulis namamu...',
-      teacherEmail: 'Email', teacherPass: 'Kata sandi',
-      loginButton: 'Masuk 🎮', welcomeTitle: 'Perpustakaan Tiga Buku',
-      welcomeSub: 'Belajar dengan cara yang menyenangkan! 🌟', qCountLabel: 'Jumlah soal:',
-      startGameBtn: 'Mulai Game 🎮', leaderboardBtn: '🏆 Papan Skor',
-      profileBtn: '👤 Profilku', challengeBtn: '⚔️ Tantangan', logoutBtn: '🚪 Keluar',
-      adminLink: '⚙️ Kelola', trainingModeActive: '🎯 Mode Latihan',
-      showAnswerBtn: '💡 Tampilkan Jawaban', nextBtn: 'Lanjut',
-      resultTitle: 'Bagus!', scoreLabel: 'Skor', correctLabel: 'Benar', streakLabel: 'Streak',
-      playAgainBtn: 'Main Lagi 🎮', homeBtn: '🏠 Beranda',
-      gameoverTitle: 'Kesempatan Habis!', tryAgainBtn: 'Coba Lagi 🔄',
-      leaderboardTitle: '🏆 Papan Skor', profileTitle: '👤 Profilku',
-      challengeTitle: '⚔️ Tantang Teman', challengeDesc: 'Buat kode tantangan dan bagikan ke temanmu!',
-      challengePlaceholder: 'Masukkan kode tantangan...', createChallengeBtn: 'Buat Tantangan',
-      joinChallengeBtn: 'Gabung Tantangan', adminTitle: '⚙️ Kelola Soal',
-      backBtn: '← Kembali', adminDesc: 'Guru dapat mengelola soal langsung dari dasbor Supabase.',
-      correct: 'Jawaban Benar! 🎉', wrong: 'Jawaban Salah!',
-      training: '🏋️ Latihan', trainingActive: '🏋️ Latihan (Aktif)',
-      noQuestions: 'Tidak ada soal.', reviewWrongBtn: '🔁 Tinjau Kesalahan',
-      lockedMsg: '🔒 Selesaikan level sebelumnya minimal 70%'
-    }
-  };
-  function t(k) { return LANG[cl]?.[k] || LANG.ar[k] || k; }
-
-  function applyLang() {
-    document.querySelectorAll('[data-lang]').forEach(el => {
-      const key = el.getAttribute('data-lang');
-      if (el.placeholder !== undefined) el.placeholder = t(key);
-      else el.textContent = t(key);
-    });
-    document.getElementById('lang-toggle').textContent = cl==='ar'?'🇮🇩 Bahasa':'🇸🇦 العربية';
-    document.getElementById('training-btn').textContent = t(trainingMode?'trainingActive':'training');
-  }
-
-  // ==================== LEVEL LOCKING (localStorage) ====================
+  // ==================== LEVEL LOCKING ====================
   function getCompletedLevels() {
     if (!state.user) return {};
     const data = localStorage.getItem('completed_' + state.user.id);
@@ -371,8 +299,8 @@
   }
 
   // ==================== DATA LOADING ====================
-  async function loadQuestions(lang='ar') {
-    const { data, error } = await supabase.from('questions').select('*').eq('language', lang);
+  async function loadQuestions() {
+    const { data, error } = await supabase.from('questions').select('*').eq('language', 'ar');
     if (error) { console.error(error); return; }
     const fmt = { tawheed:[], usool:[], nawawi:[] };
     data.forEach(q => {
@@ -383,15 +311,6 @@
       });
     });
     QUESTIONS = fmt;
-  }
-
-  async function toggleLang() {
-    cl = cl==='ar'?'id':'ar';
-    await loadQuestions(cl);
-    applyLang();
-    if (document.getElementById('game').classList.contains('active')) {
-      startGame();
-    }
   }
 
   function getAllQuestions(book) {
@@ -434,7 +353,7 @@
     const sTab=document.getElementById('tab-student'), tTab=document.getElementById('tab-teacher');
     sTab.style.background = t==='student'?'white':'transparent'; sTab.style.color = t==='student'?'var(--text)':'var(--gray)';
     tTab.style.background = t==='teacher'?'white':'transparent'; tTab.style.color = t==='teacher'?'var(--text)':'var(--gray)';
-    document.getElementById('login-title').textContent = t==='student'?t('loginCardTitle'):'دخول المعلمات';
+    document.getElementById('login-title').textContent = t==='student'?'دخول الطالبات':'دخول المعلمات';
     document.getElementById('login-email').style.display = t==='teacher'?'block':'none';
     document.getElementById('login-pass').style.display = t==='teacher'?'block':'none';
     document.getElementById('login-name').style.display = t==='teacher'?'none':'block';
@@ -444,7 +363,7 @@
   async function doLogin() {
     if (loginTab==='student') {
       const name = document.getElementById('login-name').value.trim();
-      if (!name) return alert(t('noQuestions'));
+      if (!name) return alert('اكتبي اسمك');
       const { data, error } = await supabase.auth.signInAnonymously();
       if (error) return alert('خطأ: '+error.message);
       await supabase.from('profiles').upsert({ id:data.user.id, name, role:'student' });
@@ -469,7 +388,7 @@
   function selectLevel(l) { state.level=l; state.subLevel=1; document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('sel')); document.getElementById('btn-'+l).classList.add('sel'); updateSubLevels(); }
   function selectSubLevel(sl) {
     if (isLevelLocked(state.book, state.level, sl)) {
-      alert(t('lockedMsg'));
+      alert('🔒 يجب إنهاء المرحلة السابقة بنسبة 70% على الأقل');
       return;
     }
     state.subLevel=sl;
@@ -492,7 +411,7 @@
 
   function startGame() {
     state.questions = state.challengeMode ? (window.challengeCache?.[state.challengeCode]||[]) : getQuestionsForGame();
-    if (state.questions.length===0) { alert(t('noQuestions')); state.challengeMode=false; return; }
+    if (state.questions.length===0) { alert('لا توجد أسئلة.'); state.challengeMode=false; return; }
     state.idx=0; state.score=0; state.hearts=5; state.streak=0; state.maxStreak=0; state.correct=0; state.wrong=0; state.answered=false; state.total=state.questions.length;
     state.wrongQuestions = [];
     renderHearts(); updateScore(); updateProgress();
@@ -540,7 +459,7 @@
       }
       fb.className = 'feedback show ok';
       document.getElementById('fb-icon').textContent = '🎉';
-      document.getElementById('fb-title').textContent = t('correct');
+      document.getElementById('fb-title').textContent = 'إجابة صحيحة! 🎉';
     } else {
       btn.classList.add('wrong');
       state.wrongQuestions.push(state.questions[state.idx]);
@@ -552,11 +471,11 @@
       document.getElementById('show-answer-btn').style.display = trainingMode?'block':'none';
       fb.className = 'feedback show bad';
       document.getElementById('fb-icon').textContent = '😢';
-      document.getElementById('fb-title').textContent = t('wrong');
+      document.getElementById('fb-title').textContent = 'إجابة خاطئة!';
     }
     fb.style.display = 'block';
     document.getElementById('fb-exp').textContent = state.questions[state.idx].exp||'';
-    document.getElementById('btn-cont').textContent = t('nextBtn');
+    document.getElementById('btn-cont').textContent = 'متابعة';
   }
 
   function nextQ() {
@@ -581,7 +500,7 @@
       document.getElementById('review-wrong-btn-go').style.display = state.wrongQuestions.length ? 'inline-block' : 'none';
     } else {
       document.getElementById('res-icon').textContent = pct>=.7?'🎉':'📚';
-      document.getElementById('res-title').textContent = t('resultTitle');
+      document.getElementById('res-title').textContent = 'أحسنت!';
       document.getElementById('res-sub').textContent = pct>=.7?'نتيجة رائعة!':'واصل المحاولة!';
       document.getElementById('fin-score').textContent=state.score;
       document.getElementById('fin-correct').textContent=state.correct+'/'+state.total;
@@ -610,7 +529,7 @@
   function renderHearts() { const c=document.getElementById('hearts'); c.innerHTML=''; for (let i=0; i<5; i++) { c.innerHTML+=`<span style="font-size:15px;transition:.3s;${i>=state.hearts?'filter:grayscale(1)opacity(.35);transform:scale(.7);':''}">❤️</span>`; } }
   function showCombo(s) { const c=document.getElementById('combo'); c.textContent='🔥 سلسلة × '+s+'!'; c.classList.add('show'); setTimeout(()=>c.classList.remove('show'),2000); }
   function launchConfetti() { const w=document.getElementById('confetti-wrap'); const cols=['#FF4B4B','#58CC02','#FFD900','#1CB0F6','#CE82FF','#FF9600']; for (let i=0; i<40; i++) { setTimeout(()=>{ const p=document.createElement('div'); p.className='cp'; p.style.left=Math.random()*100+'vw'; p.style.top='-20px'; p.style.background=cols[Math.floor(Math.random()*cols.length)]; p.style.animationDuration=(1.5+Math.random()*1.5)+'s'; p.style.width=(8+Math.random()*10)+'px'; p.style.height=(8+Math.random()*10)+'px'; w.appendChild(p); setTimeout(()=>p.remove(),3000); },i*30); } }
-  function toggleTrainingMode() { trainingMode=!trainingMode; document.getElementById('training-btn').textContent = t(trainingMode?'trainingActive':'training'); }
+  function toggleTrainingMode() { trainingMode=!trainingMode; document.getElementById('training-btn').textContent = trainingMode?'🏋️ تدريب (مفعل)':'🏋️ تدريب'; }
 
   // ==================== LEADERBOARD & PROFILE ====================
   async function showLeaderboard() {
@@ -636,11 +555,10 @@
 
   // ==================== INIT ====================
   async function init() {
-    await loadQuestions('ar');
+    await loadQuestions();
     show('login-screen');
     setLoginTab('student');
     selectLevel('easy');
-    applyLang();
   }
   init();
 </script>
