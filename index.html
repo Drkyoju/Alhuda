@@ -88,12 +88,14 @@
     .badge { display:inline-block; padding:4px 10px; border-radius:12px; font-size:.8em; font-weight:700; }
     .badge-blue { background:#EEF6FF; color:var(--blue); }
     /* Logo */
-    .site-logo { position:fixed; top:10px; left:10px; z-index:2001; max-width:240px; height:auto; border-radius:8px; }
+    .site-logo { position:fixed; top:10px; left:10px; z-index:100; max-width:120px; height:auto; border-radius:8px; }
+    @media(max-width:500px) { .site-logo { max-width:60px; top:6px; left:6px; } }
+    /* Enlarged question number */
+    .q-num-text { font-size:20px; color:var(--gray); font-weight:700; margin-bottom:4px; }
   </style>
 </head>
 <body>
 
-<!-- Logo – make sure images.jpeg is in the root folder -->
 <img src="images.jpeg" alt="شعار الجمعية" class="site-logo">
 
 <div class="settings-bar">
@@ -131,12 +133,14 @@
   <span style="background:rgba(255,255,255,.2);color:white;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;" id="welcome-user">👩‍🎓 طالبة</span>
   <div class="welcome-title">أسئله تعليميه</div>
   <p style="color:rgba(255,255,255,.8);font-size:13px;margin-bottom:10px;">تعلّم بطريقة ممتعة! 🌟</p>
+
+  <!-- Book selection (Usool first, then Tawheed, then Nawawi) -->
   <div class="book-select-row">
-    <button class="book-btn sel" onclick="selectBook('tawheed')" id="book-btn-tawheed">📖 كتاب التوحيد</button>
-    <button class="book-btn" onclick="selectBook('usool')" id="book-btn-usool">📗 الأصول الثلاثة</button>
+    <button class="book-btn sel" onclick="selectBook('usool')" id="book-btn-usool">📗 الأصول الثلاثة</button>
+    <button class="book-btn" onclick="selectBook('tawheed')" id="book-btn-tawheed">📖 كتاب التوحيد</button>
     <button class="book-btn" onclick="selectBook('nawawi')" id="book-btn-nawawi">📘 الأربعون النووية</button>
-    <button class="book-btn" onclick="selectBook('merge3')" id="book-btn-merge3">📚 الكتب الثلاثة</button>
   </div>
+
   <div class="level-row">
     <button class="level-btn sel" onclick="selectLevel('easy')" id="btn-easy">🟢 مبتدئ</button>
     <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium">🟡 متوسط</button>
@@ -147,7 +151,7 @@
     <label style="color:white; font-weight:700;">عدد الأسئلة:</label>
     <input type="number" id="q-count-input" min="5" max="50" value="20" style="width:70px; padding:6px; border-radius:8px; border:2px solid var(--border); text-align:center;">
   </div>
-  <button class="btn btn-gold" id="btn-start-game" onclick="startCountdown()">ابدأ اللعبة 🎮</button>
+  <button class="btn btn-gold" id="btn-start-game" onclick="startCountdown()">ابدأ التعلم 🎮</button>
   <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:12px;">
     <button class="btn btn-sm btn-white" onclick="showLeaderboard()">🏆 المتصدرين</button>
     <button class="btn btn-sm btn-white" onclick="showProfile()">👤 ملفي</button>
@@ -166,13 +170,13 @@
     <span style="background:var(--gold);padding:3px 8px;border-radius:12px;font-weight:900;font-size:12px;">⭐ <span id="score-display">0</span></span>
   </div>
   <div class="q-area">
-    <div id="training-bar" class="training-bar" style="display:none;">🎯 وضع التدريب</div>
-    <div style="font-size:10px;color:var(--gray);" id="q-num"></div>
+    <div id="training-bar" class="training-bar" style="display:none;">🎯 وضع التدريب – مراجعة الأخطاء</div>
+    <div class="q-num-text" id="q-num"></div>
     <span class="badge badge-blue" id="q-book-badge" style="margin-bottom:6px;"></span>
     <span id="q-type-badge" style="display:none;font-size:11px;background:var(--purple);color:white;padding:3px 8px;border-radius:10px;">✅ صح أو خطأ</span>
     <div class="q-box" id="q-text">...</div>
     <div class="ans-grid" id="ans-grid"></div>
-    <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:10px;" onclick="revealAnswer()">💡 إظهار الإجابة</button>
+    <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:10px;" onclick="revealAnswer()">💡 إظهار الإجابة الصحيحة</button>
   </div>
   <div class="feedback" id="feedback">
     <div style="display:flex; align-items:flex-start; gap:12px;">
@@ -217,12 +221,20 @@
 
 <!-- LEADERBOARD SCREEN -->
 <div id="leaderboard-screen" class="screen" style="background:var(--bg);padding:16px;">
-  <div class="card"><h3 style="text-align:center;margin-bottom:12px;">🏆 لوحة المتصدرين</h3><div id="lb-list"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button></div>
+  <div class="card">
+    <h3 style="text-align:center;margin-bottom:12px;">🏆 لوحة المتصدرين</h3>
+    <div id="lb-list"></div>
+    <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button>
+  </div>
 </div>
 
 <!-- PROFILE SCREEN -->
 <div id="profile-screen" class="screen" style="background:var(--bg);padding:16px;">
-  <div class="card"><h3 style="text-align:center;margin-bottom:12px;">👤 ملفي الشخصي</h3><div id="profile-content"></div><button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button></div>
+  <div class="card">
+    <h3 style="text-align:center;margin-bottom:12px;">👤 ملفي الشخصي</h3>
+    <div id="profile-content"></div>
+    <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:10px auto 0;">🏠 الرئيسية</button>
+  </div>
 </div>
 
 <!-- CHALLENGE SCREEN -->
@@ -255,7 +267,6 @@
 <div class="combo" id="combo">🔥 سلسلة!</div>
 
 <script>
-  // ==================== SUPABASE & GLOBAL STATE ====================
   const SUPABASE_URL = 'https://smcyaqwxbmhshhhhdece.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtY3lhcXd4Ym1oc2hoaGhkZWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NDE2OTksImV4cCI6MjA5MzExNzY5OX0.EP1S9D8BvBWmihQ-fU8MHLVTqOG1pE6C7PpVC2lizgA';
   var supabase = (function() {
@@ -265,9 +276,9 @@
     return client;
   })();
 
-  let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
+  let QUESTIONS = { usool:[], tawheed:[], nawawi:[] };
   let state = {
-    user:null, userType:'', userName:'', book:'tawheed', level:'easy', subLevel:1,
+    user:null, userType:'', userName:'', book:'usool', level:'easy', subLevel:1,
     questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0,
     correct:0, wrong:0, answered:false, total:20, bankVersion:1,
     challengeMode:false, challengeCode:'',
@@ -281,12 +292,10 @@
     const data = localStorage.getItem('completed_' + state.user.id);
     return data ? JSON.parse(data) : {};
   }
-
   function setCompletedLevels(levels) {
     if (!state.user) return;
     localStorage.setItem('completed_' + state.user.id, JSON.stringify(levels));
   }
-
   function markLevelCompleted(book, level, subLevel, percent) {
     const key = `${book}_${level}_${subLevel}`;
     const completed = getCompletedLevels();
@@ -295,7 +304,6 @@
       setCompletedLevels(completed);
     }
   }
-
   function isLevelLocked(book, level, subLevel) {
     if (state.userType === 'teacher') return false;
     if (subLevel <= 1) return false;
@@ -308,31 +316,29 @@
   async function loadQuestions() {
     const { data, error } = await supabase.from('questions').select('*').eq('language', 'ar');
     if (error) { console.error(error); return; }
-    const fmt = { tawheed:[], usool:[], nawawi:[] };
+    const fmt = { usool:[], tawheed:[], nawawi:[] };
     data.forEach(q => {
       fmt[q.book].push({
         id:q.id, book:q.book, cat:q.chapter, level:q.level, type:q.type,
         q:q.question_text, a:q.type==='mc'?q.options:null,
-        c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation
+        c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation,
+        sub_level: q.sub_level || 1
       });
     });
     QUESTIONS = fmt;
   }
 
   function getAllQuestions(book) {
-    if (book==='tawheed') return QUESTIONS.tawheed||[];
-    if (book==='usool') return QUESTIONS.usool||[];
-    if (book==='nawawi') return QUESTIONS.nawawi||[];
-    if (book==='merge3') return [...(QUESTIONS.tawheed||[]),...(QUESTIONS.usool||[]),...(QUESTIONS.nawawi||[])];
-    return [];
+    return QUESTIONS[book] || [];
   }
 
   function getQuestionsForGame() {
-    const pool = getAllQuestions(state.book).filter(q => q.level===state.level);
-    if (pool.length===0) return [];
-    const count = Math.min(parseInt(document.getElementById('q-count-input').value)||20, pool.length, 50);
-    const seed = (state.book==='tawheed'?1:state.book==='usool'?2:state.book==='nawawi'?4:7)*10000+state.subLevel*1000+state.bankVersion*100;
-    const shuffled = seededShuffle([...pool], seed);
+    const pool = getAllQuestions(state.book).filter(q => q.level===state.level && q.sub_level === state.subLevel);
+    const finalPool = pool.length > 0 ? pool : getAllQuestions(state.book).filter(q => q.level===state.level);
+    if (finalPool.length===0) return [];
+    const count = Math.min(parseInt(document.getElementById('q-count-input').value)||20, finalPool.length, 50);
+    const seed = (state.book==='usool'?1:state.book==='tawheed'?2:state.book==='nawawi'?3:4)*10000+state.subLevel*1000+state.bankVersion*100;
+    const shuffled = seededShuffle([...finalPool], seed);
     const start = ((state.subLevel-1)*count+(state.bankVersion-1)*count*3)%shuffled.length;
     const seen = new Set(); let sel=[];
     for (let i=0; i<count*2 && sel.length<count; i++) {
@@ -390,7 +396,11 @@
 
   // ==================== BOOK / LEVEL / SUBLEVEL ====================
   function selectBook(b) { state.book=b; state.level='easy'; state.subLevel=1; updateBookButtons(); updateSubLevels(); }
-  function updateBookButtons() { document.querySelectorAll('.book-btn').forEach(b=>b.classList.remove('sel')); const btn=document.getElementById('book-btn-'+state.book); if(btn) btn.classList.add('sel'); }
+  function updateBookButtons() {
+    document.querySelectorAll('.book-btn').forEach(b=>b.classList.remove('sel'));
+    const btn=document.getElementById('book-btn-'+state.book);
+    if(btn) btn.classList.add('sel');
+  }
   function selectLevel(l) { state.level=l; state.subLevel=1; document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('sel')); document.getElementById('btn-'+l).classList.add('sel'); updateSubLevels(); }
   function selectSubLevel(sl) {
     if (isLevelLocked(state.book, state.level, sl)) {
@@ -417,7 +427,7 @@
 
   function startGame() {
     state.questions = state.challengeMode ? (window.challengeCache?.[state.challengeCode]||[]) : getQuestionsForGame();
-    if (state.questions.length===0) { alert('لا توجد أسئلة.'); state.challengeMode=false; return; }
+    if (state.questions.length===0) { alert('لا توجد أسئلة لهذه المرحلة. الرجاء إضافة أسئلة بقيمة sub_level = ' + state.subLevel); state.challengeMode=false; return; }
     state.idx=0; state.score=0; state.hearts=5; state.streak=0; state.maxStreak=0; state.correct=0; state.wrong=0; state.answered=false; state.total=state.questions.length;
     state.wrongQuestions = [];
     renderHearts(); updateScore(); updateProgress();
@@ -466,6 +476,7 @@
       fb.className = 'feedback show ok';
       document.getElementById('fb-icon').textContent = '🎉';
       document.getElementById('fb-title').textContent = 'إجابة صحيحة! 🎉';
+      document.getElementById('show-answer-btn').style.display = 'none';
     } else {
       btn.classList.add('wrong');
       state.wrongQuestions.push(state.questions[state.idx]);
@@ -474,7 +485,7 @@
         renderHearts();
         if (state.hearts<=0) { setTimeout(()=>endGame(),1500); return; }
       }
-      document.getElementById('show-answer-btn').style.display = trainingMode?'block':'none';
+      document.getElementById('show-answer-btn').style.display = 'block';
       fb.className = 'feedback show bad';
       document.getElementById('fb-icon').textContent = '😢';
       document.getElementById('fb-title').textContent = 'إجابة خاطئة!';
@@ -490,7 +501,17 @@
     if (state.idx>=state.questions.length) { endGame(); return; }
     renderQ();
   }
-  function revealAnswer() { document.getElementById('show-answer-btn').style.display='none'; }
+
+  function revealAnswer() {
+    const btns = document.querySelectorAll('.ans-btn');
+    btns.forEach(b => {
+      if (b.dataset.ok === 'true') {
+        b.classList.add('correct');
+        b.style.animation = 'pop .4s cubic-bezier(.34,1.56,.64,1)';
+      }
+    });
+    document.getElementById('show-answer-btn').style.display = 'none';
+  }
 
   async function endGame() {
     const pct = state.correct/Math.max(1,state.total);
