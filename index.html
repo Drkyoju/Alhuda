@@ -47,6 +47,7 @@
     .sublevel-row { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:10px; }
     .sublevel-btn { background:rgba(255,255,255,.9); border:2px solid var(--border); border-radius:8px; padding:6px 11px; font-size:.85em; font-weight:700; font-family:'Tajawal',sans-serif; cursor:pointer; color:var(--text); transition:.2s; }
     .sublevel-btn.sel { background:var(--green); color:white; border-color:var(--green); }
+    .sublevel-btn.locked { opacity:.4; pointer-events:none; background:#ccc; }
     #game { background:var(--white); max-width:640px; margin:0 auto; width:100%; justify-content:flex-start; }
     .top-bar { width:100%; padding:10px 14px; display:flex; align-items:center; gap:6px; border-bottom:2px solid var(--border); background:white; position:sticky; top:0; z-index:100; }
     .progress-wrap { flex:1; height:10px; background:var(--border); border-radius:5px; overflow:hidden; }
@@ -78,14 +79,25 @@
     .lb-row.top1 { background:#fff9e6; border:2px solid var(--gold); }
     .settings-bar { position:fixed; bottom:20px; left:20px; background:var(--white); border-radius:20px; padding:10px 16px; box-shadow:0 4px 16px rgba(0,0,0,.15); z-index:999; display:flex; align-items:center; gap:10px; font-size:.9em; font-weight:700; }
     .settings-bar input[type=range] { width:100px; accent-color:var(--green); }
+    /* Mobile fix: lower z-index so feedback panel appears above, and reposition to avoid overlap */
+    @media(max-width:500px) {
+      .settings-bar { bottom:80px; left:10px; z-index:199; padding:8px 12px; font-size:.8em; }
+      .settings-bar input[type=range] { width:80px; }
+      .feedback { z-index:200; } /* ensure feedback stays above */
+    }
     .training-bar { background:#fff3cd; padding:6px 12px; border-radius:10px; text-align:center; font-weight:700; font-size:.9em; color:#856404; }
     .badge { display:inline-block; padding:4px 10px; border-radius:12px; font-size:.8em; font-weight:700; }
     .badge-blue { background:#EEF6FF; color:var(--blue); }
+    /* Logo */
+    .site-logo { position:fixed; top:10px; left:10px; z-index:2001; max-width:80px; height:auto; border-radius:8px; }
   </style>
 </head>
 <body>
 
-<button onclick="toggleLang()" id="lang-toggle" style="position:fixed;top:10px;left:10px;z-index:2000;background:white;border:2px solid var(--border);border-radius:16px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;">🇮🇩 Bahasa</button>
+<!-- Logo (replace src with your actual image path) -->
+<img src="images.jpeg" alt="شعار الجمعية" class="site-logo">
+
+<button onclick="toggleLang()" id="lang-toggle" style="position:fixed;top:10px;left:100px;z-index:2000;background:white;border:2px solid var(--border);border-radius:16px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Tajawal',sans-serif;">🇮🇩 Bahasa</button>
 
 <div class="settings-bar">
   <span>🔤</span>
@@ -188,6 +200,7 @@
     <div class="stat-card"><div>🔥</div><div style="font-size:18px;font-weight:900;" id="fin-streak">0</div><div data-lang="streakLabel">سلسلة</div></div>
   </div>
   <button class="btn btn-gold" onclick="startCountdown()" style="max-width:220px;" data-lang="playAgainBtn">العب مجدداً 🎮</button>
+  <button id="review-wrong-btn" class="btn btn-orange btn-sm" onclick="reviewWrongAnswers()" style="max-width:220px; margin-top:8px; display:none;" data-lang="reviewWrongBtn">🔁 مراجعة الأخطاء</button>
   <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;" data-lang="homeBtn">🏠 الرئيسية</button>
 </div>
 
@@ -201,6 +214,7 @@
     <div class="stat-card"><div>❌</div><div style="font-weight:900;" id="go-wr">0</div></div>
   </div>
   <button class="btn btn-gold" onclick="startCountdown()" style="max-width:220px;" data-lang="tryAgainBtn">حاول مجدداً 🔄</button>
+  <button id="review-wrong-btn-go" class="btn btn-orange btn-sm" onclick="reviewWrongAnswers()" style="max-width:220px; margin-top:8px; display:none;" data-lang="reviewWrongBtn">🔁 مراجعة الأخطاء</button>
   <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;" data-lang="homeBtn">🏠 الرئيسية</button>
 </div>
 
@@ -259,7 +273,8 @@
     user:null, userType:'', userName:'', book:'tawheed', level:'easy', subLevel:1,
     questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0,
     correct:0, wrong:0, answered:false, total:20, bankVersion:1,
-    challengeMode:false, challengeCode:''
+    challengeMode:false, challengeCode:'',
+    wrongQuestions:[]
   };
   let loginTab='student', trainingMode=false, cl='ar';
 
@@ -286,7 +301,8 @@
       backBtn: '← رجوع', adminDesc: 'يمكن للمعلمة إدارة الأسئلة من لوحة Supabase مباشرة.',
       correct: 'إجابة صحيحة! 🎉', wrong: 'إجابة خاطئة!',
       training: '🏋️ تدريب', trainingActive: '🏋️ تدريب (مفعل)',
-      noQuestions: 'لا توجد أسئلة.'
+      noQuestions: 'لا توجد أسئلة.', reviewWrongBtn: '🔁 مراجعة الأخطاء',
+      lockedMsg: '🔒 يجب إنهاء المرحلة السابقة بنسبة 70% على الأقل'
     },
     id: {
       loginTitle: 'Perpustakaan Tiga Buku', loginSub: 'Tiga buku - pilih bukumu',
@@ -309,7 +325,8 @@
       backBtn: '← Kembali', adminDesc: 'Guru dapat mengelola soal langsung dari dasbor Supabase.',
       correct: 'Jawaban Benar! 🎉', wrong: 'Jawaban Salah!',
       training: '🏋️ Latihan', trainingActive: '🏋️ Latihan (Aktif)',
-      noQuestions: 'Tidak ada soal.'
+      noQuestions: 'Tidak ada soal.', reviewWrongBtn: '🔁 Tinjau Kesalahan',
+      lockedMsg: '🔒 Selesaikan level sebelumnya minimal 70%'
     }
   };
   function t(k) { return LANG[cl]?.[k] || LANG.ar[k] || k; }
@@ -322,6 +339,35 @@
     });
     document.getElementById('lang-toggle').textContent = cl==='ar'?'🇮🇩 Bahasa':'🇸🇦 العربية';
     document.getElementById('training-btn').textContent = t(trainingMode?'trainingActive':'training');
+  }
+
+  // ==================== LEVEL LOCKING (localStorage) ====================
+  function getCompletedLevels() {
+    if (!state.user) return {};
+    const data = localStorage.getItem('completed_' + state.user.id);
+    return data ? JSON.parse(data) : {};
+  }
+
+  function setCompletedLevels(levels) {
+    if (!state.user) return;
+    localStorage.setItem('completed_' + state.user.id, JSON.stringify(levels));
+  }
+
+  function markLevelCompleted(book, level, subLevel, percent) {
+    const key = `${book}_${level}_${subLevel}`;
+    const completed = getCompletedLevels();
+    if (!completed[key] || completed[key] < percent) {
+      completed[key] = percent;
+      setCompletedLevels(completed);
+    }
+  }
+
+  function isLevelLocked(book, level, subLevel) {
+    if (state.userType === 'teacher') return false;
+    if (subLevel <= 1) return false;
+    const prevKey = `${book}_${level}_${subLevel-1}`;
+    const completed = getCompletedLevels();
+    return (completed[prevKey] || 0) < 0.7;
   }
 
   // ==================== DATA LOADING ====================
@@ -343,7 +389,6 @@
     cl = cl==='ar'?'id':'ar';
     await loadQuestions(cl);
     applyLang();
-    // If game is active, restart with new language questions
     if (document.getElementById('game').classList.contains('active')) {
       startGame();
     }
@@ -399,7 +444,7 @@
   async function doLogin() {
     if (loginTab==='student') {
       const name = document.getElementById('login-name').value.trim();
-      if (!name) return alert(t('noQuestions')); // using any available translation
+      if (!name) return alert(t('noQuestions'));
       const { data, error } = await supabase.auth.signInAnonymously();
       if (error) return alert('خطأ: '+error.message);
       await supabase.from('profiles').upsert({ id:data.user.id, name, role:'student' });
@@ -422,8 +467,25 @@
   function selectBook(b) { state.book=b; state.level='easy'; state.subLevel=1; updateBookButtons(); updateSubLevels(); }
   function updateBookButtons() { document.querySelectorAll('.book-btn').forEach(b=>b.classList.remove('sel')); const btn=document.getElementById('book-btn-'+state.book); if(btn) btn.classList.add('sel'); }
   function selectLevel(l) { state.level=l; state.subLevel=1; document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('sel')); document.getElementById('btn-'+l).classList.add('sel'); updateSubLevels(); }
-  function selectSubLevel(sl) { state.subLevel=sl; updateSubLevels(); }
-  function updateSubLevels() { const c=document.getElementById('sublevel-container'); const total=state.level==='easy'?4:3; let h=''; for(let i=1;i<=total;i++) { h+=`<button class="sublevel-btn${state.subLevel===i?' sel':''}" onclick="selectSubLevel(${i})">المرحلة ${i}</button>`; } c.innerHTML=h; c.style.display='flex'; }
+  function selectSubLevel(sl) {
+    if (isLevelLocked(state.book, state.level, sl)) {
+      alert(t('lockedMsg'));
+      return;
+    }
+    state.subLevel=sl;
+    updateSubLevels();
+  }
+  function updateSubLevels() {
+    const c=document.getElementById('sublevel-container');
+    const total=state.level==='easy'?4:3;
+    let h='';
+    for (let i=1; i<=total; i++) {
+      const locked = isLevelLocked(state.book, state.level, i);
+      h += `<button class="sublevel-btn${state.subLevel===i?' sel':''}${locked?' locked':''}" onclick="selectSubLevel(${i})">${locked?'🔒 ':''}المرحلة ${i}</button>`;
+    }
+    c.innerHTML=h;
+    c.style.display='flex';
+  }
 
   // ==================== GAME FLOW ====================
   function startCountdown() { const ov=document.getElementById('countdown-overlay'); const num=document.getElementById('countdown-num'); ov.style.display='flex'; let n=3; num.textContent=n; const iv=setInterval(()=>{ n--; if(n<=0){ clearInterval(iv); ov.style.display='none'; startGame(); } else num.textContent=n; },600); }
@@ -432,6 +494,7 @@
     state.questions = state.challengeMode ? (window.challengeCache?.[state.challengeCode]||[]) : getQuestionsForGame();
     if (state.questions.length===0) { alert(t('noQuestions')); state.challengeMode=false; return; }
     state.idx=0; state.score=0; state.hearts=5; state.streak=0; state.maxStreak=0; state.correct=0; state.wrong=0; state.answered=false; state.total=state.questions.length;
+    state.wrongQuestions = [];
     renderHearts(); updateScore(); updateProgress();
     const fb = document.getElementById('feedback'); fb.classList.remove('show','ok','bad'); fb.style.display='none';
     document.getElementById('training-bar').style.display = trainingMode?'block':'none';
@@ -480,6 +543,7 @@
       document.getElementById('fb-title').textContent = t('correct');
     } else {
       btn.classList.add('wrong');
+      state.wrongQuestions.push(state.questions[state.idx]);
       if (!trainingMode) {
         state.hearts--; state.streak=0; state.wrong++;
         renderHearts();
@@ -505,20 +569,38 @@
 
   async function endGame() {
     const pct = state.correct/Math.max(1,state.total);
+    if (pct >= 0.7 && !trainingMode && !state.challengeMode) {
+      markLevelCompleted(state.book, state.level, state.subLevel, pct);
+    }
+
     if (state.hearts<=0) {
-      document.getElementById('go-score').textContent=state.score; document.getElementById('go-cor').textContent=state.correct; document.getElementById('go-wr').textContent=state.wrong;
+      document.getElementById('go-score').textContent=state.score;
+      document.getElementById('go-cor').textContent=state.correct;
+      document.getElementById('go-wr').textContent=state.wrong;
       show('gameover');
+      document.getElementById('review-wrong-btn-go').style.display = state.wrongQuestions.length ? 'inline-block' : 'none';
     } else {
       document.getElementById('res-icon').textContent = pct>=.7?'🎉':'📚';
       document.getElementById('res-title').textContent = t('resultTitle');
       document.getElementById('res-sub').textContent = pct>=.7?'نتيجة رائعة!':'واصل المحاولة!';
-      document.getElementById('fin-score').textContent=state.score; document.getElementById('fin-correct').textContent=state.correct+'/'+state.total; document.getElementById('fin-streak').textContent=state.maxStreak;
+      document.getElementById('fin-score').textContent=state.score;
+      document.getElementById('fin-correct').textContent=state.correct+'/'+state.total;
+      document.getElementById('fin-streak').textContent=state.maxStreak;
       if (pct>=.7) launchConfetti();
       show('results');
+      document.getElementById('review-wrong-btn').style.display = state.wrongQuestions.length ? 'inline-block' : 'none';
     }
     if (state.user) { await supabase.from('scores').insert({ user_id:state.user.id, book:state.book, level:state.level, sub_level:state.subLevel, score:state.score, correct:state.correct, total:state.total }); }
     if (state.challengeMode) saveChallengeResult();
     state.challengeMode = false;
+  }
+
+  function reviewWrongAnswers() {
+    if (state.wrongQuestions.length === 0) return;
+    state.questions = state.wrongQuestions;
+    state.challengeMode = false;
+    trainingMode = true;
+    startGame();
   }
 
   // ==================== HELPERS ====================
