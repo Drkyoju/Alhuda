@@ -87,9 +87,14 @@
     .training-bar { background:#fff3cd; padding:6px 12px; border-radius:10px; text-align:center; font-weight:700; font-size:.9em; color:#856404; }
     .badge { display:inline-block; padding:4px 10px; border-radius:12px; font-size:.8em; font-weight:700; }
     .badge-blue { background:#EEF6FF; color:var(--blue); }
+    /* Logo */
+    .site-logo { position:fixed; top:10px; left:10px; z-index:2001; max-width:80px; height:auto; border-radius:8px; }
   </style>
 </head>
 <body>
+
+<!-- Logo – make sure images.jpeg is in the root folder -->
+<img src="images.jpeg" alt="شعار الجمعية" class="site-logo">
 
 <div class="settings-bar">
   <span>🔤</span>
@@ -250,6 +255,7 @@
 <div class="combo" id="combo">🔥 سلسلة!</div>
 
 <script>
+  // ==================== SUPABASE & GLOBAL STATE ====================
   const SUPABASE_URL = 'https://smcyaqwxbmhshhhhdece.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtY3lhcXd4Ym1oc2hoaGhkZWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NDE2OTksImV4cCI6MjA5MzExNzY5OX0.EP1S9D8BvBWmihQ-fU8MHLVTqOG1pE6C7PpVC2lizgA';
   var supabase = (function() {
