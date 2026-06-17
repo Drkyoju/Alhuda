@@ -3,6 +3,7 @@
 create table if not exists feedback (
   id uuid default gen_random_uuid() primary key,
   user_name text not null,
+  user_email text,
   user_id uuid references auth.users(id),
   rating int check (rating between 1 and 5),
   message text,

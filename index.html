@@ -1492,13 +1492,13 @@
 <script>
 const SUPABASE_URL = 'https://smcyaqwxbmhshhhhdece.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNtY3lhcXd4Ym1oc2hoaGhkZWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1NDE2OTksImV4cCI6MjA5MzExNzY5OX0.EP1S9D8BvBWmihQ-fU8MHLVTqOG1pE6C7PpVC2lizgA';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول الثلاثة', nawawi:'الأربعون النووية', merge3:'الكتب الثلاثة' };
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', book:'tawheed', level:'easy', subLevel:1, questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:1, challengeMode:false, challengeCode:'', demoMode:false };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', subLevel:1, questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:1, challengeMode:false, challengeCode:'', demoMode:false };
 let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, pendingLoginAfterDemo = false;
 
 const DEMO_QUESTIONS = [
@@ -1753,13 +1753,14 @@ async function submitFeedback() {
   if (!feedbackRating) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اختاري تقييماً أولاً 😊'; return; }
   const payload = {
     user_name: state.userName,
+    user_email: state.userEmail || null,
     user_id: state.user?.id || null,
     rating: feedbackRating,
     message: msg || null,
     source: 'demo',
     created_at: new Date().toISOString()
   };
-  const { error } = await supabase.from('feedback').insert(payload);
+  const { error } = await db.from('feedback').insert(payload);
   const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
   backup.push(payload);
   localStorage.setItem('feedbackBackup', JSON.stringify(backup));
@@ -1782,7 +1783,7 @@ async function finishDemoFlow() {
 async function showAdminFeedback() {
   const list = document.getElementById('admin-feedback-list');
   list.style.display = 'block';
-  const { data, error } = await supabase.from('feedback').select('*').order('created_at', { ascending: false }).limit(30);
+  const { data, error } = await db.from('feedback').select('*').order('created_at', { ascending: false }).limit(30);
   const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
   const items = data?.length ? data : backup;
   const emojis = ['😞','😕','😐','😊','😍'];
@@ -1813,7 +1814,7 @@ function adjustFontSize(size) {
 
 /* ── Data ── */
 async function loadQuestions() {
-  const { data, error } = await supabase.from('questions').select('*').eq('language', 'ar');
+  const { data, error } = await db.from('questions').select('*').eq('language', 'ar');
   if (error) { console.error(error); return; }
   const fmt = { tawheed:[], usool:[], nawawi:[] };
   data.forEach(q => {
@@ -1910,10 +1911,10 @@ async function doLogin() {
   if (loginTab === 'student') {
     const name = document.getElementById('login-name').value.trim();
     if (!name) { document.getElementById('login-err').textContent = 'اكتبي اسمك من فضلك'; return; }
-    const { data, error } = await supabase.auth.signInAnonymously();
+    const { data, error } = await db.auth.signInAnonymously();
     if (error) { document.getElementById('login-err').textContent = 'خطأ في الاتصال'; return; }
-    await supabase.from('profiles').upsert({ id:data.user.id, name, role:'student' });
-    state.user = data.user; state.userType = 'student'; state.userName = name;
+    await db.from('profiles').upsert({ id:data.user.id, name, role:'student' });
+    state.user = data.user; state.userType = 'student'; state.userName = name; state.userEmail = '';
     localStorage.setItem('savedName', name);
     if (!localStorage.getItem('demoDone')) {
       pendingLoginAfterDemo = false;
@@ -1925,11 +1926,14 @@ async function doLogin() {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-pass').value.trim();
     if (!email || !pass) { document.getElementById('login-err').textContent = 'أدخلي البريد وكلمة المرور'; return; }
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password:pass });
+    const { data, error } = await db.auth.signInWithPassword({ email, password:pass });
     if (error) { document.getElementById('login-err').textContent = 'بيانات غير صحيحة'; return; }
-    const { data:profile } = await supabase.from('profiles').select('*').eq('id', data.user.id).single();
+    const { data:profile } = await db.from('profiles').select('*').eq('id', data.user.id).single();
     if (!profile || profile.role !== 'teacher') { document.getElementById('login-err').textContent = 'لستِ معلمة'; return; }
     state.user = data.user; state.userType = 'teacher'; state.userName = profile.name;
+    state.userEmail = email;
+    localStorage.setItem('savedEmail', email);
+    await db.from('profiles').upsert({ id:data.user.id, name:profile.name, email, role:'teacher' });
     goHome();
   }
 }
@@ -2164,7 +2168,7 @@ async function endGame() {
   }
 
   if (state.user) {
-    await supabase.from('scores').insert({
+    await db.from('scores').insert({
       user_id: state.user.id, book: state.book, level: state.level,
       sub_level: state.subLevel, score: state.score, correct: state.correct, total: state.total
     });
@@ -2227,7 +2231,7 @@ function toggleTrainingMode() {
 
 /* ── Leaderboard & Profile ── */
 async function showLeaderboard() {
-  const { data } = await supabase.from('scores').select('*, profiles(name)').order('score', { ascending:false }).limit(20);
+  const { data } = await db.from('scores').select('*, profiles(name)').order('score', { ascending:false }).limit(20);
   const list = document.getElementById('lb-list');
   let myRank = 0;
   if (state.user && data?.length) {
@@ -2248,7 +2252,7 @@ async function showProfile() {
   const info = getLevelInfo(p.xp || 0);
   let totalGames = p.totalGames || 0, bestScore = p.bestScore || 0, totalCorrect = p.totalCorrect || 0;
   if (state.user) {
-    const { data } = await supabase.from('scores').select('score,correct,total').eq('user_id', state.user.id);
+    const { data } = await db.from('scores').select('score,correct,total').eq('user_id', state.user.id);
     if (data?.length) {
       totalGames = Math.max(totalGames, data.length);
       bestScore = Math.max(bestScore, ...data.map(s => s.score));
@@ -2304,6 +2308,8 @@ function openAdmin() { if (state.userType !== 'teacher') return; show('admin'); 
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   const savedName = localStorage.getItem('savedName');
   if (savedName) document.getElementById('login-name').value = savedName;
+  const savedEmail = localStorage.getItem('savedEmail');
+  if (savedEmail) document.getElementById('login-email').value = savedEmail;
   await loadQuestions();
   const qCount = (QUESTIONS.tawheed?.length||0) + (QUESTIONS.usool?.length||0) + (QUESTIONS.nawawi?.length||0);
   if (qCount > 0) document.getElementById('login-hint').textContent = '📚 ' + qCount + ' سؤال في انتظارك!';
