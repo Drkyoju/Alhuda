@@ -121,6 +121,7 @@
       align-items: center;
       width: 100%;
       overflow-y: visible;
+      min-height: auto;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(12px); }
@@ -900,7 +901,7 @@
       color: var(--emerald-dark);
       white-space: nowrap;
     }
-    .q-area { padding: 20px 16px; width: 100%; flex: 1; padding-bottom: 120px; }
+    .q-area { padding: 20px 16px; width: 100%; flex: 1 1 auto; min-height: 0; padding-bottom: 160px; }
     .q-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 10px; }
     .q-num { font-size: 0.75em; color: var(--text-soft); font-weight: 700; }
     .q-box {
@@ -998,9 +999,10 @@
     /* ── Secondary screens ── */
     .page-screen {
       background: var(--cream);
-      padding: max(72px, calc(env(safe-area-inset-top) + 56px)) 16px max(32px, env(safe-area-inset-bottom));
+      padding: max(72px, calc(env(safe-area-inset-top) + 56px)) 16px max(48px, env(safe-area-inset-bottom));
       width: 100%;
       justify-content: flex-start;
+      min-height: auto;
     }
     .page-screen .card { max-width: 500px; }
 
@@ -1815,7 +1817,9 @@ async function showAdminFeedback() {
 }
 
 function toggleSettings() {
-  document.getElementById('settings-overlay').classList.toggle('open');
+  const ov = document.getElementById('settings-overlay');
+  const open = ov.classList.toggle('open');
+  document.body.style.overflow = open ? 'hidden' : '';
 }
 function adjustFontSize(size) {
   document.documentElement.style.setProperty('--base-font-size', size + 'px');
@@ -1829,6 +1833,7 @@ async function loadQuestions() {
   if (error) { console.error(error); return; }
   const fmt = { tawheed:[], usool:[], nawawi:[] };
   data.forEach(q => {
+    if (!fmt[q.book]) return;
     fmt[q.book].push({
       id:q.id, book:q.book, cat:q.chapter, level:q.level, type:q.type,
       q:q.question_text, a:q.type==='mc'?q.options:null,
@@ -1902,7 +1907,9 @@ function goHome() {
 }
 
 function logout() {
+  db.auth.signOut();
   state.user = null; state.userType = ''; state.userName = '';
+  state.challengeMode = false;
   show('login-screen');
   setLoginTab('student');
 }
@@ -1992,6 +1999,13 @@ function updateBookButtons() {
   if (el) el.classList.add('sel');
 }
 function startCountdown() {
+  if (!state.demoMode && !state.challengeMode) {
+    const qs = getQuestionsForGame();
+    if (!qs.length) {
+      alert('لا توجد أسئلة لهذا الاختيار. جرّبي كتاباً أو مستوى آخر، أو اضغطي «تحديث الأسئلة».');
+      return;
+    }
+  }
   const ov = document.getElementById('countdown-overlay');
   const num = document.getElementById('countdown-num');
   ov.style.display = 'flex';
@@ -2017,9 +2031,18 @@ function startCountdown() {
 }
 
 function startGame() {
-  state.questions = state.challengeMode
-    ? JSON.parse(localStorage.getItem('ch_q_' + state.challengeCode) || '[]')
-    : getQuestionsForGame();
+  if (!state.demoMode) {
+    if (state.challengeMode) {
+      const stored = JSON.parse(localStorage.getItem('ch_q_' + state.challengeCode) || 'null');
+      if (stored?.length) state.questions = stored;
+      else if (!state.questions?.length) {
+        alert('لا توجد أسئلة لهذا التحدي.');
+        return;
+      }
+    } else {
+      state.questions = getQuestionsForGame();
+    }
+  }
   if (state.questions.length === 0) { alert('لا توجد أسئلة لهذا الاختيار.'); return; }
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
   state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.answered = false;
@@ -2038,6 +2061,7 @@ function renderQ() {
   if (state.idx >= state.questions.length) { endGame(); return; }
   const q = state.questions[state.idx];
   state.answered = false;
+  document.getElementById('show-answer-btn').style.display = 'none';
   document.getElementById('q-num').textContent = `السؤال ${state.idx + 1} من ${state.total}`;
   document.getElementById('q-text').textContent = q.q;
   document.getElementById('q-book-badge').textContent = BOOK_LABELS[q.book] || q.book;
@@ -2132,7 +2156,11 @@ function nextQ() {
   } else renderQ();
 }
 
-function revealAnswer() { document.getElementById('show-answer-btn').style.display = 'none'; }
+function revealAnswer() {
+  const q = state.questions[state.idx];
+  if (q) highlightCorrectAnswer(q);
+  document.getElementById('show-answer-btn').style.display = 'none';
+}
 
 async function endGame() {
   if (state.demoMode) { endDemo(); return; }
@@ -2242,19 +2270,26 @@ function toggleTrainingMode() {
 
 /* ── Leaderboard & Profile ── */
 async function showLeaderboard() {
-  const { data } = await db.from('scores').select('*, profiles(name)').order('score', { ascending:false }).limit(20);
+  const { data: scores, error } = await db.from('scores').select('*').order('score', { ascending: false }).limit(30);
   const list = document.getElementById('lb-list');
-  let myRank = 0;
-  if (state.user && data?.length) {
-    myRank = data.findIndex(s => s.user_id === state.user.id) + 1;
+  if (error || !scores?.length) {
+    list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:20px 0;">لا توجد نتائج بعد. كوني الأولى! 🌟</p>';
+    show('leaderboard-screen');
+    return;
   }
-  let rankHtml = myRank > 0 ? `<div class="rank-badge">🏅 ترتيبك: #${myRank}</div>` : '';
-  list.innerHTML = rankHtml + (data?.length
-    ? data.map((s, i) => {
-        const isYou = state.user && s.user_id === state.user.id;
-        return `<div class="lb-row ${i===0?'top1':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${s.profiles?.name||'مجهول'}${isYou?' (أنتِ)':''}</span><span class="lb-score">⭐${s.score}</span></div>`;
-      }).join('')
-    : '<p style="text-align:center;color:var(--text-soft);padding:20px 0;">لا توجد نتائج بعد. كوني الأولى! 🌟</p>');
+  const userIds = [...new Set(scores.map(s => s.user_id).filter(Boolean))];
+  const { data: profiles } = userIds.length
+    ? await db.from('profiles').select('id,name').in('id', userIds)
+    : { data: [] };
+  const nameMap = Object.fromEntries((profiles || []).map(p => [p.id, p.name]));
+  let myRank = 0;
+  if (state.user) myRank = scores.findIndex(s => s.user_id === state.user.id) + 1;
+  const rankHtml = myRank > 0 ? `<div class="rank-badge">🏅 ترتيبك: #${myRank}</div>` : '';
+  list.innerHTML = rankHtml + scores.map((s, i) => {
+    const isYou = state.user && s.user_id === state.user.id;
+    const name = nameMap[s.user_id] || 'مجهول';
+    return `<div class="lb-row ${i===0?'top1':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${name}${isYou?' (أنتِ)':''}</span><span class="lb-score">⭐${s.score}</span></div>`;
+  }).join('');
   show('leaderboard-screen');
 }
 
@@ -2292,23 +2327,71 @@ async function showProfile() {
   show('profile-screen');
 }
 
-function startChallenge() { show('challenge-screen'); }
-function createChallenge() {
-  const code = 'CH' + Date.now().toString(36).toUpperCase();
-  state.challengeCode = code; state.challengeMode = true;
-  localStorage.setItem('ch_q_' + code, JSON.stringify(getQuestionsForGame()));
-  document.getElementById('challenge-msg').innerHTML = '✅ رمز التحدي: <strong style="font-size:1.3em;color:var(--emerald);">' + code + '</strong><br><span style="font-size:0.8em;color:var(--text-soft);">شاركيه مع صديقتك!</span>';
+function startChallenge() {
+  document.getElementById('challenge-msg').textContent = '';
+  document.getElementById('challenge-code').value = '';
+  show('challenge-screen');
 }
-function joinChallenge() {
+async function createChallenge() {
+  const questions = getQuestionsForGame();
+  if (!questions.length) {
+    document.getElementById('challenge-msg').textContent = '❌ لا توجد أسئلة. اختاري كتاباً ومستوى أولاً.';
+    return;
+  }
+  const code = 'CH' + Date.now().toString(36).toUpperCase();
+  state.challengeCode = code;
+  state.challengeMode = true;
+  localStorage.setItem('ch_q_' + code, JSON.stringify(questions));
+  const { error } = await db.from('challenges').upsert({ code, questions, created_by: state.user?.id || null });
+  let copyNote = '';
+  try {
+    await navigator.clipboard.writeText(code);
+    copyNote = '<br><span style="font-size:0.8em;color:var(--emerald);">✅ تم نسخ الرمز!</span>';
+  } catch (e) {}
+  document.getElementById('challenge-msg').innerHTML =
+    '✅ رمز التحدي: <strong style="font-size:1.3em;color:var(--emerald);">' + code + '</strong>' + copyNote +
+    '<br><span style="font-size:0.8em;color:var(--text-soft);">شاركيه مع صديقتك — تدخلي من «دخول التحدي»</span>' +
+    (error ? '<br><span style="font-size:0.75em;color:var(--orange);">ملاحظة: شغّلي supabase_challenges.sql للمشاركة بين الأجهزة</span>' : '');
+}
+async function joinChallenge() {
   const code = document.getElementById('challenge-code').value.trim().toUpperCase();
-  const qs = JSON.parse(localStorage.getItem('ch_q_' + code) || 'null');
-  if (!qs) { document.getElementById('challenge-msg').textContent = '❌ رمز غير صالح'; return; }
-  state.challengeCode = code; state.challengeMode = true;
-  state.questions = qs; state.total = qs.length;
-  document.getElementById('challenge-msg').textContent = '✅ تم الدخول! اذهبي للرئيسية وابدئي اللعبة.';
+  if (!code) { document.getElementById('challenge-msg').textContent = '❌ أدخلي رمز التحدي'; return; }
+  let qs = JSON.parse(localStorage.getItem('ch_q_' + code) || 'null');
+  if (!qs) {
+    const { data } = await db.from('challenges').select('questions').eq('code', code).maybeSingle();
+    qs = data?.questions || null;
+  }
+  if (!qs?.length) { document.getElementById('challenge-msg').textContent = '❌ رمز غير صالح أو منتهي'; return; }
+  state.challengeCode = code;
+  state.challengeMode = true;
+  state.questions = qs;
+  state.total = qs.length;
+  document.getElementById('challenge-msg').textContent = '✅ تم الدخول! اضغطي «ابدأ اللعبة» في الرئيسية.';
 }
 function saveChallengeResult() {}
 function openAdmin() { if (state.userType !== 'teacher') return; show('admin'); }
+
+async function restoreSession() {
+  const { data: { session } } = await db.auth.getSession();
+  if (!session?.user) return false;
+  const { data: profile } = await db.from('profiles').select('name,role').eq('id', session.user.id).single();
+  if (!profile) return false;
+  state.user = session.user;
+  state.userType = profile.role;
+  state.userName = profile.name || localStorage.getItem('savedName') || 'بطلة';
+  state.userEmail = profile.role === 'teacher' ? (localStorage.getItem('savedEmail') || '') : '';
+  if (profile.role === 'teacher') {
+    setLoginTab('teacher');
+    goHome();
+    return true;
+  }
+  if (!localStorage.getItem('demoDone')) {
+    showDemoIntro(state.userName);
+    return true;
+  }
+  goHome();
+  return true;
+}
 
 /* ── Init ── */
 (async function init() {
@@ -2321,12 +2404,18 @@ function openAdmin() { if (state.userType !== 'teacher') return; show('admin'); 
   if (savedName) document.getElementById('login-name').value = savedName;
   const savedEmail = localStorage.getItem('savedEmail');
   if (savedEmail) document.getElementById('login-email').value = savedEmail;
+  ['login-name', 'login-email', 'login-pass'].forEach(id => {
+    document.getElementById(id)?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+  });
   await loadQuestions();
   const qCount = (QUESTIONS.tawheed?.length||0) + (QUESTIONS.usool?.length||0) + (QUESTIONS.nawawi?.length||0);
   if (qCount > 0) document.getElementById('login-hint').textContent = '📚 ' + qCount + ' سؤال في انتظارك!';
+  selectLevel('easy');
+  if (await restoreSession()) return;
   show('login-screen');
   setLoginTab('student');
-  selectLevel('easy');
 })();
 </script>
 </body>
