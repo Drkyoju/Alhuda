@@ -1,0 +1,37 @@
+{
+  "quiz_app_total": 417,
+  "quiz_app_unique": 416,
+  "quiz_app_internal_dupes": 1,
+  "db_existing": 207,
+  "already_in_db": 24,
+  "to_update": 24,
+  "to_add": 392,
+  "db_internal_dupes": 2,
+  "after_import_total_estimate": 597,
+  "by_book_to_add": {
+    "tawheed": 314,
+    "usool": 35,
+    "nawawi": 43
+  },
+  "by_book_to_update": {
+    "tawheed": 9,
+    "nawawi": 15
+  },
+  "db_dupe_samples": [
+    {
+      "id_keep": "79060455-082e-4ede-9964-2c3c684bd269",
+      "id_remove": "98fc34ed-2d28-44a4-8872-625b494797d6",
+      "text_a": "ما هو حق الله على العباد؟",
+      "text_b": "ما هو حق الله على العباد؟"
+    },
+    {
+      "id_keep": "535f5711-195b-4edd-aa2b-c64b651895f0",
+      "id_remove": "fa61abec-ccd9-4774-bf19-87b8c46418c4",
+      "text_a": "التوحيد يكفر الذنوب جميعاً بدون توبة.",
+      "text_b": "التوحيد يكفر الذنوب جميعاً بدون توبة."
+    }
+  ],
+  "quiz_dupe_samples": [
+    "العطف بـ\"ثمّ\" يقتضي:"
+  ]
+}

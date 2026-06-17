@@ -1,0 +1,3 @@
+.venv/
+extracted/*_pages.json
+extracted/*.txt

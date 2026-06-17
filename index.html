@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#2D5A3D">
-  <meta name="description" content="المكتبة الثلاثية - أسئله تعليميه إسلامية تفاعلية للأطفال">
+  <meta name="description" content="المكتبة الثلاثية - أسئلة تعليمية إسلامية تفاعلية للأطفال">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <title>المكتبة الثلاثية - أسئله تعليميه</title>
+  <title>المكتبة الثلاثية - أسئلة تعليمية</title>
   <link rel="icon" href="images.jpeg" type="image/jpeg">
   <link rel="apple-touch-icon" href="images.jpeg">
   <link rel="manifest" href="manifest.json">
@@ -48,6 +48,13 @@
       --blue: var(--sky);
       --blue-dark: var(--sky-dark);
       --bg: var(--cream);
+      --grad-hero: linear-gradient(165deg, #FDFBF7 0%, #E8F2EC 45%, #FAF5EE 100%);
+      --grad-emerald: linear-gradient(135deg, var(--emerald) 0%, #1A6B4A 100%);
+      --grad-gold: linear-gradient(135deg, #D4AF6A 0%, var(--gold) 50%, #F5D76E 100%);
+      --grad-results: linear-gradient(165deg, #1E3D2A 0%, var(--emerald) 40%, #2A8AAD 100%);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -60,7 +67,8 @@
 
     body {
       font-family: 'Tajawal', 'Arial', sans-serif;
-      background: var(--cream);
+      background: var(--grad-hero);
+      background-attachment: fixed;
       min-height: 100vh;
       min-height: 100dvh;
       direction: rtl;
@@ -300,13 +308,15 @@
 
     /* ── Cards ── */
     .card {
-      background: var(--white);
-      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
       padding: 24px;
       max-width: 420px;
       width: 100%;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(232, 185, 35, 0.15);
+      box-shadow: 0 12px 40px rgba(45, 90, 61, 0.1), 0 0 0 1px rgba(184, 149, 107, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.8);
       margin: 0 auto;
     }
     .card h2, .card h3 {
@@ -596,6 +606,26 @@
     }
 
     .lb-you { background: var(--emerald-light) !important; border: 2px solid var(--emerald) !important; }
+
+    .lb-tabs { margin-bottom: 12px; }
+    .lb-reset-hint {
+      text-align: center;
+      font-size: 0.78em;
+      font-weight: 800;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+      padding: 8px 10px;
+      background: var(--cream);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .lb-subhint {
+      text-align: center;
+      font-size: 0.75em;
+      font-weight: 700;
+      color: var(--gray);
+      margin-bottom: 10px;
+    }
 
     .demo-badge {
       display: inline-block;
@@ -969,7 +999,7 @@
       gap: 12px;
     }
     #results { background: linear-gradient(160deg, var(--emerald), var(--sky)); }
-    #gameover { background: linear-gradient(160deg, var(--coral), var(--orange)); }
+    #gameover { background: var(--grad-results); }
     .result-icon { font-size: 4em; animation: bounceIn 0.6s ease; }
     @keyframes bounceIn {
       0% { transform: scale(0); }
@@ -1205,6 +1235,226 @@
       .welcome-inner { padding: 0 24px; }
       .brand-title { font-size: 2em; }
     }
+
+    /* ═══ DESIGN v2 — Gamification & polish ═══ */
+    .topbar-center { display: flex; gap: 6px; align-items: center; flex: 1; justify-content: center; pointer-events: none; }
+    .topbar-chip {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.95);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 0.7em;
+      font-weight: 900;
+      color: var(--emerald-dark);
+      box-shadow: var(--shadow-sm);
+      pointer-events: auto;
+    }
+    .topbar-chip.show { display: inline-flex; }
+    .topbar-chip.streak { border-color: var(--gold); background: var(--gold-glow); }
+    .topbar-chip.xp { border-color: var(--emerald); background: var(--emerald-light); }
+
+    .login-hero {
+      width: 100%;
+      max-width: 420px;
+      padding: 0 4px;
+    }
+    .login-features {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .login-feature {
+      flex: 1;
+      min-width: 90px;
+      background: rgba(255,255,255,0.85);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 0.72em;
+      font-weight: 800;
+      color: var(--emerald-dark);
+      line-height: 1.4;
+    }
+    .login-feature strong { display: block; font-size: 1.35em; color: var(--emerald); margin-bottom: 2px; }
+
+    .level-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), var(--emerald-light));
+      border-color: rgba(45, 90, 61, 0.15);
+    }
+    .xp-bar-wrap { height: 14px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.06); }
+    .xp-bar-fill { box-shadow: 0 0 8px rgba(45, 90, 61, 0.25); }
+
+    .daily-mission {
+      width: 100%;
+      background: linear-gradient(135deg, var(--emerald), #1A6B4A);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 6px 20px rgba(45, 90, 61, 0.25);
+      border: 2px solid rgba(255,255,255,0.15);
+    }
+    .daily-mission .dm-icon { font-size: 2em; flex-shrink: 0; }
+    .daily-mission .dm-body { flex: 1; text-align: right; }
+    .daily-mission .dm-title { font-weight: 900; font-size: 0.9em; margin-bottom: 2px; }
+    .daily-mission .dm-sub { font-size: 0.75em; opacity: 0.9; font-weight: 700; }
+    .daily-mission.done { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: var(--emerald-dark); }
+    .daily-mission .dm-check {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2em; flex-shrink: 0;
+    }
+
+    .book-btn .book-progress {
+      font-size: 0.65em;
+      opacity: 0.85;
+      margin-top: 2px;
+      font-weight: 700;
+    }
+    .book-btn.sel .book-progress { opacity: 1; }
+
+    .path-connector.done { background: var(--emerald); }
+
+    .nav-dock {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 10px 8px;
+      display: flex;
+      justify-content: space-around;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      margin-top: 8px;
+    }
+    .nav-dock .icon-action { min-width: 56px; padding: 4px; }
+    .nav-dock .icon-action-circle {
+      width: 48px; height: 48px;
+      border-radius: 16px;
+      background: var(--cream);
+    }
+    .nav-dock .icon-action:hover .icon-action-circle { border-color: var(--emerald); background: var(--emerald-light); }
+
+    #game { background: linear-gradient(180deg, var(--white) 0%, var(--cream) 100%); }
+    .top-bar {
+      background: var(--grad-emerald);
+      border-bottom: none;
+      box-shadow: 0 4px 16px rgba(30, 61, 42, 0.2);
+    }
+    .top-bar .close-btn { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); color: white; }
+    .top-bar .score-badge { background: rgba(255,255,255,0.95); border-color: var(--gold); }
+    .top-bar .progress-wrap { background: rgba(0,0,0,0.2); }
+    .top-bar .progress-bar { background: linear-gradient(90deg, var(--gold), #F5D76E); }
+
+    .q-box {
+      background: var(--white);
+      border-right: 5px solid var(--emerald);
+      box-shadow: 0 4px 16px rgba(45, 90, 61, 0.08);
+    }
+    .ans-btn:hover:not(:disabled) { border-color: var(--emerald); transform: translateY(-1px); }
+
+    #results { background: var(--grad-results); }
+    #results .stat-card, #gameover .stat-card {
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.25);
+      backdrop-filter: blur(8px);
+      color: white;
+    }
+    #results .stat-card .lbl, #gameover .stat-card .lbl { color: rgba(255,255,255,0.85); }
+    #results .stat-card .big, #gameover .stat-card .big { color: white; }
+    .result-shell { width: 100%; max-width: 400px; padding: 0 16px; }
+
+    .page-hero {
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      padding: 8px 16px 16px;
+    }
+    .page-hero h2 {
+      font-family: 'Amiri', serif;
+      font-size: 1.5em;
+      color: var(--emerald-dark);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .page-hero p { font-size: 0.85em; color: var(--text-soft); font-weight: 700; }
+
+    .lb-row.top1 { background: linear-gradient(135deg, var(--gold-glow), #FFF8E7) !important; border: 2px solid var(--gold) !important; }
+    .lb-row.top2 { background: linear-gradient(135deg, #ECEFF1, #F8F9FA) !important; border: 2px solid #B0BEC5 !important; }
+    .lb-row.top3 { background: linear-gradient(135deg, #FBE9E7, #FFF3E0) !important; border: 2px solid #FFAB91 !important; }
+    .lb-rank { min-width: 32px; text-align: center; }
+
+    .profile-hero {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: var(--grad-gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5em;
+      margin: 0 auto 12px;
+      border: 4px solid white;
+      box-shadow: 0 6px 20px rgba(184, 149, 107, 0.4);
+    }
+
+    #countdown-overlay {
+      background: radial-gradient(circle at center, rgba(45,90,61,0.92), rgba(30,61,42,0.98));
+    }
+
+    .levelup-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      background: rgba(30, 61, 42, 0.75);
+      backdrop-filter: blur(6px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .levelup-overlay.show { display: flex; }
+    .levelup-card {
+      background: white;
+      border-radius: 28px;
+      padding: 32px 24px;
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+      border: 4px solid var(--gold);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      animation: levelPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes levelPop {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .levelup-card .lu-icon { font-size: 4em; margin-bottom: 8px; }
+    .levelup-card h3 { color: var(--emerald-dark); font-weight: 900; font-size: 1.3em; margin-bottom: 8px; }
+    .levelup-card p { color: var(--text-soft); font-weight: 700; margin-bottom: 16px; }
+
+    .streak-fire { display: inline-block; animation: fireWiggle 0.8s ease infinite; }
+    @keyframes fireWiggle {
+      0%, 100% { transform: rotate(-5deg) scale(1); }
+      50% { transform: rotate(5deg) scale(1.1); }
+    }
+
+    .demo-intro-card, .feedback-screen-inner {
+      background: rgba(255,255,255,0.95);
+    }
+    .rating-btn:hover { border-color: var(--gold); transform: translateY(-2px); }
+
+    #login-screen .card { border-top: 4px solid var(--emerald); }
+    .brand-sub { letter-spacing: 0.02em; }
+
+    .combo { font-size: 1em; padding: 12px 24px; border: 2px solid rgba(255,255,255,0.5); }
   </style>
 </head>
 <body class="islamic-bg">
@@ -1219,6 +1469,10 @@
   <!-- Global top bar -->
   <div class="app-topbar">
     <img src="images.jpeg" alt="شعار جمعية الهدى والحكمة" class="site-logo">
+    <div class="topbar-center">
+      <span class="topbar-chip streak" id="topbar-streak"><span class="streak-fire">🔥</span>0</span>
+      <span class="topbar-chip xp" id="topbar-xp">✨ 0</span>
+    </div>
     <button class="topbar-btn icon-only" onclick="toggleSettings()" id="settings-btn" aria-label="الإعدادات">⚙️</button>
   </div>
 
@@ -1240,28 +1494,45 @@
   <!-- Countdown -->
   <div id="countdown-overlay"><span id="countdown-num">3</span></div>
 
+  <!-- Level up celebration -->
+  <div class="levelup-overlay" id="levelup-overlay" onclick="if(event.target===this)closeLevelUp()">
+    <div class="levelup-card">
+      <div class="lu-icon">🎖️</div>
+      <h3>ارتقيتِ مستوى!</h3>
+      <p>أصبحتِ <strong id="levelup-title">متعلمة</strong></p>
+      <button class="btn btn-gold btn-xl" onclick="closeLevelUp()">رائع! 🎉</button>
+    </div>
+  </div>
+
   <!-- ═══════════ LOGIN ═══════════ -->
   <div id="login-screen" class="screen active">
-    <div class="logo-wrap">
-      <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img">
-      <div class="brand-title">المكتبة الثلاثية</div>
-      <div class="org-name">جمعية الهدى والحكمة</div>
-      <div class="brand-sub">أسئله تعليميه</div>
-      <div class="brand-tagline">تعلّمي بمرح وثقة ✨</div>
-      <p class="login-hint" id="login-hint">🎮 انضمي وابدئي رحلة التعلّم!</p>
-    </div>
-    <div class="card">
-      <div class="tab-row">
-        <button class="tab-btn active" onclick="setLoginTab('student')" id="tab-student">👩‍🎓 طالبة</button>
-        <button class="tab-btn" onclick="setLoginTab('teacher')" id="tab-teacher">👩‍🏫 معلمة</button>
+    <div class="login-hero">
+      <div class="logo-wrap">
+        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img">
+        <div class="brand-title">المكتبة الثلاثية</div>
+        <div class="org-name">جمعية الهدى والحكمة</div>
+        <div class="brand-sub">أسئلة تعليمية</div>
+        <div class="brand-tagline">تعلّمي بمرح وثقة ✨</div>
+        <p class="login-hint" id="login-hint">🎮 انضمي وابدئي رحلة التعلّم!</p>
       </div>
-      <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">دخول الطالبات</h2>
-      <input type="text" class="input" id="login-name" placeholder="اكتبي اسمك هنا..." autocomplete="name">
-      <input type="email" class="input" id="login-email" placeholder="البريد الإلكتروني" style="display:none;" autocomplete="email">
-      <input type="password" class="input" id="login-pass" placeholder="كلمة المرور" style="display:none;" autocomplete="current-password">
-      <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
-      <button class="btn btn-green btn-xl" onclick="doLogin()" id="btn-login">دخول 🎮</button>
-      <button class="btn btn-blue btn-sm" onclick="startDemoFromLogin()" style="width:100%;margin-top:10px;">📝 نموذج أسئلة تجريبي</button>
+      <div class="card">
+        <div class="tab-row">
+          <button class="tab-btn active" onclick="setLoginTab('student')" id="tab-student">👩‍🎓 طالبة</button>
+          <button class="tab-btn" onclick="setLoginTab('teacher')" id="tab-teacher">👩‍🏫 معلمة</button>
+        </div>
+        <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">دخول الطالبات</h2>
+        <input type="text" class="input" id="login-name" placeholder="اكتبي اسمك هنا..." autocomplete="name">
+        <input type="email" class="input" id="login-email" placeholder="البريد الإلكتروني" style="display:none;" autocomplete="email">
+        <input type="password" class="input" id="login-pass" placeholder="كلمة المرور" style="display:none;" autocomplete="current-password">
+        <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
+        <button class="btn btn-green btn-xl" onclick="doLogin()" id="btn-login">دخول 🎮</button>
+        <button class="btn btn-blue btn-sm" onclick="startDemoFromLogin()" style="width:100%;margin-top:10px;">📝 نموذج أسئلة تجريبي</button>
+      </div>
+      <div class="login-features">
+        <div class="login-feature"><strong>🏅</strong>مستويات وشارات</div>
+        <div class="login-feature"><strong>🔥</strong>سلسلة يومية</div>
+        <div class="login-feature"><strong>⚔️</strong>تحديات</div>
+      </div>
     </div>
     <p class="login-footer">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
   </div>
@@ -1317,6 +1588,15 @@
         <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar-fill"></div></div>
       </div>
 
+      <div class="daily-mission" id="daily-mission">
+        <div class="dm-icon">🎯</div>
+        <div class="dm-body">
+          <div class="dm-title">مهمة اليوم</div>
+          <div class="dm-sub">أكمِلي جولة واحدة على الأقل</div>
+        </div>
+        <div class="dm-check">0/1</div>
+      </div>
+
       <div class="daily-banner" id="daily-banner">
         <div>🔥 سلسلة الأيام: <span id="daily-streak-val">0</span> يوم</div>
         <div class="quote" id="daily-quote">من سار على الدرب وصل ✨</div>
@@ -1365,7 +1645,7 @@
       <button class="btn btn-orange btn-sm" onclick="refreshQuestions()" style="margin-top:-4px;">🔄 تحديث الأسئلة</button>
       <button class="btn btn-blue btn-sm" onclick="showDemoIntro(state.userName)" style="margin-top:4px;">📝 نموذج أسئلة تجريبي</button>
 
-      <div class="action-row" style="margin-top:8px;">
+      <div class="nav-dock">
         <button class="icon-action" onclick="showLeaderboard()">
           <div class="icon-action-circle">🏆</div><span>المتصدرين</span>
         </button>
@@ -1416,39 +1696,52 @@
 
   <!-- ═══════════ RESULTS ═══════════ -->
   <div id="results" class="screen">
-    <div class="result-icon" id="res-icon">🎉</div>
-    <div class="stars-row" id="res-stars"></div>
-    <div class="xp-earned" id="res-xp-earned" style="display:none;"></div>
-    <div class="result-title" id="res-title">أحسنت!</div>
-    <div class="result-sub" id="res-sub">نتيجة رائعة!</div>
-    <div class="stats-grid">
-      <div class="stat-card"><div>⭐</div><div class="big" id="fin-score">0</div><div class="lbl">نقاط</div></div>
-      <div class="stat-card"><div>✅</div><div class="big" id="fin-correct">0</div><div class="lbl">صحيحة</div></div>
-      <div class="stat-card"><div>🔥</div><div class="big" id="fin-streak">0</div><div class="lbl">سلسلة</div></div>
+    <div class="result-shell">
+      <div class="result-icon" id="res-icon">🎉</div>
+      <div class="stars-row" id="res-stars"></div>
+      <div class="xp-earned" id="res-xp-earned" style="display:none;"></div>
+      <div class="result-title" id="res-title">أحسنت!</div>
+      <div class="result-sub" id="res-sub">نتيجة رائعة!</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div>⭐</div><div class="big" id="fin-score">0</div><div class="lbl">نقاط</div></div>
+        <div class="stat-card"><div>✅</div><div class="big" id="fin-correct">0</div><div class="lbl">صحيحة</div></div>
+        <div class="stat-card"><div>🔥</div><div class="big" id="fin-streak">0</div><div class="lbl">سلسلة</div></div>
+      </div>
+      <button class="btn btn-gold btn-xl" onclick="startCountdown()">العب مجدداً 🎮</button>
+      <button class="btn btn-sm btn-white" onclick="shareScore()" id="share-btn" style="margin-top:8px;">📤 شاركي نتيجتك</button>
+      <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
     </div>
-    <button class="btn btn-gold btn-xl" onclick="startCountdown()">العب مجدداً 🎮</button>
-    <button class="btn btn-sm btn-white" onclick="shareScore()" id="share-btn" style="margin-top:8px;">📤 شاركي نتيجتك</button>
-    <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
   </div>
 
   <!-- ═══════════ GAMEOVER ═══════════ -->
   <div id="gameover" class="screen">
-    <div class="result-icon">💔</div>
-    <div class="result-title">انتهت المحاولات!</div>
-    <div class="result-sub">لا بأس، حاولي مرة أخرى 💪</div>
-    <div class="stats-grid" style="max-width:300px;">
-      <div class="stat-card"><div>⭐</div><div class="big" id="go-score">0</div><div class="lbl">نقاط</div></div>
-      <div class="stat-card"><div>✅</div><div class="big" id="go-cor">0</div><div class="lbl">صحيحة</div></div>
-      <div class="stat-card"><div>❌</div><div class="big" id="go-wr">0</div><div class="lbl">خاطئة</div></div>
+    <div class="result-shell">
+      <div class="result-icon">💔</div>
+      <div class="result-title">انتهت المحاولات!</div>
+      <div class="result-sub">لا بأس، حاولي مرة أخرى 💪</div>
+      <div class="stats-grid" style="max-width:300px;">
+        <div class="stat-card"><div>⭐</div><div class="big" id="go-score">0</div><div class="lbl">نقاط</div></div>
+        <div class="stat-card"><div>✅</div><div class="big" id="go-cor">0</div><div class="lbl">صحيحة</div></div>
+        <div class="stat-card"><div>❌</div><div class="big" id="go-wr">0</div><div class="lbl">خاطئة</div></div>
+      </div>
+      <button class="btn btn-gold btn-xl" onclick="startCountdown()">حاولي مجدداً 🔄</button>
+      <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:8px;">🏠 الرئيسية</button>
     </div>
-    <button class="btn btn-gold btn-xl" onclick="startCountdown()">حاولي مجدداً 🔄</button>
-    <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:8px;">🏠 الرئيسية</button>
   </div>
 
   <!-- ═══════════ LEADERBOARD ═══════════ -->
   <div id="leaderboard-screen" class="screen page-screen">
+    <div class="page-hero">
+      <h2>🏆 لوحة المتصدرين</h2>
+      <p id="lb-hero-sub">تنافسي مع صديقاتك — أفضل نتيجة هذا الأسبوع</p>
+    </div>
     <div class="card">
-      <h3>🏆 لوحة المتصدرين</h3>
+      <div class="tab-row lb-tabs">
+        <button class="tab-btn" data-period="day" onclick="setLbPeriod('day')">📅 اليوم</button>
+        <button class="tab-btn active" data-period="week" onclick="setLbPeriod('week')">📆 الأسبوع</button>
+      </div>
+      <p class="lb-reset-hint" id="lb-reset-hint">يتجدد خلال —</p>
+      <p class="lb-subhint">أفضل نتيجة لكل طالبة في الفترة المختارة</p>
       <div id="lb-list"></div>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:16px auto 0;width:100%;">🏠 الرئيسية</button>
     </div>
@@ -1456,8 +1749,11 @@
 
   <!-- ═══════════ PROFILE ═══════════ -->
   <div id="profile-screen" class="screen page-screen">
+    <div class="page-hero">
+      <h2>👤 ملفي الشخصي</h2>
+      <p>إنجازاتك ومسار تقدّمك</p>
+    </div>
     <div class="card">
-      <h3>👤 ملفي الشخصي</h3>
       <div id="profile-content"></div>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:16px auto 0;width:100%;">🏠 الرئيسية</button>
     </div>
@@ -1465,9 +1761,11 @@
 
   <!-- ═══════════ CHALLENGE ═══════════ -->
   <div id="challenge-screen" class="screen page-screen">
+    <div class="page-hero">
+      <h2>⚔️ تحدي الأصدقاء</h2>
+      <p>أنشئي تحدياً وشاركي الرمز مع صديقاتك</p>
+    </div>
     <div class="card" style="text-align:center;">
-      <h3>⚔️ تحدي الأصدقاء</h3>
-      <p style="font-size:0.85em;color:var(--text-soft);margin-bottom:14px;">أنشئي تحدياً وشاركي الرمز مع صديقاتك!</p>
       <input type="text" class="input" id="challenge-code" placeholder="أدخلي رمز التحدي...">
       <div style="display:flex;gap:8px;justify-content:center;margin-top:4px;">
         <button class="btn btn-gold btn-sm" onclick="createChallenge()" style="flex:1;">إنشاء تحدي</button>
@@ -1509,6 +1807,19 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول الثلاثة', nawawi:'الأربعون النووية', merge3:'الكتب الثلاثة' };
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
+const CHAPTER_ORDER = {
+  tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
+  usool: ['👤 المؤلف','📖 الكتاب','📚 المسائل الأربع','📚 العلم','🕌 الرب','🙏 العبادة','👤 النبي','📿 الدين','🤲 الدعاء','🛡️ التوكل','🆘 الاستعانة','📿 الاستعاذة']
+};
+function chapterSortIndex(book, chapter) {
+  const order = CHAPTER_ORDER[book];
+  if (order) {
+    const idx = order.indexOf(chapter);
+    if (idx >= 0) return idx;
+  }
+  const m = (chapter || '').match(/^(\d+)/);
+  return m ? parseInt(m[1], 10) : 999;
+}
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', subLevel:1, questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:1, challengeMode:false, challengeCode:'', demoMode:false };
@@ -1595,9 +1906,79 @@ function updateDailyStreak() {
 }
 function awardXP(amount) {
   const p = ensureProgress();
+  const prevInfo = getLevelInfo(p.xp || 0);
   p.xp = (p.xp || 0) + amount;
   saveProgress(p);
+  const newInfo = getLevelInfo(p.xp);
+  if (amount > 0 && newInfo.title !== prevInfo.title) showLevelUp(newInfo.title);
   return p.xp;
+}
+function showLevelUp(title) {
+  document.getElementById('levelup-title').textContent = title;
+  document.getElementById('levelup-overlay').classList.add('show');
+  playSound('achievement');
+}
+function closeLevelUp() {
+  document.getElementById('levelup-overlay').classList.remove('show');
+}
+function getBookProgress(book) {
+  const levels = { easy: 4, medium: 3, hard: 3 };
+  let done = 0, total = 0;
+  for (const [lvl, count] of Object.entries(levels)) {
+    for (let i = 1; i <= count; i++) {
+      total++;
+      if (isStageDone(book, lvl, i)) done++;
+    }
+  }
+  return { done, total };
+}
+function updateBookProgress() {
+  const map = { tawheed: 'book-btn-tawheed', usool: 'book-btn-usool', nawawi: 'book-btn-nawawi', merge3: 'book-btn-merge' };
+  for (const [book, id] of Object.entries(map)) {
+    const btn = document.getElementById(id);
+    if (!btn) continue;
+    let done, total;
+    if (book === 'merge3') {
+      const t = getBookProgress('tawheed'), u = getBookProgress('usool'), n = getBookProgress('nawawi');
+      done = t.done + u.done + n.done;
+      total = t.total + u.total + n.total;
+    } else {
+      ({ done, total } = getBookProgress(book));
+    }
+    let prog = btn.querySelector('.book-progress');
+    if (!prog) {
+      prog = document.createElement('div');
+      prog.className = 'book-progress';
+      btn.appendChild(prog);
+    }
+    prog.textContent = done + '/' + total + ' مراحل';
+  }
+}
+function updateDailyMission() {
+  const p = ensureProgress();
+  const el = document.getElementById('daily-mission');
+  if (!el) return;
+  const today = new Date().toISOString().slice(0, 10);
+  const done = p.lastPlayDate === today;
+  el.classList.toggle('done', done);
+  el.querySelector('.dm-icon').textContent = done ? '🏆' : '🎯';
+  el.querySelector('.dm-title').textContent = done ? 'أتممتِ مهمة اليوم!' : 'مهمة اليوم';
+  el.querySelector('.dm-sub').textContent = done ? 'عودي غداً لمهمة جديدة ✨' : 'أكمِلي جولة واحدة على الأقل';
+  el.querySelector('.dm-check').textContent = done ? '✓' : '0/1';
+}
+function updateTopbarStats() {
+  const streakChip = document.getElementById('topbar-streak');
+  const xpChip = document.getElementById('topbar-xp');
+  if (!state.userName) {
+    streakChip.classList.remove('show');
+    xpChip.classList.remove('show');
+    return;
+  }
+  const p = ensureProgress();
+  streakChip.innerHTML = '<span class="streak-fire">🔥</span>' + (p.dailyStreak || 0);
+  streakChip.classList.add('show');
+  xpChip.textContent = '✨ ' + (p.xp || 0);
+  xpChip.classList.add('show');
 }
 function unlockBadge(id) {
   const p = ensureProgress();
@@ -1647,6 +2028,9 @@ function updateWelcomeGamification() {
   document.getElementById('stat-stars').textContent = last.score || 0;
   document.getElementById('stat-xp').textContent = p.xp || 0;
   document.getElementById('stat-games').textContent = p.totalGames || 0;
+  updateDailyMission();
+  updateBookProgress();
+  updateTopbarStats();
 }
 function checkBadges(gameResult) {
   const p = ensureProgress();
@@ -1840,6 +2224,15 @@ async function loadQuestions() {
       c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation
     });
   });
+  for (const book of Object.keys(fmt)) {
+    fmt[book].sort((a, b) => {
+      const ca = chapterSortIndex(book, a.cat);
+      const cb = chapterSortIndex(book, b.cat);
+      if (ca !== cb) return ca - cb;
+      const lvl = { easy: 0, medium: 1, hard: 2 };
+      return (lvl[a.level] || 1) - (lvl[b.level] || 1);
+    });
+  }
   QUESTIONS = fmt;
 }
 
@@ -1910,6 +2303,7 @@ function logout() {
   db.auth.signOut();
   state.user = null; state.userType = ''; state.userName = '';
   state.challengeMode = false;
+  updateTopbarStats();
   show('login-screen');
   setLoginTab('student');
 }
@@ -1977,7 +2371,10 @@ function updateSubLevels() {
   const total = state.level === 'easy' ? 4 : 3;
   let h = '';
   for (let i = 1; i <= total; i++) {
-    if (i > 1) h += '<div class="path-connector"></div>';
+    if (i > 1) {
+      const prevDone = isStageDone(state.book, state.level, i - 1);
+      h += `<div class="path-connector${prevDone ? ' done' : ''}"></div>`;
+    }
     const unlocked = isStageUnlocked(state.book, state.level, i);
     const done = isStageDone(state.book, state.level, i);
     const cls = state.subLevel === i ? ' sel' : done ? ' done' : !unlocked ? ' locked' : '';
@@ -2269,27 +2666,107 @@ function toggleTrainingMode() {
 }
 
 /* ── Leaderboard & Profile ── */
-async function showLeaderboard() {
-  const { data: scores, error } = await db.from('scores').select('*').order('score', { ascending: false }).limit(30);
+let lbPeriod = 'week';
+
+function getLbPeriodStart(period) {
+  const now = new Date();
+  if (period === 'day') {
+    const d = new Date(now);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+  const d = new Date(now);
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - d.getDay());
+  return d;
+}
+
+function getLbPeriodEnd(period) {
+  const start = getLbPeriodStart(period);
+  const end = new Date(start);
+  if (period === 'day') end.setDate(end.getDate() + 1);
+  else end.setDate(end.getDate() + 7);
+  return end;
+}
+
+function formatLbCountdown(period) {
+  const end = getLbPeriodEnd(period);
+  const ms = Math.max(0, end - Date.now());
+  const days = Math.floor(ms / 86400000);
+  const hours = Math.floor((ms % 86400000) / 3600000);
+  const mins = Math.floor((ms % 3600000) / 60000);
+  if (period === 'day') {
+    if (hours > 0) return `يتجدد لوحة اليوم خلال ${hours} ساعة و ${mins} دقيقة`;
+    return `يتجدد لوحة اليوم خلال ${mins} دقيقة`;
+  }
+  if (days > 0) return `يتجدد لوحة الأسبوع خلال ${days} يوم و ${hours} ساعة`;
+  return `يتجدد لوحة الأسبوع خلال ${hours} ساعة و ${mins} دقيقة`;
+}
+
+function aggregateBestScores(scores) {
+  const bestByUser = {};
+  for (const s of scores || []) {
+    if (!s.user_id) continue;
+    if (!bestByUser[s.user_id] || s.score > bestByUser[s.user_id].score) bestByUser[s.user_id] = s;
+  }
+  return Object.values(bestByUser).sort((a, b) => b.score - a.score);
+}
+
+function renderLeaderboardList(ranked, nameMap) {
   const list = document.getElementById('lb-list');
-  if (error || !scores?.length) {
-    list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:20px 0;">لا توجد نتائج بعد. كوني الأولى! 🌟</p>';
-    show('leaderboard-screen');
+  if (!ranked.length) {
+    const emptyMsg = lbPeriod === 'day'
+      ? 'لا توجد نتائج اليوم بعد. كوني الأولى! 🌟'
+      : 'لا توجد نتائج هذا الأسبوع بعد. كوني الأولى! 🌟';
+    list.innerHTML = `<p style="text-align:center;color:var(--text-soft);padding:20px 0;">${emptyMsg}</p>`;
     return;
   }
-  const userIds = [...new Set(scores.map(s => s.user_id).filter(Boolean))];
+  let myRank = 0;
+  if (state.user) myRank = ranked.findIndex(s => s.user_id === state.user.id) + 1;
+  const rankHtml = myRank > 0 ? `<div class="rank-badge">🏅 ترتيبك: #${myRank}</div>` : '';
+  list.innerHTML = rankHtml + ranked.slice(0, 30).map((s, i) => {
+    const isYou = state.user && s.user_id === state.user.id;
+    const name = nameMap[s.user_id] || 'مجهول';
+    return `<div class="lb-row ${i===0?'top1':i===1?'top2':i===2?'top3':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${name}${isYou?' (أنتِ)':''}</span><span class="lb-score">⭐${s.score}</span></div>`;
+  }).join('');
+}
+
+async function loadLeaderboard(period) {
+  lbPeriod = period;
+  document.querySelectorAll('.lb-tabs .tab-btn').forEach(t => t.classList.toggle('active', t.dataset.period === period));
+  document.getElementById('lb-reset-hint').textContent = formatLbCountdown(period);
+  document.getElementById('lb-hero-sub').textContent = period === 'day'
+    ? 'تنافسي مع صديقاتك — أفضل نتيجة اليوم'
+    : 'تنافسي مع صديقاتك — أفضل نتيجة هذا الأسبوع';
+
+  const start = getLbPeriodStart(period);
+  const { data: scores, error } = await db.from('scores')
+    .select('*')
+    .gte('played_at', start.toISOString())
+    .order('score', { ascending: false })
+    .limit(500);
+
+  const list = document.getElementById('lb-list');
+  if (error) {
+    list.innerHTML = '<p style="text-align:center;color:var(--coral);padding:20px 0;">تعذّر تحميل اللوحة</p>';
+    return;
+  }
+
+  const ranked = aggregateBestScores(scores);
+  const userIds = [...new Set(ranked.map(s => s.user_id).filter(Boolean))];
   const { data: profiles } = userIds.length
     ? await db.from('profiles').select('id,name').in('id', userIds)
     : { data: [] };
   const nameMap = Object.fromEntries((profiles || []).map(p => [p.id, p.name]));
-  let myRank = 0;
-  if (state.user) myRank = scores.findIndex(s => s.user_id === state.user.id) + 1;
-  const rankHtml = myRank > 0 ? `<div class="rank-badge">🏅 ترتيبك: #${myRank}</div>` : '';
-  list.innerHTML = rankHtml + scores.map((s, i) => {
-    const isYou = state.user && s.user_id === state.user.id;
-    const name = nameMap[s.user_id] || 'مجهول';
-    return `<div class="lb-row ${i===0?'top1':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${name}${isYou?' (أنتِ)':''}</span><span class="lb-score">⭐${s.score}</span></div>`;
-  }).join('');
+  renderLeaderboardList(ranked, nameMap);
+}
+
+function setLbPeriod(period) {
+  loadLeaderboard(period);
+}
+
+async function showLeaderboard() {
+  await loadLeaderboard(lbPeriod);
   show('leaderboard-screen');
 }
 
@@ -2313,7 +2790,7 @@ async function showProfile() {
   }
   badgesHtml += '</div>';
   document.getElementById('profile-content').innerHTML = `
-    <div class="profile-avatar">${avatar}</div>
+    <div class="profile-hero">${avatar}</div>
     <h3 style="text-align:center;margin-bottom:4px;">${state.userName}</h3>
     <p style="text-align:center;color:var(--emerald);font-weight:800;font-size:0.9em;">${info.title}</p>
     <p style="text-align:center;color:var(--text-soft);font-size:0.85em;">${state.userType==='teacher'?'معلمة':'طالبة'} · 🔥 ${p.dailyStreak||0} يوم متتالي</p>
@@ -2416,6 +2893,7 @@ async function restoreSession() {
   if (await restoreSession()) return;
   show('login-screen');
   setLoginTab('student');
+  updateTopbarStats();
 })();
 </script>
 </body>
