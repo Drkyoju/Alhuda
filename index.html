@@ -177,7 +177,7 @@
       right: 0;
       z-index: 2100;
       text-align: center;
-      padding: max(14px, env(safe-area-inset-top)) 48px 12px;
+      padding: max(20px, calc(env(safe-area-inset-top, 0px) + 12px)) 48px 14px;
       background: linear-gradient(180deg, #FFFBF5 0%, #F8F3EA 100%);
       border-bottom: 2px solid rgba(201, 169, 98, 0.55);
       box-shadow: 0 6px 28px rgba(22, 56, 40, 0.1);
@@ -185,13 +185,14 @@
     body.login-mode .bismillah-crown { display: block; }
     .bismillah-crown .bismillah-hero {
       font-family: var(--font-display);
-      font-size: clamp(1.35rem, 5.5vw, 1.95rem);
+      font-size: clamp(1.45rem, 6vw, 2rem);
       font-weight: 700;
       color: var(--emerald-dark);
-      margin: 0 0 8px;
-      line-height: 1.7;
+      margin: 0 0 10px;
+      line-height: 1.85;
       letter-spacing: 0.02em;
-      text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+      padding-top: 2px;
+      word-break: keep-all;
     }
     .bismillah-crown .header-ornament {
       display: flex;
@@ -2633,7 +2634,7 @@
 
   <!-- بسم الله — ثابت أعلى شاشة الدخول -->
   <div class="bismillah-crown" id="bismillah-crown" aria-label="بسم الله الرحمن الرحيم">
-    <p class="bismillah-hero">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+    <p class="bismillah-hero">بسم الله الرحمن الرحيم</p>
     <div class="header-ornament"><span></span>✦<span></span></div>
     <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-link">🌐 موقع جمعية الهدى والحكمة ↗</a>
   </div>
