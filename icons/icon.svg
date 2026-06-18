@@ -1,30 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="المكتبة الثلاثية - جمعية الهدى والحكمة">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="'DEC*() 'D+D'+J)">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#163828"/>
-      <stop offset="100%" stop-color="#1b8a6b"/>
+      <stop offset="0%" style="stop-color:#163828"/>
+      <stop offset="100%" style="stop-color:#1b8a6b"/>
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <!-- Open book (gold), centered -->
-  <g fill="#c9a962">
-    <path d="M112 168 L248 178 L248 360 L112 350 Z"/>
-    <path d="M400 168 L264 178 L264 360 L400 350 Z"/>
-    <path d="M248 178 L256 174 L264 178 L264 360 L256 364 L248 360 Z" fill="#b89650"/>
-  </g>
-  <!-- Page lines -->
-  <g stroke="#163828" stroke-width="6" opacity="0.55" stroke-linecap="round">
-    <line x1="140" y1="210" x2="232" y2="216"/>
-    <line x1="140" y1="248" x2="232" y2="254"/>
-    <line x1="140" y1="286" x2="232" y2="292"/>
-    <line x1="280" y1="216" x2="372" y2="210"/>
-    <line x1="280" y1="254" x2="372" y2="248"/>
-    <line x1="280" y1="292" x2="372" y2="286"/>
-  </g>
-  <!-- Crescent (top-right, decorative Islamic motif) -->
-  <circle cx="380" cy="130" r="36" fill="#e8d5a3"/>
-  <circle cx="394" cy="120" r="32" fill="#1b8a6b"/>
-  <!-- 5-point star -->
-  <polygon points="328,128 333,142 348,142 336,151 341,165 328,156 315,165 320,151 308,142 323,142"
-           fill="#e8d5a3"/>
+  <path fill="#c9a962" d="M128 140h256v28H128zm0 68h200v24H128zm0 60h256v24H128zm0 60h180v24H128z" opacity="0.9"/>
+  <circle cx="380" cy="160" r="48" fill="#e8d5a3" opacity="0.95"/>
+  <text x="256" y="400" text-anchor="middle" font-family="serif" font-size="72" fill="#fdfbf7">c</text>
 </svg>

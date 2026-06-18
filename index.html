@@ -8,128 +8,118 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>المكتبة الثلاثية - أسئلة تعليمية</title>
-  <link rel="icon" href="icons/favicon.png" type="image/png" sizes="32x32">
-  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" href="images.jpeg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="images.jpeg">
   <link rel="manifest" href="manifest.json">
-  <meta name="color-scheme" content="light dark">
-  <link rel="stylesheet" href="enhancements.css?v=3">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="enhancements.css?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="preconnect" href="https://smcyaqwxbmhshhhhdece.supabase.co" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="styles.css?v=1">
 </head>
 <body class="islamic-bg login-mode">
-  <!-- Skip link for keyboard users -->
-  <a href="#main-content" class="skip-link">تخطّي إلى المحتوى</a>
 
-  <!-- Floating decorations (hidden from assistive tech) -->
-  <div class="float-deco" style="top:15%;right:8%;animation-delay:0s;" aria-hidden="true">📖</div>
-  <div class="float-deco" style="top:60%;left:5%;animation-delay:2s;" aria-hidden="true">⭐</div>
-  <div class="float-deco" style="top:35%;left:10%;animation-delay:4s;" aria-hidden="true">🌙</div>
-  <div class="glow-orb gold" aria-hidden="true"></div>
-  <div class="glow-orb emerald" aria-hidden="true"></div>
+  <!-- Floating decorations -->
+  <div class="float-deco" style="top:15%;right:8%;animation-delay:0s;">📖</div>
+  <div class="float-deco" style="top:60%;left:5%;animation-delay:2s;">⭐</div>
+  <div class="float-deco" style="top:35%;left:10%;animation-delay:4s;">🌙</div>
+  <div class="glow-orb gold"></div>
+  <div class="glow-orb emerald"></div>
 
   <!-- بسم الله — ثابت أعلى شاشة الدخول -->
   <div class="bismillah-crown" id="bismillah-crown" aria-label="بسم الله الرحمن الرحيم">
     <p class="bismillah-hero">بسم الله الرحمن الرحيم</p>
-    <div class="header-ornament" aria-hidden="true"><span></span>✦<span></span></div>
+    <div class="header-ornament"><span></span>✦<span></span></div>
     <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-link">🌐 موقع جمعية الهدى والحكمة ↗</a>
   </div>
 
   <!-- شريط علوي — يختفي في الدخول واللعب -->
   <header class="app-topbar">
-    <img src="images.jpeg" alt="شعار جمعية الهدى والحكمة" class="site-logo" width="40" height="40" decoding="async">
+    <img src="images.jpeg" alt="شعار جمعية الهدى والحكمة" class="site-logo">
     <div class="topbar-center">
-      <span class="topbar-chip streak" id="topbar-streak"><span class="streak-fire" aria-hidden="true">🔥</span>0</span>
-      <span class="topbar-chip xp" id="topbar-xp"><span aria-hidden="true">✨</span> 0</span>
+      <span class="topbar-chip streak" id="topbar-streak"><span class="streak-fire">🔥</span>0</span>
+      <span class="topbar-chip xp" id="topbar-xp">✨ 0</span>
     </div>
-    <button class="topbar-btn icon-only" onclick="toggleSettings()" id="settings-btn" aria-label="الإعدادات" aria-controls="settings-overlay" aria-expanded="false">⚙️</button>
+    <button class="topbar-btn icon-only" onclick="toggleSettings()" id="settings-btn" aria-label="الإعدادات">⚙️</button>
   </header>
 
   <!-- Settings sheet -->
-  <div class="settings-overlay" id="settings-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-title" onclick="if(event.target===this)toggleSettings()">
-    <div class="settings-sheet" role="document">
-      <div class="sheet-handle" aria-hidden="true"></div>
-      <h3 id="settings-title">الإعدادات</h3>
+  <div class="settings-overlay" id="settings-overlay" onclick="if(event.target===this)toggleSettings()">
+    <div class="settings-sheet">
+      <div class="sheet-handle"></div>
+      <h3>الإعدادات</h3>
       <div class="setting-row">
-        <span aria-hidden="true">🔤</span>
-        <label for="font-size-slider">حجم الخط</label>
-        <input type="range" min="14" max="28" value="18" oninput="adjustFontSize(this.value)" id="font-size-slider" aria-describedby="fs-label">
-        <span class="val" id="fs-label" aria-live="polite">18</span>
+        <span>🔤</span>
+        <span>حجم الخط</span>
+        <input type="range" min="14" max="28" value="18" oninput="adjustFontSize(this.value)" id="font-size-slider">
+        <span class="val" id="fs-label">18</span>
       </div>
-      <button class="btn btn-white" onclick="toggleTrainingMode()" id="training-btn" style="width:100%;margin-bottom:10px;" aria-pressed="false">🏋️ وضع التدريب</button>
-      <button class="btn btn-white" onclick="toggleSound()" id="sound-btn" style="width:100%;" aria-pressed="false">🔊 الأصوات</button>
+      <button class="btn btn-white" onclick="toggleTrainingMode()" id="training-btn" style="width:100%;margin-bottom:10px;">🏋️ وضع التدريب</button>
+      <button class="btn btn-white" onclick="toggleSound()" id="sound-btn" style="width:100%;">🔊 الأصوات</button>
     </div>
   </div>
 
   <!-- Countdown -->
-  <div id="countdown-overlay" role="status" aria-live="assertive" aria-atomic="true"><span id="countdown-num">3</span></div>
+  <div id="countdown-overlay"><span id="countdown-num">3</span></div>
 
   <!-- Level up celebration -->
-  <div class="levelup-overlay" id="levelup-overlay" role="dialog" aria-modal="true" aria-labelledby="levelup-heading" onclick="if(event.target===this)closeLevelUp()">
-    <div class="levelup-card" role="document">
-      <div class="lu-icon" aria-hidden="true">🎖️</div>
-      <h3 id="levelup-heading">ارتقيتَ/ِ مستوى!</h3>
+  <div class="levelup-overlay" id="levelup-overlay" onclick="if(event.target===this)closeLevelUp()">
+    <div class="levelup-card">
+      <div class="lu-icon">🎖️</div>
+      <h3>ارتقيتَ/ِ مستوى!</h3>
       <p>أصبحتَ/ِ <strong id="levelup-title">متعلم/ة</strong></p>
       <button class="btn btn-gold btn-xl" onclick="closeLevelUp()">رائع! 🎉</button>
     </div>
   </div>
 
   <!-- Onboarding -->
-  <div id="onboarding-overlay" role="dialog" aria-modal="true" aria-labelledby="onb-title">
-    <div class="onb-card" role="document">
+  <div id="onboarding-overlay">
+    <div class="onb-card">
       <div class="onb-slide active">
-        <div class="onb-icon" aria-hidden="true">📚</div>
-        <h3 id="onb-title">مرحباً في المكتبة الثلاثية</h3>
+        <div class="onb-icon">📚</div>
+        <h3>مرحباً في المكتبة الثلاثية</h3>
         <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">اختار/ي كتاباً، حدّد/ي مستوى الصعوبة، والعب/ي!</p>
       </div>
       <div class="onb-slide">
-        <div class="onb-icon" aria-hidden="true">🏅</div>
+        <div class="onb-icon">🏅</div>
         <h3>اجمع/ي نقاطاً وشارات</h3>
         <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">كل إجابة صحيحة تقرّبك من المستوى التالي</p>
       </div>
       <div class="onb-slide">
-        <div class="onb-icon" aria-hidden="true">🏫</div>
+        <div class="onb-icon">🏫</div>
         <h3>انضم/ي لصفك</h3>
         <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">اطلب/ي رمز الصف من معلم/تك وادخل/ي من الشاشة الرئيسية</p>
       </div>
-      <div class="onb-dots" aria-hidden="true"><span class="onb-dot on"></span><span class="onb-dot"></span><span class="onb-dot"></span></div>
+      <div class="onb-dots"><span class="onb-dot on"></span><span class="onb-dot"></span><span class="onb-dot"></span></div>
       <button class="btn btn-gold btn-xl" onclick="onboardingNext()">التالي</button>
       <button class="btn btn-sm btn-white" onclick="closeOnboarding()" style="margin-top:8px;width:100%;">تخطي</button>
     </div>
   </div>
 
   <!-- ═══════════ LOGIN ═══════════ -->
-  <main id="main-content">
   <div id="login-screen" class="screen active">
     <div class="login-hero">
       <div class="logo-wrap">
-        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img" width="90" height="90" decoding="async">
-        <h1 class="brand-title">المكتبة الثلاثية</h1>
+        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img">
+        <div class="brand-title">المكتبة الثلاثية</div>
         <div class="org-name">جمعية الهدى والحكمة</div>
         <div class="brand-sub">أسئلة تعليمية تفاعلية</div>
         <p class="login-hint" id="login-hint">🎮 انضم/ي وابدأ/ي رحلة التعلّم!</p>
       </div>
       <div class="card">
-        <div class="tab-row" role="tablist" aria-label="نوع المستخدم">
-          <button class="tab-btn active" onclick="setLoginTab('student')" id="tab-student" role="tab" aria-selected="true">🎓 طالب/ة</button>
-          <button class="tab-btn" onclick="setLoginTab('teacher')" id="tab-teacher" role="tab" aria-selected="false">👨‍🏫 معلم/ة</button>
+        <div class="tab-row">
+          <button class="tab-btn active" onclick="setLoginTab('student')" id="tab-student">🎓 طالب/ة</button>
+          <button class="tab-btn" onclick="setLoginTab('teacher')" id="tab-teacher">👨‍🏫 معلم/ة</button>
         </div>
         <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">دخول المتعلمين</h2>
-        <label class="sr-only" for="login-name">الاسم</label>
-        <input type="text" class="input" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name" required>
-        <label class="sr-only" for="login-pin">رمز الدخول</label>
-        <input type="password" class="input" id="login-pin" placeholder="رمز الدخول (٤–٦ أرقام)" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" required>
+        <input type="text" class="input" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name">
+        <input type="password" class="input" id="login-pin" placeholder="رمز الدخول (٤–٦ أرقام)" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off">
         <p style="font-size:0.75em;color:var(--text-soft);margin:-6px 0 10px;font-weight:600;">احفظ/ي رمز الدخول — نفس الاسم والرمز = نفس حسابك دائماً</p>
-        <label class="sr-only" for="login-email">البريد الإلكتروني</label>
         <input type="email" class="input" id="login-email" placeholder="البريد الإلكتروني" style="display:none;" autocomplete="email">
-        <label class="sr-only" for="login-pass">كلمة المرور</label>
         <input type="password" class="input" id="login-pass" placeholder="كلمة المرور" style="display:none;" autocomplete="current-password">
-        <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err" role="alert" aria-live="assertive"></p>
+        <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
         <button class="btn btn-green btn-xl" onclick="doLogin()" id="btn-login">دخول 🎮</button>
         <button class="btn btn-blue btn-sm" onclick="startDemoFromLogin()" style="width:100%;margin-top:10px;">📝 نموذج أسئلة تجريبي</button>
       </div>
@@ -150,7 +140,7 @@
       </div>
       <div class="card demo-intro-card">
       <div class="demo-badge">١٠ أسئلة تجريبية</div>
-      <img src="images.jpeg" alt="" class="logo-img sm" style="margin:0 auto 12px;" width="60" height="60" loading="lazy" decoding="async">
+      <img src="images.jpeg" alt="" class="logo-img sm" style="margin:0 auto 12px;">
       <h3 style="margin-bottom:8px;">مرحباً <span id="demo-name">بطل/ة</span>! 👋</h3>
       <p>جرّب/ي <strong>١٠ أسئلة</strong> من الكتب الثلاثة لتتعرّف/ي على اللعبة.<br>بعدها شاركنا رأيك/ِ في النموذج — رأيك/ِ يهمنا! 💬</p>
       <button class="btn btn-gold btn-xl" onclick="beginDemo()">يلا نبدأ! 🎮</button>
@@ -178,11 +168,10 @@
         <button class="rating-btn" onclick="setRating(1,this)" data-r="1"><span class="r-emoji">😞</span>ما عجبني</button>
       </div>
       <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;">شاركنا رأيك/ِ واقتراحاتك:</p>
-      <label class="sr-only" for="feedback-text">رأيك واقتراحاتك</label>
       <textarea class="feedback-textarea" id="feedback-text" placeholder="اكتب/ي هنا: هل البرنامج حلو؟ ماذا نحسّن؟ ما الذي أعجبك/ِ؟"></textarea>
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال رأيي 📨</button>
       <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;margin-top:10px;">📋 مراجعة أخطاء النموذج</button>
-      <p id="feedback-msg" style="margin-top:10px;font-weight:800;font-size:0.85em;min-height:20px;" role="status" aria-live="polite"></p>
+      <p id="feedback-msg" style="margin-top:10px;font-weight:800;font-size:0.85em;min-height:20px;"></p>
       <button class="btn btn-sm btn-white" onclick="finishDemoFlow()" style="margin-top:8px;width:100%;">متابعة للرئيسية 🏠</button>
       </div>
     </div>
@@ -280,11 +269,10 @@
       <div id="homework-banner" class="homework-banner" style="display:none;"></div>
 
       <div class="class-join-row" id="class-join-row" style="display:none;">
-        <label class="sr-only" for="class-code-input">رمز الصف</label>
         <input type="text" class="input" id="class-code-input" placeholder="رمز الصف (مثل CLS...)">
         <button class="btn btn-green btn-sm" onclick="joinClass()">انضم/ي للصف</button>
       </div>
-      <p id="class-join-msg" style="font-size:0.8em;color:var(--emerald);font-weight:800;margin:-6px 0 10px;" role="status" aria-live="polite"></p>
+      <p id="class-join-msg" style="font-size:0.8em;color:var(--emerald);font-weight:800;margin:-6px 0 10px;"></p>
 
       <div class="welcome-progress-section">
         <div class="section-label">📈 تقدّمك في الكتب</div>
@@ -341,15 +329,14 @@
       <div class="ans-grid" id="ans-grid"></div>
       <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:12px;width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة</button>
     </div>
-    <div class="feedback" id="feedback" role="status" aria-live="polite" aria-atomic="true">
-      <div class="fbInner">
-        <div class="fb-icon-wrap" id="fb-icon" aria-hidden="true"></div>
+    <div class="feedback" id="feedback">
+      <div class="fb-inner">
+        <div class="fb-icon-wrap" id="fb-icon"></div>
         <div class="fb-title" id="fb-title"></div>
         <div class="fb-exp" id="fb-exp"></div>
         <div class="self-correct-box" id="fb-self-correct" style="display:none;"></div>
         <button class="btn btn-green btn-xl" onclick="nextQ()" style="width:100%;margin-top:14px;">متابعة ←</button>
       </div>
-    </div>
     </div>
   </div>
 
@@ -450,13 +437,12 @@
         <p>أنشئ/ي تحدياً وشارك/ي الرمز مع الأصدقاء</p>
       </div>
       <div class="card" style="text-align:center;">
-      <label class="sr-only" for="challenge-code">رمز التحدي</label>
       <input type="text" class="input" id="challenge-code" placeholder="أدخل/ي رمز التحدي...">
       <div style="display:flex;gap:8px;justify-content:center;margin-top:4px;">
         <button class="btn btn-gold btn-sm" onclick="createChallenge()" style="flex:1;">إنشاء تحدي</button>
         <button class="btn btn-orange btn-sm" onclick="joinChallenge()" style="flex:1;">دخول التحدي</button>
       </div>
-      <div id="challenge-msg" style="margin-top:12px;font-weight:800;font-size:0.9em;min-height:24px;" role="status" aria-live="polite"></div>
+      <div id="challenge-msg" style="margin-top:12px;font-weight:800;font-size:0.9em;min-height:24px;"></div>
       <button class="btn btn-white btn-sm" id="btn-ch-lb" onclick="loadChallengeLeaderboard(document.getElementById('challenge-code').value.trim().toUpperCase())" style="margin-top:8px;width:100%;display:none;">🏆 نتائج هذا التحدي</button>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:12px;width:100%;">🏠 الرئيسية</button>
       </div>
@@ -502,27 +488,22 @@
 
       <div id="admin-tab-classes" class="admin-panel card">
         <h3 style="margin-bottom:10px;">إنشاء صف</h3>
-        <label class="sr-only" for="new-class-name">اسم الصف</label>
         <input type="text" class="input" id="new-class-name" placeholder="اسم الصف (مثل: أصول — مجموعة أ)">
         <button class="btn btn-green btn-sm" style="width:100%;margin-top:8px;" onclick="createClass()">➕ إنشاء صف ورمز</button>
-        <p id="class-create-msg" style="font-size:0.8em;margin-top:8px;font-weight:800;" role="status" aria-live="polite"></p>
+        <p id="class-create-msg" style="font-size:0.8em;margin-top:8px;font-weight:800;"></p>
         <h4 style="margin:16px 0 8px;">صفوفك</h4>
         <div id="teacher-classes-list"></div>
       </div>
 
       <div id="admin-tab-homework" class="admin-panel card">
         <h3 style="margin-bottom:10px;">إرسال واجب</h3>
-        <label class="sr-only" for="hw-class-select">الصف</label>
         <select class="input" id="hw-class-select"></select>
-        <label class="sr-only" for="hw-title">عنوان الواجب</label>
         <input type="text" class="input" id="hw-title" placeholder="عنوان الواجب" style="margin-top:8px;">
-        <label class="sr-only" for="hw-book">الكتاب</label>
         <select class="input" id="hw-book" style="margin-top:8px;">
           <option value="tawheed">كتاب التوحيد</option>
           <option value="usool">الأصول الثلاثة</option>
           <option value="nawawi">الأربعون النووية</option>
         </select>
-        <label class="sr-only" for="hw-level">المستوى</label>
         <select class="input" id="hw-level" style="margin-top:8px;">
           <option value="easy">سهل</option>
           <option value="medium">متوسط</option>
@@ -530,48 +511,36 @@
           <option value="all">الكل</option>
         </select>
         <div style="display:flex;gap:8px;margin-top:8px;">
-          <label class="sr-only" for="hw-from">من سؤال رقم</label>
           <input type="number" class="input" id="hw-from" placeholder="من سؤال" value="1" min="1">
-          <label class="sr-only" for="hw-to">إلى سؤال رقم</label>
           <input type="number" class="input" id="hw-to" placeholder="إلى سؤال" value="20" min="1">
         </div>
-        <label class="sr-only" for="hw-due">تاريخ الاستحقاق</label>
         <input type="date" class="input" id="hw-due" style="margin-top:8px;">
         <button class="btn btn-gold btn-sm" style="width:100%;margin-top:10px;" onclick="createHomework()">إرسال الواجب</button>
-        <p id="hw-create-msg" style="font-size:0.8em;margin-top:8px;font-weight:800;" role="status" aria-live="polite"></p>
+        <p id="hw-create-msg" style="font-size:0.8em;margin-top:8px;font-weight:800;"></p>
       </div>
 
       <div id="admin-tab-questions" class="admin-panel card">
         <h3 style="margin-bottom:10px;">تعديل سؤال</h3>
-        <label class="sr-only" for="q-edit-search">بحث في نص السؤال</label>
         <input type="text" class="input" id="q-edit-search" placeholder="بحث في نص السؤال..." oninput="loadQuestionEditorList()">
-        <div id="question-editor-list" style="margin-top:10px;max-height:200px;overflow-y:auto;" role="listbox" aria-label="قائمة الأسئلة"></div>
+        <div id="question-editor-list" style="margin-top:10px;max-height:200px;overflow-y:auto;"></div>
         <div id="question-editor-form" class="q-edit-form" style="display:none;margin-top:14px;">
-          <label class="sr-only" for="q-edit-text">نص السؤال</label>
           <textarea class="feedback-textarea" id="q-edit-text" rows="2" placeholder="نص السؤال"></textarea>
           <div id="q-edit-mc-fields">
-            <label class="sr-only" for="q-edit-opt0">الخيار الأول</label>
             <input class="input" id="q-edit-opt0" placeholder="خيار ١">
-            <label class="sr-only" for="q-edit-opt1">الخيار الثاني</label>
             <input class="input" id="q-edit-opt1" placeholder="خيار ٢">
-            <label class="sr-only" for="q-edit-opt2">الخيار الثالث</label>
             <input class="input" id="q-edit-opt2" placeholder="خيار ٣">
-            <label class="sr-only" for="q-edit-opt3">الخيار الرابع</label>
             <input class="input" id="q-edit-opt3" placeholder="خيار ٤">
-            <label class="sr-only" for="q-edit-correct">رقم الإجابة الصحيحة (0-3)</label>
             <input class="input" id="q-edit-correct" type="number" min="0" max="3" placeholder="رقم الإجابة الصحيحة (0-3)">
           </div>
           <div id="q-edit-tf-fields" style="display:none;">
-            <label class="sr-only" for="q-edit-tf">الإجابة الصحيحة</label>
             <select class="input" id="q-edit-tf">
               <option value="true">الإجابة الصحيحة: صح ✓</option>
               <option value="false">الإجابة الصحيحة: خطأ ✗</option>
             </select>
           </div>
-          <label class="sr-only" for="q-edit-exp">الشرح</label>
           <textarea class="feedback-textarea" id="q-edit-exp" rows="2" placeholder="الشرح"></textarea>
           <button class="btn btn-green btn-sm" style="width:100%;" onclick="saveQuestionEdit()">💾 حفظ التعديل</button>
-          <p id="q-edit-msg" style="font-size:0.8em;margin-top:6px;font-weight:800;" role="status" aria-live="polite"></p>
+          <p id="q-edit-msg" style="font-size:0.8em;margin-top:6px;font-weight:800;"></p>
         </div>
       </div>
 
@@ -594,7 +563,6 @@
   </div>
 
   <!-- Confetti & Combo -->
-  </main>
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="التنقل الرئيسي">
     <button type="button" data-nav="home" onclick="goHome()"><span class="nav-ico">🏠</span><span>الرئيسية</span></button>
     <button type="button" data-nav="rank" onclick="showLeaderboard()"><span class="nav-ico">🏆</span><span>المتصدرين</span></button>

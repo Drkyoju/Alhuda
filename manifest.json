@@ -1,68 +1,31 @@
 {
-  "id": "/",
   "name": "المكتبة الثلاثية - أسئلة تعليمية",
   "short_name": "المكتبة الثلاثية",
   "description": "تطبيق تعليمي إسلامي تفاعلي - جمعية الهدى والحكمة",
-  "start_url": "./?source=pwa",
-  "scope": "./",
+  "start_url": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
-  "orientation": "portrait",
   "background_color": "#FDFBF7",
   "theme_color": "#163828",
   "lang": "ar",
   "dir": "rtl",
-  "categories": ["education", "books"],
   "icons": [
-    {
-      "src": "icons/favicon.png",
-      "sizes": "32x32",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icons/icon-512-maskable.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
     {
       "src": "icons/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
-    }
-  ],
-  "shortcuts": [
-    {
-      "name": "العب الآن",
-      "short_name": "العب",
-      "description": "ابدأ جولة جديدة فوراً",
-      "url": "./?action=play"
     },
     {
-      "name": "المتصدرين",
-      "short_name": "المتصدرين",
-      "description": "عرض لوحة المتصدرين",
-      "url": "./?action=leaderboard"
+      "src": "icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     },
     {
-      "name": "تحدي الأصدقاء",
-      "short_name": "تحدي",
-      "description": "أنشئ تحدياً جديداً",
-      "url": "./?action=challenge"
+      "src": "images.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
     }
   ]
 }

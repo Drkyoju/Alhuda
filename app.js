@@ -124,17 +124,6 @@ function updateQuestionRangeUI() {
   const max = pool.length;
   const fromEl = document.getElementById('q-from-input');
   const toEl = document.getElementById('q-to-input');
-  // Disable the "start game" button when the pool is empty so the user can't
-  // trigger a countdown that ends in an alert. Was previously always enabled.
-  const startBtn = document.getElementById('btn-start-game');
-  const heroPlayBtn = document.querySelector('.btn-hero-play');
-  if (max === 0) {
-    if (startBtn) { startBtn.disabled = true; startBtn.setAttribute('aria-disabled', 'true'); }
-    if (heroPlayBtn) { heroPlayBtn.disabled = true; heroPlayBtn.setAttribute('aria-disabled', 'true'); }
-  } else {
-    if (startBtn) { startBtn.disabled = false; startBtn.removeAttribute('aria-disabled'); }
-    if (heroPlayBtn) { heroPlayBtn.disabled = false; heroPlayBtn.removeAttribute('aria-disabled'); }
-  }
   fromEl.max = Math.max(1, max);
   toEl.max = Math.max(1, max);
   if (max === 0) {
@@ -547,7 +536,7 @@ async function showAdminFeedback() {
 }
 
 function exportFeedbackCsv() {
-  if (!lastFeedbackItems.length) { (typeof showToast === 'function' ? showToast('لا توجد آراء للتصدير. اضغط/ي «تحديث الآراء» أولاً.', 'info') : alert('لا توجد آراء للتصدير. اضغط/ي «تحديث الآراء» أولاً.')); return; }
+  if (!lastFeedbackItems.length) { alert('لا توجد آراء للتصدير. اضغط/ي «تحديث الآراء» أولاً.'); return; }
   const rows = [['الاسم','التقييم','الرأي','المصدر','التاريخ']];
   for (const f of lastFeedbackItems) {
     rows.push([
@@ -860,7 +849,7 @@ function startCountdown() {
   if (!state.demoMode && !state.challengeMode) {
     const qs = getQuestionsForGame();
     if (!qs.length) {
-      (typeof showToast === 'function' ? showToast('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر، أو غيّر/ي نطاق الأسئلة.', 'info') : alert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر، أو غيّر/ي نطاق الأسئلة.'));
+      alert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر، أو غيّر/ي نطاق الأسئلة.');
       return;
     }
   }
@@ -894,14 +883,14 @@ function startGame() {
       const stored = JSON.parse(localStorage.getItem('ch_q_' + state.challengeCode) || 'null');
       if (stored?.length) state.questions = stored;
       else if (!state.questions?.length) {
-         (typeof showToast === 'function' ? showToast('لا توجد أسئلة لهذا التحدي.', 'info') : alert('لا توجد أسئلة لهذا التحدي.'));
+        alert('لا توجد أسئلة لهذا التحدي.');
         return;
       }
     } else {
       state.questions = getQuestionsForGame();
     }
   }
-  if (state.questions.length === 0) { (typeof showToast === 'function' ? showToast('لا توجد أسئلة لهذا الاختيار.', 'info') : alert('لا توجد أسئلة لهذا الاختيار.')); return; }
+  if (state.questions.length === 0) { alert('لا توجد أسئلة لهذا الاختيار.'); return; }
   if (typeof trackEvent === 'function') trackEvent('game_start', { book: state.book, level: state.level, training: trainingMode });
   state.qFrom = parseInt(document.getElementById('q-from-input')?.value, 10) || 1;
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;

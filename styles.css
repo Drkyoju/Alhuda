@@ -23,7 +23,7 @@
       --text-soft: #5C6B66;
       --border: #E5DDD0;
       --border-gold: rgba(201, 169, 98, 0.35);
-      --gray: #6B7280; /* was #9A9A9A (2.85:1 contrast — failed WCAG AA). #6B7280 = 4.6:1 ✓ */
+      --gray: #9A9A9A;
       --shadow: 0 20px 50px rgba(22, 56, 40, 0.12);
       --shadow-sm: 0 4px 20px rgba(22, 56, 40, 0.06);
       --shadow-lux: 0 24px 64px rgba(22, 56, 40, 0.14), 0 0 0 1px rgba(201, 169, 98, 0.08);
