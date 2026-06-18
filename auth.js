@@ -36,9 +36,14 @@
     }
     const creds = studentCredentials(name, pin);
     let res = await trySignIn(creds);
-    if (res.error && /invalid.*email/i.test(res.error.message || '')) {
-      const alt = { ...creds, email: creds.email.replace('@test.com', '@example.com') };
-      res = await trySignIn(alt);
+    if (res.error) {
+      if (/rate limit|too many/i.test(res.error.message || '')) {
+        return { error: { message: 'محاولات كثيرة — انتظر دقيقة وحاول مجدداً' } };
+      }
+      if (/invalid.*email/i.test(res.error.message || '')) {
+        const alt = { ...creds, email: creds.email.replace('@test.com', '@example.com') };
+        res = await trySignIn(alt);
+      }
     }
     return res;
   }
