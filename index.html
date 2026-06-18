@@ -67,6 +67,23 @@
     }
 
     body.login-mode { --app-header-h: 0px; }
+    body.login-mode .app-topbar .site-logo,
+    body.login-mode .app-topbar .topbar-center { display: none; }
+    body.login-mode .app-topbar {
+      background: transparent;
+      backdrop-filter: none;
+      pointer-events: none;
+      padding: 0;
+      box-shadow: none;
+    }
+    body.login-mode #settings-btn {
+      position: fixed;
+      top: max(10px, env(safe-area-inset-top));
+      left: 14px;
+      right: auto;
+      z-index: 2200;
+      pointer-events: auto;
+    }
     body.game-mode .app-topbar { display: none; }
     body.game-mode { --app-header-h: 0px; }
     body.immersive-mode .app-topbar { display: none; }
@@ -76,7 +93,7 @@
 
     html {
       height: auto;
-      overflow-y: auto;
+      overflow-y: scroll;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -86,9 +103,12 @@
       background-attachment: fixed;
       min-height: 100vh;
       min-height: 100dvh;
+      height: auto;
       direction: rtl;
       overflow-x: hidden;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: auto;
       font-size: var(--base-font-size, 18px);
       color: var(--text);
       -webkit-tap-highlight-color: transparent;
@@ -143,8 +163,54 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      overflow-y: visible;
+      overflow: visible;
       min-height: auto;
+      flex-shrink: 0;
+    }
+
+    /* ── تاج البسملة — ثابت أعلى شاشة الدخول ── */
+    .bismillah-crown {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2100;
+      text-align: center;
+      padding: max(14px, env(safe-area-inset-top)) 48px 12px;
+      background: linear-gradient(180deg, #FFFBF5 0%, #F8F3EA 100%);
+      border-bottom: 2px solid rgba(201, 169, 98, 0.55);
+      box-shadow: 0 6px 28px rgba(22, 56, 40, 0.1);
+    }
+    body.login-mode .bismillah-crown { display: block; }
+    .bismillah-crown .bismillah-hero {
+      font-family: var(--font-display);
+      font-size: clamp(1.35rem, 5.5vw, 1.95rem);
+      font-weight: 700;
+      color: var(--emerald-dark);
+      margin: 0 0 8px;
+      line-height: 1.7;
+      letter-spacing: 0.02em;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    }
+    .bismillah-crown .header-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 0 0 8px;
+      color: var(--gold);
+      font-size: 0.7em;
+    }
+    .bismillah-crown .header-ornament span {
+      flex: 1;
+      max-width: 56px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .bismillah-crown .org-link {
+      font-size: 0.78em;
+      padding: 7px 14px;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(12px); }
@@ -394,13 +460,9 @@
 
     .login-footer { display: none; }
 
-    /* ── ترويسة الدخول: بسم الله ثم الموقع ── */
-    .login-brand-header {
-      width: 100%;
-      max-width: 440px;
-      text-align: center;
-      margin-bottom: 4px;
-    }
+    /* ── ترويسة الدخول (داخل المحتوى — احتياطي) ── */
+    .login-brand-header { display: none; }
+
     .bismillah-hero {
       font-family: var(--font-display);
       font-size: clamp(1.65rem, 7vw, 2.15rem);
@@ -457,10 +519,20 @@
     /* ── Login screen ── */
     #login-screen {
       justify-content: flex-start;
-      padding: max(20px, env(safe-area-inset-top)) 20px max(32px, env(safe-area-inset-bottom));
+      padding: calc(var(--bismillah-crown-h, 118px) + 8px) 16px max(40px, env(safe-area-inset-bottom));
       text-align: center;
-      gap: 16px;
+      gap: 14px;
       width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    @media (min-width: 768px) {
+      #login-screen {
+        max-width: 520px;
+      }
+      .bismillah-crown .bismillah-hero {
+        font-size: 2rem;
+      }
     }
     #login-screen .card { animation: cardPop 0.5s ease 0.1s both; }
     @keyframes cardPop {
@@ -477,7 +549,10 @@
     /* ── Welcome screen ── */
     #welcome {
       justify-content: flex-start;
-      padding: calc(var(--app-header-h) + 12px) 16px max(48px, env(safe-area-inset-bottom));
+      padding: calc(var(--app-header-h) + 12px) 16px max(56px, env(safe-area-inset-bottom));
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto;
     }
     .play-zone {
       width: 100%;
@@ -1316,10 +1391,12 @@
     /* ── Secondary screens ── */
     .page-screen {
       background: var(--cream);
-      padding: calc(var(--app-header-h) + 8px) 16px max(48px, env(safe-area-inset-bottom));
+      padding: calc(var(--app-header-h) + 12px) 16px max(56px, env(safe-area-inset-bottom));
       width: 100%;
       justify-content: flex-start;
       min-height: auto;
+      max-width: 720px;
+      margin: 0 auto;
     }
     .page-screen .card { max-width: 500px; }
 
@@ -2522,6 +2599,23 @@
       margin: 4px 0;
     }
 
+    .btn, .tab-btn, .ans-btn, .book-btn, .level-btn, .topbar-btn, .close-btn, .icon-action {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: rgba(42, 92, 69, 0.12);
+    }
+    .btn, .tab-btn, .ans-btn {
+      min-height: 48px;
+    }
+    @media (max-width: 480px) {
+      .login-hero { width: 100%; padding: 0 4px; }
+      .card { padding: 20px 16px; border-radius: var(--radius-lg); }
+      .logo-img { max-width: 120px; max-height: 96px; }
+      .brand-title { font-size: 1.45em; }
+      .book-select-row { gap: 8px; }
+      .book-btn { min-height: 88px; padding: 12px 8px; font-size: 0.75em; }
+      .nav-dock { padding: 10px 6px; }
+      .nav-dock .icon-action-circle { width: 46px; height: 46px; }
+    }
     /* إخفاء زخارف عائمة داخل الشاشات المزدحمة */
     body.game-mode .float-deco,
     body.game-mode .glow-orb { display: none; }
@@ -2536,6 +2630,13 @@
   <div class="float-deco" style="top:35%;left:10%;animation-delay:4s;">🌙</div>
   <div class="glow-orb gold"></div>
   <div class="glow-orb emerald"></div>
+
+  <!-- بسم الله — ثابت أعلى شاشة الدخول -->
+  <div class="bismillah-crown" id="bismillah-crown" aria-label="بسم الله الرحمن الرحيم">
+    <p class="bismillah-hero">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+    <div class="header-ornament"><span></span>✦<span></span></div>
+    <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-link">🌐 موقع جمعية الهدى والحكمة ↗</a>
+  </div>
 
   <!-- شريط علوي — يختفي في الدخول واللعب -->
   <header class="app-topbar">
@@ -2602,11 +2703,6 @@
 
   <!-- ═══════════ LOGIN ═══════════ -->
   <div id="login-screen" class="screen active">
-    <header class="login-brand-header">
-      <p class="bismillah-hero">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-      <div class="header-ornament"><span></span>✦<span></span></div>
-      <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-link">🌐 موقع جمعية الهدى والحكمة ↗</a>
-    </header>
     <div class="login-hero">
       <div class="logo-wrap">
         <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img">
@@ -3687,6 +3783,13 @@ function refreshQuestions() {
   setTimeout(() => { btn.textContent = 'ابدأ اللعبة'; }, 2000);
 }
 
+function updateBismillahPadding() {
+  const crown = document.getElementById('bismillah-crown');
+  if (!crown) return;
+  const h = crown.offsetHeight || 118;
+  document.documentElement.style.setProperty('--bismillah-crown-h', h + 'px');
+}
+
 /* ── Navigation ── */
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -3694,6 +3797,8 @@ function show(id) {
   document.body.classList.toggle('login-mode', id === 'login-screen');
   document.body.classList.toggle('game-mode', id === 'game');
   document.body.classList.toggle('immersive-mode', id === 'game' || id === 'results' || id === 'gameover');
+  document.body.style.overflow = '';
+  updateBismillahPadding();
   window.scrollTo(0, 0);
 }
 
@@ -4362,6 +4467,8 @@ async function restoreSession() {
 <script src="platform.js"></script>
 <script>
 (async function boot() {
+  updateBismillahPadding();
+  window.addEventListener('resize', updateBismillahPadding, { passive: true });
   await loadQuestions();
   const qCount = (QUESTIONS.tawheed?.length||0) + (QUESTIONS.usool?.length||0) + (QUESTIONS.nawawi?.length||0);
   if (qCount > 0) document.getElementById('login-hint').textContent = '📚 ' + qCount + ' سؤال في انتظارك!';
