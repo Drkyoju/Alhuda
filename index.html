@@ -3363,7 +3363,7 @@ function buildDemoQuestions() {
 }
 
 function escapeHtml(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 function getLevelInfo(xp) {
   let lvl = LEVELS[0];
@@ -3809,6 +3809,26 @@ function getAllQuestions(book) {
   return [];
 }
 
+function resolveQuestionsByIds(ids) {
+  const map = new Map();
+  for (const q of getAllQuestions('merge3')) {
+    if (q?.id) map.set(q.id, q);
+  }
+  return (ids || []).map((id) => map.get(id)).filter(Boolean);
+}
+
+function parseChallengePayload(raw) {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw;
+  if (raw.v >= 2 && Array.isArray(raw.ids) && raw.ids.length) {
+    return resolveQuestionsByIds(raw.ids);
+  }
+  if (Array.isArray(raw.ids) && raw.ids.length) {
+    return resolveQuestionsByIds(raw.ids);
+  }
+  return [];
+}
+
 function getQuestionsForGame() {
   const pool = getOrderedPool(state.book, state.level);
   if (!pool.length) return [];
@@ -3925,6 +3945,10 @@ function setLoginTab(t) {
 
 async function doLogin() {
   document.getElementById('login-err').textContent = '';
+  const btn = document.getElementById('btn-login');
+  const btnLabel = btn?.textContent || 'دخول 🎮';
+  if (btn) { btn.disabled = true; btn.textContent = 'جاري الدخول...'; }
+  try {
   if (loginTab === 'student') {
     const name = document.getElementById('login-name').value.trim();
     const pin = document.getElementById('login-pin').value.trim();
@@ -3936,7 +3960,12 @@ async function doLogin() {
       if (typeof showToast === 'function') showToast('تعذّر الدخول — تحقق من الاسم والرمز', 'err');
       return;
     }
-    await db.from('profiles').upsert({ id: data.user.id, name, role: 'student' });
+    const { data: existing } = await db.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
+    if (existing) {
+      await db.from('profiles').update({ name }).eq('id', data.user.id);
+    } else {
+      await db.from('profiles').upsert({ id: data.user.id, name, role: 'student' });
+    }
     state.user = data.user; state.userType = 'student'; state.userName = name; state.userEmail = '';
     localStorage.setItem('savedName', name);
     if (typeof trackEvent === 'function') trackEvent('login', { role: 'student' });
@@ -3955,12 +3984,19 @@ async function doLogin() {
     const { data, error } = await db.auth.signInWithPassword({ email, password:pass });
     if (error) { document.getElementById('login-err').textContent = 'بيانات غير صحيحة'; return; }
     const { data:profile } = await db.from('profiles').select('*').eq('id', data.user.id).single();
-    if (!profile || profile.role !== 'teacher') { document.getElementById('login-err').textContent = 'لستَ/ِ معلم/ة'; return; }
+    if (!profile || profile.role !== 'teacher') {
+      await db.auth.signOut();
+      document.getElementById('login-err').textContent = 'لستَ/ِ معلم/ة';
+      return;
+    }
     state.user = data.user; state.userType = 'teacher'; state.userName = profile.name;
     state.userEmail = email;
     localStorage.setItem('savedEmail', email);
     await db.from('profiles').upsert({ id:data.user.id, name:profile.name, email, role:'teacher' });
     goHome();
+  }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
   }
 }
 
@@ -4285,11 +4321,14 @@ async function endGame() {
 
   if (state.user && !isTraining) {
     const qFrom = parseInt(document.getElementById('q-from-input').value, 10) || 1;
-    await db.from('scores').insert({
+    const { error: scoreErr } = await db.from('scores').insert({
       user_id: state.user.id, book: state.book, level: state.level,
       sub_level: qFrom, score: state.score, correct: state.correct, total: state.total,
       played_at: new Date().toISOString()
     });
+    if (scoreErr && typeof showToast === 'function') {
+      showToast('تعذّر حفظ النتيجة — تحقق من الاتصال', 'err');
+    }
   }
   if (state.challengeMode && !isTraining) saveChallengeResult();
   const chLbBtn = document.getElementById('btn-ch-result-lb');
@@ -4507,7 +4546,17 @@ async function createChallenge() {
   state.challengeCode = code;
   state.challengeMode = true;
   localStorage.setItem('ch_q_' + code, JSON.stringify(questions));
-  const { error } = await db.from('challenges').upsert({ code, questions, created_by: state.user?.id || null });
+  const fromEl = document.getElementById('q-from-input');
+  const toEl = document.getElementById('q-to-input');
+  const payload = {
+    v: 2,
+    ids: questions.map((q) => q.id).filter(Boolean),
+    book: state.book,
+    level: state.level,
+    q_from: parseInt(fromEl?.value, 10) || 1,
+    q_to: parseInt(toEl?.value, 10) || questions.length,
+  };
+  const { error } = await db.from('challenges').upsert({ code, questions: payload, created_by: state.user?.id || null });
   let copyNote = '';
   try {
     await navigator.clipboard.writeText(code);
@@ -4524,9 +4573,13 @@ async function joinChallenge() {
   const code = document.getElementById('challenge-code').value.trim().toUpperCase();
   if (!code) { document.getElementById('challenge-msg').textContent = '❌ أدخل/ي رمز التحدي'; return; }
   let qs = JSON.parse(localStorage.getItem('ch_q_' + code) || 'null');
-  if (!qs) {
+  if (!qs?.length) {
+    if (!state.user) {
+      document.getElementById('challenge-msg').textContent = '❌ سجّل/ي دخولك أولاً للانضمام لتحدي من جهاز آخر';
+      return;
+    }
     const { data } = await db.from('challenges').select('questions').eq('code', code).maybeSingle();
-    qs = data?.questions || null;
+    qs = parseChallengePayload(data?.questions);
   }
   if (!qs?.length) { document.getElementById('challenge-msg').textContent = '❌ رمز غير صالح أو منتهي'; return; }
   state.challengeCode = code;
@@ -4553,17 +4606,20 @@ async function saveChallengeResult() {
   const list = JSON.parse(localStorage.getItem(key) || '[]');
   list.push(entry);
   localStorage.setItem(key, JSON.stringify(list.slice(-50)));
+  if (!state.user?.id) return;
   try {
     const { error } = await db.from('challenge_results').insert({
       code: state.challengeCode,
       user_name: entry.name,
-      user_id: entry.user_id,
+      user_id: state.user.id,
       score: entry.score,
       correct: entry.correct,
       total: entry.total,
     });
-    if (error) console.warn('challenge_results:', error.message);
-  } catch (e) {}
+    if (error && typeof showToast === 'function') showToast('تعذّر حفظ نتيجة التحدي', 'err');
+  } catch (e) {
+    if (typeof showToast === 'function') showToast('تعذّر حفظ نتيجة التحدي', 'err');
+  }
 }
 function openAdmin() {
   if (state.userType !== 'teacher') return;
@@ -4613,9 +4669,9 @@ async function restoreSession() {
   });
 })();
 </script>
-<script src="auth.js?v=5"></script>
-<script src="enhancements.js?v=2"></script>
-<script src="platform.js?v=2"></script>
+<script src="auth.js?v=6"></script>
+<script src="enhancements.js?v=3"></script>
+<script src="platform.js?v=3"></script>
 <script>
 (async function boot() {
   updateBismillahPadding();

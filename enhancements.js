@@ -2,6 +2,15 @@
 (function () {
   let toastTimer;
 
+  function escapeHtml(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   function showToast(message, type) {
     let el = document.getElementById('app-toast');
     if (!el) {
@@ -37,7 +46,10 @@
   }
 
   function syncBottomNav(screenId) {
-    const hide = ['login-screen', 'game', 'results', 'gameover', 'countdown-overlay', 'demo-intro'];
+    const hide = [
+      'login-screen', 'game', 'results', 'gameover', 'countdown-overlay', 'demo-intro',
+      'review-screen', 'feedback-screen', 'challenge-leaderboard-screen', 'onboarding-overlay',
+    ];
     const immersive = hide.includes(screenId);
     setBottomNavVisible(!immersive && !!state?.user);
     const map = {
@@ -45,6 +57,7 @@
       'leaderboard-screen': 'rank',
       'profile-screen': 'profile',
       'challenge-screen': 'challenge',
+      'challenge-leaderboard-screen': 'challenge',
       admin: 'admin',
     };
     setBottomNavActive(map[screenId] || 'home');
@@ -100,7 +113,7 @@
 
     list.innerHTML = ranked.map((r, i) => {
       const isYou = state?.userName && (r.user_name === state.userName || r.name === state.userName);
-      const name = (r.user_name || r.name || 'مجهول').replace(/</g, '&lt;');
+      const name = escapeHtml(r.user_name || r.name || 'مجهول');
       return `<div class="ch-lb-row${isYou ? ' you' : ''}">
         <span class="ch-lb-rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</span>
         <span class="ch-lb-name">${name}${isYou ? ' (أنت)' : ''}</span>
@@ -111,7 +124,7 @@
 
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
-    navigator.serviceWorker.register('./service-worker.js?v=4').catch(() => {});
+    navigator.serviceWorker.register('./service-worker.js?v=8').catch(() => {});
   }
 
   function initEnhancements() {

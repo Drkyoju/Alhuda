@@ -100,5 +100,4 @@
   }
 
   window.studentSignIn = studentSignIn;
-  window.studentCredentials = (name, pin) => studentCredentials(name, pin, DOMAINS[0]);
 })();

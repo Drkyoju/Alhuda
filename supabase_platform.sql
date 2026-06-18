@@ -78,6 +78,9 @@ security definer
 set search_path = public
 as $$
 begin
+  if auth.uid() is null then
+    raise exception 'not authenticated';
+  end if;
   insert into question_stats (question_id, correct_count, wrong_count)
   values (qid, case when was_correct then 1 else 0 end, case when was_correct then 0 else 1 end)
   on conflict (question_id) do update set
@@ -87,7 +90,7 @@ begin
 end;
 $$;
 
-grant execute on function increment_question_stat(uuid, boolean) to anon, authenticated;
+grant execute on function increment_question_stat(uuid, boolean) to authenticated;
 
 -- ═══ دالة تسجيل خطأ الطالب/ة (زيادة العداد) ═══
 create or replace function record_user_wrong(uid uuid, qid uuid)
@@ -97,6 +100,9 @@ security definer
 set search_path = public
 as $$
 begin
+  if auth.uid() is null or uid is distinct from auth.uid() then
+    raise exception 'not allowed';
+  end if;
   insert into user_wrong_questions (user_id, question_id, wrong_count, last_wrong_at)
   values (uid, qid, 1, now())
   on conflict (user_id, question_id) do update set
@@ -105,7 +111,7 @@ begin
 end;
 $$;
 
-grant execute on function record_user_wrong(uuid, uuid) to anon, authenticated;
+grant execute on function record_user_wrong(uuid, uuid) to authenticated;
 
 -- ═══ RLS ═══
 alter table classes enable row level security;
@@ -118,7 +124,9 @@ alter table homework_completions enable row level security;
 
 -- classes
 drop policy if exists "Anyone read classes by code" on classes;
-create policy "Anyone read classes by code" on classes for select using (true);
+drop policy if exists "Authenticated read classes" on classes;
+create policy "Authenticated read classes" on classes for select
+  using (auth.uid() is not null);
 drop policy if exists "Teachers manage own classes" on classes;
 create policy "Teachers manage own classes" on classes for all
   using (teacher_id = auth.uid())

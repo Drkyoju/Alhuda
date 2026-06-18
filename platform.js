@@ -12,7 +12,8 @@
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   }
 
   function getProgressExt() {
@@ -98,14 +99,17 @@
       if (!BOOK_KEYS.includes(b)) continue;
       const row = p.bookProgress[b];
       try {
-        await db.from('book_progress').upsert({
+        const { error } = await db.from('book_progress').upsert({
           user_id: state.user.id,
           book: b,
           answered: row.answered,
           correct: row.correct,
           updated_at: new Date().toISOString(),
         });
-      } catch (e) {}
+        if (error && typeof showToast === 'function') showToast('تعذّر حفظ التقدّم', 'err');
+      } catch (e) {
+        if (typeof showToast === 'function') showToast('تعذّر حفظ التقدّم', 'err');
+      }
     }
   }
 
@@ -667,14 +671,17 @@
   }
 
   async function onGameEndHook() {
-    if (state.homeworkId && state.user && !trainingMode) {
-      await db.from('homework_completions').upsert({
+    if (state.homeworkId && state.user && !trainingMode && (state.correct > 0 || state.score > 0)) {
+      const { error } = await db.from('homework_completions').upsert({
         homework_id: state.homeworkId,
         user_id: state.user.id,
         score: state.score,
         correct: state.correct,
         total: state.total,
       }, { onConflict: 'homework_id,user_id' });
+      if (error && typeof showToast === 'function') showToast('تعذّر تسجيل إكمال الواجب', 'err');
+      state.homeworkId = null;
+    } else if (state.homeworkId) {
       state.homeworkId = null;
     }
     recordGameHistory({

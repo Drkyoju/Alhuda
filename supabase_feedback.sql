@@ -13,9 +13,11 @@ create table if not exists feedback (
 
 alter table feedback enable row level security;
 
-create policy "Anyone can insert feedback"
+drop policy if exists "Anyone can insert feedback" on feedback;
+drop policy if exists "Authenticated insert feedback" on feedback;
+create policy "Authenticated insert feedback"
   on feedback for insert
-  with check (true);
+  with check (auth.uid() is not null);
 
 drop policy if exists "Teachers can read feedback" on feedback;
 create policy "Teachers can read feedback"
