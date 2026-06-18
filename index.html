@@ -3838,6 +3838,12 @@ function goHome() {
   state.challengeMode = false;
   state.challengeCode = '';
   state.demoMode = false;
+  trainingMode = false;
+  const trainingBtn = document.getElementById('training-btn');
+  if (trainingBtn) {
+    trainingBtn.textContent = '🏋️ وضع التدريب';
+    trainingBtn.classList.remove('btn-green');
+  }
   const icon = state.userType === 'teacher' ? '👨‍🏫' : '🎓';
   const role = state.userType === 'teacher' ? 'معلم/ة' : 'متعلم/ة';
   document.getElementById('welcome-user').textContent = icon + ' ' + role + ' · ' + state.userName;
@@ -3852,9 +3858,14 @@ function goHome() {
 }
 
 function logout() {
-  db.auth.signOut();
+  const wasTeacher = state.userType === 'teacher';
+  if (wasTeacher) db.auth.signOut();
   state.user = null; state.userType = ''; state.userName = '';
+  state.homeworkId = null;
   state.challengeMode = false;
+  state.challengeCode = '';
+  state.demoMode = false;
+  trainingMode = false;
   updateTopbarStats();
   show('login-screen');
   setLoginTab('student');
@@ -3875,10 +3886,17 @@ async function doLogin() {
   if (loginTab === 'student') {
     const name = document.getElementById('login-name').value.trim();
     if (!name) { document.getElementById('login-err').textContent = 'اكتب/ي اسمك من فضلك'; return; }
-    const { data, error } = await db.auth.signInAnonymously();
-    if (error) { document.getElementById('login-err').textContent = 'خطأ في الاتصال'; return; }
-    await db.from('profiles').upsert({ id:data.user.id, name, role:'student' });
-    state.user = data.user; state.userType = 'student'; state.userName = name; state.userEmail = '';
+    let authUser;
+    const { data: { session } } = await db.auth.getSession();
+    if (session?.user) {
+      authUser = session.user;
+    } else {
+      const { data, error } = await db.auth.signInAnonymously();
+      if (error) { document.getElementById('login-err').textContent = 'خطأ في الاتصال'; return; }
+      authUser = data.user;
+    }
+    await db.from('profiles').upsert({ id: authUser.id, name, role:'student' });
+    state.user = authUser; state.userType = 'student'; state.userName = name; state.userEmail = '';
     localStorage.setItem('savedName', name);
     if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
     if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
@@ -4226,7 +4244,8 @@ async function endGame() {
     const qFrom = parseInt(document.getElementById('q-from-input').value, 10) || 1;
     await db.from('scores').insert({
       user_id: state.user.id, book: state.book, level: state.level,
-      sub_level: qFrom, score: state.score, correct: state.correct, total: state.total
+      sub_level: qFrom, score: state.score, correct: state.correct, total: state.total,
+      played_at: new Date().toISOString()
     });
   }
   if (state.challengeMode && !isTraining) saveChallengeResult();
@@ -4488,7 +4507,7 @@ async function saveChallengeResult() {
   list.push(entry);
   localStorage.setItem(key, JSON.stringify(list.slice(-50)));
   try {
-    await db.from('challenge_results').insert({
+    const { error } = await db.from('challenge_results').insert({
       code: state.challengeCode,
       user_name: entry.name,
       user_id: entry.user_id,
@@ -4496,6 +4515,7 @@ async function saveChallengeResult() {
       correct: entry.correct,
       total: entry.total,
     });
+    if (error) console.warn('challenge_results:', error.message);
   } catch (e) {}
 }
 function openAdmin() {
