@@ -89,6 +89,24 @@ $$;
 
 grant execute on function increment_question_stat(uuid, boolean) to anon, authenticated;
 
+-- ═══ دالة تسجيل خطأ الطالب/ة (زيادة العداد) ═══
+create or replace function record_user_wrong(uid uuid, qid uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  insert into user_wrong_questions (user_id, question_id, wrong_count, last_wrong_at)
+  values (uid, qid, 1, now())
+  on conflict (user_id, question_id) do update set
+    wrong_count = user_wrong_questions.wrong_count + 1,
+    last_wrong_at = now();
+end;
+$$;
+
+grant execute on function record_user_wrong(uuid, uuid) to anon, authenticated;
+
 -- ═══ RLS ═══
 alter table classes enable row level security;
 alter table class_members enable row level security;
@@ -108,7 +126,14 @@ create policy "Teachers manage own classes" on classes for all
 
 -- class_members
 drop policy if exists "Users read class members" on class_members;
-create policy "Users read class members" on class_members for select using (true);
+create policy "Users read class members" on class_members for select
+  using (
+    user_id = auth.uid()
+    or exists (
+      select 1 from classes c
+      where c.id = class_members.class_id and c.teacher_id = auth.uid()
+    )
+  );
 drop policy if exists "Students join class" on class_members;
 create policy "Students join class" on class_members for insert
   with check (user_id = auth.uid());

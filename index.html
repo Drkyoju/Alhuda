@@ -92,9 +92,8 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     html {
-      height: auto;
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
+      height: 100%;
+      overflow: hidden;
     }
 
     body {
@@ -103,7 +102,7 @@
       background-attachment: fixed;
       min-height: 100vh;
       min-height: 100dvh;
-      height: auto;
+      height: 100%;
       direction: rtl;
       overflow-x: hidden;
       overflow-y: auto;
@@ -177,7 +176,7 @@
       right: 0;
       z-index: 2100;
       text-align: center;
-      padding: max(20px, calc(env(safe-area-inset-top, 0px) + 12px)) 48px 14px;
+      padding: max(12px, calc(env(safe-area-inset-top, 0px) + 8px)) 48px 10px;
       background: linear-gradient(180deg, #FFFBF5 0%, #F8F3EA 100%);
       border-bottom: 2px solid rgba(201, 169, 98, 0.55);
       box-shadow: 0 6px 28px rgba(22, 56, 40, 0.1);
@@ -3103,11 +3102,19 @@
         <div id="question-editor-list" style="margin-top:10px;max-height:200px;overflow-y:auto;"></div>
         <div id="question-editor-form" class="q-edit-form" style="display:none;margin-top:14px;">
           <textarea class="feedback-textarea" id="q-edit-text" rows="2" placeholder="نص السؤال"></textarea>
-          <input class="input" id="q-edit-opt0" placeholder="خيار ١">
-          <input class="input" id="q-edit-opt1" placeholder="خيار ٢">
-          <input class="input" id="q-edit-opt2" placeholder="خيار ٣">
-          <input class="input" id="q-edit-opt3" placeholder="خيار ٤">
-          <input class="input" id="q-edit-correct" type="number" min="0" max="3" placeholder="رقم الإجابة الصحيحة (0-3)">
+          <div id="q-edit-mc-fields">
+            <input class="input" id="q-edit-opt0" placeholder="خيار ١">
+            <input class="input" id="q-edit-opt1" placeholder="خيار ٢">
+            <input class="input" id="q-edit-opt2" placeholder="خيار ٣">
+            <input class="input" id="q-edit-opt3" placeholder="خيار ٤">
+            <input class="input" id="q-edit-correct" type="number" min="0" max="3" placeholder="رقم الإجابة الصحيحة (0-3)">
+          </div>
+          <div id="q-edit-tf-fields" style="display:none;">
+            <select class="input" id="q-edit-tf">
+              <option value="true">الإجابة الصحيحة: صح ✓</option>
+              <option value="false">الإجابة الصحيحة: خطأ ✗</option>
+            </select>
+          </div>
           <textarea class="feedback-textarea" id="q-edit-exp" rows="2" placeholder="الشرح"></textarea>
           <button class="btn btn-green btn-sm" style="width:100%;" onclick="saveQuestionEdit()">💾 حفظ التعديل</button>
           <p id="q-edit-msg" style="font-size:0.8em;margin-top:6px;font-weight:800;"></p>
@@ -3386,11 +3393,20 @@ function updateBookProgress() {
   }
 }
 function updateDailyMission() {
+  if (window.AlhudaPlatform?.updateDailyMissionUI) {
+    AlhudaPlatform.updateDailyMissionUI();
+    return;
+  }
   const p = ensureProgress();
   const el = document.getElementById('daily-mission');
   if (!el) return;
   const today = new Date().toISOString().slice(0, 10);
-  const done = p.lastPlayDate === today;
+  if (p.dailyMissionDate !== today) {
+    p.dailyMissionDate = today;
+    p.dailyMissionDone = false;
+    saveProgress(p);
+  }
+  const done = !!p.dailyMissionDone;
   el.classList.toggle('done', done);
   el.querySelector('.dm-icon').textContent = done ? '🏆' : '🎯';
   el.querySelector('.dm-sub').textContent = done ? 'عد/ي غداً لمهمة جديدة ✨' : 'أكمِل/ي جولة واحدة على الأقل';
@@ -3716,7 +3732,17 @@ async function loadQuestions() {
     data = res.data;
     error = res.error;
   }
-  if (error) { console.error(error); return; }
+  if (error) {
+    console.error(error);
+    const hint = document.getElementById('login-hint');
+    if (hint) hint.textContent = '⚠️ تعذّر تحميل الأسئلة — تحقق من الاتصال';
+    return;
+  }
+  if (!data?.length) {
+    const hint = document.getElementById('login-hint');
+    if (hint) hint.textContent = '⚠️ لا توجد أسئلة في قاعدة البيانات';
+    return;
+  }
   const fmt = { tawheed:[], usool:[], nawawi:[] };
   data.forEach(q => {
     if (!fmt[q.book]) return;
@@ -3808,6 +3834,10 @@ function updateWelcomeStats() {
 }
 
 function goHome() {
+  state.homeworkId = null;
+  state.challengeMode = false;
+  state.challengeCode = '';
+  state.demoMode = false;
   const icon = state.userType === 'teacher' ? '👨‍🏫' : '🎓';
   const role = state.userType === 'teacher' ? 'معلم/ة' : 'متعلم/ة';
   document.getElementById('welcome-user').textContent = icon + ' ' + role + ' · ' + state.userName;
@@ -3850,6 +3880,8 @@ async function doLogin() {
     await db.from('profiles').upsert({ id:data.user.id, name, role:'student' });
     state.user = data.user; state.userType = 'student'; state.userName = name; state.userEmail = '';
     localStorage.setItem('savedName', name);
+    if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
+    if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
     if (!localStorage.getItem('demoDone')) {
       pendingLoginAfterDemo = false;
       showDemoIntro(name);
@@ -4054,8 +4086,14 @@ function pick(btn, isOk) {
     fb.className = 'feedback show bad';
     document.getElementById('fb-icon').textContent = '🤔';
     document.getElementById('fb-title').textContent = `${n}، إجابة خاطئة — راجع/يها لاحقاً في «مراجعة الأخطاء»`;
-    selfBox.style.display = 'none';
-    expEl.textContent = trainingMode ? 'وضع التدريب: اضغط/ي «إظهار الإجابة» إن أردتَ/ِ.' : '';
+    if (trainingMode) {
+      selfBox.style.display = 'block';
+      selfBox.innerHTML = '<p style="font-size:0.85em;margin-bottom:8px;color:var(--text-soft);">وضع التدريب — لا يُحسب ضدك</p><button type="button" class="btn btn-blue btn-sm" style="width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة والشرح</button>';
+      expEl.textContent = '';
+    } else {
+      selfBox.style.display = 'none';
+      expEl.textContent = '';
+    }
     document.getElementById('show-answer-btn').style.display = trainingMode ? 'block' : 'none';
   }
 }
@@ -4130,25 +4168,34 @@ function revealAnswer() {
 async function endGame() {
   if (state.demoMode) { endDemo(); return; }
   const pct = state.correct / Math.max(1, state.total);
-  localStorage.setItem('lastStats', JSON.stringify({ score: state.score, streak: state.maxStreak }));
+  const isTraining = trainingMode;
 
-  const p = ensureProgress();
-  p.totalGames = (p.totalGames || 0) + 1;
-  p.totalCorrect = (p.totalCorrect || 0) + state.correct;
-  if (state.maxStreak > (p.bestStreak || 0)) p.bestStreak = state.maxStreak;
-  if (state.score > (p.bestScore || 0)) p.bestScore = state.score;
-  if (pct >= 0.5 && !trainingMode && !state.demoMode) {
-    unlockBadge('stage_clear');
+  if (!isTraining) {
+    localStorage.setItem('lastStats', JSON.stringify({ score: state.score, streak: state.maxStreak }));
+
+    const p = ensureProgress();
+    p.totalGames = (p.totalGames || 0) + 1;
+    p.totalCorrect = (p.totalCorrect || 0) + state.correct;
+    if (state.maxStreak > (p.bestStreak || 0)) p.bestStreak = state.maxStreak;
+    if (state.score > (p.bestScore || 0)) p.bestScore = state.score;
+    if (pct >= 0.5 && !state.demoMode) {
+      unlockBadge('stage_clear');
+    }
+    saveProgress(p);
+    updateDailyStreak();
   }
-  saveProgress(p);
-  updateDailyStreak();
 
-  const xpGain = Math.round(state.score * 0.5 + state.correct * 5 + (pct >= 0.7 ? 20 : 0));
-  lastGameXp = xpGain;
-  awardXP(xpGain);
-  checkBadges({ score: state.score, correct: state.correct, total: state.total, maxStreak: state.maxStreak });
+  let xpGain = 0;
+  if (!isTraining) {
+    xpGain = Math.round(state.score * 0.5 + state.correct * 5 + (pct >= 0.7 ? 20 : 0));
+    lastGameXp = xpGain;
+    awardXP(xpGain);
+    checkBadges({ score: state.score, correct: state.correct, total: state.total, maxStreak: state.maxStreak });
+  } else {
+    lastGameXp = 0;
+  }
 
-  if (state.hearts <= 0) {
+  if (state.hearts <= 0 && !isTraining) {
     document.getElementById('go-score').textContent = state.score;
     document.getElementById('go-cor').textContent = state.correct;
     document.getElementById('go-wr').textContent = state.wrong;
@@ -4156,30 +4203,34 @@ async function endGame() {
     show('gameover');
   } else {
     const stars = renderStars(pct);
-    document.getElementById('res-icon').textContent = stars === 3 ? '🏆' : stars >= 2 ? '🎉' : '📚';
-    document.getElementById('res-title').textContent = stars === 3 ? 'مذهلة!' : stars >= 2 ? 'أحسنت!' : 'جيد!';
-    document.getElementById('res-sub').textContent = stars === 3 ? 'نتيجة ذهبية! أنت بطل/ة! 🌟' : stars >= 2 ? 'نتيجة رائعة! واصل/ي التعلّم 🌟' : 'واصل/ي المحاولة، أنت قادر/ة! 💪';
+    document.getElementById('res-icon').textContent = isTraining ? '🏋️' : (stars === 3 ? '🏆' : stars >= 2 ? '🎉' : '📚');
+    document.getElementById('res-title').textContent = isTraining ? 'انتهى التدريب' : (stars === 3 ? 'مذهلة!' : stars >= 2 ? 'أحسنت!' : 'جيد!');
+    document.getElementById('res-sub').textContent = isTraining ? 'وضع التدريب — لا يُحسب في النقاط أو اللوحة' : (stars === 3 ? 'نتيجة ذهبية! أنت بطل/ة! 🌟' : stars >= 2 ? 'نتيجة رائعة! واصل/ي التعلّم 🌟' : 'واصل/ي المحاولة، أنت قادر/ة! 💪');
     document.getElementById('fin-score').textContent = state.score;
     document.getElementById('fin-correct').textContent = state.correct + '/' + state.total;
     document.getElementById('fin-streak').textContent = state.maxStreak;
     const xpEl = document.getElementById('res-xp-earned');
-    xpEl.style.display = 'inline-block';
-    xpEl.textContent = '+' + xpGain + ' نقطة خبرة ✨';
-    if (stars >= 2) launchConfetti();
-    if (stars === 3) playSound('achievement');
+    if (isTraining) {
+      xpEl.style.display = 'none';
+    } else {
+      xpEl.style.display = 'inline-block';
+      xpEl.textContent = '+' + xpGain + ' نقطة خبرة ✨';
+    }
+    if (!isTraining && stars >= 2) launchConfetti();
+    if (!isTraining && stars === 3) playSound('achievement');
     updateReviewButtons();
     show('results');
   }
 
-  if (state.user) {
+  if (state.user && !isTraining) {
     const qFrom = parseInt(document.getElementById('q-from-input').value, 10) || 1;
     await db.from('scores').insert({
       user_id: state.user.id, book: state.book, level: state.level,
       sub_level: qFrom, score: state.score, correct: state.correct, total: state.total
     });
   }
-  if (state.challengeMode) saveChallengeResult();
-  if (window.AlhudaPlatform?.onGameEndHook) AlhudaPlatform.onGameEndHook();
+  if (state.challengeMode && !isTraining) saveChallengeResult();
+  if (window.AlhudaPlatform?.onGameEndHook) await AlhudaPlatform.onGameEndHook();
   state.challengeMode = false;
 }
 
@@ -4297,7 +4348,7 @@ function renderLeaderboardList(ranked, nameMap) {
   list.innerHTML = rankHtml + ranked.slice(0, 30).map((s, i) => {
     const isYou = state.user && s.user_id === state.user.id;
     const name = nameMap[s.user_id] || 'مجهول';
-    return `<div class="lb-row ${i===0?'top1':i===1?'top2':i===2?'top3':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${name}${isYou?' (أنت)':''}</span><span class="lb-score">⭐${s.score}</span></div>`;
+    return `<div class="lb-row ${i===0?'top1':i===1?'top2':i===2?'top3':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${escapeHtml(name)}${isYou?' (أنت)':''}</span><span class="lb-score">⭐${s.score}</span></div>`;
   }).join('');
 }
 
@@ -4361,7 +4412,7 @@ async function showProfile() {
   badgesHtml += '</div>';
   document.getElementById('profile-content').innerHTML = `
     <div class="profile-hero">${avatar}</div>
-    <h3 style="text-align:center;margin-bottom:4px;">${state.userName}</h3>
+    <h3 style="text-align:center;margin-bottom:4px;">${escapeHtml(state.userName)}</h3>
     <p style="text-align:center;color:var(--emerald);font-weight:800;font-size:0.9em;">${info.title}</p>
     <p style="text-align:center;color:var(--text-soft);font-size:0.85em;">${state.userType==='teacher'?'معلم/ة':'متعلم/ة'} · 🔥 ${p.dailyStreak||0} يوم متتالي</p>
     <div class="profile-stat-row">
@@ -4416,9 +4467,37 @@ async function joinChallenge() {
   state.challengeMode = true;
   state.questions = qs;
   state.total = qs.length;
-  document.getElementById('challenge-msg').textContent = '✅ تم الدخول! اضغط/ي «ابدأ اللعبة» في الرئيسية.';
+  state.homeworkId = null;
+  state.demoMode = false;
+  trainingMode = false;
+  document.getElementById('challenge-msg').textContent = '✅ تم الدخول — جاري البدء...';
+  startGame();
 }
-function saveChallengeResult() {}
+async function saveChallengeResult() {
+  if (!state.challengeCode) return;
+  const entry = {
+    name: state.userName || 'مجهول',
+    user_id: state.user?.id || null,
+    score: state.score,
+    correct: state.correct,
+    total: state.total,
+    at: new Date().toISOString(),
+  };
+  const key = 'ch_results_' + state.challengeCode;
+  const list = JSON.parse(localStorage.getItem(key) || '[]');
+  list.push(entry);
+  localStorage.setItem(key, JSON.stringify(list.slice(-50)));
+  try {
+    await db.from('challenge_results').insert({
+      code: state.challengeCode,
+      user_name: entry.name,
+      user_id: entry.user_id,
+      score: entry.score,
+      correct: entry.correct,
+      total: entry.total,
+    });
+  } catch (e) {}
+}
 function openAdmin() {
   if (state.userType !== 'teacher') return;
   if (window.AlhudaPlatform?.openAdmin) AlhudaPlatform.openAdmin();
@@ -4434,6 +4513,8 @@ async function restoreSession() {
   state.userType = profile.role;
   state.userName = profile.name || localStorage.getItem('savedName') || DEFAULT_PLAYER;
   state.userEmail = profile.role === 'teacher' ? (localStorage.getItem('savedEmail') || '') : '';
+  if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
+  if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
   if (profile.role === 'teacher') {
     setLoginTab('teacher');
     goHome();

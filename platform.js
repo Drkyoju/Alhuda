@@ -26,7 +26,6 @@
       className: '',
       dailyMissionDate: '',
       dailyMissionDone: false,
-      onboardingDone: false,
       ...base,
     };
   }
@@ -59,7 +58,7 @@
   }
 
   async function recordQuestionAttempt(questionId, wasCorrect) {
-    if (!questionId || state.demoMode) return;
+    if (!questionId || state.demoMode || trainingMode) return;
     try {
       await db.rpc('increment_question_stat', { qid: questionId, was_correct: wasCorrect });
     } catch (e) {
@@ -71,11 +70,15 @@
     if (p.wrongQuestionIds.length > 80) p.wrongQuestionIds = p.wrongQuestionIds.slice(-80);
     saveProgressExt(p);
     try {
-      await db.from('user_wrong_questions').upsert(
-        { user_id: state.user.id, question_id: questionId, wrong_count: 1, last_wrong_at: new Date().toISOString() },
-        { onConflict: 'user_id,question_id', ignoreDuplicates: false }
-      );
-    } catch (e) {}
+      await db.rpc('record_user_wrong', { uid: state.user.id, qid: questionId });
+    } catch (e) {
+      try {
+        await db.from('user_wrong_questions').upsert(
+          { user_id: state.user.id, question_id: questionId, wrong_count: 1, last_wrong_at: new Date().toISOString() },
+          { onConflict: 'user_id,question_id', ignoreDuplicates: false }
+        );
+      } catch (e2) {}
+    }
   }
 
   async function syncBookProgress(gameBook, correct, total) {
@@ -151,9 +154,12 @@
       p.dailyMissionDone = false;
       saveProgressExt(p);
     }
-    const books = BOOK_KEYS.map((b) => BOOK_LABELS_LOCAL[b].split(' ').pop()).join(' / ');
-    if (sub) sub.textContent = `أكمِل/ي ١٠ أسئلة من أي كتاب (${books})`;
+    if (sub) sub.textContent = p.dailyMissionDone ? 'عد/ي غداً لمهمة جديدة ✨' : 'أكمِل/ي جولة واحدة على الأقل';
     if (check) check.textContent = p.dailyMissionDone ? '✓' : '0/1';
+    const icon = el?.querySelector('.dm-icon');
+    const title = el?.querySelector('.dm-title');
+    if (icon) icon.textContent = p.dailyMissionDone ? '🏆' : '🎯';
+    if (title) title.textContent = p.dailyMissionDone ? 'أتممتَ/ِ مهمة اليوم!' : 'مهمة اليوم';
     if (el) el.classList.toggle('done', !!p.dailyMissionDone);
   }
 
@@ -190,7 +196,14 @@
       if (msg) msg.textContent = '❌ رمز غير صحيح';
       return;
     }
-    await db.from('class_members').upsert({ class_id: cls.id, user_id: state.user.id }, { onConflict: 'class_id,user_id' });
+    const { error: joinErr } = await db.from('class_members').upsert(
+      { class_id: cls.id, user_id: state.user.id },
+      { onConflict: 'class_id,user_id' }
+    );
+    if (joinErr) {
+      if (msg) msg.textContent = '❌ تعذّر الانضمام: ' + joinErr.message;
+      return;
+    }
     const p = ensureProgressExt();
     p.classId = cls.id;
     p.classCode = cls.code;
@@ -303,15 +316,23 @@
     }).join('');
   }
 
-  window.startHomework = function startHomework(hwId) {
-    db.from('homework').select('*').eq('id', hwId).single().then(({ data: h }) => {
-      if (!h) return;
+  window.startHomework = async function startHomework(hwId) {
+    try {
+      const { data: h, error } = await db.from('homework').select('*').eq('id', hwId).single();
+      if (error || !h) {
+        alert('❌ تعذّر تحميل الواجب');
+        return;
+      }
       selectBook(h.book);
       selectLevel(h.level || 'easy');
       const pool = getOrderedPool(h.book, h.level || 'easy');
       const from = Math.max(1, h.q_from || 1);
       const to = Math.min(pool.length, h.q_to || pool.length);
       state.questions = pool.slice(from - 1, to);
+      if (!state.questions.length) {
+        alert('❌ لا توجد أسئلة في نطاق هذا الواجب');
+        return;
+      }
       state.homeworkId = h.id;
       state.idx = 0;
       state.score = 0;
@@ -325,9 +346,12 @@
       state.wrongLog = [];
       state.demoMode = false;
       state.challengeMode = false;
+      state.challengeCode = '';
       show('game');
       renderQ();
-    });
+    } catch (e) {
+      alert('❌ تعذّر بدء الواجب');
+    }
   };
 
   function showCertificate(book) {
@@ -335,11 +359,12 @@
     const prog = p.bookProgress[book] || { answered: 0, correct: 0 };
     const total = (QUESTIONS[book] || []).length;
     const pct = total ? Math.round((prog.answered / total) * 100) : 0;
-    if (pct < 50) {
-      alert('أكمِل/ي ٥٠٪ على الأقل من ' + BOOK_LABELS_LOCAL[book] + ' للحصول على الشهادة');
+    const acc = prog.answered ? Math.round((prog.correct / prog.answered) * 100) : 0;
+    if (pct < 50 || acc < 70) {
+      alert('للحصول على الشهادة: أكمِل/ي ٥٠٪ من ' + BOOK_LABELS_LOCAL[book] + ' بدقة ٧٠٪ على الأقل (حالياً: ' + pct + '% تغطية، ' + acc + '% دقة)');
       return;
     }
-    const text = `شهادة إتمام\n\nيشهد مركز المكتبة الثلاثية — جمعية الهدى والحكمة\nأن الطالب/ة: ${state.userName}\nأتم/ت مراجعة ${pct}% من ${BOOK_LABELS_LOCAL[book]}\nبتاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\nبارك الله فيك/ِ`;
+    const text = `شهادة إتمام\n\nيشهد مركز المكتبة الثلاثية — جمعية الهدى والحكمة\nأن الطالب/ة: ${state.userName}\nأتم/ت ${pct}% من ${BOOK_LABELS_LOCAL[book]} بدقة ${acc}%\nبتاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\nبارك الله فيك/ِ`;
     const w = window.open('', '_blank');
     if (w) {
       w.document.write(`<html dir="rtl"><body style="font-family:Tajawal,sans-serif;text-align:center;padding:40px"><pre style="font-size:18px;line-height:1.8">${esc(text)}</pre></body></html>`);
@@ -402,7 +427,7 @@
     const userIds = [...new Set(members.map((m) => m.user_id))];
     const [{ data: profiles }, { data: scores }] = await Promise.all([
       db.from('profiles').select('id,name').in('id', userIds),
-      db.from('scores').select('user_id,score,correct,total,book,created_at').in('user_id', userIds).order('created_at', { ascending: false }),
+      db.from('scores').select('user_id,score,correct,total,book,played_at').in('user_id', userIds).order('played_at', { ascending: false }),
     ]);
     const nameMap = Object.fromEntries((profiles || []).map((p) => [p.id, p.name]));
     const classMap = Object.fromEntries(classes.map((c) => [c.id, c.name]));
@@ -415,7 +440,7 @@
       if (!u) continue;
       u.games++;
       u.best = Math.max(u.best, s.score || 0);
-      if (!u.last) u.last = (s.created_at || '').slice(0, 10);
+      if (!u.last) u.last = (s.played_at || '').slice(0, 10);
     }
     let html = '<div class="teacher-table-wrap"><table class="teacher-table"><thead><tr><th>الاسم</th><th>الصف</th><th>ألعاب</th><th>أفضل نتيجة</th><th>آخر لعب</th></tr></thead><tbody>';
     for (const [uid, info] of Object.entries(byUser)) {
@@ -486,12 +511,24 @@
     form.dataset.id = id;
     document.getElementById('q-edit-text').value = q.q;
     document.getElementById('q-edit-exp').value = q.exp || '';
-    if (q.type === 'mc' && q.a) {
-      document.getElementById('q-edit-opt0').value = q.a[0] || '';
-      document.getElementById('q-edit-opt1').value = q.a[1] || '';
-      document.getElementById('q-edit-opt2').value = q.a[2] || '';
-      document.getElementById('q-edit-opt3').value = q.a[3] || '';
-      document.getElementById('q-edit-correct').value = String(q.c ?? 0);
+    form.dataset.type = q.type || 'mc';
+    const mcFields = document.getElementById('q-edit-mc-fields');
+    const tfFields = document.getElementById('q-edit-tf-fields');
+    if (q.type === 'tf') {
+      if (mcFields) mcFields.style.display = 'none';
+      if (tfFields) tfFields.style.display = 'block';
+      const tfEl = document.getElementById('q-edit-tf');
+      if (tfEl) tfEl.value = q.tf ? 'true' : 'false';
+    } else {
+      if (mcFields) mcFields.style.display = 'block';
+      if (tfFields) tfFields.style.display = 'none';
+      if (q.a) {
+        document.getElementById('q-edit-opt0').value = q.a[0] || '';
+        document.getElementById('q-edit-opt1').value = q.a[1] || '';
+        document.getElementById('q-edit-opt2').value = q.a[2] || '';
+        document.getElementById('q-edit-opt3').value = q.a[3] || '';
+        document.getElementById('q-edit-correct').value = String(q.c ?? 0);
+      }
     }
     document.getElementById('q-edit-msg').textContent = '';
   }
@@ -500,17 +537,22 @@
     const form = document.getElementById('question-editor-form');
     const id = form?.dataset.id;
     if (!id) return;
+    const qType = form.dataset.type || findQuestionById(id)?.type || 'mc';
     const payload = {
       question_text: document.getElementById('q-edit-text').value.trim(),
       explanation: document.getElementById('q-edit-exp').value.trim(),
-      options: [
+    };
+    if (qType === 'tf') {
+      payload.is_true = document.getElementById('q-edit-tf')?.value === 'true';
+    } else {
+      payload.options = [
         document.getElementById('q-edit-opt0').value.trim(),
         document.getElementById('q-edit-opt1').value.trim(),
         document.getElementById('q-edit-opt2').value.trim(),
         document.getElementById('q-edit-opt3').value.trim(),
-      ],
-      correct_index: parseInt(document.getElementById('q-edit-correct').value, 10) || 0,
-    };
+      ];
+      payload.correct_index = parseInt(document.getElementById('q-edit-correct').value, 10) || 0;
+    }
     const { error } = await db.from('questions').update(payload).eq('id', id);
     const msg = document.getElementById('q-edit-msg');
     if (error) {
@@ -518,6 +560,7 @@
       return;
     }
     if (msg) msg.textContent = '✅ تم الحفظ';
+    sessionStorage.removeItem('questionsCacheV1');
     await loadQuestions();
     updateLevelCounts();
     updateQuestionRangeUI();
@@ -532,6 +575,10 @@
     const qTo = parseInt(document.getElementById('hw-to')?.value, 10) || 20;
     const due = document.getElementById('hw-due')?.value || null;
     const msg = document.getElementById('hw-create-msg');
+    if (!classId) {
+      if (msg) msg.textContent = '❌ اختر/ي صفاً أولاً';
+      return;
+    }
     const { error } = await db.from('homework').insert({
       class_id: classId,
       teacher_id: state.user?.id,
@@ -580,8 +627,39 @@
     if (mistakeBtn) mistakeBtn.style.display = (p.wrongQuestionIds?.length && state.userType !== 'teacher') ? 'inline-flex' : 'none';
   }
 
-  function onGameEndHook() {
-    if (state.homeworkId && state.user) {
+  async function syncUserClassFromDb() {
+    if (!state.user || state.userType === 'teacher') return;
+    try {
+      const { data: members } = await db.from('class_members').select('class_id').eq('user_id', state.user.id).limit(1);
+      const classId = members?.[0]?.class_id;
+      if (!classId) return;
+      const { data: cls } = await db.from('classes').select('id,name,code').eq('id', classId).single();
+      if (!cls) return;
+      const p = ensureProgressExt();
+      p.classId = cls.id;
+      p.classCode = cls.code;
+      p.className = cls.name;
+      saveProgressExt(p);
+    } catch (e) {}
+  }
+
+  async function syncWrongQuestionsFromDb() {
+    if (!state.user) return;
+    try {
+      const { data } = await db.from('user_wrong_questions')
+        .select('question_id')
+        .eq('user_id', state.user.id)
+        .order('last_wrong_at', { ascending: false })
+        .limit(80);
+      if (!data?.length) return;
+      const p = ensureProgressExt();
+      p.wrongQuestionIds = [...new Set([...data.map((r) => r.question_id), ...(p.wrongQuestionIds || [])])].slice(-80);
+      saveProgressExt(p);
+    } catch (e) {}
+  }
+
+  async function onGameEndHook() {
+    if (state.homeworkId && state.user && !trainingMode) {
       await db.from('homework_completions').upsert({
         homework_id: state.homeworkId,
         user_id: state.user.id,
@@ -600,7 +678,9 @@
       training: trainingMode,
       at: new Date().toISOString(),
     });
-    syncBookProgress(state.book, state.correct, state.total);
+    if (!trainingMode && !state.demoMode) {
+      await syncBookProgress(state.book, state.correct, state.total);
+    }
   }
 
   async function loadQuestionsCached() {
@@ -634,6 +714,9 @@
       enhanceProfileHtml,
       showOnboardingIfNeeded,
       loadQuestionsCached,
+      updateDailyMissionUI,
+      syncUserClassFromDb,
+      syncWrongQuestionsFromDb,
       openAdmin: () => {
         show('admin');
         switchAdminTab('students');

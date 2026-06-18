@@ -17,6 +17,12 @@ create policy "Anyone can insert feedback"
   on feedback for insert
   with check (true);
 
+drop policy if exists "Teachers can read feedback" on feedback;
 create policy "Teachers can read feedback"
   on feedback for select
-  using (true);
+  using (
+    exists (
+      select 1 from profiles p
+      where p.id = auth.uid() and p.role = 'teacher'
+    )
+  );
