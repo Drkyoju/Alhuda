@@ -1,4 +1,4 @@
-const CACHE = 'alhuda-v5';
+const CACHE = 'alhuda-v6';
 const ASSETS = [
   './',
   './index.html',
