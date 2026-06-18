@@ -1279,8 +1279,63 @@
       z-index: 100;
     }
     .admin-body { max-width: 760px; margin: 0 auto; padding: 20px 16px; width: 100%; }
-
-    /* ── Countdown ── */
+    .admin-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .admin-tab {
+      flex: 1; min-width: 72px; padding: 8px 6px; border-radius: 10px; border: 2px solid var(--border);
+      background: var(--white); font-family: inherit; font-weight: 800; font-size: 0.72em; cursor: pointer;
+    }
+    .admin-tab.active { background: var(--emerald); color: white; border-color: var(--emerald); }
+    .admin-panel { display: none; }
+    .admin-panel.active { display: block; }
+    .admin-list-item {
+      padding: 10px 12px; border-radius: 12px; background: var(--cream); margin-bottom: 8px;
+      border: 1px solid var(--border); font-size: 0.82em; line-height: 1.5;
+    }
+    .admin-list-item strong { display: block; margin-bottom: 4px; }
+    .teacher-table-wrap { overflow-x: auto; }
+    .teacher-table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
+    .teacher-table th, .teacher-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: right; }
+    .teacher-table th { color: var(--emerald-dark); font-weight: 900; }
+    .book-progress-grid { display: grid; gap: 10px; margin-bottom: 14px; }
+    .book-progress-item {
+      background: var(--white); border: 1px solid var(--border-gold); border-radius: 14px; padding: 12px;
+    }
+    .bp-head { display: flex; justify-content: space-between; font-weight: 800; font-size: 0.82em; margin-bottom: 6px; }
+    .bp-bar { height: 8px; background: var(--emerald-light); border-radius: 8px; overflow: hidden; }
+    .bp-fill { height: 100%; background: linear-gradient(90deg, var(--emerald), var(--gold)); border-radius: 8px; }
+    .bp-meta { font-size: 0.72em; color: var(--text-soft); margin-top: 4px; font-weight: 700; }
+    .class-join-row {
+      display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center;
+      background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 12px;
+    }
+    .class-join-row input { flex: 1; min-width: 120px; }
+    .class-banner, .homework-banner {
+      background: linear-gradient(135deg, var(--teal-soft), var(--gold-glow));
+      border: 1px solid var(--border-gold); border-radius: 14px; padding: 12px; margin-bottom: 12px; font-size: 0.85em; font-weight: 700;
+    }
+    .homework-banner .hw-item { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--border); }
+    .homework-banner .hw-item:last-child { border: none; margin: 0; padding: 0; }
+    .extra-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; }
+    .extra-actions .btn { flex: 1; min-width: 140px; }
+    .hist-list { list-style: none; padding: 0; margin: 0; font-size: 0.82em; color: var(--text-soft); }
+    .hist-list li { padding: 6px 0; border-bottom: 1px solid var(--border); }
+    .cert-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+    .q-edit-form .input, .q-edit-form textarea { margin-bottom: 8px; }
+    #onboarding-overlay {
+      display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(22,56,40,0.92);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    #onboarding-overlay.open { display: flex; }
+    .onb-card {
+      background: var(--white); border-radius: 20px; padding: 28px 22px; max-width: 380px; width: 100%;
+      text-align: center; border: 2px solid var(--gold);
+    }
+    .onb-slide { display: none; }
+    .onb-slide.active { display: block; }
+    .onb-icon { font-size: 3em; margin-bottom: 12px; }
+    .onb-dots { display: flex; gap: 6px; justify-content: center; margin: 16px 0; }
+    .onb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+    .onb-dot.on { background: var(--emerald); }
     #countdown-overlay {
       display: none;
       position: fixed;
@@ -2120,6 +2175,30 @@
     </div>
   </div>
 
+  <!-- Onboarding -->
+  <div id="onboarding-overlay">
+    <div class="onb-card">
+      <div class="onb-slide active">
+        <div class="onb-icon">📚</div>
+        <h3>مرحباً في المكتبة الثلاثية</h3>
+        <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">اختار/ي كتاباً، حدّد/ي مستوى الصعوبة، والعب/ي!</p>
+      </div>
+      <div class="onb-slide">
+        <div class="onb-icon">🏅</div>
+        <h3>اجمع/ي نقاطاً وشارات</h3>
+        <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">كل إجابة صحيحة تقرّبك من المستوى التالي</p>
+      </div>
+      <div class="onb-slide">
+        <div class="onb-icon">🏫</div>
+        <h3>انضم/ي لصفك</h3>
+        <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">اطلب/ي رمز الصف من معلم/تك وادخل/ي من الشاشة الرئيسية</p>
+      </div>
+      <div class="onb-dots"><span class="onb-dot on"></span><span class="onb-dot"></span><span class="onb-dot"></span></div>
+      <button class="btn btn-gold btn-xl" onclick="onboardingNext()">التالي</button>
+      <button class="btn btn-sm btn-white" onclick="closeOnboarding()" style="margin-top:8px;width:100%;">تخطي</button>
+    </div>
+  </div>
+
   <!-- ═══════════ LOGIN ═══════════ -->
   <div id="login-screen" class="screen active">
     <div class="login-hero">
@@ -2229,6 +2308,23 @@
           <div class="dm-sub">أكمِل/ي جولة واحدة على الأقل</div>
         </div>
         <div class="dm-check">0/1</div>
+      </div>
+
+      <div id="class-banner" class="class-banner" style="display:none;"></div>
+      <div id="homework-banner" class="homework-banner" style="display:none;"></div>
+
+      <div class="section-label">📈 تقدّمك في الكتب</div>
+      <div class="book-progress-grid" id="book-progress-grid"></div>
+
+      <div class="class-join-row" id="class-join-row" style="display:none;">
+        <input type="text" class="input" id="class-code-input" placeholder="رمز الصف (مثل CLS...)">
+        <button class="btn btn-green btn-sm" onclick="joinClass()">انضم/ي للصف</button>
+      </div>
+      <p id="class-join-msg" style="font-size:0.8em;color:var(--emerald);font-weight:800;margin:-6px 0 10px;"></p>
+
+      <div class="extra-actions">
+        <button class="btn btn-white btn-sm" id="btn-mistakes" style="display:none;" onclick="startMistakeReview()">🔁 كرّر أخطائي</button>
+        <button class="btn btn-white btn-sm" onclick="startExamReview()">📝 مراجعة شاملة</button>
       </div>
 
       <div class="daily-banner" id="daily-banner">
@@ -2443,17 +2539,86 @@
     </div>
   </div>
 
-  <!-- ═══════════ ADMIN ═══════════ -->
+  <!-- ═══════════ ADMIN / TEACHER ═══════════ -->
   <div id="admin" class="screen">
     <div class="admin-header">
-      <h2 style="font-size:1em;font-weight:900;">⚙️ إدارة الأسئلة</h2>
+      <h2 style="font-size:1em;font-weight:900;">👨‍🏫 لوحة المعلم/ة</h2>
       <button onclick="goHome()" style="background:rgba(255,255,255,.2);border:none;color:white;padding:8px 16px;border-radius:10px;font-size:0.85em;font-family:'Tajawal',sans-serif;cursor:pointer;font-weight:700;">← رجوع</button>
     </div>
     <div class="admin-body">
-      <div class="card">
-        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img sm" style="margin:0 auto 12px;display:block;">
-        <h3 style="text-align:center;margin-bottom:8px;">لوحة المعلم/ة</h3>
-        <p style="color:var(--text-soft);line-height:1.6;text-align:center;font-size:0.88em;margin-bottom:14px;">إدارة الأسئلة من Supabase — وعرض آراء المتعلمين المحفوظة</p>
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="students" onclick="switchAdminTab('students')">👥 الطلاب</button>
+        <button class="admin-tab" data-tab="classes" onclick="switchAdminTab('classes')">🏫 الصفوف</button>
+        <button class="admin-tab" data-tab="homework" onclick="switchAdminTab('homework')">📋 واجبات</button>
+        <button class="admin-tab" data-tab="questions" onclick="switchAdminTab('questions')">✏️ أسئلة</button>
+        <button class="admin-tab" data-tab="stats" onclick="switchAdminTab('stats')">📊 إحصائيات</button>
+        <button class="admin-tab" data-tab="feedback" onclick="switchAdminTab('feedback')">💬 آراء</button>
+      </div>
+
+      <div id="admin-tab-students" class="admin-panel active card">
+        <h3 style="margin-bottom:10px;">متابعة الطلاب</h3>
+        <p style="color:var(--text-soft);font-size:0.85em;margin-bottom:12px;">الطلاب المنضمون لصفوفك ونتائجهم</p>
+        <div id="teacher-students-list"></div>
+      </div>
+
+      <div id="admin-tab-classes" class="admin-panel card">
+        <h3 style="margin-bottom:10px;">إنشاء صف</h3>
+        <input type="text" class="input" id="new-class-name" placeholder="اسم الصف (مثل: أصول — مجموعة أ)">
+        <button class="btn btn-green btn-sm" style="width:100%;margin-top:8px;" onclick="createClass()">➕ إنشاء صف ورمز</button>
+        <p id="class-create-msg" style="font-size:0.8em;margin-top:8px;font-weight:800;"></p>
+        <h4 style="margin:16px 0 8px;">صفوفك</h4>
+        <div id="teacher-classes-list"></div>
+      </div>
+
+      <div id="admin-tab-homework" class="admin-panel card">
+        <h3 style="margin-bottom:10px;">إرسال واجب</h3>
+        <select class="input" id="hw-class-select"></select>
+        <input type="text" class="input" id="hw-title" placeholder="عنوان الواجب" style="margin-top:8px;">
+        <select class="input" id="hw-book" style="margin-top:8px;">
+          <option value="tawheed">كتاب التوحيد</option>
+          <option value="usool">الأصول الثلاثة</option>
+          <option value="nawawi">الأربعون النووية</option>
+        </select>
+        <select class="input" id="hw-level" style="margin-top:8px;">
+          <option value="easy">سهل</option>
+          <option value="medium">متوسط</option>
+          <option value="hard">صعب</option>
+          <option value="all">الكل</option>
+        </select>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <input type="number" class="input" id="hw-from" placeholder="من سؤال" value="1" min="1">
+          <input type="number" class="input" id="hw-to" placeholder="إلى سؤال" value="20" min="1">
+        </div>
+        <input type="date" class="input" id="hw-due" style="margin-top:8px;">
+        <button class="btn btn-gold btn-sm" style="width:100%;margin-top:10px;" onclick="createHomework()">إرسال الواجب</button>
+        <p id="hw-create-msg" style="font-size:0.8em;margin-top:8px;font-weight:800;"></p>
+      </div>
+
+      <div id="admin-tab-questions" class="admin-panel card">
+        <h3 style="margin-bottom:10px;">تعديل سؤال</h3>
+        <input type="text" class="input" id="q-edit-search" placeholder="بحث في نص السؤال..." oninput="loadQuestionEditorList()">
+        <div id="question-editor-list" style="margin-top:10px;max-height:200px;overflow-y:auto;"></div>
+        <div id="question-editor-form" class="q-edit-form" style="display:none;margin-top:14px;">
+          <textarea class="feedback-textarea" id="q-edit-text" rows="2" placeholder="نص السؤال"></textarea>
+          <input class="input" id="q-edit-opt0" placeholder="خيار ١">
+          <input class="input" id="q-edit-opt1" placeholder="خيار ٢">
+          <input class="input" id="q-edit-opt2" placeholder="خيار ٣">
+          <input class="input" id="q-edit-opt3" placeholder="خيار ٤">
+          <input class="input" id="q-edit-correct" type="number" min="0" max="3" placeholder="رقم الإجابة الصحيحة (0-3)">
+          <textarea class="feedback-textarea" id="q-edit-exp" rows="2" placeholder="الشرح"></textarea>
+          <button class="btn btn-green btn-sm" style="width:100%;" onclick="saveQuestionEdit()">💾 حفظ التعديل</button>
+          <p id="q-edit-msg" style="font-size:0.8em;margin-top:6px;font-weight:800;"></p>
+        </div>
+      </div>
+
+      <div id="admin-tab-stats" class="admin-panel card">
+        <h3 style="margin-bottom:10px;">أصعب الأسئلة</h3>
+        <p style="color:var(--text-soft);font-size:0.85em;margin-bottom:10px;">الأسئلة الأكثر خطأً من الطلاب</p>
+        <div id="teacher-stats-list"></div>
+      </div>
+
+      <div id="admin-tab-feedback" class="admin-panel card">
+        <h3 style="margin-bottom:10px;">آراء المتعلمين</h3>
         <div class="admin-feedback-toolbar">
           <button class="btn btn-green btn-sm" onclick="showAdminFeedback()">🔄 تحديث الآراء</button>
           <button class="btn btn-white btn-sm" onclick="exportFeedbackCsv()">📥 تصدير CSV</button>
@@ -2496,7 +2661,7 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, wrongLog:[], reviewIdx:0, reviewReturn:'results' };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
 let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, pendingLoginAfterDemo = false;
 let lastFeedbackItems = [];
 
@@ -2550,7 +2715,7 @@ function saveProgress(p) {
   localStorage.setItem('playerProgress', JSON.stringify(p));
 }
 function getDefaultProgress() {
-  return { xp: 0, dailyStreak: 0, lastPlayDate: '', totalGames: 0, totalCorrect: 0, bestStreak: 0, bestScore: 0, completedStages: {}, badges: [] };
+  return { xp: 0, dailyStreak: 0, lastPlayDate: '', totalGames: 0, totalCorrect: 0, bestStreak: 0, bestScore: 0, completedStages: {}, badges: [], bookProgress: { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } }, wrongQuestionIds: [], gameHistory: [], classId: null, classCode: '', className: '', dailyMissionDate: '', dailyMissionDone: false };
 }
 function ensureProgress() {
   const p = { ...getDefaultProgress(), ...getProgress() };
@@ -3033,7 +3198,21 @@ function adjustFontSize(size) {
 
 /* ── Data ── */
 async function loadQuestions() {
-  const { data, error } = await db.from('questions').select('*').eq('language', 'ar');
+  let data;
+  let error;
+  if (window.AlhudaPlatform?.loadQuestionsCached) {
+    try {
+      data = await AlhudaPlatform.loadQuestionsCached();
+    } catch (e) {
+      const res = await db.from('questions').select('*').eq('language', 'ar');
+      data = res.data;
+      error = res.error;
+    }
+  } else {
+    const res = await db.from('questions').select('*').eq('language', 'ar');
+    data = res.data;
+    error = res.error;
+  }
   if (error) { console.error(error); return; }
   const fmt = { tawheed:[], usool:[], nawawi:[] };
   data.forEach(q => {
@@ -3123,6 +3302,7 @@ function goHome() {
   updateLevelCounts();
   updateQuestionRangeUI();
   updateWelcomeStats();
+  if (window.AlhudaPlatform?.onWelcomeHome) AlhudaPlatform.onWelcomeHome();
   show('welcome');
 }
 
@@ -3308,6 +3488,7 @@ function pick(btn, isOk) {
   const n = state.userName || DEFAULT_PLAYER;
   const expEl = document.getElementById('fb-exp');
   const selfBox = document.getElementById('fb-self-correct');
+  if (q?.id && typeof recordQuestionAttempt === 'function') recordQuestionAttempt(q.id, isOk);
 
   if (isOk) {
     btn.classList.add('correct');
@@ -3483,6 +3664,7 @@ async function endGame() {
     });
   }
   if (state.challengeMode) saveChallengeResult();
+  if (window.AlhudaPlatform?.onGameEndHook) AlhudaPlatform.onGameEndHook();
   state.challengeMode = false;
 }
 
@@ -3674,6 +3856,9 @@ async function showProfile() {
     </div>
     <p style="text-align:center;font-weight:900;color:var(--emerald-dark);margin-bottom:4px;">🏅 الإنجازات</p>
     ${badgesHtml}`;
+  if (window.AlhudaPlatform?.enhanceProfileHtml) {
+    document.getElementById('profile-content').innerHTML = AlhudaPlatform.enhanceProfileHtml(document.getElementById('profile-content').innerHTML);
+  }
   show('profile-screen');
 }
 
@@ -3719,7 +3904,11 @@ async function joinChallenge() {
   document.getElementById('challenge-msg').textContent = '✅ تم الدخول! اضغط/ي «ابدأ اللعبة» في الرئيسية.';
 }
 function saveChallengeResult() {}
-function openAdmin() { if (state.userType !== 'teacher') return; show('admin'); showAdminFeedback(); }
+function openAdmin() {
+  if (state.userType !== 'teacher') return;
+  if (window.AlhudaPlatform?.openAdmin) AlhudaPlatform.openAdmin();
+  else { show('admin'); showAdminFeedback(); }
+}
 
 async function restoreSession() {
   const { data: { session } } = await db.auth.getSession();
@@ -3759,15 +3948,24 @@ async function restoreSession() {
       if (e.key === 'Enter') doLogin();
     });
   });
+})();
+</script>
+<script src="platform.js"></script>
+<script>
+(async function boot() {
   await loadQuestions();
   const qCount = (QUESTIONS.tawheed?.length||0) + (QUESTIONS.usool?.length||0) + (QUESTIONS.nawawi?.length||0);
   if (qCount > 0) document.getElementById('login-hint').textContent = '📚 ' + qCount + ' سؤال في انتظارك!';
   updateLevelCounts();
   selectLevel('easy');
-  if (await restoreSession()) return;
+  if (await restoreSession()) {
+    if (window.AlhudaPlatform?.showOnboardingIfNeeded) AlhudaPlatform.showOnboardingIfNeeded();
+    return;
+  }
   show('login-screen');
   setLoginTab('student');
   updateTopbarStats();
+  if (window.AlhudaPlatform?.showOnboardingIfNeeded) AlhudaPlatform.showOnboardingIfNeeded();
 })();
 </script>
 </body>
