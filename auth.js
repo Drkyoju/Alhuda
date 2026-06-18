@@ -10,7 +10,7 @@
     const key = `alhuda|${String(name || '').trim()}|${String(pin || '').trim()}`;
     const id = hashKey(key);
     return {
-      email: `alhuda.student.${id}@test.com`,
+      email: `alhuda.student.${id}@example.com`,
       password: `Ah!${pin}#${id.slice(0, 14)}`,
     };
   }
@@ -40,8 +40,8 @@
       if (/rate limit|too many/i.test(res.error.message || '')) {
         return { error: { message: 'محاولات كثيرة — انتظر دقيقة وحاول مجدداً' } };
       }
-      if (/invalid.*email/i.test(res.error.message || '')) {
-        const alt = { ...creds, email: creds.email.replace('@test.com', '@example.com') };
+      if (/invalid/i.test(res.error.message || '')) {
+        const alt = { ...creds, email: creds.email.replace('@example.com', '@mailinator.com') };
         res = await trySignIn(alt);
       }
     }
