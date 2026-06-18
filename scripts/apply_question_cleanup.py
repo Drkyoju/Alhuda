@@ -3,16 +3,21 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DB_JSON = ROOT / "extracted" / "db_questions_live.json"
-QUIZ_HTML = Path("/Users/aibi/Downloads/quiz_app.html")
-URL = "https://smcyaqwxbmhshhhhdece.supabase.co/rest/v1/questions"
-KEY = "sb_publishable_4OhSsWwIfV4QxGRf1fujLA_TjE111eU"
+# Allow override via CLI arg or env var; fall back to a sibling of the project.
+QUIZ_HTML = Path(os.environ.get("QUIZ_HTML", sys.argv[1] if len(sys.argv) > 1 else ROOT / "quiz_app.html"))
+URL = os.environ.get("SUPABASE_URL", "https://smcyaqwxbmhshhhhdece.supabase.co") + "/rest/v1/questions"
+KEY = os.environ.get("SUPABASE_KEY")
+if not KEY:
+    sys.exit("ERROR: set SUPABASE_KEY (and optionally SUPABASE_URL) in the environment or a local .env file. Aborting.")
 
 BOOK_MAP = {
     "كتاب التوحيد": "tawheed",

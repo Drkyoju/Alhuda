@@ -1,5 +1,23 @@
+-- ═══════════════════════════════════════════════════════════════════════════
+-- ⚠️  DEPRECATED — DO NOT RUN AGAIN.
 -- Sync quiz_app.html -> Supabase questions
 -- Updates 24 | Adds 392 | Deletes 2 DB duplicates
+--
+-- KNOWN BUG (data loss): several UPDATE statements below target the same UUID
+-- with conflicting content. Only the last UPDATE per UUID survives; earlier
+-- ones are silently discarded. Confirmed collisions include (at least):
+--   - 00fb1757-a23c-46e3-a4dc-825537d500c3  (4 conflicting UPDATEs, lines 9,12,13,14)
+--   - 9ef7f53c-a9c8-4f0e-9057-fe16b630df14  (3 conflicting UPDATEs)
+--   - 8913f815-94e4-4e3c-b899-d09e92d717f8  (2 conflicting UPDATEs)
+--   - 3ba3317a-9fef-4994-9535-07520ea0fdc2  (2 conflicting UPDATEs)
+--
+-- If you have already run this script: those question rows now contain only
+-- the LAST value and the earlier intended values are LOST. To recover, see
+-- extracted/sync_report.json (if available) for the original intended
+-- payloads, then issue targeted UPDATE statements with fresh UUIDs.
+--
+-- This file is retained for historical/audit purposes only.
+-- ═══════════════════════════════════════════════════════════════════════════
 
 DELETE FROM questions WHERE id = '98fc34ed-2d28-44a4-8872-625b494797d6';
 DELETE FROM questions WHERE id = 'fa61abec-ccd9-4774-bf19-87b8c46418c4';

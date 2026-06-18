@@ -1,0 +1,6 @@
+# Python dependencies for the data-pipeline scripts.
+# The scripts themselves are stdlib-only; Pillow is only used by the
+# PWA-icon generation step (see README → PWA icons). If you don't regenerate
+# icons, you don't need any of these.
+
+Pillow>=10.0.0

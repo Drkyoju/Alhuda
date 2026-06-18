@@ -254,7 +254,6 @@ def is_publishable(q: dict) -> bool:
     if len(text) < 15:
         return False
     return True
-    return s.replace("'", "''")
 
 
 def main():

@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-QUIZ_HTML = Path("/Users/aibi/Downloads/quiz_app.html")
+QUIZ_HTML = Path(os.environ.get("QUIZ_HTML", sys.argv[1] if len(sys.argv) > 1 else ROOT / "quiz_app.html"))
 DB_JSON = ROOT / "extracted" / "db_questions.json"
 OUT_SQL = ROOT / "supabase_questions_sync.sql"
 OUT_REPORT = ROOT / "extracted" / "sync_report.json"

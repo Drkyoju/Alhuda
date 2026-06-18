@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 """Apply sync results to Supabase via REST API."""
 import json
+import os
+import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-URL = "https://smcyaqwxbmhshhhhdece.supabase.co/rest/v1/questions"
-KEY = "sb_publishable_4OhSsWwIfV4QxGRf1fujLA_TjE111eU"
+URL = os.environ.get("SUPABASE_URL", "https://smcyaqwxbmhshhhhdece.supabase.co") + "/rest/v1/questions"
+KEY = os.environ.get("SUPABASE_KEY")
+if not KEY:
+    sys.exit("ERROR: set SUPABASE_KEY (and optionally SUPABASE_URL) in the environment or a local .env file. Aborting.")
 HEADERS = {
     "apikey": KEY,
     "Authorization": f"Bearer {KEY}",

@@ -1,3 +1,50 @@
+# Python
 .venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+credentials*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node (if added later)
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build artifacts — question-bank JSON dumps are regenerable from Supabase
+# and may contain PII; do NOT track them. Keep the SQL outputs tracked.
 extracted/*_pages.json
 extracted/*.txt
+extracted/db_questions*.json
+extracted/new_questions.json
+extracted/pdf_questions_parsed.json
+extracted/coverage_report.json
+extracted/extraction_audit.json
+extracted/questions_arranged.json
+extracted/questions_fixes.json
+extracted/questions_missing_from_quiz.json
+extracted/questions_review.csv
+extracted/questions_to_add.json
+extracted/questions_to_update.json
+extracted/similar_pairs_review.json
+extracted/sync_report.json
+extracted/audit_report.json
+extracted/cleanup_apply_report.json

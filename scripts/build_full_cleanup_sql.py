@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DB_JSON = ROOT / "extracted" / "db_questions_live.json"
-QUIZ_HTML = Path("/Users/aibi/Downloads/quiz_app.html")
+QUIZ_HTML = Path(os.environ.get("QUIZ_HTML", sys.argv[1] if len(sys.argv) > 1 else ROOT / "quiz_app.html"))
 OUT_SQL = ROOT / "supabase_questions_full_cleanup.sql"
 
 BOOK_MAP = {

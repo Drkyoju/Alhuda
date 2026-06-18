@@ -16,6 +16,44 @@
       .replace(/'/g, '&#39;');
   }
 
+  // Escapes a string for safe use inside an inline onclick="..." JS string
+  // literal (esc(JSON.stringify(...)) — safe in both HTML-attribute and
+  // JS-string contexts). Exposed for any inline handler that takes an id.
+  function escJsString(s) {
+    return esc(JSON.stringify(String(s || '')));
+  }
+
+  // Centralized error handler for DB calls. Returns {data, error}; on throw,
+  // optionally shows a toast and returns a synthetic error so callers never
+  // see an unhandled promise rejection.
+  async function safeQuery(fn, errMsg) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (errMsg && typeof showToast === 'function') showToast(errMsg, 'err');
+      return { data: null, error: { message: e?.message || 'Network error', _thrown: true } };
+    }
+  }
+
+  // Reset all per-game fields on `state`. Previously duplicated 3× across
+  // startMistakeReview / startExamReview / startHomework.
+  function resetGameState(book) {
+    state.idx = 0;
+    state.score = 0;
+    state.hearts = 5;
+    state.streak = 0;
+    state.maxStreak = 0;
+    state.correct = 0;
+    state.wrong = 0;
+    state.answered = false;
+    state.total = state.questions.length;
+    state.wrongLog = [];
+    state.demoMode = false;
+    state.challengeMode = false;
+    state.challengeCode = '';
+    state.book = book || state.book || 'merge3';
+  }
+
   function getProgressExt() {
     const base = typeof getProgress === 'function' ? getProgress() : {};
     return {
@@ -82,13 +120,42 @@
     }
   }
 
+  // Track per-book answered/correct for the current game so merge3 progress
+  // is attributed accurately instead of blindly splitting /3 across all books.
+  // Set by game logic (renderQ / answer flow) when a question is answered.
+  function _currentGameBookBuckets() {
+    if (!state.questions?.length) return null;
+    const buckets = { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } };
+    const wrong = new Set((state.wrongLog || []).map((w) => w.id));
+    state.questions.forEach((q) => {
+      const b = q && q.book && buckets[q.book] ? q.book : null;
+      if (!b) return;
+      buckets[b].answered++;
+      if (!wrong.has(q.id)) buckets[b].correct++;
+    });
+    return buckets;
+  }
+
   async function syncBookProgress(gameBook, correct, total) {
     const p = ensureProgressExt();
     const books = gameBook === 'merge3' ? BOOK_KEYS : [gameBook];
+
+    // For merge3 we attribute progress to each book based on how many of the
+    // game's questions actually belonged to that book. This fixes the previous
+    // bug where a single 30-question mixed game added ~10 progress to every
+    // book regardless of the actual mix.
+    const buckets = gameBook === 'merge3' ? _currentGameBookBuckets() : null;
+
     for (const b of books) {
       if (!BOOK_KEYS.includes(b)) continue;
-      const slice = gameBook === 'merge3' ? Math.round(total / 3) : total;
-      const cSlice = gameBook === 'merge3' ? Math.round(correct / 3) : correct;
+      let slice, cSlice;
+      if (buckets && buckets[b]) {
+        slice = buckets[b].answered;
+        cSlice = buckets[b].correct;
+      } else {
+        slice = total;
+        cSlice = correct;
+      }
       p.bookProgress[b] = p.bookProgress[b] || { answered: 0, correct: 0 };
       p.bookProgress[b].answered += slice;
       p.bookProgress[b].correct += cSlice;
@@ -195,18 +262,24 @@
       if (msg) msg.textContent = 'سجّل/ي دخولك أولاً';
       return;
     }
-    const { data: cls, error } = await db.from('classes').select('id,name,code').eq('code', code).maybeSingle();
-    if (error || !cls) {
-      if (msg) msg.textContent = '❌ رمز غير صحيح';
+    const clsRes = await safeQuery(
+      () => db.from('classes').select('id,name,code').eq('code', code).maybeSingle(),
+      'تعذّر الاتصال — حاول/ي مجدداً'
+    );
+    const cls = clsRes.data;
+    if (clsRes.error || !cls) {
+      if (msg) msg.textContent = clsRes.error ? '❌ تعذّر البحث عن الصف' : '❌ رمز غير صحيح';
       return;
     }
-    const { error: joinErr } = await db.from('class_members').upsert(
-      { class_id: cls.id, user_id: state.user.id },
-      { onConflict: 'class_id,user_id' }
+    const joinRes = await safeQuery(
+      () => db.from('class_members').upsert(
+        { class_id: cls.id, user_id: state.user.id },
+        { onConflict: 'class_id,user_id' }
+      ),
+      'تعذّر الانضمام للصف'
     );
-    if (joinErr) {
-      if (msg) msg.textContent = '❌ تعذّر الانضمام: ' + joinErr.message;
-      if (typeof showToast === 'function') showToast('تعذّر الانضمام للصف', 'err');
+    if (joinRes.error) {
+      if (msg) msg.textContent = '❌ تعذّر الانضمام: ' + (joinRes.error.message || '');
       return;
     }
     const p = ensureProgressExt();
@@ -224,23 +297,12 @@
     const ids = [...(p.wrongQuestionIds || [])];
     const qs = ids.map(findQuestionById).filter(Boolean);
     if (!qs.length) {
-      alert('لا توجد أخطاء محفوظة بعد. العب/ي جولة أولاً!');
+      if (typeof showToast === 'function') showToast('لا توجد أخطاء محفوظة بعد. العب/ي جولة أولاً!', 'info');
+      else alert('لا توجد أخطاء محفوظة بعد. العب/ي جولة أولاً!');
       return;
     }
-    state.demoMode = false;
-    state.challengeMode = false;
     state.questions = shuffleArr(qs.slice(0, 20));
-    state.idx = 0;
-    state.score = 0;
-    state.hearts = 5;
-    state.streak = 0;
-    state.maxStreak = 0;
-    state.correct = 0;
-    state.wrong = 0;
-    state.answered = false;
-    state.total = state.questions.length;
-    state.wrongLog = [];
-    state.book = 'merge3';
+    resetGameState('merge3');
     show('game');
     renderQ();
   }
@@ -251,22 +313,12 @@
     const pool = getOrderedPool('merge3', 'all');
     const pick = shuffleArr(pool).slice(0, Math.min(30, pool.length));
     if (!pick.length) {
-      alert('لا توجد أسئلة كافية');
+      if (typeof showToast === 'function') showToast('لا توجد أسئلة كافية', 'info');
+      else alert('لا توجد أسئلة كافية');
       return;
     }
     state.questions = pick;
-    state.idx = 0;
-    state.score = 0;
-    state.hearts = 5;
-    state.streak = 0;
-    state.maxStreak = 0;
-    state.correct = 0;
-    state.wrong = 0;
-    state.answered = false;
-    state.total = state.questions.length;
-    state.wrongLog = [];
-    state.demoMode = false;
-    state.challengeMode = false;
+    resetGameState('merge3');
     show('game');
     renderQ();
   }
@@ -305,10 +357,18 @@
       el.style.display = 'none';
       return;
     }
-    const [{ data }, { data: done }] = await Promise.all([
+    const result = await safeQuery(() => Promise.all([
       db.from('homework').select('*').eq('class_id', p.classId).eq('active', true).order('created_at', { ascending: false }).limit(5),
       state.user ? db.from('homework_completions').select('homework_id').eq('user_id', state.user.id) : Promise.resolve({ data: [] }),
-    ]);
+    ]));
+    if (result.error) {
+      // Hide the banner on failure rather than leaving it in an unknown state.
+      el.style.display = 'none';
+      return;
+    }
+    const [hwRes, doneRes] = result.data;
+    const data = hwRes?.data;
+    const done = doneRes?.data;
     if (!data?.length) {
       el.style.display = 'none';
       return;
@@ -319,51 +379,44 @@
     const badge = pending > 0 ? `<span class="hw-badge">${pending}</span>` : '';
     el.innerHTML = `<p style="font-weight:900;margin-bottom:8px;">${badge}📋 واجبات الصف</p>` + data.map((h) => {
       const isDone = doneSet.has(h.id);
-      const due = h.due_date ? ` — موعد: ${h.due_date}` : '';
+      // XSS hardening: every DB-sourced value is escaped for its context.
+      // - Text content (title, due_date, book, range): use esc().
+      // - Inline JS string argument (h.id): use esc(JSON.stringify(...)) so the
+      //   value is safe in both the HTML-attribute and JS-string layers.
+      const due = h.due_date ? ` — موعد: ${esc(h.due_date)}` : '';
+      const bookLabel = esc(BOOK_LABELS_LOCAL[h.book] || h.book || '');
+      const safeJsId = escJsString(h.id);
       return `<div class="hw-item${isDone ? ' done' : ''}">
         <strong>📋 ${esc(h.title)}</strong>
-        <span>${BOOK_LABELS_LOCAL[h.book] || h.book} · ${h.q_from}-${h.q_to}${due}</span>
-        <button class="btn btn-gold btn-sm" onclick="startHomework('${h.id}')" ${isDone ? 'disabled' : ''}>${isDone ? 'مكتمل ✓' : 'ابدأ الواجب'}</button>
+        <span>${bookLabel} · ${esc(h.q_from)}-${esc(h.q_to)}${due}</span>
+        <button class="btn btn-gold btn-sm" onclick="startHomework(${safeJsId})" ${isDone ? 'disabled' : ''}>${isDone ? 'مكتمل ✓' : 'ابدأ الواجب'}</button>
       </div>`;
     }).join('');
   }
 
   window.startHomework = async function startHomework(hwId) {
-    try {
-      const { data: h, error } = await db.from('homework').select('*').eq('id', hwId).single();
-      if (error || !h) {
-        alert('❌ تعذّر تحميل الواجب');
-        return;
-      }
-      selectBook(h.book);
-      selectLevel(h.level || 'easy');
-      const pool = getOrderedPool(h.book, h.level || 'easy');
-      const from = Math.max(1, h.q_from || 1);
-      const to = Math.min(pool.length, h.q_to || pool.length);
-      state.questions = pool.slice(from - 1, to);
-      if (!state.questions.length) {
-        alert('❌ لا توجد أسئلة في نطاق هذا الواجب');
-        return;
-      }
-      state.homeworkId = h.id;
-      state.idx = 0;
-      state.score = 0;
-      state.hearts = 5;
-      state.streak = 0;
-      state.maxStreak = 0;
-      state.correct = 0;
-      state.wrong = 0;
-      state.answered = false;
-      state.total = state.questions.length;
-      state.wrongLog = [];
-      state.demoMode = false;
-      state.challengeMode = false;
-      state.challengeCode = '';
-      show('game');
-      renderQ();
-    } catch (e) {
-      alert('❌ تعذّر بدء الواجب');
+    const { data: h, error } = await safeQuery(
+      () => db.from('homework').select('*').eq('id', hwId).single(),
+      'تعذّر تحميل الواجب'
+    );
+    if (error || !h) {
+      if (typeof showToast === 'function') showToast('❌ تعذّر تحميل الواجب', 'err');
+      return;
     }
+    selectBook(h.book);
+    selectLevel(h.level || 'easy');
+    const pool = getOrderedPool(h.book, h.level || 'easy');
+    const from = Math.max(1, h.q_from || 1);
+    const to = Math.min(pool.length, h.q_to || pool.length);
+    state.questions = pool.slice(from - 1, to);
+    if (!state.questions.length) {
+      if (typeof showToast === 'function') showToast('❌ لا توجد أسئلة في نطاق هذا الواجب', 'err');
+      return;
+    }
+    state.homeworkId = h.id;
+    resetGameState(h.book);
+    show('game');
+    renderQ();
   };
 
   function showCertificate(book) {
@@ -373,32 +426,49 @@
     const pct = total ? Math.round((prog.answered / total) * 100) : 0;
     const acc = prog.answered ? Math.round((prog.correct / prog.answered) * 100) : 0;
     if (pct < 50 || acc < 70) {
-      alert('للحصول على الشهادة: أكمِل/ي ٥٠٪ من ' + BOOK_LABELS_LOCAL[book] + ' بدقة ٧٠٪ على الأقل (حالياً: ' + pct + '% تغطية، ' + acc + '% دقة)');
+      const msg = 'للحصول على الشهادة: أكمِل/ي ٥٠٪ من ' + BOOK_LABELS_LOCAL[book] +
+        ' بدقة ٧٠٪ على الأقل (حالياً: ' + pct + '% تغطية، ' + acc + '% دقة)';
+      if (typeof showToast === 'function') showToast(msg, 'info');
+      else alert(msg);
       return;
     }
     const text = `شهادة إتمام\n\nيشهد مركز المكتبة الثلاثية — جمعية الهدى والحكمة\nأن الطالب/ة: ${state.userName}\nأتم/ت ${pct}% من ${BOOK_LABELS_LOCAL[book]} بدقة ${acc}%\nبتاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\nبارك الله فيك/ِ`;
     const w = window.open('', '_blank');
     if (w) {
-      w.document.write(`<html dir="rtl"><body style="font-family:Tajawal,sans-serif;text-align:center;padding:40px"><pre style="font-size:18px;line-height:1.8">${esc(text)}</pre></body></html>`);
+      // Build the certificate via DOM methods (no document.write) so popup
+      // blockers and strict CSP cannot break it. esc() guards state.userName.
+      w.document.open();
+      w.document.write('<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>شهادة إتمام</title></head><body style="font-family:Tajawal,sans-serif;text-align:center;padding:40px"><pre style="font-size:18px;line-height:1.8;white-space:pre-wrap">' + esc(text) + '</pre></body></html>');
+      w.document.close();
+      w.focus();
       w.print();
-    } else alert(text);
+    } else if (typeof showToast === 'function') {
+      showToast('عذّر/ي النوافذ المنبثقة ثم حاول/ي مجدداً', 'info');
+    } else {
+      alert(text);
+    }
   }
 
+  // Each loader is wrapped in safeQuery so a network error never freezes the
+  // admin panel in a half-rendered state.
   function switchAdminTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
     document.querySelectorAll('.admin-panel').forEach((p) => p.classList.toggle('active', p.id === 'admin-tab-' + tab));
-    if (tab === 'students') loadTeacherStudents();
-    if (tab === 'classes') loadTeacherClasses();
-    if (tab === 'stats') loadQuestionStats();
-    if (tab === 'homework') loadTeacherHomeworkForm();
-    if (tab === 'questions') loadQuestionEditorList();
-    if (tab === 'feedback' && typeof showAdminFeedback === 'function') showAdminFeedback();
+    if (tab === 'students') { safeQuery(loadTeacherStudents, 'تعذّر تحميل الطلاب'); }
+    else if (tab === 'classes') { safeQuery(loadTeacherClasses, 'تعذّر تحميل الصفوف'); }
+    else if (tab === 'stats') { safeQuery(loadQuestionStats, 'تعذّر تحميل الإحصائيات'); }
+    else if (tab === 'homework') { loadTeacherHomeworkForm(); }
+    else if (tab === 'questions') { loadQuestionEditorList(); }
+    else if (tab === 'feedback' && typeof showAdminFeedback === 'function') { showAdminFeedback(); }
   }
 
   async function createClass() {
     const name = (document.getElementById('new-class-name')?.value || '').trim() || 'صف جديد';
     const code = 'CLS' + Date.now().toString(36).toUpperCase().slice(-5);
-    const { data, error } = await db.from('classes').insert({ name, code, teacher_id: state.user?.id }).select().single();
+    const { data, error } = await safeQuery(
+      () => db.from('classes').insert({ name, code, teacher_id: state.user?.id }).select().single(),
+      'تعذّر إنشاء الصف'
+    );
     const msg = document.getElementById('class-create-msg');
     if (error) {
       if (msg) msg.textContent = '❌ شغّل/ي supabase_platform.sql أولاً';
@@ -411,36 +481,56 @@
   async function loadTeacherClasses() {
     const el = document.getElementById('teacher-classes-list');
     if (!el || !state.user) return;
-    const { data } = await db.from('classes').select('*').eq('teacher_id', state.user.id).order('created_at', { ascending: false });
+    const { data, error } = await safeQuery(
+      () => db.from('classes').select('*').eq('teacher_id', state.user.id).order('created_at', { ascending: false }),
+      'تعذّر تحميل الصفوف'
+    );
+    if (error) { el.innerHTML = '<p style="color:var(--red);font-size:0.85em">تعذّر تحميل الصفوف</p>'; return; }
     if (!data?.length) {
       el.innerHTML = '<p style="color:var(--text-soft);font-size:0.85em">لا توجد صفوف بعد</p>';
       return;
     }
     el.innerHTML = data.map((c) => `<div class="admin-list-item"><strong>${esc(c.name)}</strong><span>رمز: ${esc(c.code)}</span></div>`).join('');
     const sel = document.getElementById('hw-class-select');
-    if (sel) sel.innerHTML = data.map((c) => `<option value="${c.id}">${esc(c.name)} (${esc(c.code)})</option>`).join('');
+    if (sel) sel.innerHTML = data.map((c) => `<option value="${esc(c.id)}">${esc(c.name)} (${esc(c.code)})</option>`).join('');
   }
 
   async function loadTeacherStudents() {
     const el = document.getElementById('teacher-students-list');
     if (!el) return;
     el.innerHTML = '<p>جاري التحميل...</p>';
-    const { data: classes } = await db.from('classes').select('id,name,code').eq('teacher_id', state.user?.id);
+    if (!state.user) { el.innerHTML = '<p style="color:var(--text-soft)">سجّل/ي دخولك أولاً</p>'; return; }
+
+    const classesRes = await safeQuery(
+      () => db.from('classes').select('id,name,code').eq('teacher_id', state.user.id),
+      'تعذّر تحميل الطلاب'
+    );
+    if (classesRes.error) { el.innerHTML = '<p style="color:var(--red)">تعذّر التحميل</p>'; return; }
+    const classes = classesRes.data;
     if (!classes?.length) {
       el.innerHTML = '<p style="color:var(--text-soft)">أنشئ/ي صفاً أولاً وشارك/ي الرمز مع الطلاب</p>';
       return;
     }
     const classIds = classes.map((c) => c.id);
-    const { data: members } = await db.from('class_members').select('user_id,class_id,joined_at').in('class_id', classIds);
+    const membersRes = await safeQuery(
+      () => db.from('class_members').select('user_id,class_id,joined_at').in('class_id', classIds),
+      'تعذّر تحميل الطلاب'
+    );
+    if (membersRes.error) { el.innerHTML = '<p style="color:var(--red)">تعذّر التحميل</p>'; return; }
+    const members = membersRes.data;
     if (!members?.length) {
       el.innerHTML = '<p style="color:var(--text-soft)">لا يوجد طلاب منضمون بعد</p>';
       return;
     }
     const userIds = [...new Set(members.map((m) => m.user_id))];
-    const [{ data: profiles }, { data: scores }] = await Promise.all([
+    const profileScoresRes = await safeQuery(() => Promise.all([
       db.from('profiles').select('id,name').in('id', userIds),
       db.from('scores').select('user_id,score,correct,total,book,played_at').in('user_id', userIds).order('played_at', { ascending: false }),
-    ]);
+    ]), 'تعذّر تحميل الطلاب');
+    if (profileScoresRes.error) { el.innerHTML = '<p style="color:var(--red)">تعذّر التحميل</p>'; return; }
+    const [profilesRes, scoresRes] = profileScoresRes.data;
+    const profiles = profilesRes?.data || [];
+    const scores = scoresRes?.data || [];
     const nameMap = Object.fromEntries((profiles || []).map((p) => [p.id, p.name]));
     const classMap = Object.fromEntries(classes.map((c) => [c.id, c.name]));
     const byUser = {};
@@ -461,6 +551,8 @@
     html += '</tbody></table></div>';
     html += `<button class="btn btn-white btn-sm" style="margin-top:10px;width:100%" onclick="exportStudentsCsv()">📥 تصدير CSV</button>`;
     el.innerHTML = html;
+    // Scoped closure instead of leaking to window — kept under a private
+    // property on the button itself so exportStudentsCsv can still reach it.
     window._teacherStudentsExport = Object.entries(byUser).map(([uid, info]) => ({
       name: nameMap[uid] || '',
       class: info.class,
@@ -472,19 +564,36 @@
 
   window.exportStudentsCsv = function exportStudentsCsv() {
     const rows = window._teacherStudentsExport || [];
+    // CSV formula injection: prefix cells that start with =, +, -, @, or tab
+    // so spreadsheets don't interpret them as formulas.
+    const safeCell = (c) => {
+      const s = String(c == null ? '' : c);
+      return /^[=+\-@\t\r]/.test(s) ? "'" + s : s;
+    };
     const lines = [['الاسم', 'الصف', 'ألعاب', 'أفضل نتيجة', 'آخر لعب'], ...rows.map((r) => [r.name, r.class, r.games, r.best, r.last])];
-    const csv = lines.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const csv = lines.map((r) => r.map((c) => `"${String(safeCell(c)).replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
+    a.href = url;
     a.download = 'students-report.csv';
+    document.body.appendChild(a);
     a.click();
+    a.remove();
+    // Release the object URL to avoid leaking it on every export.
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    // Clear the in-memory export cache so PII doesn't sit on window indefinitely.
+    setTimeout(() => { if (window._teacherStudentsExport) window._teacherStudentsExport = null; }, 60000);
   };
 
   async function loadQuestionStats() {
     const el = document.getElementById('teacher-stats-list');
     if (!el) return;
-    const { data: stats } = await db.from('question_stats').select('question_id,correct_count,wrong_count').order('wrong_count', { ascending: false }).limit(15);
+    const { data: stats, error } = await safeQuery(
+      () => db.from('question_stats').select('question_id,correct_count,wrong_count').order('wrong_count', { ascending: false }).limit(15),
+      'تعذّر تحميل الإحصائيات'
+    );
+    if (error) { el.innerHTML = '<p style="color:var(--red)">تعذّر التحميل</p>'; return; }
     if (!stats?.length) {
       el.innerHTML = '<p style="color:var(--text-soft);font-size:0.85em">لا توجد إحصائيات بعد — تظهر بعد لعب الطلاب</p>';
       return;
@@ -565,7 +674,10 @@
       ];
       payload.correct_index = parseInt(document.getElementById('q-edit-correct').value, 10) || 0;
     }
-    const { error } = await db.from('questions').update(payload).eq('id', id);
+    const { error } = await safeQuery(
+      () => db.from('questions').update(payload).eq('id', id),
+      'فشل الحفظ'
+    );
     const msg = document.getElementById('q-edit-msg');
     if (error) {
       if (msg) msg.textContent = '❌ ' + (error.message || 'فشل الحفظ — شغّل supabase_platform.sql');
@@ -573,9 +685,11 @@
     }
     if (msg) msg.textContent = '✅ تم الحفظ';
     sessionStorage.removeItem('questionsCacheV1');
-    await loadQuestions();
-    updateLevelCounts();
-    updateQuestionRangeUI();
+    try {
+      await loadQuestions();
+      updateLevelCounts();
+      updateQuestionRangeUI();
+    } catch (e) {}
   }
 
   async function createHomework() {
@@ -591,19 +705,26 @@
       if (msg) msg.textContent = '❌ اختر/ي صفاً أولاً';
       return;
     }
-    const { error } = await db.from('homework').insert({
-      class_id: classId,
-      teacher_id: state.user?.id,
-      title,
-      book,
-      level,
-      q_from: qFrom,
-      q_to: qTo,
-      due_date: due || null,
-      active: true,
-    });
+    if (qTo < qFrom) {
+      if (msg) msg.textContent = '❌ رقم النهاية يجب أن يكون أكبر من البداية';
+      return;
+    }
+    const { error } = await safeQuery(
+      () => db.from('homework').insert({
+        class_id: classId,
+        teacher_id: state.user?.id,
+        title,
+        book,
+        level,
+        q_from: qFrom,
+        q_to: qTo,
+        due_date: due || null,
+        active: true,
+      }),
+      'تعذّر إرسال الواجب'
+    );
     if (error) {
-      if (msg) msg.textContent = '❌ ' + error.message;
+      if (msg) msg.textContent = '❌ ' + (error.message || 'تعذّر الإرسال');
       return;
     }
     if (msg) msg.textContent = '✅ تم إرسال الواجب للصف';
@@ -671,15 +792,21 @@
   }
 
   async function onGameEndHook() {
-    if (state.homeworkId && state.user && !trainingMode && (state.correct > 0 || state.score > 0)) {
-      const { error } = await db.from('homework_completions').upsert({
-        homework_id: state.homeworkId,
-        user_id: state.user.id,
-        score: state.score,
-        correct: state.correct,
-        total: state.total,
-      }, { onConflict: 'homework_id,user_id' });
-      if (error && typeof showToast === 'function') showToast('تعذّر تسجيل إكمال الواجب', 'err');
+    // Record homework completion whenever the student FINISHES a homework game,
+    // regardless of score. The previous gate (`correct > 0 || score > 0`)
+    // meant a zero-score attempt was silently dropped and the homework kept
+    // reappearing as "pending" forever.
+    if (state.homeworkId && state.user && !trainingMode && !state.demoMode) {
+      const { error } = await safeQuery(
+        () => db.from('homework_completions').upsert({
+          homework_id: state.homeworkId,
+          user_id: state.user.id,
+          score: state.score,
+          correct: state.correct,
+          total: state.total,
+        }, { onConflict: 'homework_id,user_id' }),
+        'تعذّر تسجيل إكمال الواجب'
+      );
       state.homeworkId = null;
     } else if (state.homeworkId) {
       state.homeworkId = null;
@@ -701,13 +828,25 @@
   async function loadQuestionsCached() {
     const cacheKey = 'questionsCacheV1';
     const ttl = state.userType === 'teacher' ? 60000 : 900000;
-    const cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+    // Guard against corrupted sessionStorage: a JSON.parse throw used to
+    // hard-crash the whole game; now it's treated as a cache miss.
+    let cached = null;
+    try {
+      cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+    } catch (e) {
+      try { sessionStorage.removeItem(cacheKey); } catch (e2) {}
+    }
     if (cached?.ts && Date.now() - cached.ts < ttl && cached.data?.length) {
       return cached.data;
     }
-    const { data, error } = await db.from('questions').select('*').eq('language', 'ar');
+    const { data, error } = await safeQuery(
+      () => db.from('questions').select('*').eq('language', 'ar'),
+      'تعذّر تحميل الأسئلة'
+    );
     if (error) throw error;
-    sessionStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data }));
+    try {
+      sessionStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data }));
+    } catch (e) {}
     return data;
   }
 

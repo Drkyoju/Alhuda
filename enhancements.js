@@ -64,7 +64,19 @@
   }
 
   function wrapShow() {
-    if (typeof show !== 'function' || show._enhanced) return;
+    if (show && show._enhanced) return; // already wrapped — nothing to do
+    if (typeof show !== 'function') {
+      // The global `show` function lives in index.html's inline script and
+      // may not yet be defined if enhancements.js evaluated too early. Retry
+      // once on the next microtask. Previously this path silently returned
+      // and the bottom-nav / training-active toggling never worked for the
+      // whole session.
+      if (!wrapShow._retried) {
+        wrapShow._retried = true;
+        setTimeout(wrapShow, 0);
+      }
+      return;
+    }
     const orig = show;
     show = function (id) {
       orig(id);
@@ -78,7 +90,7 @@
     show._enhanced = true;
   }
 
-  async function loadChallengeLeaderboard(code) {
+  function loadChallengeLeaderboard(code) {
     const list = document.getElementById('ch-lb-list');
     const title = document.getElementById('ch-lb-code');
     if (!list) return;
@@ -87,55 +99,95 @@
     show('challenge-leaderboard-screen');
 
     const localKey = 'ch_results_' + code;
-    const local = JSON.parse(localStorage.getItem(localKey) || '[]');
-    let remote = [];
+    // Guard against corrupted localStorage entries — previously an uncaught
+    // JSON.parse throw killed the whole leaderboard flow.
+    let local = [];
     try {
-      const { data } = await db.from('challenge_results')
-        .select('user_name,score,correct,total,created_at,user_id')
-        .eq('code', code)
-        .order('score', { ascending: false })
-        .limit(50);
-      remote = data || [];
-    } catch (e) {}
-
-    const merged = [...remote, ...local.map((r) => ({ ...r, user_name: r.name }))];
-    const best = {};
-    for (const r of merged) {
-      const k = r.user_id || r.user_name || r.name || 'x';
-      if (!best[k] || (r.score || 0) > (best[k].score || 0)) best[k] = r;
+      local = JSON.parse(localStorage.getItem(localKey) || '[]');
+    } catch (e) {
+      try { localStorage.removeItem(localKey); } catch (e2) {}
     }
-    const ranked = Object.values(best).sort((a, b) => (b.score || 0) - (a.score || 0));
+    (async () => {
+      let remote = [];
+      try {
+        const { data } = await db.from('challenge_results')
+          .select('user_name,score,correct,total,created_at,user_id')
+          .eq('code', code)
+          .order('score', { ascending: false })
+          .limit(50);
+        remote = data || [];
+      } catch (e) {}
 
-    if (!ranked.length) {
-      list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:24px;">لا توجد نتائج بعد. كن/ي أول/ة!</p>';
-      return;
-    }
+      const merged = [...remote, ...local.map((r) => ({ ...r, user_name: r.name }))];
+      const best = {};
+      for (const r of merged) {
+        const k = r.user_id || r.user_name || r.name || 'x';
+        if (!best[k] || (r.score || 0) > (best[k].score || 0)) best[k] = r;
+      }
+      const ranked = Object.values(best).sort((a, b) => (b.score || 0) - (a.score || 0));
 
-    list.innerHTML = ranked.map((r, i) => {
-      const isYou = state?.userName && (r.user_name === state.userName || r.name === state.userName);
-      const name = escapeHtml(r.user_name || r.name || 'مجهول');
-      return `<div class="ch-lb-row${isYou ? ' you' : ''}">
-        <span class="ch-lb-rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</span>
-        <span class="ch-lb-name">${name}${isYou ? ' (أنت)' : ''}</span>
-        <span class="ch-lb-score">⭐${r.score || 0} <small style="opacity:0.7">(${r.correct || 0}/${r.total || 0})</small></span>
-      </div>`;
-    }).join('');
+      if (!ranked.length) {
+        list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:24px;">لا توجد نتائج بعد. كن/ي أول/ة!</p>';
+        return;
+      }
+
+      list.innerHTML = ranked.map((r, i) => {
+        const isYou = state?.userName && (r.user_name === state.userName || r.name === state.userName);
+        const name = escapeHtml(r.user_name || r.name || 'مجهول');
+        return `<div class="ch-lb-row${isYou ? ' you' : ''}">
+          <span class="ch-lb-rank">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</span>
+          <span class="ch-lb-name">${name}${isYou ? ' (أنت)' : ''}</span>
+          <span class="ch-lb-score">⭐${r.score || 0} <small style="opacity:0.7">(${r.correct || 0}/${r.total || 0})</small></span>
+        </div>`;
+      }).join('');
+    })();
   }
 
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
-    navigator.serviceWorker.register('./service-worker.js?v=8').catch(() => {});
+    // Version query MUST match CACHE in service-worker.js. When a worker
+    // update is waiting, prompt it to take over on the NEXT page load by
+    // sending SKIP_WAITING — avoids the previous "new JS, old HTML tab"
+    // runtime error pattern from unconditional skipWaiting().
+    navigator.serviceWorker.register('./service-worker.js?v=9').then((reg) => {
+      // If a new SW is waiting, hand it control on the next reload.
+      if (reg.waiting) {
+        reg.waiting.postMessage('SKIP_WAITING');
+      }
+      reg.addEventListener('updatefound', () => {
+        const nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener('statechange', () => {
+          if (nw.state === 'installed' && reg.waiting) {
+            // Defer activation to the next navigation; current tab keeps the
+            // currently-running JS/HTML pair consistent.
+            reg.waiting.postMessage('SKIP_WAITING');
+          }
+        });
+      });
+    }).catch((err) => {
+      // Was previously `.catch(() => {})` which made SW issues undebuggable.
+      console.warn('[SW] registration failed:', err);
+    });
   }
 
   function initEnhancements() {
     wrapShow();
     registerServiceWorker();
+    // Idempotency guard: previously a second initEnhancements() call (e.g.,
+    // from a deferred script) would wrap toggleTrainingMode again, double-
+    // toggling the class.
+    if (window._alhudaEnhancementsInited) return;
+    window._alhudaEnhancementsInited = true;
+
     const origToggle = window.toggleTrainingMode;
-    if (origToggle) {
-      window.toggleTrainingMode = function () {
+    if (origToggle && !origToggle._enhanced) {
+      const wrapped = function () {
         origToggle();
         document.body.classList.toggle('training-active', !!window.trainingMode);
       };
+      wrapped._enhanced = true;
+      window.toggleTrainingMode = wrapped;
     }
   }
 
