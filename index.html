@@ -2984,7 +2984,7 @@ async function showAdminFeedback() {
   const emojis = ['😞','😕','😐','😊','😍'];
   if (!lastFeedbackItems.length) {
     list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:20px 0;">لا توجد آراء بعد.</p>';
-    status.textContent = error ? 'تعذّر الاتصال بـ Supabase — تأكدي من تشغيل supabase_feedback.sql' : '';
+    status.textContent = error ? 'تعذّر الاتصال بـ Supabase — تأكد/ي من تشغيل supabase_feedback.sql' : '';
     return;
   }
   list.innerHTML = lastFeedbackItems.map(f => `
