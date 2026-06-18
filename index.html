@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#2D5A3D">
-  <meta name="description" content="المكتبة الثلاثية - أسئلة تعليمية إسلامية تفاعلية للأطفال">
+  <meta name="theme-color" content="#163828">
+  <meta name="description" content="المكتبة الثلاثية - أسئلة تعليمية إسلامية تفاعلية - جمعية الهدى والحكمة">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>المكتبة الثلاثية - أسئلة تعليمية</title>
@@ -13,46 +13,54 @@
   <link rel="manifest" href="manifest.json">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --emerald: #2D5A3D;
-      --emerald-dark: #1E3D2A;
-      --emerald-light: #E8F2EC;
+      --emerald: #2A5C45;
+      --emerald-dark: #163828;
+      --emerald-light: #E6F2EC;
       --teal: #1A4A55;
       --teal-soft: #E8F4F6;
-      --gold: #B8956B;
-      --gold-dark: #96784F;
-      --gold-glow: #FAF5EE;
-      --coral: #FF6B6B;
-      --coral-dark: #E05555;
-      --sky: #3BA4C7;
-      --sky-dark: #2A8AAD;
-      --purple: #9B6FD4;
-      --purple-dark: #7B4FB8;
-      --orange: #F59E0B;
-      --cream: #FDFBF7;
+      --gold: #C9A962;
+      --gold-dark: #A68B4B;
+      --gold-glow: #FAF6EE;
+      --gold-shine: #E8D5A8;
+      --coral: #E85D5D;
+      --coral-dark: #C94A4A;
+      --sky: #3B8FA8;
+      --sky-dark: #2A7A94;
+      --purple: #8B6BB8;
+      --purple-dark: #6E4F9A;
+      --orange: #E09B3A;
+      --cream: #FFFBF5;
+      --ivory: #FFFEF9;
       --white: #FFFFFF;
-      --text: #2D3436;
-      --text-soft: #636E72;
-      --border: #E8E4DF;
-      --gray: #AFAFAF;
-      --shadow: 0 8px 32px rgba(27, 138, 107, 0.12);
-      --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --text: #1F2B28;
+      --text-soft: #5C6B66;
+      --border: #E5DDD0;
+      --border-gold: rgba(201, 169, 98, 0.35);
+      --gray: #9A9A9A;
+      --shadow: 0 20px 50px rgba(22, 56, 40, 0.12);
+      --shadow-sm: 0 4px 20px rgba(22, 56, 40, 0.06);
+      --shadow-lux: 0 24px 64px rgba(22, 56, 40, 0.14), 0 0 0 1px rgba(201, 169, 98, 0.08);
       --green: var(--emerald);
       --green-dark: var(--emerald-dark);
       --green-light: var(--emerald-light);
       --red: var(--coral);
-      --red-light: #FFE8E8;
+      --red-light: #FDEEEE;
       --blue: var(--sky);
       --blue-dark: var(--sky-dark);
       --bg: var(--cream);
-      --grad-hero: linear-gradient(165deg, #FDFBF7 0%, #E8F2EC 45%, #FAF5EE 100%);
-      --grad-emerald: linear-gradient(135deg, var(--emerald) 0%, #1A6B4A 100%);
-      --grad-gold: linear-gradient(135deg, #D4AF6A 0%, var(--gold) 50%, #F5D76E 100%);
-      --grad-results: linear-gradient(165deg, #1E3D2A 0%, var(--emerald) 40%, #2A8AAD 100%);
-      --radius-lg: 24px;
+      --grad-hero: linear-gradient(168deg, #FFFBF5 0%, #F0F7F2 38%, #FAF4E8 72%, #F5EDE0 100%);
+      --grad-emerald: linear-gradient(145deg, #163828 0%, #2A5C45 50%, #1E4D38 100%);
+      --grad-gold: linear-gradient(135deg, #E8D5A8 0%, #C9A962 45%, #DFC07A 100%);
+      --grad-results: linear-gradient(165deg, #0F2419 0%, #1A3D2E 35%, #2A5C45 65%, #2A6B7A 100%);
+      --glass: rgba(255, 255, 255, 0.82);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --font-display: 'Amiri', 'Tajawal', serif;
+      --radius-xl: 28px;
+      --radius-lg: 22px;
       --radius-md: 16px;
       --radius-sm: 12px;
     }
@@ -660,6 +668,31 @@
       padding: 12px 14px; margin-top: 8px; font-weight: 800; font-size: 0.9em;
       color: var(--emerald-dark); line-height: 1.6;
     }
+    .why-correct-box {
+      background: var(--emerald-light);
+      border: 1px solid var(--emerald);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-top: 8px;
+      font-size: 0.88em;
+      font-weight: 700;
+      color: var(--emerald-dark);
+      line-height: 1.65;
+      text-align: right;
+    }
+    .why-correct-box strong { display: block; margin-bottom: 6px; font-size: 0.95em; }
+    .review-exp {
+      background: var(--ivory);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin: 12px 0;
+      font-size: 0.88em;
+      line-height: 1.65;
+      color: var(--text);
+      text-align: right;
+    }
+    .review-exp strong { color: var(--emerald-dark); display: block; margin-bottom: 6px; }
     .ans-btn.reveal-correct {
       border-color: var(--emerald) !important; background: var(--emerald-light) !important;
       box-shadow: 0 0 0 3px var(--gold); animation: pop 0.4s;
@@ -835,6 +868,154 @@
       font-weight: 800;
       font-size: 1em;
       min-height: 44px;
+    }
+
+    .q-range-card {
+      width: 100%;
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .pool-info {
+      text-align: center;
+      font-weight: 900;
+      color: var(--emerald-dark);
+      font-size: 0.95em;
+      margin-bottom: 8px;
+    }
+    .pool-breakdown {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .pool-chip {
+      font-size: 0.7em;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--ivory);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
+    }
+    .pool-chip.on {
+      background: var(--emerald-light);
+      border-color: var(--emerald);
+      color: var(--emerald-dark);
+    }
+    .q-range-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+    .q-range-row label { font-weight: 800; font-size: 0.82em; color: var(--text-soft); white-space: nowrap; }
+    .q-range-input {
+      width: 100%;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      text-align: center;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 800;
+      font-size: 1em;
+      min-height: 44px;
+      background: var(--ivory);
+    }
+    .q-range-hint {
+      text-align: center;
+      font-size: 0.8em;
+      font-weight: 700;
+      color: var(--gold-dark);
+      margin-top: 10px;
+    }
+    .level-btn .lvl-count {
+      display: block;
+      font-size: 0.65em;
+      opacity: 0.85;
+      margin-top: 2px;
+      font-weight: 700;
+    }
+    .level-btn.sel .lvl-count { opacity: 1; }
+    .level-btn[data-level="all"].sel { background: linear-gradient(135deg, var(--emerald), var(--teal)); color: white; }
+
+    .feedback-item {
+      background: var(--ivory);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      text-align: right;
+    }
+    .feedback-item .fb-head {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 900;
+      font-size: 0.85em;
+      gap: 8px;
+    }
+    .feedback-item .fb-msg {
+      font-size: 0.82em;
+      color: var(--text);
+      margin-top: 8px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .feedback-item .fb-meta {
+      font-size: 0.68em;
+      color: var(--gray);
+      margin-top: 6px;
+    }
+    .admin-feedback-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .admin-feedback-toolbar .btn { flex: 1; font-size: 0.8em; }
+
+    .org-website-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 420px;
+      padding: 14px 18px;
+      background: var(--grad-emerald);
+      color: white;
+      border-radius: var(--radius-lg);
+      text-decoration: none;
+      box-shadow: 0 8px 28px rgba(22, 56, 40, 0.22);
+      border: 1px solid rgba(201, 169, 98, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .org-website-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(22, 56, 40, 0.28); }
+    .org-website-btn:active { transform: translateY(0); }
+    .org-website-btn .owb-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3em; flex-shrink: 0;
+    }
+    .org-website-btn .owb-text { flex: 1; text-align: right; line-height: 1.35; }
+    .org-website-btn .owb-text strong { display: block; font-size: 0.95em; font-weight: 900; }
+    .org-website-btn .owb-text small { opacity: 0.88; font-size: 0.72em; font-weight: 600; }
+    .org-website-btn .owb-arrow { font-size: 1.1em; opacity: 0.9; }
+    .org-website-btn.compact {
+      max-width: 100%;
+      margin-top: 10px;
+      padding: 12px 14px;
+    }
+    .org-website-btn.compact .owb-icon { width: 38px; height: 38px; font-size: 1.1em; }
+
+    #admin-feedback-list {
+      max-height: 55vh;
+      overflow-y: auto;
+      text-align: right;
     }
 
     /* Action row */
@@ -1236,177 +1417,608 @@
       .brand-title { font-size: 2em; }
     }
 
-    /* ═══ DESIGN v2 — Gamification & polish ═══ */
-    .topbar-center { display: flex; gap: 6px; align-items: center; flex: 1; justify-content: center; pointer-events: none; }
+    /* ═══ LUXURY v3 — Refined UI across all screens ═══ */
+
+    /* ── Global atmosphere ── */
+    .islamic-bg::before {
+      opacity: 0.55;
+      background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z' fill='none' stroke='%23C9A962' stroke-width='0.4' opacity='0.07'/%3E%3Ccircle cx='40' cy='40' r='3' fill='%232A5C45' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 80px 80px;
+    }
+    .glow-orb.gold { width: 280px; height: 280px; background: rgba(201, 169, 98, 0.12); top: -80px; }
+    .glow-orb.emerald { width: 220px; height: 220px; background: rgba(42, 92, 69, 0.08); }
+    .float-deco { opacity: 0.06; font-size: 1.2em; }
+
+    /* ── Frosted top bar ── */
+    .app-topbar {
+      background: linear-gradient(180deg, rgba(255,251,245,0.92) 0%, rgba(255,251,245,0.75) 70%, transparent 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding-bottom: 14px;
+    }
+    .site-logo {
+      border-radius: 14px;
+      border: 1px solid var(--border-gold);
+      box-shadow: var(--shadow-sm);
+      max-width: 56px;
+    }
+    .topbar-btn {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+    }
+    .topbar-center { display: flex; gap: 8px; align-items: center; flex: 1; justify-content: center; pointer-events: none; }
     .topbar-chip {
       display: none;
       align-items: center;
-      gap: 4px;
-      background: rgba(255,255,255,0.95);
-      border: 2px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 10px;
-      font-size: 0.7em;
-      font-weight: 900;
-      color: var(--emerald-dark);
-      box-shadow: var(--shadow-sm);
-      pointer-events: auto;
-    }
-    .topbar-chip.show { display: inline-flex; }
-    .topbar-chip.streak { border-color: var(--gold); background: var(--gold-glow); }
-    .topbar-chip.xp { border-color: var(--emerald); background: var(--emerald-light); }
-
-    .login-hero {
-      width: 100%;
-      max-width: 420px;
-      padding: 0 4px;
-    }
-    .login-features {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 4px;
-    }
-    .login-feature {
-      flex: 1;
-      min-width: 90px;
-      background: rgba(255,255,255,0.85);
-      border: 2px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 8px;
-      text-align: center;
+      gap: 5px;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-gold);
+      border-radius: 24px;
+      padding: 6px 14px;
       font-size: 0.72em;
       font-weight: 800;
       color: var(--emerald-dark);
-      line-height: 1.4;
+      box-shadow: var(--shadow-sm);
+      pointer-events: auto;
+      letter-spacing: 0.02em;
     }
-    .login-feature strong { display: block; font-size: 1.35em; color: var(--emerald); margin-bottom: 2px; }
+    .topbar-chip.show { display: inline-flex; }
+    .topbar-chip.streak { border-color: rgba(201,169,98,0.5); background: linear-gradient(135deg, #FFF9EE, #FAF0DC); }
+    .topbar-chip.xp { border-color: rgba(42,92,69,0.25); background: linear-gradient(135deg, #F5FAF7, var(--emerald-light)); }
 
-    .level-card {
-      background: linear-gradient(135deg, rgba(255,255,255,0.95), var(--emerald-light));
-      border-color: rgba(45, 90, 61, 0.15);
+    /* ── Typography & brand ── */
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.85em;
+      letter-spacing: 0.01em;
+      background: linear-gradient(135deg, var(--emerald-dark), var(--emerald));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .xp-bar-wrap { height: 14px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.06); }
-    .xp-bar-fill { box-shadow: 0 0 8px rgba(45, 90, 61, 0.25); }
-
-    .daily-mission {
-      width: 100%;
-      background: linear-gradient(135deg, var(--emerald), #1A6B4A);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      color: white;
+    .org-name { font-family: var(--font-display); color: var(--gold-dark); font-size: 1em; }
+    .brand-sub { letter-spacing: 0.04em; text-transform: none; font-weight: 600; }
+    .brand-tagline { color: var(--gold-dark); font-weight: 600; letter-spacing: 0.02em; }
+    .brand-ornament {
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 6px 20px rgba(45, 90, 61, 0.25);
-      border: 2px solid rgba(255,255,255,0.15);
-    }
-    .daily-mission .dm-icon { font-size: 2em; flex-shrink: 0; }
-    .daily-mission .dm-body { flex: 1; text-align: right; }
-    .daily-mission .dm-title { font-weight: 900; font-size: 0.9em; margin-bottom: 2px; }
-    .daily-mission .dm-sub { font-size: 0.75em; opacity: 0.9; font-weight: 700; }
-    .daily-mission.done { background: linear-gradient(135deg, var(--gold-dark), var(--gold)); color: var(--emerald-dark); }
-    .daily-mission .dm-check {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2em; flex-shrink: 0;
-    }
-
-    .book-btn .book-progress {
+      width: 100%;
+      max-width: 200px;
+      margin: 4px auto 0;
+      color: var(--gold);
       font-size: 0.65em;
-      opacity: 0.85;
-      margin-top: 2px;
+      opacity: 0.7;
+    }
+    .brand-ornament::before, .brand-ornament::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .card h2, .card h3, .page-hero h2, .welcome-greeting {
+      font-family: var(--font-display);
       font-weight: 700;
     }
+
+    /* ── Premium cards ── */
+    .card, .demo-intro-card, .feedback-screen-inner {
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--shadow-lux);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before, .demo-intro-card::before, .feedback-screen-inner::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.85;
+    }
+    .logo-img {
+      border: 2px solid var(--border-gold);
+      box-shadow: var(--shadow-lux);
+      animation: logoFloat 4s ease-in-out infinite;
+    }
+
+    /* ── Refined buttons ── */
+    .btn {
+      border-radius: var(--radius-md);
+      letter-spacing: 0.02em;
+      border: 1px solid transparent;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-gold {
+      background: var(--grad-gold);
+      color: var(--emerald-dark);
+      box-shadow: 0 6px 20px rgba(201, 169, 98, 0.35);
+      font-weight: 900;
+    }
+    .btn-green {
+      background: var(--grad-emerald);
+      box-shadow: 0 6px 20px rgba(22, 56, 40, 0.25);
+    }
+    .btn-blue { box-shadow: 0 6px 20px rgba(59, 143, 168, 0.25); }
+    .btn-white {
+      background: var(--ivory);
+      border-color: var(--border-gold);
+      box-shadow: var(--shadow-sm);
+    }
+    .tab-row {
+      background: rgba(245, 237, 224, 0.6);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-md);
+    }
+    .tab-btn.active {
+      background: var(--white);
+      color: var(--emerald-dark);
+      box-shadow: var(--shadow-sm);
+    }
+    .input, .feedback-textarea, .q-count-input {
+      background: var(--ivory);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .input:focus, .feedback-textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201, 169, 98, 0.15);
+    }
+
+    /* ── Login ── */
+    .login-hero { width: 100%; max-width: 440px; padding: 0 8px; }
+    .login-features { gap: 10px; margin-top: 12px; }
+    .login-feature {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-md);
+      padding: 12px 10px;
+      box-shadow: var(--shadow-sm);
+    }
+    .login-feature strong { color: var(--gold-dark); }
+    .login-footer {
+      font-family: var(--font-display);
+      font-size: 0.85em;
+      color: var(--gold-dark);
+      opacity: 0.8;
+      letter-spacing: 0.03em;
+    }
+    #login-screen .card { padding-top: 28px; }
+
+    /* ── Welcome hub ── */
+    .welcome-hero {
+      width: 100%;
+      background: var(--grad-emerald);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px 20px;
+      text-align: center;
+      color: white;
+      box-shadow: 0 16px 48px rgba(22, 56, 40, 0.22);
+      border: 1px solid rgba(255,255,255,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .welcome-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 0%, rgba(201,169,98,0.2), transparent 50%);
+      pointer-events: none;
+    }
+    .welcome-hero .logo-img.sm {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.95);
+      margin-bottom: 12px;
+    }
+    .welcome-hero .welcome-user-badge {
+      background: rgba(255,255,255,0.18);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+      backdrop-filter: blur(4px);
+    }
+    .welcome-hero .welcome-greeting {
+      font-family: var(--font-display);
+      font-size: 1.5em;
+      color: white;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    }
+    .welcome-hero .brand-sub { color: rgba(255,255,255,0.85); font-weight: 600; }
+
+    .level-card {
+      width: 100%;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .xp-bar-wrap {
+      height: 10px;
+      background: rgba(229, 221, 208, 0.8);
+      border-radius: 6px;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .xp-bar-fill {
+      background: linear-gradient(90deg, var(--emerald), var(--gold));
+      border-radius: 6px;
+      box-shadow: 0 0 12px rgba(201, 169, 98, 0.35);
+    }
+
+    .daily-mission {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 28px rgba(22, 56, 40, 0.18);
+    }
+    .daily-mission.done {
+      background: var(--grad-gold);
+      border-color: rgba(255,255,255,0.4);
+      box-shadow: 0 8px 28px rgba(201, 169, 98, 0.3);
+    }
+
+    .daily-banner {
+      background: linear-gradient(135deg, var(--gold-glow), var(--ivory));
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .stats-strip { max-width: 100%; gap: 12px; }
+    .stat-pill {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 14px 10px;
+    }
+    .stat-pill .stat-val { color: var(--emerald); font-family: var(--font-display); font-size: 1.35em; }
+
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 1em;
+      color: var(--emerald-dark);
+      letter-spacing: 0.02em;
+    }
+    .section-label::before, .section-label::after {
+      max-width: 48px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    /* ── Book & level selectors ── */
+    .book-btn {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      background: var(--ivory);
+      min-height: 108px;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+    .book-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--border-gold); }
+    .book-btn:active { transform: translateY(0); }
+    .book-btn.sel {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(22, 56, 40, 0.2), 0 0 0 2px var(--gold);
+    }
+    .book-btn .book-progress { font-size: 0.62em; opacity: 0.75; }
     .book-btn.sel .book-progress { opacity: 1; }
 
-    .path-connector.done { background: var(--emerald); }
+    .level-btn {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      background: var(--ivory);
+    }
+    .level-btn.sel { box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
 
-    .nav-dock {
-      width: 100%;
-      max-width: 400px;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(10px);
+    .sublevel-btn {
       border: 2px solid var(--border);
-      border-radius: 20px;
-      padding: 10px 8px;
-      display: flex;
-      justify-content: space-around;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-      margin-top: 8px;
+      background: var(--ivory);
+      box-shadow: var(--shadow-sm);
     }
-    .nav-dock .icon-action { min-width: 56px; padding: 4px; }
-    .nav-dock .icon-action-circle {
-      width: 48px; height: 48px;
-      border-radius: 16px;
-      background: var(--cream);
+    .sublevel-btn.sel {
+      background: var(--grad-emerald);
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,169,98,0.35), var(--shadow-sm);
+      animation: luxPulse 2s ease infinite;
     }
-    .nav-dock .icon-action:hover .icon-action-circle { border-color: var(--emerald); background: var(--emerald-light); }
+    @keyframes luxPulse {
+      0%, 100% { box-shadow: 0 0 0 3px rgba(201,169,98,0.35), var(--shadow-sm); }
+      50% { box-shadow: 0 0 0 6px rgba(201,169,98,0.15), var(--shadow-sm); }
+    }
+    .path-connector { height: 2px; background: var(--border); }
+    .path-connector.done { background: linear-gradient(90deg, var(--emerald), var(--gold)); }
 
-    #game { background: linear-gradient(180deg, var(--white) 0%, var(--cream) 100%); }
+    .q-count-row {
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ── Nav dock ── */
+    .nav-dock {
+      max-width: 420px;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      padding: 12px 10px;
+      box-shadow: var(--shadow-lux);
+      margin-top: 12px;
+    }
+    .nav-dock .icon-action-circle {
+      width: 50px; height: 50px;
+      border-radius: var(--radius-md);
+      background: var(--ivory);
+      border: 1px solid var(--border-gold);
+      box-shadow: var(--shadow-sm);
+      font-size: 1.3em;
+      transition: all 0.2s;
+    }
+    .nav-dock .icon-action:hover .icon-action-circle {
+      border-color: var(--gold);
+      background: var(--gold-glow);
+      transform: translateY(-2px);
+    }
+    .nav-dock .icon-action span { color: var(--text-soft); font-size: 0.62em; }
+
+    /* ── Game screen ── */
+    #game {
+      background: linear-gradient(180deg, var(--ivory) 0%, var(--cream) 100%);
+      box-shadow: var(--shadow-lux);
+      border-radius: 0;
+    }
     .top-bar {
       background: var(--grad-emerald);
       border-bottom: none;
-      box-shadow: 0 4px 16px rgba(30, 61, 42, 0.2);
+      box-shadow: 0 8px 24px rgba(15, 36, 25, 0.2);
+      padding-top: max(12px, env(safe-area-inset-top));
     }
-    .top-bar .close-btn { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); color: white; }
-    .top-bar .score-badge { background: rgba(255,255,255,0.95); border-color: var(--gold); }
-    .top-bar .progress-wrap { background: rgba(0,0,0,0.2); }
-    .top-bar .progress-bar { background: linear-gradient(90deg, var(--gold), #F5D76E); }
+    .top-bar .close-btn {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      border-radius: var(--radius-sm);
+    }
+    .top-bar .score-badge {
+      background: rgba(255,255,255,0.95);
+      border: 1px solid var(--gold);
+      color: var(--emerald-dark);
+    }
+    .top-bar .progress-wrap { background: rgba(0,0,0,0.18); border-radius: 6px; }
+    .top-bar .progress-bar { background: var(--grad-gold); border-radius: 6px; }
 
     .q-box {
       background: var(--white);
-      border-right: 5px solid var(--emerald);
-      box-shadow: 0 4px 16px rgba(45, 90, 61, 0.08);
+      border: 1px solid var(--border);
+      border-right: 4px solid var(--gold);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      font-family: var(--font-display);
+      font-size: 1.15em;
+      line-height: 1.85;
+      padding: 22px 20px;
     }
-    .ans-btn:hover:not(:disabled) { border-color: var(--emerald); transform: translateY(-1px); }
+    .ans-btn {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      background: var(--ivory);
+      min-height: 58px;
+      transition: all 0.2s;
+    }
+    .ans-btn:hover:not(:disabled) {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .ans-btn:active { transform: translateY(0); box-shadow: var(--shadow-sm); }
+    .ans-btn.correct { box-shadow: 0 4px 16px rgba(42,92,69,0.2); }
+    .ans-btn.wrong { box-shadow: 0 4px 16px rgba(232,93,93,0.15); }
 
-    #results { background: var(--grad-results); }
+    .feedback {
+      background: var(--white);
+      border-top: 1px solid var(--border-gold);
+      box-shadow: 0 -16px 48px rgba(22, 56, 40, 0.12);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    }
+    .feedback.show { box-shadow: 0 -24px 64px rgba(22, 56, 40, 0.18); }
+    .feedback.ok { background: linear-gradient(180deg, #F0FAF4, var(--white)); }
+    .feedback.bad { background: linear-gradient(180deg, #FDF5F5, var(--white)); }
+
+    /* ── Results & gameover ── */
+    #results, #gameover {
+      background: var(--grad-results) !important;
+      position: relative;
+    }
+    #results::before, #gameover::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(201,169,98,0.15), transparent 55%);
+      pointer-events: none;
+    }
+    .result-shell { position: relative; z-index: 1; }
+    .result-title { font-family: var(--font-display); font-size: 1.75em; }
+    .result-icon { filter: drop-shadow(0 8px 24px rgba(0,0,0,0.2)); }
     #results .stat-card, #gameover .stat-card {
-      background: rgba(255,255,255,0.15);
-      border: 2px solid rgba(255,255,255,0.25);
-      backdrop-filter: blur(8px);
-      color: white;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-lg);
     }
-    #results .stat-card .lbl, #gameover .stat-card .lbl { color: rgba(255,255,255,0.85); }
-    #results .stat-card .big, #gameover .stat-card .big { color: white; }
-    .result-shell { width: 100%; max-width: 400px; padding: 0 16px; }
+    .xp-earned {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      backdrop-filter: blur(8px);
+    }
+    #results .btn-white, #gameover .btn-white {
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.35);
+      color: white;
+      backdrop-filter: blur(8px);
+    }
 
+    /* ── Secondary pages ── */
+    .page-screen {
+      background: transparent;
+    }
     .page-hero {
-      width: 100%;
-      max-width: 500px;
-      text-align: center;
-      padding: 8px 16px 16px;
+      padding: 12px 20px 20px;
     }
     .page-hero h2 {
-      font-family: 'Amiri', serif;
-      font-size: 1.5em;
+      font-size: 1.65em;
       color: var(--emerald-dark);
-      font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
-    .page-hero p { font-size: 0.85em; color: var(--text-soft); font-weight: 700; }
+    .page-hero p { font-weight: 600; letter-spacing: 0.01em; }
 
-    .lb-row.top1 { background: linear-gradient(135deg, var(--gold-glow), #FFF8E7) !important; border: 2px solid var(--gold) !important; }
-    .lb-row.top2 { background: linear-gradient(135deg, #ECEFF1, #F8F9FA) !important; border: 2px solid #B0BEC5 !important; }
-    .lb-row.top3 { background: linear-gradient(135deg, #FBE9E7, #FFF3E0) !important; border: 2px solid #FFAB91 !important; }
-    .lb-rank { min-width: 32px; text-align: center; }
+    .lb-tabs { margin-bottom: 14px; }
+    .lb-reset-hint {
+      background: var(--gold-glow);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-md);
+      color: var(--emerald-dark);
+    }
+    .lb-row {
+      background: var(--ivory);
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      box-shadow: var(--shadow-sm);
+    }
+    .lb-row.top1 { background: linear-gradient(135deg, #FFF9EE, #FAF0DC) !important; border-color: var(--gold) !important; box-shadow: 0 4px 16px rgba(201,169,98,0.2); }
+    .lb-row.top2 { background: linear-gradient(135deg, #F5F7F8, #ECEFF1) !important; border-color: #B0BEC5 !important; }
+    .lb-row.top3 { background: linear-gradient(135deg, #FBF0EC, #F5E8E0) !important; border-color: #D4A574 !important; }
+    .rank-badge {
+      display: block;
+      text-align: center;
+      background: var(--grad-gold);
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-sm);
+    }
 
     .profile-hero {
-      width: 88px; height: 88px;
-      border-radius: 50%;
+      width: 96px; height: 96px;
       background: var(--grad-gold);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.5em;
-      margin: 0 auto 12px;
-      border: 4px solid white;
-      box-shadow: 0 6px 20px rgba(184, 149, 107, 0.4);
+      border: 3px solid white;
+      box-shadow: 0 12px 36px rgba(201, 169, 98, 0.4);
+    }
+    .badge-item.unlocked {
+      background: linear-gradient(135deg, var(--gold-glow), white);
+      border-color: var(--gold);
+      box-shadow: var(--shadow-sm);
+    }
+    .profile-stat-row { border-color: var(--border-gold); }
+
+    .demo-badge {
+      background: var(--grad-gold);
+      border: none;
+      color: var(--emerald-dark);
+      padding: 8px 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .rating-btn {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: var(--ivory);
+      box-shadow: var(--shadow-sm);
+    }
+    .rating-btn.sel {
+      border-color: var(--gold);
+      background: var(--gold-glow);
+      box-shadow: 0 0 0 2px rgba(201,169,98,0.25);
     }
 
+    /* ── Overlays ── */
     #countdown-overlay {
-      background: radial-gradient(circle at center, rgba(45,90,61,0.92), rgba(30,61,42,0.98));
+      background: radial-gradient(circle at center, rgba(22,56,40,0.94), rgba(15,36,25,0.98));
+    }
+    #countdown-num {
+      font-family: var(--font-display);
+      color: var(--gold-shine);
+      text-shadow: 0 0 40px rgba(201,169,98,0.5);
+    }
+
+    .levelup-overlay { background: rgba(15, 36, 25, 0.82); backdrop-filter: blur(12px); }
+    .levelup-card {
+      border-radius: var(--radius-xl);
+      border: 2px solid var(--gold);
+      box-shadow: var(--shadow-lux);
+      padding: 36px 28px;
+    }
+    .levelup-card h3 { font-family: var(--font-display); font-size: 1.45em; }
+
+    .settings-overlay { background: rgba(15, 36, 25, 0.45); backdrop-filter: blur(4px); }
+    .settings-sheet {
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      border-top: 2px solid var(--border-gold);
+      box-shadow: 0 -16px 48px rgba(0,0,0,0.15);
+    }
+    .settings-sheet h3 { font-family: var(--font-display); font-size: 1.25em; }
+    .sheet-handle {
+      width: 40px; height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+
+    .ach-toast {
+      border: 1px solid var(--gold);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lux);
+      backdrop-filter: blur(12px);
+      background: var(--glass);
+    }
+    .ach-toast .ach-name { font-family: var(--font-display); }
+
+    .combo {
+      background: var(--grad-gold);
+      border: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 8px 28px rgba(201,169,98,0.4);
+      font-size: 1em;
+      padding: 12px 28px;
+      border-radius: 28px;
+    }
+
+    /* ── Preserved layout (gamification) ── */
+    .daily-mission {
+      width: 100%;
+      background: var(--grad-emerald);
+      padding: 16px 18px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .daily-mission .dm-icon { font-size: 2em; flex-shrink: 0; }
+    .daily-mission .dm-body { flex: 1; text-align: right; }
+    .daily-mission .dm-title { font-weight: 900; font-size: 0.92em; margin-bottom: 3px; }
+    .daily-mission .dm-sub { font-size: 0.76em; opacity: 0.92; font-weight: 600; }
+    .daily-mission .dm-check {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.15em; flex-shrink: 0;
     }
 
     .levelup-overlay {
@@ -1414,47 +2026,50 @@
       position: fixed;
       inset: 0;
       z-index: 4000;
-      background: rgba(30, 61, 42, 0.75);
-      backdrop-filter: blur(6px);
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
     .levelup-overlay.show { display: flex; }
-    .levelup-card {
-      background: white;
-      border-radius: 28px;
-      padding: 32px 24px;
-      text-align: center;
-      max-width: 320px;
-      width: 100%;
-      border: 4px solid var(--gold);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-      animation: levelPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+    .levelup-card .lu-icon { font-size: 4em; margin-bottom: 8px; }
+    .levelup-card p { color: var(--text-soft); font-weight: 700; margin-bottom: 16px; }
     @keyframes levelPop {
       from { transform: scale(0.5); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
-    .levelup-card .lu-icon { font-size: 4em; margin-bottom: 8px; }
-    .levelup-card h3 { color: var(--emerald-dark); font-weight: 900; font-size: 1.3em; margin-bottom: 8px; }
-    .levelup-card p { color: var(--text-soft); font-weight: 700; margin-bottom: 16px; }
+    .levelup-card { animation: levelPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
     .streak-fire { display: inline-block; animation: fireWiggle 0.8s ease infinite; }
     @keyframes fireWiggle {
       0%, 100% { transform: rotate(-5deg) scale(1); }
-      50% { transform: rotate(5deg) scale(1.1); }
+      50% { transform: rotate(5deg) scale(1.08); }
     }
 
-    .demo-intro-card, .feedback-screen-inner {
-      background: rgba(255,255,255,0.95);
+    .result-shell { width: 100%; max-width: 400px; padding: 0 16px; }
+    .lb-rank { min-width: 32px; text-align: center; }
+    .nav-dock { width: 100%; display: flex; justify-content: space-around; }
+    .nav-dock .icon-action { min-width: 56px; padding: 4px; }
+
+    .secondary-actions {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 360px;
+      margin-top: 4px;
     }
-    .rating-btn:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .secondary-actions .btn { flex: 1; font-size: 0.82em; }
 
-    #login-screen .card { border-top: 4px solid var(--emerald); }
-    .brand-sub { letter-spacing: 0.02em; }
+    .page-screen {
+      align-items: center;
+    }
+    .page-screen .card { margin-top: 0; }
 
-    .combo { font-size: 1em; padding: 12px 24px; border: 2px solid rgba(255,255,255,0.5); }
+    #admin .admin-header {
+      background: var(--grad-emerald);
+      box-shadow: 0 4px 20px rgba(15,36,25,0.2);
+    }
+    #admin .card { text-align: center; }
+
   </style>
 </head>
 <body class="islamic-bg">
@@ -1479,7 +2094,8 @@
   <!-- Settings sheet -->
   <div class="settings-overlay" id="settings-overlay" onclick="if(event.target===this)toggleSettings()">
     <div class="settings-sheet">
-      <h3>⚙️ الإعدادات</h3>
+      <div class="sheet-handle"></div>
+      <h3>الإعدادات</h3>
       <div class="setting-row">
         <span>🔤</span>
         <span>حجم الخط</span>
@@ -1498,8 +2114,8 @@
   <div class="levelup-overlay" id="levelup-overlay" onclick="if(event.target===this)closeLevelUp()">
     <div class="levelup-card">
       <div class="lu-icon">🎖️</div>
-      <h3>ارتقيتِ مستوى!</h3>
-      <p>أصبحتِ <strong id="levelup-title">متعلمة</strong></p>
+      <h3>ارتقيتَ/ِ مستوى!</h3>
+      <p>أصبحتَ/ِ <strong id="levelup-title">متعلم/ة</strong></p>
       <button class="btn btn-gold btn-xl" onclick="closeLevelUp()">رائع! 🎉</button>
     </div>
   </div>
@@ -1510,18 +2126,19 @@
       <div class="logo-wrap">
         <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img">
         <div class="brand-title">المكتبة الثلاثية</div>
+        <div class="brand-ornament">✦</div>
         <div class="org-name">جمعية الهدى والحكمة</div>
         <div class="brand-sub">أسئلة تعليمية</div>
-        <div class="brand-tagline">تعلّمي بمرح وثقة ✨</div>
-        <p class="login-hint" id="login-hint">🎮 انضمي وابدئي رحلة التعلّم!</p>
+        <div class="brand-tagline">تعلّم/ي بمرح وثقة</div>
+        <p class="login-hint" id="login-hint">🎮 انضم/ي وابدأ/ي رحلة التعلّم!</p>
       </div>
       <div class="card">
         <div class="tab-row">
-          <button class="tab-btn active" onclick="setLoginTab('student')" id="tab-student">👩‍🎓 طالبة</button>
-          <button class="tab-btn" onclick="setLoginTab('teacher')" id="tab-teacher">👩‍🏫 معلمة</button>
+          <button class="tab-btn active" onclick="setLoginTab('student')" id="tab-student">🎓 طالب/ة</button>
+          <button class="tab-btn" onclick="setLoginTab('teacher')" id="tab-teacher">👨‍🏫 معلم/ة</button>
         </div>
-        <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">دخول الطالبات</h2>
-        <input type="text" class="input" id="login-name" placeholder="اكتبي اسمك هنا..." autocomplete="name">
+        <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">دخول المتعلمين</h2>
+        <input type="text" class="input" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name">
         <input type="email" class="input" id="login-email" placeholder="البريد الإلكتروني" style="display:none;" autocomplete="email">
         <input type="password" class="input" id="login-pass" placeholder="كلمة المرور" style="display:none;" autocomplete="current-password">
         <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
@@ -1533,17 +2150,29 @@
         <div class="login-feature"><strong>🔥</strong>سلسلة يومية</div>
         <div class="login-feature"><strong>⚔️</strong>تحديات</div>
       </div>
+      <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-website-btn">
+        <span class="owb-icon">🌐</span>
+        <span class="owb-text">
+          <strong>موقع جمعية الهدى والحكمة</strong>
+          <small>alhuda-alhikma.sa — الموقع الرسمي</small>
+        </span>
+        <span class="owb-arrow">↗</span>
+      </a>
     </div>
     <p class="login-footer">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
   </div>
 
   <!-- ═══════════ DEMO INTRO ═══════════ -->
   <div id="demo-intro" class="screen page-screen">
+    <div class="page-hero">
+      <h2>نموذج تجريبي</h2>
+      <p>تعرّف/ي على التجربة قبل البدء</p>
+    </div>
     <div class="card demo-intro-card">
-      <div class="demo-badge">📝 نموذج تجريبي</div>
+      <div class="demo-badge">١٠ أسئلة تجريبية</div>
       <img src="images.jpeg" alt="" class="logo-img sm" style="margin:0 auto 12px;">
-      <h3 style="margin-bottom:8px;">مرحباً <span id="demo-name">بطلة</span>! 👋</h3>
-      <p>جربي <strong>٣ أسئلة قصيرة</strong> لتتعرفي على اللعبة قبل البدء.<br>بعدها شاركينا رأيكِ — رأيكِ يهمنا! 💬</p>
+      <h3 style="margin-bottom:8px;">مرحباً <span id="demo-name">بطل/ة</span>! 👋</h3>
+      <p>جرّب/ي <strong>١٠ أسئلة</strong> من الكتب الثلاثة لتتعرّف/ي على اللعبة.<br>بعدها شاركنا رأيك/ِ في النموذج — رأيك/ِ يهمنا! 💬</p>
       <button class="btn btn-gold btn-xl" onclick="beginDemo()">يلا نبدأ! 🎮</button>
       <button class="btn btn-sm btn-white" onclick="skipDemo()" style="margin-top:10px;width:100%;">تخطي → الدخول مباشرة</button>
     </div>
@@ -1551,10 +2180,14 @@
 
   <!-- ═══════════ FEEDBACK (after demo) ═══════════ -->
   <div id="feedback-screen" class="screen page-screen">
+    <div class="page-hero">
+      <h2>رأيك/ِ يهمنا</h2>
+      <p>ساعد/ي نحسّن التجربة</p>
+    </div>
     <div class="card feedback-screen-inner">
-      <div class="demo-badge">💬 رأيكِ يهمنا</div>
+      <div class="demo-badge">تقييم سريع</div>
       <h3>كيف كانت تجربتك؟</h3>
-      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;margin-bottom:4px;">هل أعجبكِ البرنامج؟</p>
+      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;margin-bottom:4px;">هل أعجبك/ِ البرنامج؟</p>
       <div class="rating-row" id="rating-row">
         <button class="rating-btn" onclick="setRating(5,this)" data-r="5"><span class="r-emoji">😍</span>حبيته!</button>
         <button class="rating-btn" onclick="setRating(4,this)" data-r="4"><span class="r-emoji">😊</span>حلو</button>
@@ -1562,9 +2195,10 @@
         <button class="rating-btn" onclick="setRating(2,this)" data-r="2"><span class="r-emoji">😕</span>محتاج تحسين</button>
         <button class="rating-btn" onclick="setRating(1,this)" data-r="1"><span class="r-emoji">😞</span>ما عجبني</button>
       </div>
-      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;">شاركينا رأيكِ واقتراحاتك:</p>
-      <textarea class="feedback-textarea" id="feedback-text" placeholder="اكتبي هنا: هل البرنامج حلو؟ إيش نحسّن؟ إيش عجبكِ؟"></textarea>
+      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;">شاركنا رأيك/ِ واقتراحاتك:</p>
+      <textarea class="feedback-textarea" id="feedback-text" placeholder="اكتب/ي هنا: هل البرنامج حلو؟ ماذا نحسّن؟ ما الذي أعجبك/ِ؟"></textarea>
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال رأيي 📨</button>
+      <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;margin-top:10px;">📋 مراجعة أخطاء النموذج</button>
       <p id="feedback-msg" style="margin-top:10px;font-weight:800;font-size:0.85em;min-height:20px;"></p>
       <button class="btn btn-sm btn-white" onclick="finishDemoFlow()" style="margin-top:8px;width:100%;">متابعة للرئيسية 🏠</button>
     </div>
@@ -1573,16 +2207,16 @@
   <!-- ═══════════ WELCOME ═══════════ -->
   <div id="welcome" class="screen">
     <div class="welcome-inner">
-      <div class="welcome-header">
-        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img sm" style="margin-bottom:8px;">
-        <div class="welcome-user-badge" id="welcome-user">👩‍🎓 طالبة</div>
+      <div class="welcome-header welcome-hero">
+        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img sm">
+        <div class="welcome-user-badge" id="welcome-user">🎓 متعلم/ة</div>
         <div class="welcome-greeting" id="welcome-greeting">مرحباً! 👋</div>
-        <div class="brand-sub">اختاري كتابك وابدئي رحلة التعلّم</div>
+        <div class="brand-sub">اختار/ي كتابك وابدأ/ي رحلة التعلّم</div>
       </div>
 
       <div class="level-card">
         <div class="level-top">
-          <span class="level-title" id="level-title">مبتدئة 🌱</span>
+          <span class="level-title" id="level-title">مبتدئ/ة 🌱</span>
           <span class="level-xp" id="level-xp-text">٠ / ١٠٠ نقطة خبرة</span>
         </div>
         <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar-fill"></div></div>
@@ -1592,7 +2226,7 @@
         <div class="dm-icon">🎯</div>
         <div class="dm-body">
           <div class="dm-title">مهمة اليوم</div>
-          <div class="dm-sub">أكمِلي جولة واحدة على الأقل</div>
+          <div class="dm-sub">أكمِل/ي جولة واحدة على الأقل</div>
         </div>
         <div class="dm-check">0/1</div>
       </div>
@@ -1608,7 +2242,7 @@
         <div class="stat-pill"><div class="stat-icon">🎮</div><div class="stat-val" id="stat-games">0</div><div class="stat-lbl">ألعاب</div></div>
       </div>
 
-      <div class="section-label">📖 اختاري كتابك</div>
+      <div class="section-label">📖 اختار/ي كتابك</div>
       <div class="book-select-row" id="book-select-row">
         <button class="book-btn sel" onclick="selectBook('tawheed')" id="book-btn-tawheed" data-book="tawheed">
           <span class="book-icon">📖</span><span>كتاب التوحيد</span>
@@ -1624,26 +2258,42 @@
         </button>
       </div>
 
-      <div class="section-label">🎯 اختاري مستواك</div>
+      <div class="section-label">📊 مستوى الصعوبة</div>
       <div class="level-row">
-        <button class="level-btn sel" onclick="selectLevel('easy')" id="btn-easy" data-level="easy">🌱 مبتدئ</button>
-        <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium" data-level="medium">⭐ متوسط</button>
-        <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard" data-level="hard">🔥 متقدم</button>
+        <button class="level-btn sel" onclick="selectLevel('easy')" id="btn-easy" data-level="easy">سهل<span class="lvl-count" id="cnt-easy"></span></button>
+        <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium" data-level="medium">متوسط<span class="lvl-count" id="cnt-medium"></span></button>
+        <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard" data-level="hard">صعب<span class="lvl-count" id="cnt-hard"></span></button>
+        <button class="level-btn" onclick="selectLevel('all')" id="btn-all" data-level="all">الكل<span class="lvl-count" id="cnt-all"></span></button>
       </div>
 
-      <div class="section-label">🛤️ المراحل</div>
-      <div id="sublevel-container" class="sublevel-row"></div>
-
-      <div class="q-count-row">
-        <label for="q-count-input">عدد الأسئلة:</label>
-        <input type="number" class="q-count-input" id="q-count-input" min="5" max="50" value="20">
+      <div class="q-range-card">
+        <p class="pool-info" id="pool-info">متاح: ٠ سؤال</p>
+        <div class="pool-breakdown" id="pool-breakdown"></div>
+        <div class="q-range-row">
+          <label for="q-from-input">من سؤال</label>
+          <input type="number" class="q-range-input" id="q-from-input" min="1" value="1" oninput="onRangeInputChange()">
+          <label for="q-to-input">إلى سؤال</label>
+          <input type="number" class="q-range-input" id="q-to-input" min="1" value="20" oninput="onRangeInputChange()">
+        </div>
+        <p class="q-range-hint" id="q-range-hint">٢٠ سؤالاً بالترتيب</p>
       </div>
 
       <div class="action-row" style="margin-top:4px;">
-        <button class="btn btn-gold btn-xl" id="btn-start-game" onclick="startCountdown()">ابدأ اللعبة 🎮</button>
+        <button class="btn btn-gold btn-xl" id="btn-start-game" onclick="startCountdown()">ابدأ اللعبة</button>
       </div>
-      <button class="btn btn-orange btn-sm" onclick="refreshQuestions()" style="margin-top:-4px;">🔄 تحديث الأسئلة</button>
-      <button class="btn btn-blue btn-sm" onclick="showDemoIntro(state.userName)" style="margin-top:4px;">📝 نموذج أسئلة تجريبي</button>
+      <div class="secondary-actions">
+        <button class="btn btn-white btn-sm" onclick="refreshQuestions()">تحديث الأسئلة</button>
+        <button class="btn btn-white btn-sm" onclick="showDemoIntro(state.userName)">نموذج تجريبي</button>
+      </div>
+
+      <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-website-btn compact">
+        <span class="owb-icon">🌐</span>
+        <span class="owb-text">
+          <strong>موقع الجمعية الرسمي</strong>
+          <small>alhuda-alhikma.sa</small>
+        </span>
+        <span class="owb-arrow">↗</span>
+      </a>
 
       <div class="nav-dock">
         <button class="icon-action" onclick="showLeaderboard()">
@@ -1675,7 +2325,7 @@
     </div>
     <div class="q-area">
       <div id="training-bar" class="training-bar" style="display:none;">🎯 وضع التدريب — لا تُخصم المحاولات</div>
-      <div id="demo-bar" class="training-bar" style="display:none;background:var(--teal-soft);border-color:var(--sky);">📝 نموذج أسئلة تجريبي — ٣ أسئلة للتجربة</div>
+      <div id="demo-bar" class="training-bar" style="display:none;background:var(--teal-soft);border-color:var(--sky);">📝 نموذج تجريبي — ١٠ أسئلة للتجربة</div>
       <div class="q-meta">
         <span class="q-num" id="q-num"></span>
         <span class="badge badge-blue" id="q-book-badge"></span>
@@ -1708,7 +2358,8 @@
         <div class="stat-card"><div>🔥</div><div class="big" id="fin-streak">0</div><div class="lbl">سلسلة</div></div>
       </div>
       <button class="btn btn-gold btn-xl" onclick="startCountdown()">العب مجدداً 🎮</button>
-      <button class="btn btn-sm btn-white" onclick="shareScore()" id="share-btn" style="margin-top:8px;">📤 شاركي نتيجتك</button>
+      <button class="btn btn-blue btn-sm" id="btn-review-mistakes" onclick="startReview()" style="display:none;margin-top:8px;">📋 مراجعة الأخطاء</button>
+      <button class="btn btn-sm btn-white" onclick="shareScore()" id="share-btn" style="margin-top:8px;">📤 شارك/ي نتيجتك</button>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
     </div>
   </div>
@@ -1718,14 +2369,30 @@
     <div class="result-shell">
       <div class="result-icon">💔</div>
       <div class="result-title">انتهت المحاولات!</div>
-      <div class="result-sub">لا بأس، حاولي مرة أخرى 💪</div>
+      <div class="result-sub">لا بأس، حاول/ي مرة أخرى 💪</div>
       <div class="stats-grid" style="max-width:300px;">
         <div class="stat-card"><div>⭐</div><div class="big" id="go-score">0</div><div class="lbl">نقاط</div></div>
         <div class="stat-card"><div>✅</div><div class="big" id="go-cor">0</div><div class="lbl">صحيحة</div></div>
         <div class="stat-card"><div>❌</div><div class="big" id="go-wr">0</div><div class="lbl">خاطئة</div></div>
       </div>
-      <button class="btn btn-gold btn-xl" onclick="startCountdown()">حاولي مجدداً 🔄</button>
+      <button class="btn btn-gold btn-xl" onclick="startCountdown()">حاول/ي مجدداً 🔄</button>
+      <button class="btn btn-blue btn-sm" id="btn-review-mistakes-go" onclick="startReview()" style="display:none;margin-top:8px;">📋 مراجعة الأخطاء</button>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:8px;">🏠 الرئيسية</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ REVIEW MISTAKES ═══════════ -->
+  <div id="review-screen" class="screen page-screen">
+    <div class="page-hero">
+      <h2>📋 مراجعة الأخطاء</h2>
+      <p id="review-progress">خطأ ١ من ١</p>
+    </div>
+    <div class="card" style="max-width:500px;">
+      <div class="q-box" id="review-q" style="margin-bottom:12px;"></div>
+      <div class="self-correct-box" id="review-answer"></div>
+      <div class="review-exp" id="review-exp"></div>
+      <button class="btn btn-green btn-xl" onclick="nextReview()" id="btn-review-next" style="width:100%;margin-top:8px;">التالي ←</button>
+      <button class="btn btn-sm btn-white" onclick="exitReview()" style="width:100%;margin-top:8px;">إنهاء المراجعة</button>
     </div>
   </div>
 
@@ -1733,7 +2400,7 @@
   <div id="leaderboard-screen" class="screen page-screen">
     <div class="page-hero">
       <h2>🏆 لوحة المتصدرين</h2>
-      <p id="lb-hero-sub">تنافسي مع صديقاتك — أفضل نتيجة هذا الأسبوع</p>
+      <p id="lb-hero-sub">تنافس/ي مع الآخرين — أفضل نتيجة هذا الأسبوع</p>
     </div>
     <div class="card">
       <div class="tab-row lb-tabs">
@@ -1741,7 +2408,7 @@
         <button class="tab-btn active" data-period="week" onclick="setLbPeriod('week')">📆 الأسبوع</button>
       </div>
       <p class="lb-reset-hint" id="lb-reset-hint">يتجدد خلال —</p>
-      <p class="lb-subhint">أفضل نتيجة لكل طالبة في الفترة المختارة</p>
+      <p class="lb-subhint">أفضل نتيجة لكل متعلم/ة في الفترة المختارة</p>
       <div id="lb-list"></div>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:16px auto 0;width:100%;">🏠 الرئيسية</button>
     </div>
@@ -1763,10 +2430,10 @@
   <div id="challenge-screen" class="screen page-screen">
     <div class="page-hero">
       <h2>⚔️ تحدي الأصدقاء</h2>
-      <p>أنشئي تحدياً وشاركي الرمز مع صديقاتك</p>
+      <p>أنشئ/ي تحدياً وشارك/ي الرمز مع الأصدقاء</p>
     </div>
     <div class="card" style="text-align:center;">
-      <input type="text" class="input" id="challenge-code" placeholder="أدخلي رمز التحدي...">
+      <input type="text" class="input" id="challenge-code" placeholder="أدخل/ي رمز التحدي...">
       <div style="display:flex;gap:8px;justify-content:center;margin-top:4px;">
         <button class="btn btn-gold btn-sm" onclick="createChallenge()" style="flex:1;">إنشاء تحدي</button>
         <button class="btn btn-orange btn-sm" onclick="joinChallenge()" style="flex:1;">دخول التحدي</button>
@@ -1783,11 +2450,16 @@
       <button onclick="goHome()" style="background:rgba(255,255,255,.2);border:none;color:white;padding:8px 16px;border-radius:10px;font-size:0.85em;font-family:'Tajawal',sans-serif;cursor:pointer;font-weight:700;">← رجوع</button>
     </div>
     <div class="admin-body">
-      <div class="card" style="text-align:center;">
-        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img sm" style="margin:0 auto 12px;">
-        <p style="color:var(--text-soft);line-height:1.6;">يمكن للمعلمة إدارة الأسئلة من لوحة Supabase مباشرة.</p>
-        <button class="btn btn-sm btn-blue" onclick="showAdminFeedback()" style="margin-top:12px;width:100%;">💬 آراء الطالبات</button>
-        <div id="admin-feedback-list" style="display:none;margin-top:12px;text-align:right;max-height:300px;overflow-y:auto;"></div>
+      <div class="card">
+        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img sm" style="margin:0 auto 12px;display:block;">
+        <h3 style="text-align:center;margin-bottom:8px;">لوحة المعلم/ة</h3>
+        <p style="color:var(--text-soft);line-height:1.6;text-align:center;font-size:0.88em;margin-bottom:14px;">إدارة الأسئلة من Supabase — وعرض آراء المتعلمين المحفوظة</p>
+        <div class="admin-feedback-toolbar">
+          <button class="btn btn-green btn-sm" onclick="showAdminFeedback()">🔄 تحديث الآراء</button>
+          <button class="btn btn-white btn-sm" onclick="exportFeedbackCsv()">📥 تصدير CSV</button>
+        </div>
+        <div id="admin-feedback-list"></div>
+        <p id="admin-feedback-status" style="font-size:0.75em;color:var(--text-soft);text-align:center;margin-top:8px;"></p>
       </div>
     </div>
   </div>
@@ -1807,6 +2479,8 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول الثلاثة', nawawi:'الأربعون النووية', merge3:'الكتب الثلاثة' };
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
+const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
+const DEMO_COUNT = 10;
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
   usool: ['👤 المؤلف','📖 الكتاب','📚 المسائل الأربع','📚 العلم','🕌 الرب','🙏 العبادة','👤 النبي','📿 الدين','🤲 الدعاء','🛡️ التوكل','🆘 الاستعانة','📿 الاستعاذة']
@@ -1822,43 +2496,52 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', subLevel:1, questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:1, challengeMode:false, challengeCode:'', demoMode:false };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, wrongLog:[], reviewIdx:0, reviewReturn:'results' };
 let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, pendingLoginAfterDemo = false;
+let lastFeedbackItems = [];
 
-const DEMO_QUESTIONS = [
+const DEMO_FALLBACK = [
   { id:'demo1', book:'tawheed', type:'tf', q:'التوحيد هو إفراد الله تعالى بالعبادة.', tf:true, exp:'نعم! التوحيد هو إفراد الله في الربوبية والألوهية والأسماء والصفات.' },
   { id:'demo2', book:'usool', type:'mc', q:'ما هي الأصول الثلاثة؟', a:['معرفة الرب ومعرفة الدين ومعرفة نبيك','الصلاة والزكاة والصوم','الإيمان والإحسان والإخلاص','القرآن والسنة والإجماع'], c:0, exp:'الأصول الثلاثة: معرفة الرب، ومعرفة الدين بمعرفة دينك، ومعرفة نبيك محمد ﷺ.' },
   { id:'demo3', book:'nawawi', type:'tf', q:'أول حديث في الأربعون النووية: «إنما الأعمال بالنيات».', tf:true, exp:'صحيح! وهو أول حديث في الأربعون النووية للإمام النووي رحمه الله.' },
+  { id:'demo4', book:'tawheed', type:'tf', q:'الشرك الأكبر يُخرج من الملة.', tf:true, exp:'الشرك الأكبر من أعظم الكبائر ويُبقي صاحبه في النار إن مات عليه.' },
+  { id:'demo5', book:'usool', type:'tf', q:'العبادة هي الطاعة والخضوع لله.', tf:true, exp:'العبادة اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال.' },
+  { id:'demo6', book:'nawawi', type:'mc', q:'من كلام النبي ﷺ: «لا يؤمن أحدكم حتى...»', a:['يحب لأخيه ما يحب لنفسه','يصلي الفجر','يحج كل عام','يتصدق بماله كله'], c:0, exp:'من حديث: «لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه».' },
+  { id:'demo7', book:'tawheed', type:'mc', q:'أركان الإسلام خمسة، منها:', a:['إقام الصلاة وإيتاء الزكاة','الصيام والحج فقط','الجهاد والدعوة فقط','الصدق والأمانة فقط'], c:0, exp:'من أركان الإسلام: الشهادتان، الصلاة، الزكاة، الصوم، الحج.' },
+  { id:'demo8', book:'usool', type:'tf', q:'الرب هو الخالق الرازق المدبر.', tf:true, exp:'الرب سبحانه هو المعبود بحق، الخالق لكل شيء.' },
+  { id:'demo9', book:'nawawi', type:'tf', q:'الإحسان أن تعبد الله كأنك تراه.', tf:true, exp:'من تعريف الإحسان في حديث جبريل عليه السلام.' },
+  { id:'demo10', book:'tawheed', type:'tf', q:'دعاء غير الله فيما لا يقدر عليه إلا الله شرك.', tf:true, exp:'الدعاء عبادة، ومن دعا غير الله فيما لا يقدر عليه إلا الله فقد أشرك.' },
 ];
 
 const LEVELS = [
-  { min: 0, title: 'مبتدئة 🌱' },
-  { min: 100, title: 'طالبة 📖' },
-  { min: 300, title: 'متعلمة ⭐' },
-  { min: 600, title: 'باحثة 🔍' },
-  { min: 1000, title: 'عالمة 🎓' },
-  { min: 2000, title: 'حافظة 📚' },
+  { min: 0, title: 'مبتدئ/ة 🌱' },
+  { min: 100, title: 'طالب/ة 📖' },
+  { min: 300, title: 'متعلم/ة ⭐' },
+  { min: 600, title: 'باحث/ة 🔍' },
+  { min: 1000, title: 'عالم/ة 🎓' },
+  { min: 2000, title: 'حافظ/ة 📚' },
 ];
 const BADGES = {
   first_game: { icon: '🎮', name: 'أول لعبة', desc: 'لعبت أول مرة!' },
   streak_3: { icon: '🔥', name: 'سلسلة نار', desc: '٣ إجابات متتالية' },
   streak_5: { icon: '💫', name: 'نجمة لامعة', desc: '٥ إجابات متتالية' },
   perfect: { icon: '💯', name: 'كمال', desc: 'كل الإجابات صحيحة!' },
-  daily_3: { icon: '📅', name: 'ملتزمة', desc: '٣ أيام متتالية' },
-  score_100: { icon: '⭐', name: 'مئة نقطة', desc: 'جمعت ١٠٠ نقطة' },
-  games_10: { icon: '🏆', name: 'محترفة', desc: 'لعبت ١٠ ألعاب' },
-  stage_clear: { icon: '🛤️', name: 'بطلة المراحل', desc: 'أنهيت مرحلة كاملة' },
+  daily_3: { icon: '📅', name: 'ملتزم/ة', desc: '٣ أيام متتالية' },
+  score_100: { icon: '⭐', name: 'مئة نقطة', desc: 'جمعتَ/ِ ١٠٠ نقطة' },
+  games_10: { icon: '🏆', name: 'محترف/ة', desc: 'لعبتَ/ِ ١٠ ألعاب' },
+  stage_clear: { icon: '🏅', name: 'جولة ناجحة', desc: 'أنهيتَ/ِ جولة بنجاح!' },
 };
 const QUOTES = [
   'من سار على الدرب وصل ✨',
-  'طلب العلم فريضة على كل مسلمة 📖',
+  'طلب العلم فريضة على كل مسلم/ة 📖',
   'العلم نور والجهل ظلام 🌟',
-  'واصلي التعلّم فأنتِ قادرة! 💪',
+  'واصل/ي التعلّم فأنت قادر/ة! 💪',
   'كل سؤال يقربك من المعرفة 📚',
   'الصبر مفتاح الفرج 🗝️',
 ];
-const ENCOURAGE_OK = ['ممتاز! 🌟', 'أحسنت! 🎉', 'رائع! ⭐', 'مبدعة! 💫', 'بارك الله فيك! 🤲'];
-const ENCOURAGE_BAD = ['لا بأس! حاولي مرة أخرى 💪', 'تعلّمنا من الخطأ 📖', 'واصلي! أنتِ قادرة 🌱'];
+const ENCOURAGE_OK = ['ممتاز! 🌟', 'أحسنت! 🎉', 'رائع! ⭐', 'مبدع/ة! 💫', 'بارك الله فيك! 🤲'];
+const ENCOURAGE_BAD = ['لا بأس! حاول/ي مرة أخرى 💪', 'تعلّمنا من الخطأ 📖', 'واصل/ي! أنت قادر/ة 🌱'];
+const DEFAULT_PLAYER = 'بطل/ة';
 
 function getProgress() {
   return JSON.parse(localStorage.getItem('playerProgress') || '{}');
@@ -1874,15 +2557,103 @@ function ensureProgress() {
   saveProgress(p);
   return p;
 }
-function stageKey(book, level, sub) {
-  return book + '-' + level + '-' + sub;
+function getBookQuestionCounts(book) {
+  const all = getAllQuestions(book);
+  return {
+    easy: all.filter(q => q.level === 'easy').length,
+    medium: all.filter(q => q.level === 'medium').length,
+    hard: all.filter(q => q.level === 'hard').length,
+    all: all.length
+  };
 }
-function isStageUnlocked(book, level, sub) {
-  if (sub === 1) return true;
-  return !!ensureProgress().completedStages[stageKey(book, level, sub - 1)];
+
+function getOrderedPool(book, level) {
+  let pool = getAllQuestions(book);
+  if (level !== 'all') pool = pool.filter(q => q.level === level);
+  if (book === 'merge3') {
+    const bookOrder = { tawheed: 0, usool: 1, nawawi: 2 };
+    pool.sort((a, b) => {
+      const bb = (bookOrder[a.book] ?? 9) - (bookOrder[b.book] ?? 9);
+      if (bb !== 0) return bb;
+      const ca = chapterSortIndex(a.book, a.cat) - chapterSortIndex(b.book, b.cat);
+      if (ca !== 0) return ca;
+      const lvl = { easy: 0, medium: 1, hard: 2 };
+      return (lvl[a.level] || 1) - (lvl[b.level] || 1);
+    });
+  }
+  return pool;
 }
-function isStageDone(book, level, sub) {
-  return !!ensureProgress().completedStages[stageKey(book, level, sub)];
+
+function updateLevelCounts() {
+  const c = getBookQuestionCounts(state.book);
+  const set = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n ? `(${n})` : '(٠)'; };
+  set('cnt-easy', c.easy);
+  set('cnt-medium', c.medium);
+  set('cnt-hard', c.hard);
+  set('cnt-all', c.all);
+}
+
+function updateQuestionRangeUI() {
+  const pool = getOrderedPool(state.book, state.level);
+  const max = pool.length;
+  const fromEl = document.getElementById('q-from-input');
+  const toEl = document.getElementById('q-to-input');
+  fromEl.max = Math.max(1, max);
+  toEl.max = Math.max(1, max);
+  if (max === 0) {
+    fromEl.value = 1;
+    toEl.value = 1;
+    document.getElementById('pool-info').textContent = 'لا توجد أسئلة لهذا الاختيار';
+    document.getElementById('q-range-hint').textContent = 'اختار/ي كتاباً أو مستوى آخر';
+    document.getElementById('pool-breakdown').innerHTML = '';
+    return;
+  }
+  let from = parseInt(fromEl.value, 10) || 1;
+  let to = parseInt(toEl.value, 10) || Math.min(20, max);
+  from = Math.max(1, Math.min(from, max));
+  to = Math.max(from, Math.min(to, max));
+  fromEl.value = from;
+  toEl.value = to;
+  const count = to - from + 1;
+  const lvl = LEVEL_LABELS[state.level] || state.level;
+  const book = BOOK_LABELS[state.book] || state.book;
+  document.getElementById('pool-info').textContent = `${book} — ${lvl}: ${max} سؤال`;
+  document.getElementById('q-range-hint').textContent = `${count} سؤالاً (من ${from} إلى ${to}) بالترتيب`;
+  const counts = getBookQuestionCounts(state.book);
+  document.getElementById('pool-breakdown').innerHTML = `
+    <span class="pool-chip${state.level==='easy'?' on':''}">سهل ${counts.easy}</span>
+    <span class="pool-chip${state.level==='medium'?' on':''}">متوسط ${counts.medium}</span>
+    <span class="pool-chip${state.level==='hard'?' on':''}">صعب ${counts.hard}</span>
+    <span class="pool-chip${state.level==='all'?' on':''}">الكل ${counts.all}</span>`;
+}
+
+function onRangeInputChange() {
+  updateQuestionRangeUI();
+}
+
+function buildDemoQuestions() {
+  const picked = [];
+  for (const book of ['tawheed', 'usool', 'nawawi']) {
+    const easy = getOrderedPool(book, 'easy');
+    const med = getOrderedPool(book, 'medium');
+    picked.push(...easy.slice(0, 4), ...med.slice(0, 2));
+  }
+  const seen = new Set();
+  const uniq = [];
+  for (const q of picked) {
+    if (!seen.has(q.id)) { seen.add(q.id); uniq.push(q); }
+  }
+  if (uniq.length >= DEMO_COUNT) return uniq.slice(0, DEMO_COUNT);
+  const out = [...uniq];
+  for (const q of DEMO_FALLBACK) {
+    if (out.length >= DEMO_COUNT) break;
+    if (!seen.has(q.id)) { seen.add(q.id); out.push(q); }
+  }
+  return out.slice(0, DEMO_COUNT);
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function getLevelInfo(xp) {
   let lvl = LEVELS[0];
@@ -1922,28 +2693,20 @@ function closeLevelUp() {
   document.getElementById('levelup-overlay').classList.remove('show');
 }
 function getBookProgress(book) {
-  const levels = { easy: 4, medium: 3, hard: 3 };
-  let done = 0, total = 0;
-  for (const [lvl, count] of Object.entries(levels)) {
-    for (let i = 1; i <= count; i++) {
-      total++;
-      if (isStageDone(book, lvl, i)) done++;
-    }
-  }
-  return { done, total };
+  const c = getBookQuestionCounts(book);
+  return { done: 0, total: c.all, counts: c };
 }
 function updateBookProgress() {
   const map = { tawheed: 'book-btn-tawheed', usool: 'book-btn-usool', nawawi: 'book-btn-nawawi', merge3: 'book-btn-merge' };
   for (const [book, id] of Object.entries(map)) {
     const btn = document.getElementById(id);
     if (!btn) continue;
-    let done, total;
+    let counts;
     if (book === 'merge3') {
-      const t = getBookProgress('tawheed'), u = getBookProgress('usool'), n = getBookProgress('nawawi');
-      done = t.done + u.done + n.done;
-      total = t.total + u.total + n.total;
+      const t = getBookQuestionCounts('tawheed'), u = getBookQuestionCounts('usool'), n = getBookQuestionCounts('nawawi');
+      counts = { easy: t.easy + u.easy + n.easy, medium: t.medium + u.medium + n.medium, hard: t.hard + u.hard + n.hard, all: t.all + u.all + n.all };
     } else {
-      ({ done, total } = getBookProgress(book));
+      counts = getBookQuestionCounts(book);
     }
     let prog = btn.querySelector('.book-progress');
     if (!prog) {
@@ -1951,7 +2714,7 @@ function updateBookProgress() {
       prog.className = 'book-progress';
       btn.appendChild(prog);
     }
-    prog.textContent = done + '/' + total + ' مراحل';
+    prog.textContent = `${counts.all} سؤال`;
   }
 }
 function updateDailyMission() {
@@ -1962,8 +2725,8 @@ function updateDailyMission() {
   const done = p.lastPlayDate === today;
   el.classList.toggle('done', done);
   el.querySelector('.dm-icon').textContent = done ? '🏆' : '🎯';
-  el.querySelector('.dm-title').textContent = done ? 'أتممتِ مهمة اليوم!' : 'مهمة اليوم';
-  el.querySelector('.dm-sub').textContent = done ? 'عودي غداً لمهمة جديدة ✨' : 'أكمِلي جولة واحدة على الأقل';
+  el.querySelector('.dm-sub').textContent = done ? 'عد/ي غداً لمهمة جديدة ✨' : 'أكمِل/ي جولة واحدة على الأقل';
+  el.querySelector('.dm-title').textContent = done ? 'أتممتَ/ِ مهمة اليوم!' : 'مهمة اليوم';
   el.querySelector('.dm-check').textContent = done ? '✓' : '0/1';
 }
 function updateTopbarStats() {
@@ -2065,14 +2828,14 @@ function toggleSound() {
   if (soundOn) playSound('correct');
 }
 async function shareScore() {
-  const text = '🎮 ' + state.userName + ' حصلت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجربي أنتِ أيضاً!';
+  const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجرّب/ي أنت أيضاً!';
   if (navigator.share) {
     try { await navigator.share({ title: 'المكتبة الثلاثية', text }); return; } catch (e) {}
   }
   try {
     await navigator.clipboard.writeText(text);
     document.getElementById('share-btn').textContent = '✅ تم النسخ!';
-    setTimeout(() => { document.getElementById('share-btn').textContent = '📤 شاركي نتيجتك'; }, 2000);
+    setTimeout(() => { document.getElementById('share-btn').textContent = '📤 شارك/ي نتيجتك'; }, 2000);
   } catch (e) { alert(text); }
 }
 
@@ -2094,7 +2857,7 @@ function highlightCorrectAnswer(q) {
 }
 function startDemoFromLogin() {
   const name = document.getElementById('login-name').value.trim();
-  if (!name) { document.getElementById('login-err').textContent = 'اكتبي اسمك أولاً لتجربي النموذج'; return; }
+  if (!name) { document.getElementById('login-err').textContent = 'اكتب/ي اسمك أولاً لتجرب/ي النموذج'; return; }
   document.getElementById('login-err').textContent = '';
   state.userName = name;
   state.demoMode = false;
@@ -2109,10 +2872,12 @@ function showDemoIntro(name) {
 }
 async function beginDemo() {
   state.demoMode = true;
-  state.questions = [...DEMO_QUESTIONS];
+  state.wrongLog = [];
+  state.questions = buildDemoQuestions();
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
   state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.answered = false;
-  state.total = DEMO_QUESTIONS.length;
+  state.total = state.questions.length;
+  document.getElementById('demo-bar').textContent = `📝 نموذج تجريبي — ${state.total} أسئلة للتجربة`;
   document.getElementById('demo-bar').style.display = 'block';
   document.getElementById('training-bar').style.display = 'none';
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
@@ -2137,6 +2902,8 @@ function endDemo() {
   document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('sel'));
   document.getElementById('feedback-text').value = '';
   document.getElementById('feedback-msg').textContent = '';
+  const rd = document.getElementById('btn-review-demo');
+  if (rd) rd.style.display = state.wrongLog.length ? 'block' : 'none';
   show('feedback-screen');
 }
 function setRating(r, el) {
@@ -2147,23 +2914,44 @@ function setRating(r, el) {
 async function submitFeedback() {
   const msg = document.getElementById('feedback-text').value.trim();
   const msgEl = document.getElementById('feedback-msg');
-  if (!feedbackRating) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اختاري تقييماً أولاً 😊'; return; }
+  const btn = document.getElementById('btn-submit-feedback');
+  if (!feedbackRating) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اختار/ي تقييماً أولاً 😊'; return; }
+  btn.disabled = true;
+  btn.textContent = 'جاري الإرسال...';
+  const fullMsg = [
+    msg,
+    state.total ? `(النموذج: ${state.correct}/${state.total} صحيحة)` : ''
+  ].filter(Boolean).join('\n') || null;
   const payload = {
-    user_name: state.userName,
+    user_name: state.userName || 'مجهول',
     user_email: state.userEmail || null,
     user_id: state.user?.id || null,
     rating: feedbackRating,
-    message: msg || null,
+    message: fullMsg,
     source: 'demo',
     created_at: new Date().toISOString()
   };
-  const { error } = await db.from('feedback').insert(payload);
+  const { error } = await db.from('feedback').insert({
+    user_name: payload.user_name,
+    user_email: payload.user_email,
+    user_id: payload.user_id,
+    rating: payload.rating,
+    message: payload.message,
+    source: payload.source
+  });
   const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
-  backup.push(payload);
-  localStorage.setItem('feedbackBackup', JSON.stringify(backup));
-  if (error) console.warn('feedback insert:', error);
-  msgEl.style.color = 'var(--emerald)';
-  msgEl.textContent = error ? '✅ تم حفظ رأيكِ! شكراً لكِ 💚' : '✅ وصل رأيكِ! شكراً لمساهمتكِ 💚';
+  backup.unshift(payload);
+  localStorage.setItem('feedbackBackup', JSON.stringify(backup.slice(0, 200)));
+  btn.disabled = false;
+  btn.textContent = 'إرسال رأيي 📨';
+  if (error) {
+    console.warn('feedback insert:', error);
+    msgEl.style.color = 'var(--orange)';
+    msgEl.textContent = '⚠️ حُفظ محلياً — شغّل/ي supabase_feedback.sql في Supabase';
+  } else {
+    msgEl.style.color = 'var(--emerald)';
+    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه! شكراً لمساهمتك/ِ 💚';
+  }
   localStorage.setItem('demoDone', '1');
 }
 async function finishDemoFlow() {
@@ -2177,27 +2965,59 @@ async function finishDemoFlow() {
     show('login-screen');
   }
 }
+function mergeFeedbackItems(server, backup) {
+  const map = new Map();
+  for (const f of [...(server || []), ...(backup || [])]) {
+    const key = f.id || `${f.user_name}-${f.created_at}-${f.rating}-${(f.message || '').slice(0, 40)}`;
+    if (!map.has(key)) map.set(key, f);
+  }
+  return [...map.values()].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+}
+
 async function showAdminFeedback() {
   const list = document.getElementById('admin-feedback-list');
-  list.style.display = 'block';
-  const { data, error } = await db.from('feedback').select('*').order('created_at', { ascending: false }).limit(30);
+  const status = document.getElementById('admin-feedback-status');
+  list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:16px;">جاري التحميل...</p>';
+  const { data, error } = await db.from('feedback').select('*').order('created_at', { ascending: false }).limit(100);
   const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
-  const items = data?.length ? data : backup;
+  lastFeedbackItems = mergeFeedbackItems(data, backup);
   const emojis = ['😞','😕','😐','😊','😍'];
-  if (!items.length) {
-    list.innerHTML = '<p style="color:var(--text-soft);font-size:0.85em;padding:10px 0;">لا توجد آراء بعد.</p>';
+  if (!lastFeedbackItems.length) {
+    list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:20px 0;">لا توجد آراء بعد.</p>';
+    status.textContent = error ? 'تعذّر الاتصال بـ Supabase — تأكدي من تشغيل supabase_feedback.sql' : '';
     return;
   }
-  list.innerHTML = items.map(f => `
-    <div style="background:var(--cream);border-radius:12px;padding:12px;margin-bottom:8px;border:1px solid var(--border);">
-      <div style="display:flex;justify-content:space-between;font-weight:900;font-size:0.85em;">
-        <span>${f.user_name || 'مجهول'}</span>
-        <span>${emojis[(f.rating||3)-1] || '💬'} ${f.rating}/5</span>
+  list.innerHTML = lastFeedbackItems.map(f => `
+    <div class="feedback-item">
+      <div class="fb-head">
+        <span>${escapeHtml(f.user_name || 'مجهول')}</span>
+        <span>${emojis[(f.rating || 3) - 1] || '💬'} ${f.rating}/5</span>
       </div>
-      <p style="font-size:0.8em;color:var(--text-soft);margin-top:6px;line-height:1.5;">${f.message || '—'}</p>
-      <p style="font-size:0.65em;color:var(--gray);margin-top:4px;">${f.created_at ? new Date(f.created_at).toLocaleDateString('ar') : ''}</p>
+      <div class="fb-msg">${escapeHtml(f.message || '—')}</div>
+      <div class="fb-meta">${f.created_at ? new Date(f.created_at).toLocaleString('ar') : ''}${f.source ? ' · ' + escapeHtml(f.source) : ''}${!f.id ? ' · محلي' : ''}</div>
     </div>`).join('');
-  if (error) list.innerHTML = '<p style="color:var(--orange);font-size:0.8em;margin-bottom:8px;">عرض محلي — أنشئي جدول feedback في Supabase</p>' + list.innerHTML;
+  status.textContent = `${lastFeedbackItems.length} رأي — ${data?.length || 0} من السحابة، ${backup.length} نسخة محلية`;
+  if (error) status.textContent += ' (تحذير: ' + error.message + ')';
+}
+
+function exportFeedbackCsv() {
+  if (!lastFeedbackItems.length) { alert('لا توجد آراء للتصدير. اضغط/ي «تحديث الآراء» أولاً.'); return; }
+  const rows = [['الاسم','التقييم','الرأي','المصدر','التاريخ']];
+  for (const f of lastFeedbackItems) {
+    rows.push([
+      f.user_name || '',
+      String(f.rating || ''),
+      (f.message || '').replace(/\n/g, ' '),
+      f.source || '',
+      f.created_at || ''
+    ]);
+  }
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'feedback-alhuda-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
 }
 
 function toggleSettings() {
@@ -2245,23 +3065,27 @@ function getAllQuestions(book) {
 }
 
 function getQuestionsForGame() {
-  const pool = getAllQuestions(state.book).filter(q => q.level === state.level);
-  if (pool.length === 0) return [];
-  const count = Math.min(parseInt(document.getElementById('q-count-input').value) || 20, pool.length, 50);
-  const seed = (state.book==='tawheed'?1:state.book==='usool'?2:state.book==='nawawi'?4:7)*10000 + state.subLevel*1000 + state.bankVersion*100;
-  const shuffled = seededShuffle([...pool], seed);
-  const start = ((state.subLevel-1)*count + (state.bankVersion-1)*count*3) % shuffled.length;
-  const seen = new Set(); let sel = [];
-  for (let i = 0; i < count*2 && sel.length < count; i++) {
-    const idx = (start + i) % shuffled.length;
-    if (!seen.has(shuffled[idx].id)) { sel.push(shuffled[idx]); seen.add(shuffled[idx].id); }
+  const pool = getOrderedPool(state.book, state.level);
+  if (!pool.length) return [];
+  const fromEl = document.getElementById('q-from-input');
+  const toEl = document.getElementById('q-to-input');
+  let from = parseInt(fromEl.value, 10) || 1;
+  let to = parseInt(toEl.value, 10) || pool.length;
+  from = Math.max(1, Math.min(from, pool.length));
+  to = Math.max(from, Math.min(to, pool.length));
+  fromEl.value = from;
+  toEl.value = to;
+  let slice = pool.slice(from - 1, to);
+  if (state.bankVersion > 0) {
+    const seed = (state.book === 'tawheed' ? 1 : state.book === 'usool' ? 2 : state.book === 'nawawi' ? 4 : 7) * 10000 + from * 100 + state.bankVersion;
+    slice = seededShuffle(slice, seed);
   }
-  const rem = shuffled.filter(q => !seen.has(q.id));
-  while (sel.length < count && rem.length > 0) sel.push(rem.shift());
-  return sel.slice(0, count);
+  return slice;
 }
+
 function seededShuffle(arr, seed) {
-  const a = [...arr]; let s = seed;
+  const a = [...arr];
+  let s = seed;
   for (let i = a.length - 1; i > 0; i--) {
     s = (s * 16807 + 0) % 2147483647;
     const j = s % (i + 1);
@@ -2272,9 +3096,10 @@ function seededShuffle(arr, seed) {
 
 function refreshQuestions() {
   state.bankVersion++;
+  updateQuestionRangeUI();
   const btn = document.getElementById('btn-start-game');
   btn.textContent = '✅ تم التحديث!';
-  setTimeout(() => { btn.textContent = 'ابدأ اللعبة 🎮'; }, 2000);
+  setTimeout(() => { btn.textContent = 'ابدأ اللعبة'; }, 2000);
 }
 
 /* ── Navigation ── */
@@ -2289,12 +3114,14 @@ function updateWelcomeStats() {
 }
 
 function goHome() {
-  const icon = state.userType === 'teacher' ? '👩‍🏫' : '👩‍🎓';
-  document.getElementById('welcome-user').textContent = icon + ' ' + state.userName;
+  const icon = state.userType === 'teacher' ? '👨‍🏫' : '🎓';
+  const role = state.userType === 'teacher' ? 'معلم/ة' : 'متعلم/ة';
+  document.getElementById('welcome-user').textContent = icon + ' ' + role + ' · ' + state.userName;
   document.getElementById('welcome-greeting').textContent = 'مرحباً يا ' + state.userName + '! 👋';
   document.getElementById('admin-link').style.display = state.userType === 'teacher' ? 'flex' : 'none';
   updateBookButtons();
-  updateSubLevels();
+  updateLevelCounts();
+  updateQuestionRangeUI();
   updateWelcomeStats();
   show('welcome');
 }
@@ -2312,7 +3139,7 @@ function setLoginTab(t) {
   loginTab = t;
   document.getElementById('tab-student').classList.toggle('active', t === 'student');
   document.getElementById('tab-teacher').classList.toggle('active', t === 'teacher');
-  document.getElementById('login-title').textContent = t === 'student' ? 'دخول الطالبات' : 'دخول المعلمات';
+  document.getElementById('login-title').textContent = t === 'student' ? 'دخول المتعلمين' : 'دخول المعلمين';
   document.getElementById('login-email').style.display = t === 'teacher' ? 'block' : 'none';
   document.getElementById('login-pass').style.display = t === 'teacher' ? 'block' : 'none';
   document.getElementById('login-name').style.display = t === 'teacher' ? 'none' : 'block';
@@ -2322,7 +3149,7 @@ async function doLogin() {
   document.getElementById('login-err').textContent = '';
   if (loginTab === 'student') {
     const name = document.getElementById('login-name').value.trim();
-    if (!name) { document.getElementById('login-err').textContent = 'اكتبي اسمك من فضلك'; return; }
+    if (!name) { document.getElementById('login-err').textContent = 'اكتب/ي اسمك من فضلك'; return; }
     const { data, error } = await db.auth.signInAnonymously();
     if (error) { document.getElementById('login-err').textContent = 'خطأ في الاتصال'; return; }
     await db.from('profiles').upsert({ id:data.user.id, name, role:'student' });
@@ -2337,11 +3164,11 @@ async function doLogin() {
   } else {
     const email = document.getElementById('login-email').value.trim();
     const pass = document.getElementById('login-pass').value.trim();
-    if (!email || !pass) { document.getElementById('login-err').textContent = 'أدخلي البريد وكلمة المرور'; return; }
+    if (!email || !pass) { document.getElementById('login-err').textContent = 'أدخل/ي البريد وكلمة المرور'; return; }
     const { data, error } = await db.auth.signInWithPassword({ email, password:pass });
     if (error) { document.getElementById('login-err').textContent = 'بيانات غير صحيحة'; return; }
     const { data:profile } = await db.from('profiles').select('*').eq('id', data.user.id).single();
-    if (!profile || profile.role !== 'teacher') { document.getElementById('login-err').textContent = 'لستِ معلمة'; return; }
+    if (!profile || profile.role !== 'teacher') { document.getElementById('login-err').textContent = 'لستَ/ِ معلم/ة'; return; }
     state.user = data.user; state.userType = 'teacher'; state.userName = profile.name;
     state.userEmail = email;
     localStorage.setItem('savedEmail', email);
@@ -2352,42 +3179,26 @@ async function doLogin() {
 
 /* ── Book / Level selection ── */
 function selectBook(b) {
-  state.book = b; state.level = 'easy'; state.subLevel = 1;
-  updateBookButtons(); selectLevel('easy');
+  state.book = b;
+  state.level = 'easy';
+  state.bankVersion = 0;
+  updateBookButtons();
+  updateLevelCounts();
+  selectLevel('easy');
 }
 function selectLevel(l) {
   state.level = l;
-  state.subLevel = 1;
-  const total = l === 'easy' ? 4 : 3;
-  for (let i = 1; i <= total; i++) {
-    if (isStageUnlocked(state.book, l, i)) { state.subLevel = i; break; }
-  }
+  state.bankVersion = 0;
   document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('sel'));
-  document.getElementById('btn-' + l).classList.add('sel');
-  updateSubLevels();
-}
-function updateSubLevels() {
-  const c = document.getElementById('sublevel-container');
-  const total = state.level === 'easy' ? 4 : 3;
-  let h = '';
-  for (let i = 1; i <= total; i++) {
-    if (i > 1) {
-      const prevDone = isStageDone(state.book, state.level, i - 1);
-      h += `<div class="path-connector${prevDone ? ' done' : ''}"></div>`;
-    }
-    const unlocked = isStageUnlocked(state.book, state.level, i);
-    const done = isStageDone(state.book, state.level, i);
-    const cls = state.subLevel === i ? ' sel' : done ? ' done' : !unlocked ? ' locked' : '';
-    const label = done ? '✓' : !unlocked ? '🔒' : i;
-    const click = unlocked ? `onclick="selectSubLevel(${i})"` : '';
-    h += `<button class="sublevel-btn${cls}" ${click} aria-label="المرحلة ${i}">${label}</button>`;
-  }
-  c.innerHTML = h;
-}
-function selectSubLevel(sl) {
-  if (!isStageUnlocked(state.book, state.level, sl)) return;
-  state.subLevel = sl;
-  updateSubLevels();
+  const el = document.getElementById('btn-' + l);
+  if (el) el.classList.add('sel');
+  const pool = getOrderedPool(state.book, l);
+  const max = pool.length;
+  const toEl = document.getElementById('q-to-input');
+  const fromEl = document.getElementById('q-from-input');
+  fromEl.value = 1;
+  toEl.value = max ? Math.min(20, max) : 1;
+  updateQuestionRangeUI();
 }
 function updateBookButtons() {
   document.querySelectorAll('.book-btn').forEach(b => b.classList.remove('sel'));
@@ -2399,7 +3210,7 @@ function startCountdown() {
   if (!state.demoMode && !state.challengeMode) {
     const qs = getQuestionsForGame();
     if (!qs.length) {
-      alert('لا توجد أسئلة لهذا الاختيار. جرّبي كتاباً أو مستوى آخر، أو اضغطي «تحديث الأسئلة».');
+      alert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر، أو غيّر/ي نطاق الأسئلة.');
       return;
     }
   }
@@ -2441,8 +3252,9 @@ function startGame() {
     }
   }
   if (state.questions.length === 0) { alert('لا توجد أسئلة لهذا الاختيار.'); return; }
+  state.qFrom = parseInt(document.getElementById('q-from-input')?.value, 10) || 1;
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
-  state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.answered = false;
+  state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.wrongLog = []; state.answered = false;
   state.total = state.questions.length;
   renderHearts(); updateScore(); updateProgress();
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
@@ -2459,7 +3271,9 @@ function renderQ() {
   const q = state.questions[state.idx];
   state.answered = false;
   document.getElementById('show-answer-btn').style.display = 'none';
-  document.getElementById('q-num').textContent = `السؤال ${state.idx + 1} من ${state.total}`;
+  document.getElementById('q-num').textContent = (state.demoMode || state.challengeMode)
+    ? `السؤال ${state.idx + 1} من ${state.total}`
+    : `سؤال ${state.qFrom + state.idx} — ${state.idx + 1}/${state.total}`;
   document.getElementById('q-text').textContent = q.q;
   document.getElementById('q-book-badge').textContent = BOOK_LABELS[q.book] || q.book;
   document.getElementById('q-type-badge').style.display = q.type === 'tf' ? 'inline-block' : 'none';
@@ -2490,9 +3304,14 @@ function pick(btn, isOk) {
   state.answered = true;
   document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
   const fb = document.getElementById('feedback');
+  const q = state.questions[state.idx];
+  const n = state.userName || DEFAULT_PLAYER;
+  const expEl = document.getElementById('fb-exp');
+  const selfBox = document.getElementById('fb-self-correct');
+
   if (isOk) {
     btn.classList.add('correct');
-    document.getElementById('fb-self-correct').style.display = 'none';
+    selfBox.style.display = 'none';
     if (!trainingMode && !state.demoMode) {
       state.streak++; state.correct++;
       const pts = 10 + Math.min(state.streak * 2, 20);
@@ -2508,54 +3327,107 @@ function pick(btn, isOk) {
     }
     fb.className = 'feedback show ok';
     document.getElementById('fb-icon').textContent = '🎉';
-    const n = state.userName || 'بطلة';
-    document.getElementById('fb-title').textContent = state.demoMode ? `أحسنتِ يا ${n}! 🌟` : ENCOURAGE_OK[Math.floor(Math.random() * ENCOURAGE_OK.length)];
+    document.getElementById('fb-title').textContent = state.demoMode ? `أحسنت يا ${n}! 🌟` : ENCOURAGE_OK[Math.floor(Math.random() * ENCOURAGE_OK.length)];
+    const why = q.exp || 'إجابة صحيحة — بارك الله فيك!';
+    expEl.innerHTML = `<div class="why-correct-box"><strong>✅ لماذا صحيح؟</strong>${escapeHtml(why)}</div>`;
   } else {
     btn.classList.add('wrong');
-    const q = state.questions[state.idx];
-    const n = state.userName || 'بطلة';
-    highlightCorrectAnswer(q);
+    const picked = btn.textContent;
+    if (!trainingMode) {
+      state.wrongLog.push({ q, index: state.idx, picked });
+    }
     if (!trainingMode && !state.demoMode) {
       state.hearts--; state.streak = 0; state.wrong++;
       renderHearts();
       playSound('wrong');
       if (state.hearts <= 0) {
-        setTimeout(() => endGame(), 1500);
-        document.getElementById('fb-self-correct').style.display = 'block';
-        document.getElementById('fb-self-correct').innerHTML = `📌 يا <strong>${n}</strong>، راجعي مع نفسك:<br>الإجابة الصحيحة: <strong>${getCorrectAnswerText(q)}</strong>`;
-        document.getElementById('fb-title').textContent = `${n}، لا بأس! كلنا نتعلّم 💪`;
-        document.getElementById('fb-exp').textContent = q.exp || '';
         fb.className = 'feedback show bad';
-        document.getElementById('fb-icon').textContent = '🤔';
+        document.getElementById('fb-icon').textContent = '💔';
+        document.getElementById('fb-title').textContent = `${n}، انتهت المحاولات — راجع/ي أخطاءك لاحقاً 💪`;
+        selfBox.style.display = 'none';
+        expEl.textContent = '';
+        setTimeout(() => endGame(), 1800);
         return;
       }
     } else if (state.demoMode) {
       state.wrong++;
       playSound('wrong');
+    } else if (trainingMode) {
+      playSound('wrong');
     }
-    document.getElementById('show-answer-btn').style.display = trainingMode ? 'block' : 'none';
     fb.className = 'feedback show bad';
     document.getElementById('fb-icon').textContent = '🤔';
-    document.getElementById('fb-title').textContent = `${n}، لا بأس! راجعي مع نفسك 💪`;
-    document.getElementById('fb-self-correct').style.display = 'block';
-    document.getElementById('fb-self-correct').innerHTML = `📌 يا <strong>${n}</strong>، الإجابة الصحيحة:<br><strong>${getCorrectAnswerText(q)}</strong>`;
+    document.getElementById('fb-title').textContent = `${n}، إجابة خاطئة — راجع/يها لاحقاً في «مراجعة الأخطاء»`;
+    selfBox.style.display = 'none';
+    expEl.textContent = trainingMode ? 'وضع التدريب: اضغط/ي «إظهار الإجابة» إن أردتَ/ِ.' : '';
+    document.getElementById('show-answer-btn').style.display = trainingMode ? 'block' : 'none';
   }
-  document.getElementById('fb-exp').textContent = state.questions[state.idx].exp || '';
 }
 
 function nextQ() {
   state.idx++;
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
   document.getElementById('fb-self-correct').style.display = 'none';
+  document.getElementById('fb-exp').textContent = '';
   if (state.idx >= state.questions.length) {
     if (state.demoMode) endDemo();
     else endGame();
   } else renderQ();
 }
 
+function updateReviewButtons() {
+  const show = state.wrongLog.length > 0;
+  ['btn-review-mistakes', 'btn-review-mistakes-go'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = show ? 'inline-block' : 'none';
+  });
+}
+
+function startReview(from) {
+  if (!state.wrongLog.length) return;
+  state.reviewIdx = 0;
+  state.reviewReturn = from || (document.getElementById('gameover').classList.contains('active') ? 'gameover' : 'results');
+  renderReviewItem();
+  show('review-screen');
+}
+
+function renderReviewItem() {
+  const item = state.wrongLog[state.reviewIdx];
+  const q = item.q;
+  const total = state.wrongLog.length;
+  document.getElementById('review-progress').textContent = `خطأ ${state.reviewIdx + 1} من ${total}`;
+  document.getElementById('review-q').textContent = q.q;
+  const pickedNote = item.picked ? `<br><span style="font-size:0.85em;color:var(--coral);">إجابتك: ${escapeHtml(item.picked)}</span>` : '';
+  document.getElementById('review-answer').innerHTML =
+    `📌 الإجابة الصحيحة:<br><strong>${escapeHtml(getCorrectAnswerText(q))}</strong>${pickedNote}`;
+  const exp = q.exp || '—';
+  document.getElementById('review-exp').innerHTML =
+    `<strong>📖 الدليل والشرح:</strong>${escapeHtml(exp)}`;
+  const btn = document.getElementById('btn-review-next');
+  btn.textContent = state.reviewIdx >= total - 1 ? 'إنهاء المراجعة ✓' : 'التالي ←';
+}
+
+function nextReview() {
+  if (state.reviewIdx >= state.wrongLog.length - 1) {
+    exitReview();
+    return;
+  }
+  state.reviewIdx++;
+  renderReviewItem();
+}
+
+function exitReview() {
+  show(state.reviewReturn || 'results');
+}
+
 function revealAnswer() {
+  if (!trainingMode) return;
   const q = state.questions[state.idx];
   if (q) highlightCorrectAnswer(q);
+  const expEl = document.getElementById('fb-exp');
+  if (q?.exp) {
+    expEl.innerHTML = `<div class="why-correct-box"><strong>💡 الإجابة والشرح (تدريب)</strong>${escapeHtml(q.exp)}</div>`;
+  }
   document.getElementById('show-answer-btn').style.display = 'none';
 }
 
@@ -2569,9 +3441,7 @@ async function endGame() {
   p.totalCorrect = (p.totalCorrect || 0) + state.correct;
   if (state.maxStreak > (p.bestStreak || 0)) p.bestStreak = state.maxStreak;
   if (state.score > (p.bestScore || 0)) p.bestScore = state.score;
-  if (pct >= 0.5 && !trainingMode) {
-    p.completedStages = p.completedStages || {};
-    p.completedStages[stageKey(state.book, state.level, state.subLevel)] = true;
+  if (pct >= 0.5 && !trainingMode && !state.demoMode) {
     unlockBadge('stage_clear');
   }
   saveProgress(p);
@@ -2586,12 +3456,13 @@ async function endGame() {
     document.getElementById('go-score').textContent = state.score;
     document.getElementById('go-cor').textContent = state.correct;
     document.getElementById('go-wr').textContent = state.wrong;
+    updateReviewButtons();
     show('gameover');
   } else {
     const stars = renderStars(pct);
     document.getElementById('res-icon').textContent = stars === 3 ? '🏆' : stars >= 2 ? '🎉' : '📚';
     document.getElementById('res-title').textContent = stars === 3 ? 'مذهلة!' : stars >= 2 ? 'أحسنت!' : 'جيد!';
-    document.getElementById('res-sub').textContent = stars === 3 ? 'نتيجة ذهبية! أنتِ بطلة! 🌟' : stars >= 2 ? 'نتيجة رائعة! واصلي التعلّم 🌟' : 'واصلي المحاولة، أنتِ قادرة! 💪';
+    document.getElementById('res-sub').textContent = stars === 3 ? 'نتيجة ذهبية! أنت بطل/ة! 🌟' : stars >= 2 ? 'نتيجة رائعة! واصل/ي التعلّم 🌟' : 'واصل/ي المحاولة، أنت قادر/ة! 💪';
     document.getElementById('fin-score').textContent = state.score;
     document.getElementById('fin-correct').textContent = state.correct + '/' + state.total;
     document.getElementById('fin-streak').textContent = state.maxStreak;
@@ -2600,13 +3471,15 @@ async function endGame() {
     xpEl.textContent = '+' + xpGain + ' نقطة خبرة ✨';
     if (stars >= 2) launchConfetti();
     if (stars === 3) playSound('achievement');
+    updateReviewButtons();
     show('results');
   }
 
   if (state.user) {
+    const qFrom = parseInt(document.getElementById('q-from-input').value, 10) || 1;
     await db.from('scores').insert({
       user_id: state.user.id, book: state.book, level: state.level,
-      sub_level: state.subLevel, score: state.score, correct: state.correct, total: state.total
+      sub_level: qFrom, score: state.score, correct: state.correct, total: state.total
     });
   }
   if (state.challengeMode) saveChallengeResult();
@@ -2716,8 +3589,8 @@ function renderLeaderboardList(ranked, nameMap) {
   const list = document.getElementById('lb-list');
   if (!ranked.length) {
     const emptyMsg = lbPeriod === 'day'
-      ? 'لا توجد نتائج اليوم بعد. كوني الأولى! 🌟'
-      : 'لا توجد نتائج هذا الأسبوع بعد. كوني الأولى! 🌟';
+      ? 'لا توجد نتائج اليوم بعد. كن/ي أول/ة! 🌟'
+      : 'لا توجد نتائج هذا الأسبوع بعد. كن/ي أول/ة! 🌟';
     list.innerHTML = `<p style="text-align:center;color:var(--text-soft);padding:20px 0;">${emptyMsg}</p>`;
     return;
   }
@@ -2727,7 +3600,7 @@ function renderLeaderboardList(ranked, nameMap) {
   list.innerHTML = rankHtml + ranked.slice(0, 30).map((s, i) => {
     const isYou = state.user && s.user_id === state.user.id;
     const name = nameMap[s.user_id] || 'مجهول';
-    return `<div class="lb-row ${i===0?'top1':i===1?'top2':i===2?'top3':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${name}${isYou?' (أنتِ)':''}</span><span class="lb-score">⭐${s.score}</span></div>`;
+    return `<div class="lb-row ${i===0?'top1':i===1?'top2':i===2?'top3':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${name}${isYou?' (أنت)':''}</span><span class="lb-score">⭐${s.score}</span></div>`;
   }).join('');
 }
 
@@ -2736,8 +3609,8 @@ async function loadLeaderboard(period) {
   document.querySelectorAll('.lb-tabs .tab-btn').forEach(t => t.classList.toggle('active', t.dataset.period === period));
   document.getElementById('lb-reset-hint').textContent = formatLbCountdown(period);
   document.getElementById('lb-hero-sub').textContent = period === 'day'
-    ? 'تنافسي مع صديقاتك — أفضل نتيجة اليوم'
-    : 'تنافسي مع صديقاتك — أفضل نتيجة هذا الأسبوع';
+    ? 'تنافس/ي مع الآخرين — أفضل نتيجة اليوم'
+    : 'تنافس/ي مع الآخرين — أفضل نتيجة هذا الأسبوع';
 
   const start = getLbPeriodStart(period);
   const { data: scores, error } = await db.from('scores')
@@ -2793,7 +3666,7 @@ async function showProfile() {
     <div class="profile-hero">${avatar}</div>
     <h3 style="text-align:center;margin-bottom:4px;">${state.userName}</h3>
     <p style="text-align:center;color:var(--emerald);font-weight:800;font-size:0.9em;">${info.title}</p>
-    <p style="text-align:center;color:var(--text-soft);font-size:0.85em;">${state.userType==='teacher'?'معلمة':'طالبة'} · 🔥 ${p.dailyStreak||0} يوم متتالي</p>
+    <p style="text-align:center;color:var(--text-soft);font-size:0.85em;">${state.userType==='teacher'?'معلم/ة':'متعلم/ة'} · 🔥 ${p.dailyStreak||0} يوم متتالي</p>
     <div class="profile-stat-row">
       <div class="profile-stat"><div class="val">${totalGames}</div><div class="lbl">ألعاب</div></div>
       <div class="profile-stat"><div class="val">${bestScore}</div><div class="lbl">أفضل نتيجة</div></div>
@@ -2812,7 +3685,7 @@ function startChallenge() {
 async function createChallenge() {
   const questions = getQuestionsForGame();
   if (!questions.length) {
-    document.getElementById('challenge-msg').textContent = '❌ لا توجد أسئلة. اختاري كتاباً ومستوى أولاً.';
+    document.getElementById('challenge-msg').textContent = '❌ لا توجد أسئلة. اختار/ي كتاباً ومستوى أولاً.';
     return;
   }
   const code = 'CH' + Date.now().toString(36).toUpperCase();
@@ -2827,12 +3700,12 @@ async function createChallenge() {
   } catch (e) {}
   document.getElementById('challenge-msg').innerHTML =
     '✅ رمز التحدي: <strong style="font-size:1.3em;color:var(--emerald);">' + code + '</strong>' + copyNote +
-    '<br><span style="font-size:0.8em;color:var(--text-soft);">شاركيه مع صديقتك — تدخلي من «دخول التحدي»</span>' +
-    (error ? '<br><span style="font-size:0.75em;color:var(--orange);">ملاحظة: شغّلي supabase_challenges.sql للمشاركة بين الأجهزة</span>' : '');
+    '<br><span style="font-size:0.8em;color:var(--text-soft);">شارك/ي الرمز مع صديق/ة — ادخل/ي من «دخول التحدي»</span>' +
+    (error ? '<br><span style="font-size:0.75em;color:var(--orange);">ملاحظة: شغّل/ي supabase_challenges.sql للمشاركة بين الأجهزة</span>' : '');
 }
 async function joinChallenge() {
   const code = document.getElementById('challenge-code').value.trim().toUpperCase();
-  if (!code) { document.getElementById('challenge-msg').textContent = '❌ أدخلي رمز التحدي'; return; }
+  if (!code) { document.getElementById('challenge-msg').textContent = '❌ أدخل/ي رمز التحدي'; return; }
   let qs = JSON.parse(localStorage.getItem('ch_q_' + code) || 'null');
   if (!qs) {
     const { data } = await db.from('challenges').select('questions').eq('code', code).maybeSingle();
@@ -2843,10 +3716,10 @@ async function joinChallenge() {
   state.challengeMode = true;
   state.questions = qs;
   state.total = qs.length;
-  document.getElementById('challenge-msg').textContent = '✅ تم الدخول! اضغطي «ابدأ اللعبة» في الرئيسية.';
+  document.getElementById('challenge-msg').textContent = '✅ تم الدخول! اضغط/ي «ابدأ اللعبة» في الرئيسية.';
 }
 function saveChallengeResult() {}
-function openAdmin() { if (state.userType !== 'teacher') return; show('admin'); }
+function openAdmin() { if (state.userType !== 'teacher') return; show('admin'); showAdminFeedback(); }
 
 async function restoreSession() {
   const { data: { session } } = await db.auth.getSession();
@@ -2855,7 +3728,7 @@ async function restoreSession() {
   if (!profile) return false;
   state.user = session.user;
   state.userType = profile.role;
-  state.userName = profile.name || localStorage.getItem('savedName') || 'بطلة';
+  state.userName = profile.name || localStorage.getItem('savedName') || DEFAULT_PLAYER;
   state.userEmail = profile.role === 'teacher' ? (localStorage.getItem('savedEmail') || '') : '';
   if (profile.role === 'teacher') {
     setLoginTab('teacher');
@@ -2889,6 +3762,7 @@ async function restoreSession() {
   await loadQuestions();
   const qCount = (QUESTIONS.tawheed?.length||0) + (QUESTIONS.usool?.length||0) + (QUESTIONS.nawawi?.length||0);
   if (qCount > 0) document.getElementById('login-hint').textContent = '📚 ' + qCount + ' سؤال في انتظارك!';
+  updateLevelCounts();
   selectLevel('easy');
   if (await restoreSession()) return;
   show('login-screen');

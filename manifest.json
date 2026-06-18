@@ -1,11 +1,11 @@
 {
   "name": "المكتبة الثلاثية - أسئلة تعليمية",
   "short_name": "المكتبة الثلاثية",
-  "description": "تطبيق تعليمي إسلامي تفاعلي للأطفال - جمعية الهدى والحكمة",
+  "description": "تطبيق تعليمي إسلامي تفاعلي - جمعية الهدى والحكمة",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#FDFBF7",
-  "theme_color": "#2D5A3D",
+  "theme_color": "#163828",
   "lang": "ar",
   "dir": "rtl",
   "icons": [
