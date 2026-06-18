@@ -63,7 +63,14 @@
       --radius-lg: 22px;
       --radius-md: 16px;
       --radius-sm: 12px;
+      --app-header-h: calc(56px + env(safe-area-inset-top, 0px));
     }
+
+    body.login-mode { --app-header-h: 0px; }
+    body.game-mode .app-topbar { display: none; }
+    body.game-mode { --app-header-h: 0px; }
+    body.immersive-mode .app-topbar { display: none; }
+    body.immersive-mode { --app-header-h: 0px; }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -144,7 +151,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Top bar (global) ── */
+    /* ── شريط علوي (داخل التطبيق فقط) ── */
     .app-topbar {
       position: fixed;
       top: 0;
@@ -154,8 +161,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: max(10px, env(safe-area-inset-top)) 16px 10px;
+      padding: max(8px, env(safe-area-inset-top)) 14px 8px;
       pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,251,245,0.96) 0%, rgba(255,251,245,0.82) 80%, transparent 100%);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
     .app-topbar > * { pointer-events: auto; }
     .topbar-btn {
@@ -194,14 +204,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin: 20px 0 12px;
     }
     .logo-img {
       width: auto;
-      max-width: 200px;
+      max-width: 140px;
       height: auto;
-      max-height: 160px;
+      max-height: 110px;
       border-radius: 16px;
       background: var(--white);
       padding: 10px;
@@ -258,7 +268,7 @@
     .btn-gold {
       background: var(--gold);
       color: var(--emerald-dark);
-      box-shadow: 0 4px 0 var(--gold-dark);
+      box-shadow: var(--shadow-sm);
       border: none;
       position: relative;
       overflow: hidden;
@@ -278,31 +288,31 @@
     .btn-green {
       background: var(--emerald);
       color: white;
-      box-shadow: 0 4px 0 var(--emerald-dark);
+      box-shadow: var(--shadow-sm);
       border: none;
     }
     .btn-blue {
       background: var(--sky);
       color: white;
-      box-shadow: 0 4px 0 var(--sky-dark);
+      box-shadow: var(--shadow-sm);
       border: none;
     }
     .btn-purple {
       background: var(--purple);
       color: white;
-      box-shadow: 0 4px 0 var(--purple-dark);
+      box-shadow: var(--shadow-sm);
       border: none;
     }
     .btn-orange {
       background: var(--orange);
       color: white;
-      box-shadow: 0 4px 0 #D97706;
+      box-shadow: var(--shadow-sm);
       border: none;
     }
     .btn-red {
       background: var(--coral);
       color: white;
-      box-shadow: 0 4px 0 var(--coral-dark);
+      box-shadow: var(--shadow-sm);
       border: none;
     }
     .btn-white {
@@ -382,10 +392,72 @@
       box-shadow: var(--shadow-sm);
     }
 
+    .login-footer { display: none; }
+
+    /* ── ترويسة الدخول: بسم الله ثم الموقع ── */
+    .login-brand-header {
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .bismillah-hero {
+      font-family: var(--font-display);
+      font-size: clamp(1.65rem, 7vw, 2.15rem);
+      font-weight: 700;
+      color: var(--emerald-dark);
+      margin: 0;
+      line-height: 1.65;
+      letter-spacing: 0.03em;
+    }
+    .header-ornament {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px 0 12px;
+      color: var(--gold);
+      font-size: 0.75em;
+      opacity: 0.85;
+    }
+    .header-ornament span {
+      flex: 1;
+      max-width: 72px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .org-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: var(--white);
+      border: 1px solid var(--border-gold);
+      color: var(--emerald-dark);
+      font-size: 0.82em;
+      font-weight: 800;
+      text-decoration: none;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .org-link:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+    .org-link-footer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--emerald);
+      font-size: 0.8em;
+      font-weight: 800;
+      text-decoration: none;
+      padding: 8px 4px;
+      opacity: 0.9;
+    }
+
     /* ── Login screen ── */
     #login-screen {
-      justify-content: center;
-      padding: max(80px, calc(env(safe-area-inset-top) + 60px)) 20px max(32px, env(safe-area-inset-bottom));
+      justify-content: flex-start;
+      padding: max(20px, env(safe-area-inset-top)) 20px max(32px, env(safe-area-inset-bottom));
       text-align: center;
       gap: 16px;
       width: 100%;
@@ -405,7 +477,34 @@
     /* ── Welcome screen ── */
     #welcome {
       justify-content: flex-start;
-      padding: max(72px, calc(env(safe-area-inset-top) + 56px)) 16px max(48px, env(safe-area-inset-bottom));
+      padding: calc(var(--app-header-h) + 12px) 16px max(48px, env(safe-area-inset-bottom));
+    }
+    .play-zone {
+      width: 100%;
+      padding: 20px 18px 18px;
+      text-align: center;
+    }
+    .play-zone .section-label {
+      margin: 14px 0 10px;
+      font-size: 0.82em;
+    }
+    .play-zone .section-label:first-child { margin-top: 0; }
+    .welcome-meta-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 400px) {
+      .welcome-meta-row { grid-template-columns: 1fr; }
+    }
+    .welcome-meta-row .level-card { margin: 0; }
+    .welcome-meta-row .daily-mission {
+      border-radius: var(--radius-lg);
+      padding: 14px;
+    }
+    .welcome-meta-row .daily-mission .dm-icon { font-size: 1.5em; }
+    .welcome-progress-section {
       width: 100%;
     }
     .welcome-inner {
@@ -549,7 +648,7 @@
     /* Achievement toast */
     .ach-toast {
       position: fixed;
-      top: max(80px, calc(env(safe-area-inset-top) + 70px));
+      top: calc(var(--app-header-h) + 8px);
       left: 50%;
       transform: translateX(-50%) translateY(-80px);
       background: var(--white);
@@ -728,40 +827,44 @@
     @media (min-width: 768px) {
       .book-select-row { grid-template-columns: repeat(4, 1fr); }
     }
+    /* Book cards — أنيق */
     .book-btn {
-      background: var(--white);
-      border: 3px solid var(--border);
-      border-radius: 20px;
-      padding: 16px 10px;
-      font-size: 0.82em;
+      background: var(--ivory);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 10px;
+      font-size: 0.8em;
       font-weight: 800;
       font-family: 'Tajawal', sans-serif;
       cursor: pointer;
       color: var(--text);
-      transition: 0.2s;
+      transition: all 0.25s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-      min-height: 100px;
-      box-shadow: 0 3px 0 var(--border);
+      gap: 8px;
+      min-height: 96px;
+      box-shadow: var(--shadow-sm);
     }
-    .book-btn .book-icon { font-size: 2em; line-height: 1; }
-    .book-btn:hover { transform: translateY(-2px); }
-    .book-btn:active { transform: translateY(2px); box-shadow: none; }
+    .book-btn .book-icon { font-size: 1.75em; line-height: 1; }
+    .book-btn:hover { transform: translateY(-2px); border-color: var(--border-gold); box-shadow: var(--shadow); }
+    .book-btn:active { transform: translateY(0); }
     .book-btn.sel {
-      border-color: var(--emerald);
-      background: var(--emerald);
       color: white;
-      box-shadow: 0 0 0 3px var(--gold), 0 4px 0 var(--emerald-dark);
-      transform: scale(1.03);
+      border-color: transparent;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(22, 56, 40, 0.18), 0 0 0 2px var(--gold);
     }
-    .book-btn[data-book="tawheed"].sel { background: var(--emerald); }
-    .book-btn[data-book="usool"].sel { background: var(--teal); border-color: var(--teal); box-shadow: 0 0 0 3px var(--gold), 0 4px 0 #083840; }
-    .book-btn[data-book="nawawi"].sel { background: var(--sky); border-color: var(--sky); box-shadow: 0 0 0 3px var(--gold), 0 4px 0 var(--sky-dark); }
-    .book-btn[data-book="merge3"].sel { background: linear-gradient(135deg, var(--gold), #F5D76E); color: var(--emerald-dark); border-color: var(--gold-dark); box-shadow: 0 0 0 3px var(--emerald), 0 4px 0 var(--gold-dark); }
+    .book-btn[data-book="tawheed"].sel { background: var(--grad-emerald); }
+    .book-btn[data-book="usool"].sel { background: linear-gradient(145deg, #1A4A55, #2A6B7A); }
+    .book-btn[data-book="nawawi"].sel { background: linear-gradient(145deg, #2A7A94, #3B8FA8); }
+    .book-btn[data-book="merge3"].sel {
+      background: var(--grad-gold);
+      color: var(--emerald-dark);
+      box-shadow: 0 8px 28px rgba(201, 169, 98, 0.35), 0 0 0 2px var(--emerald);
+    }
 
-    /* Level pills */
+    /* Level pills — أنيق */
     .level-row {
       display: flex;
       gap: 8px;
@@ -770,20 +873,23 @@
       width: 100%;
     }
     .level-btn {
-      background: var(--white);
-      border: 2px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 18px;
-      font-size: 0.9em;
+      flex: 1;
+      min-width: 68px;
+      background: var(--ivory);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-size: 0.85em;
       font-weight: 800;
       font-family: 'Tajawal', sans-serif;
       cursor: pointer;
       color: var(--text);
-      transition: 0.2s;
-      min-height: 48px;
-      box-shadow: 0 2px 0 var(--border);
+      transition: all 0.2s ease;
+      min-height: 44px;
+      box-shadow: none;
     }
-    .level-btn.sel { color: white; border-color: transparent; box-shadow: 0 3px 0 rgba(0,0,0,0.15); }
+    .level-btn .lvl-count { display: block; font-size: 0.72em; opacity: 0.75; margin-top: 2px; }
+    .level-btn.sel { color: white; border-color: transparent; box-shadow: 0 4px 16px rgba(22, 56, 40, 0.15); }
     .level-btn[data-level="easy"].sel { background: var(--emerald); }
     .level-btn[data-level="medium"].sel { background: var(--gold); color: var(--emerald-dark); }
     .level-btn[data-level="hard"].sel { background: var(--coral); }
@@ -1174,7 +1280,7 @@
     /* ── Results / Gameover ── */
     #results, #gameover {
       text-align: center;
-      padding: max(80px, calc(env(safe-area-inset-top) + 40px)) 20px max(32px, env(safe-area-inset-bottom));
+      padding: calc(var(--app-header-h) + 16px) 20px max(32px, env(safe-area-inset-bottom));
       width: 100%;
       justify-content: center;
       gap: 12px;
@@ -1210,7 +1316,7 @@
     /* ── Secondary screens ── */
     .page-screen {
       background: var(--cream);
-      padding: max(72px, calc(env(safe-area-inset-top) + 56px)) 16px max(48px, env(safe-area-inset-bottom));
+      padding: calc(var(--app-header-h) + 8px) 16px max(48px, env(safe-area-inset-bottom));
       width: 100%;
       justify-content: flex-start;
       min-height: auto;
@@ -1269,13 +1375,13 @@
     .admin-header {
       width: 100%;
       background: linear-gradient(135deg, var(--emerald), var(--sky));
-      padding: max(12px, env(safe-area-inset-top)) 16px 12px;
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       color: white;
       position: sticky;
-      top: 0;
+      top: var(--app-header-h);
       z-index: 100;
     }
     .admin-body { max-width: 760px; margin: 0 auto; padding: 20px 16px; width: 100%; }
@@ -1368,7 +1474,7 @@
     }
     .combo {
       position: fixed;
-      top: max(60px, calc(env(safe-area-inset-top) + 50px));
+      top: calc(var(--app-header-h) + 4px);
       left: 50%;
       transform: translateX(-50%) translateY(-20px);
       background: var(--gold);
@@ -1484,18 +1590,12 @@
     .glow-orb.emerald { width: 220px; height: 220px; background: rgba(42, 92, 69, 0.08); }
     .float-deco { opacity: 0.06; font-size: 1.2em; }
 
-    /* ── Frosted top bar ── */
-    .app-topbar {
-      background: linear-gradient(180deg, rgba(255,251,245,0.92) 0%, rgba(255,251,245,0.75) 70%, transparent 100%);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding-bottom: 14px;
-    }
+    /* ── Frosted top bar extras ── */
     .site-logo {
-      border-radius: 14px;
+      border-radius: 12px;
       border: 1px solid var(--border-gold);
       box-shadow: var(--shadow-sm);
-      max-width: 56px;
+      max-width: 48px;
     }
     .topbar-btn {
       background: var(--glass);
@@ -1631,7 +1731,13 @@
 
     /* ── Login ── */
     .login-hero { width: 100%; max-width: 440px; padding: 0 8px; }
-    .login-features { gap: 10px; margin-top: 12px; }
+    .login-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+      width: 100%;
+    }
     .login-feature {
       background: var(--glass);
       backdrop-filter: blur(12px);
@@ -1655,7 +1761,7 @@
       width: 100%;
       background: var(--grad-emerald);
       border-radius: var(--radius-xl);
-      padding: 24px 20px 20px;
+      padding: 18px 20px 16px;
       text-align: center;
       color: white;
       box-shadow: 0 16px 48px rgba(22, 56, 40, 0.22);
@@ -1752,31 +1858,11 @@
       background: linear-gradient(90deg, transparent, var(--gold), transparent);
     }
 
-    /* ── Book & level selectors ── */
-    .book-btn {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      background: var(--ivory);
-      min-height: 108px;
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    }
-    .book-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--border-gold); }
-    .book-btn:active { transform: translateY(0); }
-    .book-btn.sel {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(22, 56, 40, 0.2), 0 0 0 2px var(--gold);
-    }
+    /* ── Book & level selectors (تكميلي) ── */
     .book-btn .book-progress { font-size: 0.62em; opacity: 0.75; }
     .book-btn.sel .book-progress { opacity: 1; }
 
-    .level-btn {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-sm);
-      background: var(--ivory);
-    }
-    .level-btn.sel { box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+    .level-btn.sel { box-shadow: 0 4px 16px rgba(22, 56, 40, 0.15); }
 
     .sublevel-btn {
       border: 2px solid var(--border);
@@ -1841,7 +1927,8 @@
       background: var(--grad-emerald);
       border-bottom: none;
       box-shadow: 0 8px 24px rgba(15, 36, 25, 0.2);
-      padding-top: max(12px, env(safe-area-inset-top));
+      padding-top: max(10px, env(safe-area-inset-top));
+      top: 0;
     }
     .top-bar .close-btn {
       background: rgba(255,255,255,0.12);
@@ -1929,19 +2016,10 @@
       backdrop-filter: blur(8px);
     }
 
-    /* ── Secondary pages ── */
+    /* ── Secondary pages (base) ── */
     .page-screen {
       background: transparent;
     }
-    .page-hero {
-      padding: 12px 20px 20px;
-    }
-    .page-hero h2 {
-      font-size: 1.65em;
-      color: var(--emerald-dark);
-      margin-bottom: 6px;
-    }
-    .page-hero p { font-weight: 600; letter-spacing: 0.01em; }
 
     .lb-tabs { margin-bottom: 14px; }
     .lb-reset-hint {
@@ -2123,11 +2201,334 @@
       background: var(--grad-emerald);
       box-shadow: 0 4px 20px rgba(15,36,25,0.2);
     }
-    #admin .card { text-align: center; }
+    #admin .card { text-align: right; }
+
+    /* ═══════════════════════════════════════════
+       تصميم داخلي موحّد — كل الشاشات
+       ═══════════════════════════════════════════ */
+
+    .page-shell {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .page-hero {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto 4px;
+      padding: 22px 20px 18px;
+      text-align: center;
+      background: var(--grad-emerald);
+      border-radius: var(--radius-xl);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 14px 40px rgba(22, 56, 40, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 85% 0%, rgba(201,169,98,0.22), transparent 55%);
+      pointer-events: none;
+    }
+    .page-hero h2, .page-hero p { position: relative; z-index: 1; }
+    .page-hero h2 {
+      font-family: var(--font-display);
+      font-size: 1.55em;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    }
+    .page-hero p {
+      font-size: 0.88em;
+      font-weight: 600;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.5;
+    }
+
+    .page-screen .card {
+      max-width: 520px;
+      width: 100%;
+      padding: 22px 20px;
+      text-align: right;
+    }
+
+    .play-zone {
+      background: linear-gradient(165deg, #FFFFFF 0%, var(--ivory) 100%);
+      border: 1px solid var(--border-gold);
+      box-shadow: var(--shadow-lux);
+    }
+    .play-zone .q-range-card {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-top: 4px;
+    }
+
+    .q-range-card {
+      width: 100%;
+      text-align: center;
+    }
+    .pool-info {
+      font-weight: 800;
+      color: var(--emerald-dark);
+      font-size: 0.88em;
+      margin-bottom: 6px;
+    }
+    .q-range-hint {
+      font-size: 0.78em;
+      color: var(--text-soft);
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .stats-strip { max-width: 100%; }
+    .stat-pill {
+      border: 1px solid var(--border-gold);
+      transition: transform 0.2s;
+    }
+    .stat-pill:hover { transform: translateY(-1px); }
+
+    .class-banner, .homework-banner {
+      width: 100%;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+    .book-progress-item {
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s;
+    }
+    .extra-actions .btn {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-gold);
+    }
+
+    /* ── اللعب ── */
+    #game {
+      max-width: 100%;
+      min-height: 100dvh;
+    }
+    #game .q-area {
+      max-width: 640px;
+      margin: 0 auto;
+      padding-bottom: 180px;
+    }
+    #game .q-meta .badge {
+      border-radius: 999px;
+      font-size: 0.72em;
+      font-weight: 800;
+      padding: 4px 10px;
+    }
+    #game .training-bar {
+      border-radius: var(--radius-md);
+      font-size: 0.82em;
+      font-weight: 800;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      border: 1px solid var(--border-gold);
+    }
+    #game .feedback {
+      max-width: 640px;
+      padding: 22px 20px max(22px, env(safe-area-inset-bottom));
+    }
+    #game .feedback #fb-title {
+      font-family: var(--font-display);
+      font-size: 1.15em;
+      color: var(--emerald-dark);
+      font-weight: 900;
+      margin: 8px 0 6px;
+    }
+    #game .feedback .fb-icon-wrap {
+      font-size: 2.2em;
+      line-height: 1;
+      text-align: center;
+    }
+    #game .feedback .fb-inner {
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    #game .feedback #fb-exp {
+      font-size: 0.9em;
+      line-height: 1.65;
+      color: var(--text);
+    }
+
+    /* ── النتائج ── */
+    .result-shell .btn { margin-left: auto; margin-right: auto; display: block; }
+    .result-shell .stats-grid .stat-card {
+      transition: transform 0.2s;
+    }
+    #results .stat-card .big, #gameover .stat-card .big {
+      color: white;
+      font-family: var(--font-display);
+    }
+    #results .stat-card .lbl, #gameover .stat-card .lbl {
+      color: rgba(255,255,255,0.75);
+    }
+
+    /* ── المتصدرين والملف ── */
+    .lb-row {
+      border: 1px solid var(--border);
+    }
+    .lb-subhint, .lb-reset-hint {
+      font-size: 0.8em;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .lb-reset-hint {
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+    }
+    #profile-content h3 {
+      font-family: var(--font-display);
+      color: var(--emerald-dark);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .profile-avatar, .profile-hero {
+      border: 3px solid var(--gold);
+    }
+    .badge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    /* ── لوحة المعلم ── */
+    #admin {
+      background: var(--cream);
+      min-height: 100dvh;
+    }
+    .admin-body { padding: 16px 14px 32px; }
+    .admin-tabs {
+      background: var(--white);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 6px;
+      gap: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+    .admin-tab {
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-soft);
+      font-size: 0.68em;
+      padding: 10px 4px;
+      transition: all 0.2s;
+    }
+    .admin-tab.active {
+      background: var(--grad-emerald);
+      color: white;
+      box-shadow: 0 4px 12px rgba(22, 56, 40, 0.2);
+    }
+    .admin-panel.card {
+      text-align: right;
+      padding: 18px 16px;
+      margin-bottom: 0;
+    }
+    .admin-panel h3, .admin-panel h4 {
+      font-family: var(--font-display);
+      color: var(--emerald-dark);
+      text-align: right;
+    }
+    .admin-list-item {
+      background: var(--ivory);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: border-color 0.2s;
+    }
+    .admin-list-item:hover { border-color: var(--border-gold); }
+    .teacher-table {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .teacher-table th { background: var(--emerald-light); }
+
+    /* ── إعدادات وonboarding ── */
+    .settings-sheet {
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      border-top: 2px solid var(--gold);
+    }
+    .settings-sheet h3 {
+      font-family: var(--font-display);
+      color: var(--emerald-dark);
+      text-align: center;
+    }
+    .onb-card {
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lux);
+      padding: 32px 24px;
+    }
+    .onb-card h3 {
+      font-family: var(--font-display);
+      color: var(--emerald-dark);
+      margin-bottom: 10px;
+    }
+
+    /* ── مراجعة الأخطاء ── */
+    #review-screen .q-box {
+      font-family: var(--font-display);
+      font-size: 1.05em;
+      line-height: 1.75;
+    }
+    .review-exp {
+      background: var(--emerald-light);
+      border: 1px solid rgba(42, 92, 69, 0.2);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 0.9em;
+      line-height: 1.65;
+    }
+
+    /* ── تحدي وتقييم ── */
+    .rating-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin: 12px 0;
+    }
+    .demo-intro-card p {
+      line-height: 1.7;
+      color: var(--text-soft);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .feedback-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    /* ── شريط سفلي ── */
+    .nav-dock {
+      width: 100%;
+      max-width: 100%;
+      margin-top: 8px;
+    }
+    .org-link-footer {
+      margin: 4px 0;
+    }
+
+    /* إخفاء زخارف عائمة داخل الشاشات المزدحمة */
+    body.game-mode .float-deco,
+    body.game-mode .glow-orb { display: none; }
 
   </style>
 </head>
-<body class="islamic-bg">
+<body class="islamic-bg login-mode">
 
   <!-- Floating decorations -->
   <div class="float-deco" style="top:15%;right:8%;animation-delay:0s;">📖</div>
@@ -2136,15 +2537,15 @@
   <div class="glow-orb gold"></div>
   <div class="glow-orb emerald"></div>
 
-  <!-- Global top bar -->
-  <div class="app-topbar">
+  <!-- شريط علوي — يختفي في الدخول واللعب -->
+  <header class="app-topbar">
     <img src="images.jpeg" alt="شعار جمعية الهدى والحكمة" class="site-logo">
     <div class="topbar-center">
       <span class="topbar-chip streak" id="topbar-streak"><span class="streak-fire">🔥</span>0</span>
       <span class="topbar-chip xp" id="topbar-xp">✨ 0</span>
     </div>
     <button class="topbar-btn icon-only" onclick="toggleSettings()" id="settings-btn" aria-label="الإعدادات">⚙️</button>
-  </div>
+  </header>
 
   <!-- Settings sheet -->
   <div class="settings-overlay" id="settings-overlay" onclick="if(event.target===this)toggleSettings()">
@@ -2201,14 +2602,17 @@
 
   <!-- ═══════════ LOGIN ═══════════ -->
   <div id="login-screen" class="screen active">
+    <header class="login-brand-header">
+      <p class="bismillah-hero">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
+      <div class="header-ornament"><span></span>✦<span></span></div>
+      <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-link">🌐 موقع جمعية الهدى والحكمة ↗</a>
+    </header>
     <div class="login-hero">
       <div class="logo-wrap">
         <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img">
         <div class="brand-title">المكتبة الثلاثية</div>
-        <div class="brand-ornament">✦</div>
         <div class="org-name">جمعية الهدى والحكمة</div>
-        <div class="brand-sub">أسئلة تعليمية</div>
-        <div class="brand-tagline">تعلّم/ي بمرح وثقة</div>
+        <div class="brand-sub">أسئلة تعليمية تفاعلية</div>
         <p class="login-hint" id="login-hint">🎮 انضم/ي وابدأ/ي رحلة التعلّم!</p>
       </div>
       <div class="card">
@@ -2229,41 +2633,35 @@
         <div class="login-feature"><strong>🔥</strong>سلسلة يومية</div>
         <div class="login-feature"><strong>⚔️</strong>تحديات</div>
       </div>
-      <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-website-btn">
-        <span class="owb-icon">🌐</span>
-        <span class="owb-text">
-          <strong>موقع جمعية الهدى والحكمة</strong>
-          <small>alhuda-alhikma.sa — الموقع الرسمي</small>
-        </span>
-        <span class="owb-arrow">↗</span>
-      </a>
     </div>
-    <p class="login-footer">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
   </div>
 
   <!-- ═══════════ DEMO INTRO ═══════════ -->
   <div id="demo-intro" class="screen page-screen">
-    <div class="page-hero">
-      <h2>نموذج تجريبي</h2>
-      <p>تعرّف/ي على التجربة قبل البدء</p>
-    </div>
-    <div class="card demo-intro-card">
+    <div class="page-shell">
+      <div class="page-hero">
+        <h2>نموذج تجريبي</h2>
+        <p>تعرّف/ي على التجربة قبل البدء</p>
+      </div>
+      <div class="card demo-intro-card">
       <div class="demo-badge">١٠ أسئلة تجريبية</div>
       <img src="images.jpeg" alt="" class="logo-img sm" style="margin:0 auto 12px;">
       <h3 style="margin-bottom:8px;">مرحباً <span id="demo-name">بطل/ة</span>! 👋</h3>
       <p>جرّب/ي <strong>١٠ أسئلة</strong> من الكتب الثلاثة لتتعرّف/ي على اللعبة.<br>بعدها شاركنا رأيك/ِ في النموذج — رأيك/ِ يهمنا! 💬</p>
       <button class="btn btn-gold btn-xl" onclick="beginDemo()">يلا نبدأ! 🎮</button>
       <button class="btn btn-sm btn-white" onclick="skipDemo()" style="margin-top:10px;width:100%;">تخطي → الدخول مباشرة</button>
+      </div>
     </div>
   </div>
 
   <!-- ═══════════ FEEDBACK (after demo) ═══════════ -->
   <div id="feedback-screen" class="screen page-screen">
-    <div class="page-hero">
-      <h2>رأيك/ِ يهمنا</h2>
-      <p>ساعد/ي نحسّن التجربة</p>
-    </div>
-    <div class="card feedback-screen-inner">
+    <div class="page-shell">
+      <div class="page-hero">
+        <h2>رأيك/ِ يهمنا</h2>
+        <p>ساعد/ي نحسّن التجربة</p>
+      </div>
+      <div class="card feedback-screen-inner">
       <div class="demo-badge">تقييم سريع</div>
       <h3>كيف كانت تجربتك؟</h3>
       <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;margin-bottom:4px;">هل أعجبك/ِ البرنامج؟</p>
@@ -2280,6 +2678,7 @@
       <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;margin-top:10px;">📋 مراجعة أخطاء النموذج</button>
       <p id="feedback-msg" style="margin-top:10px;font-weight:800;font-size:0.85em;min-height:20px;"></p>
       <button class="btn btn-sm btn-white" onclick="finishDemoFlow()" style="margin-top:8px;width:100%;">متابعة للرئيسية 🏠</button>
+      </div>
     </div>
   </div>
 
@@ -2287,49 +2686,9 @@
   <div id="welcome" class="screen">
     <div class="welcome-inner">
       <div class="welcome-header welcome-hero">
-        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img sm">
         <div class="welcome-user-badge" id="welcome-user">🎓 متعلم/ة</div>
         <div class="welcome-greeting" id="welcome-greeting">مرحباً! 👋</div>
-        <div class="brand-sub">اختار/ي كتابك وابدأ/ي رحلة التعلّم</div>
-      </div>
-
-      <div class="level-card">
-        <div class="level-top">
-          <span class="level-title" id="level-title">مبتدئ/ة 🌱</span>
-          <span class="level-xp" id="level-xp-text">٠ / ١٠٠ نقطة خبرة</span>
-        </div>
-        <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar-fill"></div></div>
-      </div>
-
-      <div class="daily-mission" id="daily-mission">
-        <div class="dm-icon">🎯</div>
-        <div class="dm-body">
-          <div class="dm-title">مهمة اليوم</div>
-          <div class="dm-sub">أكمِل/ي جولة واحدة على الأقل</div>
-        </div>
-        <div class="dm-check">0/1</div>
-      </div>
-
-      <div id="class-banner" class="class-banner" style="display:none;"></div>
-      <div id="homework-banner" class="homework-banner" style="display:none;"></div>
-
-      <div class="section-label">📈 تقدّمك في الكتب</div>
-      <div class="book-progress-grid" id="book-progress-grid"></div>
-
-      <div class="class-join-row" id="class-join-row" style="display:none;">
-        <input type="text" class="input" id="class-code-input" placeholder="رمز الصف (مثل CLS...)">
-        <button class="btn btn-green btn-sm" onclick="joinClass()">انضم/ي للصف</button>
-      </div>
-      <p id="class-join-msg" style="font-size:0.8em;color:var(--emerald);font-weight:800;margin:-6px 0 10px;"></p>
-
-      <div class="extra-actions">
-        <button class="btn btn-white btn-sm" id="btn-mistakes" style="display:none;" onclick="startMistakeReview()">🔁 كرّر أخطائي</button>
-        <button class="btn btn-white btn-sm" onclick="startExamReview()">📝 مراجعة شاملة</button>
-      </div>
-
-      <div class="daily-banner" id="daily-banner">
-        <div>🔥 سلسلة الأيام: <span id="daily-streak-val">0</span> يوم</div>
-        <div class="quote" id="daily-quote">من سار على الدرب وصل ✨</div>
+        <div class="brand-sub" style="color:rgba(255,255,255,0.9);">ماذا تريد أن تتعلّم اليوم؟</div>
       </div>
 
       <div class="stats-strip">
@@ -2338,58 +2697,95 @@
         <div class="stat-pill"><div class="stat-icon">🎮</div><div class="stat-val" id="stat-games">0</div><div class="stat-lbl">ألعاب</div></div>
       </div>
 
-      <div class="section-label">📖 اختار/ي كتابك</div>
-      <div class="book-select-row" id="book-select-row">
-        <button class="book-btn sel" onclick="selectBook('tawheed')" id="book-btn-tawheed" data-book="tawheed">
-          <span class="book-icon">📖</span><span>كتاب التوحيد</span>
-        </button>
-        <button class="book-btn" onclick="selectBook('usool')" id="book-btn-usool" data-book="usool">
-          <span class="book-icon">📗</span><span>الأصول الثلاثة</span>
-        </button>
-        <button class="book-btn" onclick="selectBook('nawawi')" id="book-btn-nawawi" data-book="nawawi">
-          <span class="book-icon">📘</span><span>الأربعون النووية</span>
-        </button>
-        <button class="book-btn" onclick="selectBook('merge3')" id="book-btn-merge" data-book="merge3">
-          <span class="book-icon">📚</span><span>الكتب الثلاثة</span>
-        </button>
-      </div>
-
-      <div class="section-label">📊 مستوى الصعوبة</div>
-      <div class="level-row">
-        <button class="level-btn sel" onclick="selectLevel('easy')" id="btn-easy" data-level="easy">سهل<span class="lvl-count" id="cnt-easy"></span></button>
-        <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium" data-level="medium">متوسط<span class="lvl-count" id="cnt-medium"></span></button>
-        <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard" data-level="hard">صعب<span class="lvl-count" id="cnt-hard"></span></button>
-        <button class="level-btn" onclick="selectLevel('all')" id="btn-all" data-level="all">الكل<span class="lvl-count" id="cnt-all"></span></button>
-      </div>
-
-      <div class="q-range-card">
-        <p class="pool-info" id="pool-info">متاح: ٠ سؤال</p>
-        <div class="pool-breakdown" id="pool-breakdown"></div>
-        <div class="q-range-row">
-          <label for="q-from-input">من سؤال</label>
-          <input type="number" class="q-range-input" id="q-from-input" min="1" value="1" oninput="onRangeInputChange()">
-          <label for="q-to-input">إلى سؤال</label>
-          <input type="number" class="q-range-input" id="q-to-input" min="1" value="20" oninput="onRangeInputChange()">
+      <div class="card play-zone">
+        <div class="section-label">📖 اختار/ي كتابك</div>
+        <div class="book-select-row" id="book-select-row">
+          <button class="book-btn sel" onclick="selectBook('tawheed')" id="book-btn-tawheed" data-book="tawheed">
+            <span class="book-icon">📖</span><span>كتاب التوحيد</span>
+          </button>
+          <button class="book-btn" onclick="selectBook('usool')" id="book-btn-usool" data-book="usool">
+            <span class="book-icon">📗</span><span>الأصول الثلاثة</span>
+          </button>
+          <button class="book-btn" onclick="selectBook('nawawi')" id="book-btn-nawawi" data-book="nawawi">
+            <span class="book-icon">📘</span><span>الأربعون النووية</span>
+          </button>
+          <button class="book-btn" onclick="selectBook('merge3')" id="book-btn-merge" data-book="merge3">
+            <span class="book-icon">📚</span><span>الكتب الثلاثة</span>
+          </button>
         </div>
-        <p class="q-range-hint" id="q-range-hint">٢٠ سؤالاً بالترتيب</p>
+
+        <div class="section-label">📊 مستوى الصعوبة</div>
+        <div class="level-row">
+          <button class="level-btn sel" onclick="selectLevel('easy')" id="btn-easy" data-level="easy">سهل<span class="lvl-count" id="cnt-easy"></span></button>
+          <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium" data-level="medium">متوسط<span class="lvl-count" id="cnt-medium"></span></button>
+          <button class="level-btn" onclick="selectLevel('hard')" id="btn-hard" data-level="hard">صعب<span class="lvl-count" id="cnt-hard"></span></button>
+          <button class="level-btn" onclick="selectLevel('all')" id="btn-all" data-level="all">الكل<span class="lvl-count" id="cnt-all"></span></button>
+        </div>
+
+        <div class="q-range-card">
+          <p class="pool-info" id="pool-info">متاح: ٠ سؤال</p>
+          <div class="pool-breakdown" id="pool-breakdown"></div>
+          <div class="q-range-row">
+            <label for="q-from-input">من سؤال</label>
+            <input type="number" class="q-range-input" id="q-from-input" min="1" value="1" oninput="onRangeInputChange()">
+            <label for="q-to-input">إلى سؤال</label>
+            <input type="number" class="q-range-input" id="q-to-input" min="1" value="20" oninput="onRangeInputChange()">
+          </div>
+          <p class="q-range-hint" id="q-range-hint">٢٠ سؤالاً بالترتيب</p>
+        </div>
+
+        <div class="action-row" style="margin-top:8px;">
+          <button class="btn btn-gold btn-xl" id="btn-start-game" onclick="startCountdown()">ابدأ اللعبة 🎮</button>
+        </div>
+        <div class="secondary-actions" style="margin-top:10px;">
+          <button class="btn btn-white btn-sm" onclick="refreshQuestions()">تحديث</button>
+          <button class="btn btn-white btn-sm" onclick="showDemoIntro(state.userName)">نموذج تجريبي</button>
+        </div>
       </div>
 
-      <div class="action-row" style="margin-top:4px;">
-        <button class="btn btn-gold btn-xl" id="btn-start-game" onclick="startCountdown()">ابدأ اللعبة</button>
-      </div>
-      <div class="secondary-actions">
-        <button class="btn btn-white btn-sm" onclick="refreshQuestions()">تحديث الأسئلة</button>
-        <button class="btn btn-white btn-sm" onclick="showDemoIntro(state.userName)">نموذج تجريبي</button>
+      <div class="welcome-meta-row">
+        <div class="level-card">
+          <div class="level-top">
+            <span class="level-title" id="level-title">مبتدئ/ة 🌱</span>
+            <span class="level-xp" id="level-xp-text">٠ / ١٠٠ نقطة</span>
+          </div>
+          <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xp-bar-fill"></div></div>
+        </div>
+        <div class="daily-mission" id="daily-mission">
+          <div class="dm-icon">🎯</div>
+          <div class="dm-body">
+            <div class="dm-title">مهمة اليوم</div>
+            <div class="dm-sub">أكمِل/ي جولة واحدة</div>
+          </div>
+          <div class="dm-check">0/1</div>
+        </div>
       </div>
 
-      <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-website-btn compact">
-        <span class="owb-icon">🌐</span>
-        <span class="owb-text">
-          <strong>موقع الجمعية الرسمي</strong>
-          <small>alhuda-alhikma.sa</small>
-        </span>
-        <span class="owb-arrow">↗</span>
-      </a>
+      <div class="daily-banner" id="daily-banner">
+        <div>🔥 سلسلة الأيام: <span id="daily-streak-val">0</span> يوم</div>
+        <div class="quote" id="daily-quote">من سار على الدرب وصل ✨</div>
+      </div>
+
+      <div id="class-banner" class="class-banner" style="display:none;"></div>
+      <div id="homework-banner" class="homework-banner" style="display:none;"></div>
+
+      <div class="class-join-row" id="class-join-row" style="display:none;">
+        <input type="text" class="input" id="class-code-input" placeholder="رمز الصف (مثل CLS...)">
+        <button class="btn btn-green btn-sm" onclick="joinClass()">انضم/ي للصف</button>
+      </div>
+      <p id="class-join-msg" style="font-size:0.8em;color:var(--emerald);font-weight:800;margin:-6px 0 10px;"></p>
+
+      <div class="welcome-progress-section">
+        <div class="section-label">📈 تقدّمك في الكتب</div>
+        <div class="book-progress-grid" id="book-progress-grid"></div>
+      </div>
+
+      <div class="extra-actions">
+        <button class="btn btn-white btn-sm" id="btn-mistakes" style="display:none;" onclick="startMistakeReview()">🔁 كرّر أخطائي</button>
+        <button class="btn btn-white btn-sm" onclick="startExamReview()">📝 مراجعة شاملة</button>
+      </div>
+
+      <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-link-footer">🌐 موقع جمعية الهدى والحكمة ↗</a>
 
       <div class="nav-dock">
         <button class="icon-action" onclick="showLeaderboard()">
@@ -2432,11 +2828,13 @@
       <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:12px;width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة</button>
     </div>
     <div class="feedback" id="feedback">
-      <div style="font-size:2em;" id="fb-icon"></div>
-      <div style="font-size:1em;font-weight:900;margin:4px 0;" id="fb-title"></div>
-      <div style="font-size:0.85em;color:var(--text);margin-bottom:12px;line-height:1.5;" id="fb-exp"></div>
-      <div class="self-correct-box" id="fb-self-correct" style="display:none;"></div>
-      <button class="btn btn-green" onclick="nextQ()" style="width:100%;margin-top:10px;">متابعة ←</button>
+      <div class="fb-inner">
+        <div class="fb-icon-wrap" id="fb-icon"></div>
+        <div class="fb-title" id="fb-title"></div>
+        <div class="fb-exp" id="fb-exp"></div>
+        <div class="self-correct-box" id="fb-self-correct" style="display:none;"></div>
+        <button class="btn btn-green btn-xl" onclick="nextQ()" style="width:100%;margin-top:14px;">متابعة ←</button>
+      </div>
     </div>
   </div>
 
@@ -2479,26 +2877,29 @@
 
   <!-- ═══════════ REVIEW MISTAKES ═══════════ -->
   <div id="review-screen" class="screen page-screen">
-    <div class="page-hero">
-      <h2>📋 مراجعة الأخطاء</h2>
-      <p id="review-progress">خطأ ١ من ١</p>
-    </div>
-    <div class="card" style="max-width:500px;">
+    <div class="page-shell">
+      <div class="page-hero">
+        <h2>📋 مراجعة الأخطاء</h2>
+        <p id="review-progress">خطأ ١ من ١</p>
+      </div>
+      <div class="card">
       <div class="q-box" id="review-q" style="margin-bottom:12px;"></div>
       <div class="self-correct-box" id="review-answer"></div>
       <div class="review-exp" id="review-exp"></div>
       <button class="btn btn-green btn-xl" onclick="nextReview()" id="btn-review-next" style="width:100%;margin-top:8px;">التالي ←</button>
       <button class="btn btn-sm btn-white" onclick="exitReview()" style="width:100%;margin-top:8px;">إنهاء المراجعة</button>
+      </div>
     </div>
   </div>
 
   <!-- ═══════════ LEADERBOARD ═══════════ -->
   <div id="leaderboard-screen" class="screen page-screen">
-    <div class="page-hero">
-      <h2>🏆 لوحة المتصدرين</h2>
-      <p id="lb-hero-sub">تنافس/ي مع الآخرين — أفضل نتيجة هذا الأسبوع</p>
-    </div>
-    <div class="card">
+    <div class="page-shell">
+      <div class="page-hero">
+        <h2>🏆 لوحة المتصدرين</h2>
+        <p id="lb-hero-sub">تنافس/ي مع الآخرين — أفضل نتيجة هذا الأسبوع</p>
+      </div>
+      <div class="card">
       <div class="tab-row lb-tabs">
         <button class="tab-btn" data-period="day" onclick="setLbPeriod('day')">📅 اليوم</button>
         <button class="tab-btn active" data-period="week" onclick="setLbPeriod('week')">📆 الأسبوع</button>
@@ -2507,28 +2908,32 @@
       <p class="lb-subhint">أفضل نتيجة لكل متعلم/ة في الفترة المختارة</p>
       <div id="lb-list"></div>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:16px auto 0;width:100%;">🏠 الرئيسية</button>
+      </div>
     </div>
   </div>
 
   <!-- ═══════════ PROFILE ═══════════ -->
   <div id="profile-screen" class="screen page-screen">
-    <div class="page-hero">
-      <h2>👤 ملفي الشخصي</h2>
-      <p>إنجازاتك ومسار تقدّمك</p>
-    </div>
-    <div class="card">
+    <div class="page-shell">
+      <div class="page-hero">
+        <h2>👤 ملفي الشخصي</h2>
+        <p>إنجازاتك ومسار تقدّمك</p>
+      </div>
+      <div class="card">
       <div id="profile-content"></div>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:16px auto 0;width:100%;">🏠 الرئيسية</button>
+      </div>
     </div>
   </div>
 
   <!-- ═══════════ CHALLENGE ═══════════ -->
   <div id="challenge-screen" class="screen page-screen">
-    <div class="page-hero">
-      <h2>⚔️ تحدي الأصدقاء</h2>
-      <p>أنشئ/ي تحدياً وشارك/ي الرمز مع الأصدقاء</p>
-    </div>
-    <div class="card" style="text-align:center;">
+    <div class="page-shell">
+      <div class="page-hero">
+        <h2>⚔️ تحدي الأصدقاء</h2>
+        <p>أنشئ/ي تحدياً وشارك/ي الرمز مع الأصدقاء</p>
+      </div>
+      <div class="card" style="text-align:center;">
       <input type="text" class="input" id="challenge-code" placeholder="أدخل/ي رمز التحدي...">
       <div style="display:flex;gap:8px;justify-content:center;margin-top:4px;">
         <button class="btn btn-gold btn-sm" onclick="createChallenge()" style="flex:1;">إنشاء تحدي</button>
@@ -2536,6 +2941,7 @@
       </div>
       <div id="challenge-msg" style="margin-top:12px;font-weight:800;font-size:0.9em;min-height:24px;"></div>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:12px;width:100%;">🏠 الرئيسية</button>
+      </div>
     </div>
   </div>
 
@@ -3285,6 +3691,9 @@ function refreshQuestions() {
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  document.body.classList.toggle('login-mode', id === 'login-screen');
+  document.body.classList.toggle('game-mode', id === 'game');
+  document.body.classList.toggle('immersive-mode', id === 'game' || id === 'results' || id === 'gameover');
   window.scrollTo(0, 0);
 }
 
