@@ -202,6 +202,7 @@
     );
     if (joinErr) {
       if (msg) msg.textContent = '❌ تعذّر الانضمام: ' + joinErr.message;
+      if (typeof showToast === 'function') showToast('تعذّر الانضمام للصف', 'err');
       return;
     }
     const p = ensureProgressExt();
@@ -300,18 +301,25 @@
       el.style.display = 'none';
       return;
     }
-    const { data } = await db.from('homework').select('*').eq('class_id', p.classId).eq('active', true).order('created_at', { ascending: false }).limit(3);
+    const [{ data }, { data: done }] = await Promise.all([
+      db.from('homework').select('*').eq('class_id', p.classId).eq('active', true).order('created_at', { ascending: false }).limit(5),
+      state.user ? db.from('homework_completions').select('homework_id').eq('user_id', state.user.id) : Promise.resolve({ data: [] }),
+    ]);
     if (!data?.length) {
       el.style.display = 'none';
       return;
     }
+    const doneSet = new Set((done || []).map((d) => d.homework_id));
+    const pending = data.filter((h) => !doneSet.has(h.id)).length;
     el.style.display = 'block';
-    el.innerHTML = data.map((h) => {
+    const badge = pending > 0 ? `<span class="hw-badge">${pending}</span>` : '';
+    el.innerHTML = `<p style="font-weight:900;margin-bottom:8px;">${badge}📋 واجبات الصف</p>` + data.map((h) => {
+      const isDone = doneSet.has(h.id);
       const due = h.due_date ? ` — موعد: ${h.due_date}` : '';
-      return `<div class="hw-item">
+      return `<div class="hw-item${isDone ? ' done' : ''}">
         <strong>📋 ${esc(h.title)}</strong>
         <span>${BOOK_LABELS_LOCAL[h.book] || h.book} · ${h.q_from}-${h.q_to}${due}</span>
-        <button class="btn btn-gold btn-sm" onclick="startHomework('${h.id}')">ابدأ الواجب</button>
+        <button class="btn btn-gold btn-sm" onclick="startHomework('${h.id}')" ${isDone ? 'disabled' : ''}>${isDone ? 'مكتمل ✓' : 'ابدأ الواجب'}</button>
       </div>`;
     }).join('');
   }
@@ -685,8 +693,9 @@
 
   async function loadQuestionsCached() {
     const cacheKey = 'questionsCacheV1';
+    const ttl = state.userType === 'teacher' ? 60000 : 900000;
     const cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
-    if (cached?.ts && Date.now() - cached.ts < 3600000 && cached.data?.length) {
+    if (cached?.ts && Date.now() - cached.ts < ttl && cached.data?.length) {
       return cached.data;
     }
     const { data, error } = await db.from('questions').select('*').eq('language', 'ar');

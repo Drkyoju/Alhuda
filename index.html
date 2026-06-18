@@ -11,6 +11,8 @@
   <link rel="icon" href="images.jpeg" type="image/jpeg">
   <link rel="apple-touch-icon" href="images.jpeg">
   <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="enhancements.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
@@ -2718,6 +2720,8 @@
         </div>
         <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">دخول المتعلمين</h2>
         <input type="text" class="input" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name">
+        <input type="password" class="input" id="login-pin" placeholder="رمز الدخول (٤–٦ أرقام)" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off">
+        <p style="font-size:0.75em;color:var(--text-soft);margin:-6px 0 10px;font-weight:600;">احفظ/ي رمز الدخول — نفس الاسم والرمز = نفس حسابك دائماً</p>
         <input type="email" class="input" id="login-email" placeholder="البريد الإلكتروني" style="display:none;" autocomplete="email">
         <input type="password" class="input" id="login-pass" placeholder="كلمة المرور" style="display:none;" autocomplete="current-password">
         <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
@@ -2785,6 +2789,10 @@
         <div class="welcome-user-badge" id="welcome-user">🎓 متعلم/ة</div>
         <div class="welcome-greeting" id="welcome-greeting">مرحباً! 👋</div>
         <div class="brand-sub" style="color:rgba(255,255,255,0.9);">ماذا تريد أن تتعلّم اليوم؟</div>
+      </div>
+
+      <div class="welcome-hero-cta">
+        <button type="button" class="btn btn-gold btn-xl btn-hero-play" onclick="startCountdown()">🎮 العب الآن</button>
       </div>
 
       <div class="stats-strip">
@@ -2903,6 +2911,9 @@
     </div>
   </div>
 
+  <!-- Training mode pill -->
+  <div class="game-mode-pill" id="game-mode-pill">🏋️ وضع تدريب — لا يُحسب في النقاط</div>
+
   <!-- ═══════════ GAME ═══════════ -->
   <div id="game" class="screen">
     <div class="top-bar">
@@ -2950,6 +2961,7 @@
       <button class="btn btn-gold btn-xl" onclick="startCountdown()">العب مجدداً 🎮</button>
       <button class="btn btn-blue btn-sm" id="btn-review-mistakes" onclick="startReview()" style="display:none;margin-top:8px;">📋 مراجعة الأخطاء</button>
       <button class="btn btn-sm btn-white" onclick="shareScore()" id="share-btn" style="margin-top:8px;">📤 شارك/ي نتيجتك</button>
+      <button class="btn btn-sm btn-white" id="btn-ch-result-lb" onclick="loadChallengeLeaderboard(state.challengeCode)" style="display:none;margin-top:8px;">🏆 نتائج التحدي</button>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
     </div>
   </div>
@@ -3036,7 +3048,23 @@
         <button class="btn btn-orange btn-sm" onclick="joinChallenge()" style="flex:1;">دخول التحدي</button>
       </div>
       <div id="challenge-msg" style="margin-top:12px;font-weight:800;font-size:0.9em;min-height:24px;"></div>
+      <button class="btn btn-white btn-sm" id="btn-ch-lb" onclick="loadChallengeLeaderboard(document.getElementById('challenge-code').value.trim().toUpperCase())" style="margin-top:8px;width:100%;display:none;">🏆 نتائج هذا التحدي</button>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:12px;width:100%;">🏠 الرئيسية</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ CHALLENGE LEADERBOARD ═══════════ -->
+  <div id="challenge-leaderboard-screen" class="screen page-screen">
+    <div class="page-shell">
+      <div class="page-hero">
+        <h2>🏆 نتائج التحدي</h2>
+        <p>رمز: <strong id="ch-lb-code">—</strong></p>
+      </div>
+      <div class="card">
+        <div id="ch-lb-list" class="ch-lb-list"></div>
+        <button class="btn btn-sm btn-white" onclick="show('challenge-screen')" style="margin-top:12px;width:100%;">← رجوع للتحدي</button>
+        <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:8px;width:100%;">🏠 الرئيسية</button>
       </div>
     </div>
   </div>
@@ -3140,6 +3168,13 @@
   </div>
 
   <!-- Confetti & Combo -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="التنقل الرئيسي">
+    <button type="button" data-nav="home" onclick="goHome()"><span class="nav-ico">🏠</span><span>الرئيسية</span></button>
+    <button type="button" data-nav="rank" onclick="showLeaderboard()"><span class="nav-ico">🏆</span><span>المتصدرين</span></button>
+    <button type="button" data-nav="challenge" onclick="startChallenge()"><span class="nav-ico">⚔️</span><span>تحدي</span></button>
+    <button type="button" data-nav="profile" onclick="showProfile()"><span class="nav-ico">👤</span><span>ملفي</span></button>
+    <button type="button" data-nav="admin" id="bottom-nav-admin" style="display:none;" onclick="openAdmin()"><span class="nav-ico">⚙️</span><span>إدارة</span></button>
+  </nav>
   <div class="confetti-wrap" id="confetti-wrap"></div>
   <div class="combo" id="combo">🔥 سلسلة!</div>
   <div class="ach-toast" id="ach-toast">
@@ -3736,11 +3771,13 @@ async function loadQuestions() {
     console.error(error);
     const hint = document.getElementById('login-hint');
     if (hint) hint.textContent = '⚠️ تعذّر تحميل الأسئلة — تحقق من الاتصال';
+    if (typeof showToast === 'function') showToast('تعذّر تحميل الأسئلة', 'err');
     return;
   }
   if (!data?.length) {
     const hint = document.getElementById('login-hint');
     if (hint) hint.textContent = '⚠️ لا توجد أسئلة في قاعدة البيانات';
+    if (typeof showToast === 'function') showToast('لا توجد أسئلة متاحة', 'err');
     return;
   }
   const fmt = { tawheed:[], usool:[], nawawi:[] };
@@ -3849,6 +3886,8 @@ function goHome() {
   document.getElementById('welcome-user').textContent = icon + ' ' + role + ' · ' + state.userName;
   document.getElementById('welcome-greeting').textContent = 'مرحباً يا ' + state.userName + '! 👋';
   document.getElementById('admin-link').style.display = state.userType === 'teacher' ? 'flex' : 'none';
+  const bottomAdmin = document.getElementById('bottom-nav-admin');
+  if (bottomAdmin) bottomAdmin.style.display = state.userType === 'teacher' ? 'flex' : 'none';
   updateBookButtons();
   updateLevelCounts();
   updateQuestionRangeUI();
@@ -3858,8 +3897,7 @@ function goHome() {
 }
 
 function logout() {
-  const wasTeacher = state.userType === 'teacher';
-  if (wasTeacher) db.auth.signOut();
+  db.auth.signOut();
   state.user = null; state.userType = ''; state.userName = '';
   state.homeworkId = null;
   state.challengeMode = false;
@@ -3879,25 +3917,29 @@ function setLoginTab(t) {
   document.getElementById('login-email').style.display = t === 'teacher' ? 'block' : 'none';
   document.getElementById('login-pass').style.display = t === 'teacher' ? 'block' : 'none';
   document.getElementById('login-name').style.display = t === 'teacher' ? 'none' : 'block';
+  const pinEl = document.getElementById('login-pin');
+  const pinHint = pinEl?.nextElementSibling;
+  if (pinEl) pinEl.style.display = t === 'teacher' ? 'none' : 'block';
+  if (pinHint && pinHint.tagName === 'P') pinHint.style.display = t === 'teacher' ? 'none' : 'block';
 }
 
 async function doLogin() {
   document.getElementById('login-err').textContent = '';
   if (loginTab === 'student') {
     const name = document.getElementById('login-name').value.trim();
+    const pin = document.getElementById('login-pin').value.trim();
     if (!name) { document.getElementById('login-err').textContent = 'اكتب/ي اسمك من فضلك'; return; }
-    let authUser;
-    const { data: { session } } = await db.auth.getSession();
-    if (session?.user) {
-      authUser = session.user;
-    } else {
-      const { data, error } = await db.auth.signInAnonymously();
-      if (error) { document.getElementById('login-err').textContent = 'خطأ في الاتصال'; return; }
-      authUser = data.user;
+    if (!pin) { document.getElementById('login-err').textContent = 'اكتب/ي رمز الدخول (٤–٦ أرقام)'; return; }
+    const { data, error } = await studentSignIn(name, pin);
+    if (error) {
+      document.getElementById('login-err').textContent = error.message || 'تعذّر الدخول';
+      if (typeof showToast === 'function') showToast('تعذّر الدخول — تحقق من الاسم والرمز', 'err');
+      return;
     }
-    await db.from('profiles').upsert({ id: authUser.id, name, role:'student' });
-    state.user = authUser; state.userType = 'student'; state.userName = name; state.userEmail = '';
+    await db.from('profiles').upsert({ id: data.user.id, name, role: 'student' });
+    state.user = data.user; state.userType = 'student'; state.userName = name; state.userEmail = '';
     localStorage.setItem('savedName', name);
+    if (typeof trackEvent === 'function') trackEvent('login', { role: 'student' });
     if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
     if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
     if (!localStorage.getItem('demoDone')) {
@@ -3997,6 +4039,7 @@ function startGame() {
     }
   }
   if (state.questions.length === 0) { alert('لا توجد أسئلة لهذا الاختيار.'); return; }
+  if (typeof trackEvent === 'function') trackEvent('game_start', { book: state.book, level: state.level, training: trainingMode });
   state.qFrom = parseInt(document.getElementById('q-from-input')?.value, 10) || 1;
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
   state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.wrongLog = []; state.answered = false;
@@ -4249,6 +4292,8 @@ async function endGame() {
     });
   }
   if (state.challengeMode && !isTraining) saveChallengeResult();
+  const chLbBtn = document.getElementById('btn-ch-result-lb');
+  if (chLbBtn) chLbBtn.style.display = state.challengeCode ? 'inline-block' : 'none';
   if (window.AlhudaPlatform?.onGameEndHook) await AlhudaPlatform.onGameEndHook();
   state.challengeMode = false;
 }
@@ -4472,6 +4517,8 @@ async function createChallenge() {
     '✅ رمز التحدي: <strong style="font-size:1.3em;color:var(--emerald);">' + code + '</strong>' + copyNote +
     '<br><span style="font-size:0.8em;color:var(--text-soft);">شارك/ي الرمز مع صديق/ة — ادخل/ي من «دخول التحدي»</span>' +
     (error ? '<br><span style="font-size:0.75em;color:var(--orange);">ملاحظة: شغّل/ي supabase_challenges.sql للمشاركة بين الأجهزة</span>' : '');
+  const chLb = document.getElementById('btn-ch-lb');
+  if (chLb) { chLb.style.display = 'block'; document.getElementById('challenge-code').value = code; }
 }
 async function joinChallenge() {
   const code = document.getElementById('challenge-code').value.trim().toUpperCase();
@@ -4559,13 +4606,15 @@ async function restoreSession() {
   if (savedName) document.getElementById('login-name').value = savedName;
   const savedEmail = localStorage.getItem('savedEmail');
   if (savedEmail) document.getElementById('login-email').value = savedEmail;
-  ['login-name', 'login-email', 'login-pass'].forEach(id => {
+  ['login-name', 'login-pin', 'login-email', 'login-pass'].forEach(id => {
     document.getElementById(id)?.addEventListener('keydown', e => {
       if (e.key === 'Enter') doLogin();
     });
   });
 })();
 </script>
+<script src="auth.js"></script>
+<script src="enhancements.js"></script>
 <script src="platform.js"></script>
 <script>
 (async function boot() {
