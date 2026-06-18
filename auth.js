@@ -1,6 +1,8 @@
 /* Stable student accounts: name + PIN → same Supabase user every time */
 (function () {
   const DOMAINS = ['mailinator.com', 'example.com', 'test.com'];
+  const CONFIRM_MSG =
+    'أوقف تأكيد البريد في Supabase: Authentication → Email → Confirm email = OFF، ثم شغّل supabase_fix_student_auth.sql';
 
   function hashKey(str) {
     let h = 5381;
@@ -27,6 +29,10 @@
     return /invalid/i.test(msg) && !/credentials|password/i.test(msg);
   }
 
+  function isConfirmError(err) {
+    return /not confirmed|confirm your email|email.*confirm/i.test(err?.message || '');
+  }
+
   async function signInOnly(creds) {
     return db.auth.signInWithPassword({ email: creds.email, password: creds.password });
   }
@@ -35,15 +41,19 @@
     const signUp = await db.auth.signUp({ email: creds.email, password: creds.password });
     if (signUp.error) {
       if (/confirm|verified/i.test(signUp.error.message || '')) {
-        return { error: { message: 'فعّل تسجيل البريد في Supabase: Authentication → Email → Confirm email = OFF' } };
+        return { error: { message: CONFIRM_MSG } };
       }
       if (/already|registered|exists/i.test(signUp.error.message || '')) {
-        return signInOnly(creds);
+        const res = await signInOnly(creds);
+        if (res.error && isConfirmError(res.error)) return { error: { message: CONFIRM_MSG } };
+        return res;
       }
       return { error: signUp.error };
     }
     if (signUp.data?.session) return { data: signUp.data, error: null };
-    return signInOnly(creds);
+    const res = await signInOnly(creds);
+    if (res.error && isConfirmError(res.error)) return { error: { message: CONFIRM_MSG } };
+    return res;
   }
 
   async function studentSignIn(name, pin) {
@@ -61,6 +71,9 @@
       if (isRateLimit(res.error)) {
         return { error: { message: 'محاولات كثيرة — انتظر ٥ دقائق وحاول مجدداً' } };
       }
+      if (isConfirmError(res.error)) {
+        return { error: { message: CONFIRM_MSG } };
+      }
       if (isInvalidEmail(res.error)) continue;
 
       res = await signUpAndIn(creds);
@@ -69,6 +82,9 @@
       lastError = res.error;
       if (isRateLimit(res.error)) {
         return { error: { message: 'محاولات كثيرة — انتظر ٥ دقائق وحاول مجدداً' } };
+      }
+      if (isConfirmError(res.error) || isConfirmError(lastError)) {
+        return { error: { message: CONFIRM_MSG } };
       }
       if (isInvalidEmail(res.error)) continue;
       return res;
