@@ -6,8 +6,9 @@
  *    registered or read by anyone other than the Supabase project owner.
  *  - Legacy accounts (djb2 hash + mailinator/example/test domains) are still
  *    accepted via fallback so existing students are NOT locked out.
- *  - A client-side lockout (5 attempts / 5 min) supplements Supabase's
- *    per-IP rate limiting to make brute-force impractical.
+ *  - A client-side lockout (8 wrong PIN attempts / 3 min) supplements Supabase's
+ *    per-IP rate limiting. Auth hints cache successful scheme per name so repeat
+ *    logins use a single API call instead of 8+.
  *  - The PEPPER constant is defense-in-depth only; for full hardening, move
  *    credential derivation into a Supabase Edge Function so the pepper and
  *    hash algorithm never ship to the client. See MIGRATION at the bottom.
@@ -19,9 +20,10 @@
   const CONFIRM_MSG =
     'أوقف تأكيد البريد في Supabase: Authentication → Email → Confirm email = OFF، ثم شغّل supabase_fix_student_auth.sql';
 
-  const MAX_ATTEMPTS = 5;
-  const LOCKOUT_MS = 5 * 60 * 1000;
+  const MAX_ATTEMPTS = 8;
+  const LOCKOUT_MS = 3 * 60 * 1000;
   const LOCKOUT_KEY = 'alhudaLoginLockout';
+  const HINT_KEY = 'alhudaAuthHints';
 
   /* ---------- Client-side lockout (defense-in-depth) ---------- */
   function readLockout() {
@@ -57,6 +59,27 @@
   function lockoutMinutesRemaining() {
     const s = readLockout();
     return s.until ? Math.max(1, Math.ceil((s.until - Date.now()) / 60000)) : 0;
+  }
+
+  /* ---------- Per-name auth hint (fewer Supabase calls) ---------- */
+  function getAuthHint(nameNorm) {
+    try {
+      const map = JSON.parse(localStorage.getItem(HINT_KEY) || '{}');
+      return map[nameNorm] || null;
+    } catch (e) {
+      return null;
+    }
+  }
+  function setAuthHint(nameNorm, hint) {
+    try {
+      const map = JSON.parse(localStorage.getItem(HINT_KEY) || '{}');
+      map[nameNorm] = hint;
+      const keys = Object.keys(map);
+      while (keys.length > 80) {
+        delete map[keys.shift()];
+      }
+      localStorage.setItem(HINT_KEY, JSON.stringify(map));
+    } catch (e) {}
   }
 
   /* ---------- Hashing ---------- */
@@ -97,20 +120,20 @@
 
   /* ---------- Error classification ---------- */
   function isRateLimit(err) {
-    return /rate limit|too many/i.test(err?.message || '');
+    const msg = err?.message || '';
+    return /rate limit|too many|429/i.test(msg) || err?.status === 429;
   }
   function isConfirmError(err) {
     return /not confirmed|confirm your email|email.*confirm/i.test(err?.message || '');
   }
-  // FIXED: the original `isInvalidEmail` could never be true for Supabase's
-  // canonical "Invalid login credentials" error (which contains both
-  // "invalid" and "credentials"). The multi-domain fallback loop was therefore
-  // dead code. This now correctly detects that error.
   function isInvalidCredentials(err) {
     const msg = err?.message || '';
     if (/invalid login credentials/i.test(msg)) return true;
     if (/invalid/i.test(msg) && !/credentials|password/i.test(msg)) return true;
     return false;
+  }
+  function isAlreadyRegistered(err) {
+    return /already|registered|exists/i.test(err?.message || '');
   }
 
   async function signInOnly(creds) {
@@ -121,7 +144,7 @@
     if (signUp.error) {
       const msg = signUp.error.message || '';
       if (/confirm|verified/i.test(msg)) return { error: { message: CONFIRM_MSG } };
-      if (/already|registered|exists/i.test(msg)) {
+      if (isAlreadyRegistered(signUp.error)) {
         const res = await signInOnly(creds);
         if (res.error && isConfirmError(res.error)) return { error: { message: CONFIRM_MSG } };
         return res;
@@ -134,8 +157,12 @@
     return res;
   }
 
-  function rateLimitErr() {
-    return { error: { message: 'محاولات كثيرة — انتظر ٥ دقائق وحاول مجدداً' } };
+  function clientLockoutErr() {
+    const mins = lockoutMinutesRemaining();
+    return { error: { message: `محاولات كثيرة — انتظر ${mins} دقيقة وحاول مجدداً` } };
+  }
+  function serverBusyErr() {
+    return { error: { message: 'الخادم مشغول — انتظر دقيقة واحدة وحاول مجدداً' } };
   }
 
   function validatePin(pin) {
@@ -144,62 +171,98 @@
     return null;
   }
 
+  async function trySignIn(creds) {
+    const res = await signInOnly(creds);
+    if (res.error && isRateLimit(res.error)) return { res, rateLimited: true };
+    return { res, rateLimited: false };
+  }
+
   async function studentSignIn(name, pin) {
     if (!normalizeName(name)) return { error: { message: 'اكتب/ي اسمك أولاً' } };
     const pinErr = validatePin(pin);
     if (pinErr) return { error: { message: pinErr } };
-    if (isLockedOut()) {
-      return { error: { message: `محاولات كثيرة — انتظر ${lockoutMinutesRemaining()} دقيقة وحاول مجدداً` } };
-    }
+    if (isLockedOut()) return clientLockoutErr();
+
+    const nameNorm = normalizeName(name);
+    const hint = getAuthHint(nameNorm);
 
     try {
-      // 1) Try NEW SHA-256 credentials on the internal pseudo-domain.
-      const newCreds = await newCredentials(name, pin);
-      let res = await signInOnly(newCreds);
-      if (!res.error) {
-        clearLockout();
-        return res;
-      }
-      if (isRateLimit(res.error)) return rateLimitErr();
-      if (isConfirmError(res.error)) return { error: { message: CONFIRM_MSG } };
-
-      // 2) Try LEGACY djb2 credentials across historical domains (existing accounts).
-      for (const domain of LEGACY_DOMAINS) {
-        const legacyCreds = legacyCredentials(name, pin, domain);
-        res = await signInOnly(legacyCreds);
+      /* Fast path: one API call when we already know this student's scheme */
+      if (hint?.scheme === 'new') {
+        const creds = await newCredentials(name, pin);
+        const { res, rateLimited } = await trySignIn(creds);
+        if (rateLimited) return serverBusyErr();
         if (!res.error) {
           clearLockout();
           return res;
         }
-        if (isRateLimit(res.error)) return rateLimitErr();
-        if (isConfirmError(res.error)) return { error: { message: CONFIRM_MSG } };
+        bumpAttempt();
+        return isLockedOut() ? clientLockoutErr() : { error: { message: 'اسم أو رمز غير صحيح' } };
+      }
+      if (hint?.scheme === 'legacy' && hint.domain) {
+        const creds = legacyCredentials(name, pin, hint.domain);
+        const { res, rateLimited } = await trySignIn(creds);
+        if (rateLimited) return serverBusyErr();
+        if (!res.error) {
+          clearLockout();
+          return res;
+        }
+        /* Hint may be stale — continue with full discovery below */
       }
 
-      // 3) No existing account → SIGN UP a new one with the secure SHA-256 scheme.
-      res = await signUpAndIn(newCreds);
+      const newCreds = await newCredentials(name, pin);
+
+      /* 1) New scheme sign-in */
+      let { res, rateLimited } = await trySignIn(newCreds);
+      if (rateLimited) return serverBusyErr();
       if (!res.error) {
+        setAuthHint(nameNorm, { scheme: 'new' });
         clearLockout();
         return res;
       }
-      if (isRateLimit(res.error)) return rateLimitErr();
 
-      // 4) Last-resort fallback: legacy signUp on legacy domains (covers the rare
-      //    case where the primary pseudo-domain is rejected by project config).
-      if (isInvalidCredentials(res.error) || /already|registered|exists/i.test(res.error.message || '')) {
-        for (const domain of LEGACY_DOMAINS) {
-          const legacyCreds = legacyCredentials(name, pin, domain);
-          res = await signUpAndIn(legacyCreds);
-          if (!res.error) {
-            clearLockout();
-            return res;
-          }
-          if (isRateLimit(res.error)) return rateLimitErr();
+      /* 2) Legacy sign-in for existing accounts (max 3 calls) */
+      for (const domain of LEGACY_DOMAINS) {
+        const legacyCreds = legacyCredentials(name, pin, domain);
+        ({ res, rateLimited } = await trySignIn(legacyCreds));
+        if (rateLimited) return serverBusyErr();
+        if (!res.error) {
+          setAuthHint(nameNorm, { scheme: 'legacy', domain });
+          clearLockout();
+          return res;
         }
       }
 
-      // All paths failed — bump the lockout counter.
-      const lockState = bumpAttempt();
-      if (lockState.until) return rateLimitErr();
+      /* 3) New account — single sign-up path (not 6+ round-trips) */
+      res = await signUpAndIn(newCreds);
+      if (res.error && isRateLimit(res.error)) return serverBusyErr();
+      if (res.error && isConfirmError(res.error)) return { error: { message: CONFIRM_MSG } };
+      if (!res.error) {
+        setAuthHint(nameNorm, { scheme: 'new' });
+        clearLockout();
+        return res;
+      }
+
+      /* Account exists on new email but sign-in failed → wrong PIN */
+      if (isAlreadyRegistered(res.error)) {
+        bumpAttempt();
+        return isLockedOut() ? clientLockoutErr() : { error: { message: 'اسم أو رمز غير صحيح' } };
+      }
+
+      /* 4) Rare: internal domain rejected — one legacy sign-up only */
+      if (isInvalidCredentials(res.error)) {
+        const legacyCreds = legacyCredentials(name, pin, LEGACY_DOMAINS[0]);
+        res = await signUpAndIn(legacyCreds);
+        if (res.error && isRateLimit(res.error)) return serverBusyErr();
+        if (!res.error) {
+          setAuthHint(nameNorm, { scheme: 'legacy', domain: LEGACY_DOMAINS[0] });
+          clearLockout();
+          return res;
+        }
+      }
+
+      bumpAttempt();
+      if (isLockedOut()) return clientLockoutErr();
       return {
         error: {
           message: isInvalidCredentials(res.error)
@@ -214,6 +277,7 @@
 
   /* ---------- Public API ---------- */
   window.studentSignIn = studentSignIn;
+  window.clearLoginLockout = clearLockout;
 
   /* MIGRATION (optional, future):
    *  1. Add a Supabase Edge Function `student-auth` that accepts name+pin over
