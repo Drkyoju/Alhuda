@@ -539,14 +539,14 @@ async function submitFeedback() {
   if (payload.cloudSaved) {
     msgEl.style.color = 'var(--emerald)';
     msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه! شكراً لمساهمتك/ِ 💚';
-    state.userName = name;
-    localStorage.setItem('savedName', name);
-    const loginName = document.getElementById('login-name');
-    if (loginName) loginName.value = name;
   } else {
     msgEl.style.color = 'var(--orange)';
     msgEl.textContent = '⚠️ حُفظ على جهازك — شغّل/ي supabase_feedback.sql في Supabase لمزامنة الآراء';
   }
+  state.userName = name;
+  localStorage.setItem('savedName', name);
+  const loginName = document.getElementById('login-name');
+  if (loginName) loginName.value = name;
   localStorage.setItem('demoDone', '1');
   } finally {
     btn.disabled = false;
