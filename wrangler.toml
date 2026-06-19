@@ -8,15 +8,3 @@ directory = "."
 binding = "ASSETS"
 not_found_handling = "single-page-application"
 html_handling = "auto-trailing-slash"
-exclude = [
-  ".git/**",
-  ".venv/**",
-  "scripts/**",
-  "extracted/**",
-  "**/*.sql",
-  "**/*.py",
-  ".env*",
-  "AGENTS.md",
-  "README.md",
-  "supabase_README.md",
-]
