@@ -79,18 +79,25 @@ create policy "Authenticated read challenges"
   using (true);
 
 -- ─────────────────────────────────────────────────────────────────────────
--- 5) feedback — was insert with `auth.uid() is not null` only (no ownership
---    check). Allowed a user to file feedback attributed to a different uid
---    and to populate user_name/user_email with arbitrary values. Tighten to
---    require user_id = auth.uid().
+-- 5) feedback — allow demo/guest insert (user_id is null) AND logged-in
+--    users (user_id = auth.uid()). Re-run supabase_feedback.sql if you
+--    need the full policy set; this block keeps guest insert working.
 -- ─────────────────────────────────────────────────────────────────────────
+drop policy if exists "Anyone can insert feedback" on public.feedback;
+drop policy if exists "Anyone can insert demo feedback" on public.feedback;
 drop policy if exists "Users insert feedback" on public.feedback;
+drop policy if exists "Authenticated insert feedback" on public.feedback;
 drop policy if exists "Authenticated insert own feedback" on public.feedback;
+
+create policy "Anyone can insert demo feedback"
+  on public.feedback for insert
+  to anon, authenticated
+  with check (user_id is null);
+
 create policy "Authenticated insert own feedback"
-  on public.feedback
-  for insert
+  on public.feedback for insert
   to authenticated
-  with check (user_id = auth.uid());
+  with check (user_id is null or user_id = auth.uid());
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- 6) Defense in depth: ensure RPC functions cannot be invoked by anon.

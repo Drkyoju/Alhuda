@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=1">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body class="islamic-bg login-mode">
 
@@ -139,10 +139,10 @@
         <p>تعرّف/ي على التجربة قبل البدء</p>
       </div>
       <div class="card demo-intro-card">
-      <div class="demo-badge">١٠ أسئلة تجريبية</div>
+      <div class="demo-badge">٥ أسئلة تجريبية</div>
       <img src="images.jpeg" alt="" class="logo-img sm" style="margin:0 auto 12px;">
       <h3 style="margin-bottom:8px;">مرحباً <span id="demo-name">بطل/ة</span>! 👋</h3>
-      <p>جرّب/ي <strong>١٠ أسئلة</strong> من الكتب الثلاثة لتتعرّف/ي على اللعبة.<br>بعدها شاركنا رأيك/ِ في النموذج — رأيك/ِ يهمنا! 💬</p>
+      <p>جرّب/ي <strong>٥ أسئلة</strong> من الكتب الثلاثة لتتعرّف/ي على اللعبة.<br>بعدها شاركنا رأيك/ِ في النموذج — رأيك/ِ يهمنا! 💬</p>
       <button class="btn btn-gold btn-xl" onclick="beginDemo()">يلا نبدأ! 🎮</button>
       <button class="btn btn-sm btn-white" onclick="skipDemo()" style="margin-top:10px;width:100%;">تخطي → الدخول مباشرة</button>
       </div>
@@ -159,16 +159,25 @@
       <div class="card feedback-screen-inner">
       <div class="demo-badge">تقييم سريع</div>
       <h3>كيف كانت تجربتك؟</h3>
-      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;margin-bottom:4px;">هل أعجبك/ِ البرنامج؟</p>
+      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;margin-bottom:4px;">اختار/ي تقييمك:</p>
       <div class="rating-row" id="rating-row">
-        <button class="rating-btn" onclick="setRating(5,this)" data-r="5"><span class="r-emoji">😍</span>حبيته!</button>
-        <button class="rating-btn" onclick="setRating(4,this)" data-r="4"><span class="r-emoji">😊</span>حلو</button>
-        <button class="rating-btn" onclick="setRating(3,this)" data-r="3"><span class="r-emoji">😐</span>عادي</button>
-        <button class="rating-btn" onclick="setRating(2,this)" data-r="2"><span class="r-emoji">😕</span>محتاج تحسين</button>
-        <button class="rating-btn" onclick="setRating(1,this)" data-r="1"><span class="r-emoji">😞</span>ما عجبني</button>
+        <button type="button" class="rating-btn" onclick="setRating(5,this)" data-r="5"><span class="r-emoji">😍</span>أعجبني!</button>
+        <button type="button" class="rating-btn" onclick="setRating(2,this)" data-r="2"><span class="r-emoji">😕</span>يحتاج تحسين</button>
+        <button type="button" class="rating-btn" onclick="setRating(1,this)" data-r="1"><span class="r-emoji">😞</span>ما أعجبني</button>
       </div>
-      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;">شاركنا رأيك/ِ واقتراحاتك:</p>
-      <textarea class="feedback-textarea" id="feedback-text" placeholder="اكتب/ي هنا: هل البرنامج حلو؟ ماذا نحسّن؟ ما الذي أعجبك/ِ؟"></textarea>
+
+      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;margin:12px 0 8px;">معلوماتك:</p>
+      <div class="feedback-info-row">
+        <input type="text" class="input" id="feedback-name" placeholder="الاسم" autocomplete="name">
+        <input type="number" class="input" id="feedback-age" placeholder="العمر" min="5" max="120" inputmode="numeric">
+      </div>
+
+      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;margin:8px 0 4px;">هل أعجبك البرنامج؟</p>
+      <textarea class="feedback-textarea" id="feedback-like" placeholder="اكتب/ي رأيك/ِ: ما الذي أعجبك/ِ؟ ما انطباعك عن البرنامج؟"></textarea>
+
+      <p style="font-size:0.85em;color:var(--text-soft);font-weight:700;margin-bottom:4px;">هل تريد/ين إضافة شيء جديد أو تحسينات؟</p>
+      <textarea class="feedback-textarea" id="feedback-improve" placeholder="اقتراحاتك: ماذا نضيف؟ ماذا نحسّن؟"></textarea>
+
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال رأيي 📨</button>
       <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;margin-top:10px;">📋 مراجعة أخطاء النموذج</button>
       <p id="feedback-msg" style="margin-top:10px;font-weight:800;font-size:0.85em;min-height:20px;"></p>
@@ -319,7 +328,7 @@
     </div>
     <div class="q-area">
       <div id="training-bar" class="training-bar" style="display:none;">🎯 وضع التدريب — لا تُخصم المحاولات</div>
-      <div id="demo-bar" class="training-bar" style="display:none;background:var(--teal-soft);border-color:var(--sky);">📝 نموذج تجريبي — ١٠ أسئلة للتجربة</div>
+      <div id="demo-bar" class="training-bar" style="display:none;background:var(--teal-soft);border-color:var(--sky);">📝 نموذج تجريبي — ٥ أسئلة للتجربة</div>
       <div class="q-meta">
         <span class="q-num" id="q-num"></span>
         <span class="badge badge-blue" id="q-book-badge"></span>
@@ -577,10 +586,10 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=1"></script>
+<script src="app.js?v=2"></script>
 <script src="auth.js?v=6"></script>
 <script src="enhancements.js?v=3"></script>
-<script src="platform.js?v=3"></script>
+<script src="platform.js?v=4"></script>
 <script>
 (async function boot() {
   updateBismillahPadding();
@@ -590,14 +599,10 @@
   if (qCount > 0) document.getElementById('login-hint').textContent = '📚 ' + qCount + ' سؤال في انتظارك!';
   updateLevelCounts();
   selectLevel('easy');
-  if (await restoreSession()) {
-    if (window.AlhudaPlatform?.showOnboardingIfNeeded) AlhudaPlatform.showOnboardingIfNeeded();
-    return;
-  }
+  if (await restoreSession()) return;
   show('login-screen');
   setLoginTab('student');
   updateTopbarStats();
-  if (window.AlhudaPlatform?.showOnboardingIfNeeded) AlhudaPlatform.showOnboardingIfNeeded();
 })();
 </script>
 </body>

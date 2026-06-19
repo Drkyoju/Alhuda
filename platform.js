@@ -325,6 +325,7 @@
 
   function showOnboardingIfNeeded() {
     if (localStorage.getItem('onboardingDone')) return;
+    if (!document.getElementById('welcome')?.classList.contains('active')) return;
     const ov = document.getElementById('onboarding-overlay');
     if (ov) ov.classList.add('open');
   }

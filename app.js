@@ -6,7 +6,7 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول الثلاثة', nawawi:'الأربعون النووية', merge3:'الكتب الثلاثة' };
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
 const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
-const DEMO_COUNT = 10;
+const DEMO_COUNT = 5;
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
   usool: ['👤 المؤلف','📖 الكتاب','📚 المسائل الأربع','📚 العلم','🕌 الرب','🙏 العبادة','👤 النبي','📿 الدين','🤲 الدعاء','🛡️ التوكل','🆘 الاستعانة','📿 الاستعاذة']
@@ -24,19 +24,19 @@ function chapterSortIndex(book, chapter) {
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
 let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, pendingLoginAfterDemo = false;
-let lastFeedbackItems = [];
+let lastFeedbackItems = [], countdownTimer = null, adminFeedbackLoading = false;
 
+const FEEDBACK_RATING_LABELS = {
+  5: { emoji: '😍', label: 'أعجبني' },
+  2: { emoji: '😕', label: 'يحتاج تحسين' },
+  1: { emoji: '😞', label: 'ما أعجبني' },
+};
 const DEMO_FALLBACK = [
   { id:'demo1', book:'tawheed', type:'tf', q:'التوحيد هو إفراد الله تعالى بالعبادة.', tf:true, exp:'نعم! التوحيد هو إفراد الله في الربوبية والألوهية والأسماء والصفات.' },
   { id:'demo2', book:'usool', type:'mc', q:'ما هي الأصول الثلاثة؟', a:['معرفة الرب ومعرفة الدين ومعرفة نبيك','الصلاة والزكاة والصوم','الإيمان والإحسان والإخلاص','القرآن والسنة والإجماع'], c:0, exp:'الأصول الثلاثة: معرفة الرب، ومعرفة الدين بمعرفة دينك، ومعرفة نبيك محمد ﷺ.' },
   { id:'demo3', book:'nawawi', type:'tf', q:'أول حديث في الأربعون النووية: «إنما الأعمال بالنيات».', tf:true, exp:'صحيح! وهو أول حديث في الأربعون النووية للإمام النووي رحمه الله.' },
   { id:'demo4', book:'tawheed', type:'tf', q:'الشرك الأكبر يُخرج من الملة.', tf:true, exp:'الشرك الأكبر من أعظم الكبائر ويُبقي صاحبه في النار إن مات عليه.' },
   { id:'demo5', book:'usool', type:'tf', q:'العبادة هي الطاعة والخضوع لله.', tf:true, exp:'العبادة اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال.' },
-  { id:'demo6', book:'nawawi', type:'mc', q:'من كلام النبي ﷺ: «لا يؤمن أحدكم حتى...»', a:['يحب لأخيه ما يحب لنفسه','يصلي الفجر','يحج كل عام','يتصدق بماله كله'], c:0, exp:'من حديث: «لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه».' },
-  { id:'demo7', book:'tawheed', type:'mc', q:'أركان الإسلام خمسة، منها:', a:['إقام الصلاة وإيتاء الزكاة','الصيام والحج فقط','الجهاد والدعوة فقط','الصدق والأمانة فقط'], c:0, exp:'من أركان الإسلام: الشهادتان، الصلاة، الزكاة، الصوم، الحج.' },
-  { id:'demo8', book:'usool', type:'tf', q:'الرب هو الخالق الرازق المدبر.', tf:true, exp:'الرب سبحانه هو المعبود بحق، الخالق لكل شيء.' },
-  { id:'demo9', book:'nawawi', type:'tf', q:'الإحسان أن تعبد الله كأنك تراه.', tf:true, exp:'من تعريف الإحسان في حديث جبريل عليه السلام.' },
-  { id:'demo10', book:'tawheed', type:'tf', q:'دعاء غير الله فيما لا يقدر عليه إلا الله شرك.', tf:true, exp:'الدعاء عبادة، ومن دعا غير الله فيما لا يقدر عليه إلا الله فقد أشرك.' },
 ];
 
 const LEVELS = [
@@ -68,6 +68,41 @@ const QUOTES = [
 const ENCOURAGE_OK = ['ممتاز! 🌟', 'أحسنت! 🎉', 'رائع! ⭐', 'مبدع/ة! 💫', 'بارك الله فيك! 🤲'];
 const ENCOURAGE_BAD = ['لا بأس! حاول/ي مرة أخرى 💪', 'تعلّمنا من الخطأ 📖', 'واصل/ي! أنت قادر/ة 🌱'];
 const DEFAULT_PLAYER = 'بطل/ة';
+
+function feedbackRatingLabel(rating) {
+  const r = FEEDBACK_RATING_LABELS[rating];
+  return r ? `${r.emoji} ${r.label}` : `💬 ${rating}`;
+}
+async function syncPendingFeedback() {
+  const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
+  let changed = false;
+  for (const item of backup) {
+    if (item.cloudSaved || item.id) continue;
+    const ok = await saveFeedbackToCloud(buildFeedbackInsertRow(item));
+    if (ok) {
+      item.cloudSaved = true;
+      changed = true;
+    }
+  }
+  if (changed) localStorage.setItem('feedbackBackup', JSON.stringify(backup.slice(0, 200)));
+  return backup;
+}
+
+function buildFeedbackInsertRow(item) {
+  return {
+    user_name: item.user_name,
+    user_email: item.user_email || null,
+    user_id: item.user_id || null,
+    rating: item.rating,
+    message: item.message,
+    source: item.source || 'demo',
+  };
+}
+async function saveFeedbackToCloud(row) {
+  const { error } = await db.from('feedback').insert(row);
+  if (error) console.warn('feedback insert:', error);
+  return !error;
+}
 
 function getProgress() {
   return JSON.parse(localStorage.getItem('playerProgress') || '{}');
@@ -444,7 +479,14 @@ function endDemo() {
   document.getElementById('demo-bar').style.display = 'none';
   feedbackRating = 0;
   document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('sel'));
-  document.getElementById('feedback-text').value = '';
+  const fbName = document.getElementById('feedback-name');
+  const fbAge = document.getElementById('feedback-age');
+  if (fbName) fbName.value = state.userName || '';
+  if (fbAge) fbAge.value = '';
+  const fbLike = document.getElementById('feedback-like');
+  const fbImprove = document.getElementById('feedback-improve');
+  if (fbLike) fbLike.value = '';
+  if (fbImprove) fbImprove.value = '';
   document.getElementById('feedback-msg').textContent = '';
   const rd = document.getElementById('btn-review-demo');
   if (rd) rd.style.display = state.wrongLog.length ? 'block' : 'none';
@@ -456,47 +498,56 @@ function setRating(r, el) {
   el.classList.add('sel');
 }
 async function submitFeedback() {
-  const msg = document.getElementById('feedback-text').value.trim();
+  const name = (document.getElementById('feedback-name')?.value || '').trim();
+  const age = (document.getElementById('feedback-age')?.value || '').trim();
+  const likeText = (document.getElementById('feedback-like')?.value || '').trim();
+  const improveText = (document.getElementById('feedback-improve')?.value || '').trim();
   const msgEl = document.getElementById('feedback-msg');
   const btn = document.getElementById('btn-submit-feedback');
-  if (!feedbackRating) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اختار/ي تقييماً أولاً 😊'; return; }
+  if (!FEEDBACK_RATING_LABELS[feedbackRating]) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اختار/ي تقييماً أولاً'; return; }
+  if (!name) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اكتب/ي اسمك من فضلك'; return; }
   btn.disabled = true;
   btn.textContent = 'جاري الإرسال...';
-  const fullMsg = [
-    msg,
-    state.total ? `(النموذج: ${state.correct}/${state.total} صحيحة)` : ''
-  ].filter(Boolean).join('\n') || null;
+  try {
+  const parts = [];
+  if (age) parts.push(`العمر: ${age}`);
+  if (likeText) parts.push(`هل أعجبك البرنامج؟\n${likeText}`);
+  if (improveText) parts.push(`اقتراحات وتحسينات:\n${improveText}`);
+  if (state.total) parts.push(`(النموذج: ${state.correct}/${state.total} صحيحة)`);
+  const fullMsg = parts.join('\n\n') || null;
   const payload = {
-    user_name: state.userName || 'مجهول',
+    user_name: name || state.userName || 'مجهول',
     user_email: state.userEmail || null,
     user_id: state.user?.id || null,
     rating: feedbackRating,
     message: fullMsg,
     source: 'demo',
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
+    localId: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+    cloudSaved: false,
   };
-  const { error } = await db.from('feedback').insert({
-    user_name: payload.user_name,
-    user_email: payload.user_email,
-    user_id: payload.user_id,
-    rating: payload.rating,
-    message: payload.message,
-    source: payload.source
-  });
+  const cloudSaved = await saveFeedbackToCloud(buildFeedbackInsertRow(payload));
+  payload.cloudSaved = cloudSaved;
   const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
   backup.unshift(payload);
   localStorage.setItem('feedbackBackup', JSON.stringify(backup.slice(0, 200)));
-  btn.disabled = false;
-  btn.textContent = 'إرسال رأيي 📨';
-  if (error) {
-    console.warn('feedback insert:', error);
-    msgEl.style.color = 'var(--orange)';
-    msgEl.textContent = '⚠️ حُفظ محلياً — شغّل/ي supabase_feedback.sql في Supabase';
-  } else {
+  if (!cloudSaved) {
+    await syncPendingFeedback();
+    const refreshed = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
+    if (refreshed.find(x => x.localId === payload.localId)?.cloudSaved) payload.cloudSaved = true;
+  }
+  if (payload.cloudSaved) {
     msgEl.style.color = 'var(--emerald)';
     msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه! شكراً لمساهمتك/ِ 💚';
+  } else {
+    msgEl.style.color = 'var(--orange)';
+    msgEl.textContent = '⚠️ حُفظ على جهازك — شغّل/ي supabase_feedback.sql في Supabase لمزامنة الآراء';
   }
   localStorage.setItem('demoDone', '1');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'إرسال رأيي 📨';
+  }
 }
 async function finishDemoFlow() {
   localStorage.setItem('demoDone', '1');
@@ -521,38 +572,49 @@ async function finishDemoFlow() {
   }
 }
 function mergeFeedbackItems(server, backup) {
-  const map = new Map();
-  for (const f of [...(server || []), ...(backup || [])]) {
-    const key = f.id || `${f.user_name}-${f.created_at}-${f.rating}-${(f.message || '').slice(0, 40)}`;
-    if (!map.has(key)) map.set(key, f);
+  const items = [...(server || [])];
+  const seen = new Set(items.map(f => feedbackItemKey(f)));
+  for (const f of backup || []) {
+    if (f.cloudSaved || f.id) continue;
+    const key = f.localId || feedbackItemKey(f);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    items.push(f);
   }
-  return [...map.values()].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+  return items.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+}
+function feedbackItemKey(f) {
+  return `${f.user_name || ''}|${f.created_at || ''}|${f.rating || ''}|${(f.message || '').slice(0, 60)}`;
 }
 
 async function showAdminFeedback() {
+  if (adminFeedbackLoading) return;
+  adminFeedbackLoading = true;
   const list = document.getElementById('admin-feedback-list');
   const status = document.getElementById('admin-feedback-status');
   list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:16px;">جاري التحميل...</p>';
-  const { data, error } = await db.from('feedback').select('*').order('created_at', { ascending: false }).limit(100);
-  const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
+  try {
+  const backup = await syncPendingFeedback();
+  const { data, error } = await db.from('feedback').select('*').order('created_at', { ascending: false }).limit(200);
   lastFeedbackItems = mergeFeedbackItems(data, backup);
-  const emojis = ['😞','😕','😐','😊','😍'];
   if (!lastFeedbackItems.length) {
     list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:20px 0;">لا توجد آراء بعد.</p>';
-    status.textContent = error ? 'تعذّر الاتصال بـ Supabase — تأكد/ي من تشغيل supabase_feedback.sql' : '';
+    status.textContent = error ? 'تعذّر الاتصال بـ Supabase — شغّل/ي supabase_feedback.sql' : '';
     return;
   }
   list.innerHTML = lastFeedbackItems.map(f => `
     <div class="feedback-item">
       <div class="fb-head">
         <span>${escapeHtml(f.user_name || 'مجهول')}</span>
-        <span>${emojis[(f.rating || 3) - 1] || '💬'} ${f.rating}/5</span>
+        <span>${escapeHtml(feedbackRatingLabel(f.rating))}</span>
       </div>
-      <div class="fb-msg">${escapeHtml(f.message || '—')}</div>
-      <div class="fb-meta">${f.created_at ? new Date(f.created_at).toLocaleString('ar') : ''}${f.source ? ' · ' + escapeHtml(f.source) : ''}${!f.id ? ' · محلي' : ''}</div>
+      <div class="fb-msg">${escapeHtml(f.message || '—').replace(/\n/g, '<br>')}</div>
+      <div class="fb-meta">${f.created_at ? new Date(f.created_at).toLocaleString('ar') : ''}${f.source ? ' · ' + escapeHtml(f.source) : ''}${!f.cloudSaved && !f.id ? ' · بانتظار المزامنة' : ''}</div>
     </div>`).join('');
-  status.textContent = `${lastFeedbackItems.length} رأي — ${data?.length || 0} من السحابة، ${backup.length} نسخة محلية`;
-  if (error) status.textContent += ' (تحذير: ' + error.message + ')';
+  status.textContent = `${lastFeedbackItems.length} رأي — ${data?.length || 0} في السحابة${error ? ' (تحذير: ' + error.message + ')' : ''}`;
+  } finally {
+    adminFeedbackLoading = false;
+  }
 }
 
 function exportFeedbackCsv() {
@@ -561,7 +623,7 @@ function exportFeedbackCsv() {
   for (const f of lastFeedbackItems) {
     rows.push([
       f.user_name || '',
-      String(f.rating || ''),
+      feedbackRatingLabel(f.rating),
       (f.message || '').replace(/\n/g, ' '),
       f.source || '',
       f.created_at || ''
@@ -579,6 +641,7 @@ function toggleSettings() {
   const ov = document.getElementById('settings-overlay');
   const open = ov.classList.toggle('open');
   document.body.style.overflow = open ? 'hidden' : '';
+  if (!open) document.body.classList.remove('training-active');
 }
 function adjustFontSize(size) {
   document.documentElement.style.setProperty('--base-font-size', size + 'px');
@@ -710,10 +773,25 @@ function updateBismillahPadding() {
   document.documentElement.style.setProperty('--bismillah-crown-h', h + 'px');
 }
 
+function clearCountdown() {
+  if (countdownTimer) {
+    clearInterval(countdownTimer);
+    countdownTimer = null;
+  }
+  const ov = document.getElementById('countdown-overlay');
+  if (ov) ov.style.display = 'none';
+}
+
 /* ── Navigation ── */
 function show(id) {
+  if (id !== 'game') clearCountdown();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const screen = document.getElementById(id);
+  if (!screen) {
+    console.warn('show: unknown screen', id);
+    return;
+  }
+  screen.classList.add('active');
   document.body.classList.toggle('login-mode', id === 'login-screen');
   document.body.classList.toggle('game-mode', id === 'game');
   document.body.classList.toggle('immersive-mode', id === 'game' || id === 'results' || id === 'gameover');
@@ -750,6 +828,7 @@ function goHome() {
   updateWelcomeStats();
   if (window.AlhudaPlatform?.onWelcomeHome) AlhudaPlatform.onWelcomeHome();
   show('welcome');
+  if (window.AlhudaPlatform?.showOnboardingIfNeeded) AlhudaPlatform.showOnboardingIfNeeded();
 }
 
 function logout() {
@@ -866,6 +945,7 @@ function updateBookButtons() {
   if (el) el.classList.add('sel');
 }
 function startCountdown() {
+  if (countdownTimer) return;
   if (!state.demoMode && !state.challengeMode) {
     const qs = getQuestionsForGame();
     if (!qs.length) {
@@ -885,6 +965,7 @@ function startCountdown() {
     n--;
     if (n <= 0) {
       clearInterval(iv);
+      countdownTimer = null;
       ov.style.display = 'none';
       startGame();
     } else {
@@ -895,6 +976,7 @@ function startCountdown() {
       playSound('start');
     }
   }, 700);
+  countdownTimer = iv;
 }
 
 function startGame() {
@@ -943,6 +1025,7 @@ function renderQ() {
   if (q.type === 'tf') {
     ['صح ✓', 'خطأ ✗'].forEach((txt, i) => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'ans-btn';
       btn.textContent = txt;
       btn.onclick = () => pick(btn, (i === 0) === q.tf);
@@ -951,6 +1034,7 @@ function renderQ() {
   } else {
     shuffleArr([0,1,2,3].slice(0, (q.a || []).length)).forEach(i => {
       const btn = document.createElement('button');
+      btn.type = 'button';
       btn.className = 'ans-btn';
       btn.textContent = q.a[i];
       btn.onclick = () => pick(btn, i === q.c);
@@ -1201,8 +1285,10 @@ function showCombo(s) {
 
 function launchConfetti() {
   const w = document.getElementById('confetti-wrap');
+  if (!w) return;
   const cols = ['#2D5A3D', '#B8956B', '#3BA4C7', '#FF6B6B', '#9B6FD4', '#F59E0B'];
-  for (let i = 0; i < 50; i++) {
+  const count = 28;
+  for (let i = 0; i < count; i++) {
     setTimeout(() => {
       const p = document.createElement('div');
       p.className = 'cp';
@@ -1214,7 +1300,7 @@ function launchConfetti() {
       p.style.height = (8 + Math.random() * 10) + 'px';
       w.appendChild(p);
       setTimeout(() => p.remove(), 3000);
-    }, i * 25);
+    }, i * 30);
   }
 }
 
@@ -1460,7 +1546,11 @@ async function saveChallengeResult() {
 function openAdmin() {
   if (state.userType !== 'teacher') return;
   if (window.AlhudaPlatform?.openAdmin) AlhudaPlatform.openAdmin();
-  else { show('admin'); showAdminFeedback(); }
+  else {
+    show('admin');
+    if (typeof switchAdminTab === 'function') switchAdminTab('students');
+    else if (typeof showAdminFeedback === 'function') showAdminFeedback();
+  }
 }
 
 async function restoreSession() {
