@@ -424,8 +424,17 @@ async function beginDemo() {
 async function skipDemo() {
   localStorage.setItem('demoDone', '1');
   if (pendingLoginAfterDemo && !state.user) {
-    await doLogin();
     pendingLoginAfterDemo = false;
+    // Same guard as finishDemoFlow: don't try to log in with empty fields.
+    const pin = (document.getElementById('login-pin')?.value || '').trim();
+    const name = (document.getElementById('login-name')?.value || '').trim();
+    if (!pin || !name) {
+      show('login-screen');
+      if (!name) document.getElementById('login-err').textContent = 'اكتب/ي اسمك لإنشاء حسابك';
+      else if (!pin) document.getElementById('login-err').textContent = 'اكتب/ي رمز الدخول لإنهاء تسجيلك';
+      return;
+    }
+    await doLogin();
   } else {
     goHome();
   }
@@ -493,6 +502,17 @@ async function finishDemoFlow() {
   localStorage.setItem('demoDone', '1');
   if (pendingLoginAfterDemo && !state.user) {
     pendingLoginAfterDemo = false;
+    // If there's no PIN entered yet, don't try to log in (it would silently
+    // fail and leave the user stuck on feedback-screen). Send them to the
+    // login screen with a helpful prompt instead.
+    const pin = (document.getElementById('login-pin')?.value || '').trim();
+    const name = (document.getElementById('login-name')?.value || '').trim();
+    if (!pin || !name) {
+      show('login-screen');
+      if (!name) document.getElementById('login-err').textContent = 'اكتب/ي اسمك لإنشاء حسابك';
+      else if (!pin) document.getElementById('login-err').textContent = 'اكتب/ي رمز الدخول لإنهاء تسجيلك';
+      return;
+    }
     await doLogin();
   } else if (state.user) {
     goHome();
