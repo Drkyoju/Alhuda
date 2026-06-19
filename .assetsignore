@@ -1,0 +1,16 @@
+.venv/**
+.git/**
+.wrangler/**
+scripts/**
+extracted/**
+**/*.sql
+**/*.py
+.env*
+node_modules/**
+.github/**
+AGENTS.md
+README.md
+supabase_README.md
+wrangler.toml
+worker.js
+.assetsignore
