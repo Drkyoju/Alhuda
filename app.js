@@ -426,18 +426,15 @@ function highlightCorrectAnswer(q) {
   });
 }
 function startDemoFromLogin() {
-  const name = document.getElementById('login-name').value.trim();
-  if (!name) { document.getElementById('login-err').textContent = 'اكتب/ي اسمك أولاً لتجرب/ي النموذج'; return; }
   document.getElementById('login-err').textContent = '';
-  state.userName = name;
+  state.userName = '';
   state.demoMode = false;
   pendingLoginAfterDemo = true;
-  localStorage.setItem('savedName', name);
-  document.getElementById('demo-name').textContent = name;
+  document.getElementById('demo-name').textContent = DEFAULT_PLAYER;
   show('demo-intro');
 }
 function showDemoIntro(name) {
-  document.getElementById('demo-name').textContent = name;
+  document.getElementById('demo-name').textContent = name || DEFAULT_PLAYER;
   show('demo-intro');
 }
 async function beginDemo() {
@@ -465,8 +462,11 @@ async function skipDemo() {
     const name = (document.getElementById('login-name')?.value || '').trim();
     if (!pin || !name) {
       show('login-screen');
-      if (!name) document.getElementById('login-err').textContent = 'اكتب/ي اسمك لإنشاء حسابك';
-      else if (!pin) document.getElementById('login-err').textContent = 'اكتب/ي رمز الدخول لإنهاء تسجيلك';
+      document.getElementById('login-err').textContent = pin && !name
+        ? 'اكتب/ي اسمك لإنشاء حسابك'
+        : !pin && name
+          ? 'اكتب/ي رمز الدخول لإنهاء تسجيلك'
+          : '';
       return;
     }
     await doLogin();
@@ -481,7 +481,7 @@ function endDemo() {
   document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('sel'));
   const fbName = document.getElementById('feedback-name');
   const fbAge = document.getElementById('feedback-age');
-  if (fbName) fbName.value = state.userName || '';
+  if (fbName) fbName.value = state.user ? (state.userName || '') : '';
   if (fbAge) fbAge.value = '';
   const fbLike = document.getElementById('feedback-like');
   const fbImprove = document.getElementById('feedback-improve');
@@ -539,6 +539,10 @@ async function submitFeedback() {
   if (payload.cloudSaved) {
     msgEl.style.color = 'var(--emerald)';
     msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه! شكراً لمساهمتك/ِ 💚';
+    state.userName = name;
+    localStorage.setItem('savedName', name);
+    const loginName = document.getElementById('login-name');
+    if (loginName) loginName.value = name;
   } else {
     msgEl.style.color = 'var(--orange)';
     msgEl.textContent = '⚠️ حُفظ على جهازك — شغّل/ي supabase_feedback.sql في Supabase لمزامنة الآراء';
@@ -560,8 +564,11 @@ async function finishDemoFlow() {
     const name = (document.getElementById('login-name')?.value || '').trim();
     if (!pin || !name) {
       show('login-screen');
-      if (!name) document.getElementById('login-err').textContent = 'اكتب/ي اسمك لإنشاء حسابك';
-      else if (!pin) document.getElementById('login-err').textContent = 'اكتب/ي رمز الدخول لإنهاء تسجيلك';
+      document.getElementById('login-err').textContent = pin && !name
+        ? 'اكتب/ي اسمك لإنشاء حسابك'
+        : !pin && name
+          ? 'اكتب/ي رمز الدخول لإنهاء تسجيلك'
+          : '';
       return;
     }
     await doLogin();
