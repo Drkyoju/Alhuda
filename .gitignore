@@ -48,3 +48,8 @@ extracted/similar_pairs_review.json
 extracted/sync_report.json
 extracted/audit_report.json
 extracted/cleanup_apply_report.json
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
