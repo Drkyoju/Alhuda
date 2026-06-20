@@ -102,7 +102,7 @@ function buildFeedbackInsertRow(item) {
   };
 }
 async function saveFeedbackToCloud(row) {
-  const { error } = await db.from('feedback').insert(row);
+  const { error } = await db.from('feedback').insert(row, { returning: 'minimal' });
   if (error) {
     console.warn('feedback insert:', error.message, error);
     return { ok: false, error: error.message };

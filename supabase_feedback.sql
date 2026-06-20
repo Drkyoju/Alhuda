@@ -65,6 +65,9 @@ create policy "Teachers can read feedback"
     )
   );
 
+-- ملاحظة: التطبيق يستخدم returning: minimal عند الإدراج لأن SELECT
+-- مسموح للمعلم/ة فقط — بدون minimal يفشل الإرسال برغم صحة سياسة INSERT.
+
 create index if not exists idx_feedback_created_at on public.feedback(created_at desc);
 create index if not exists idx_feedback_user_id on public.feedback(user_id);
 
