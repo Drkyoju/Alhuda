@@ -97,7 +97,7 @@
     // update is waiting, prompt it to take over on the NEXT page load by
     // sending SKIP_WAITING — avoids the previous "new JS, old HTML tab"
     // runtime error pattern from unconditional skipWaiting().
-    navigator.serviceWorker.register('./service-worker.js?v=13').then((reg) => {
+    navigator.serviceWorker.register('./service-worker.js?v=14').then((reg) => {
       // If a new SW is waiting, hand it control on the next reload.
       if (reg.waiting) {
         reg.waiting.postMessage('SKIP_WAITING');

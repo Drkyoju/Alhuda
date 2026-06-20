@@ -453,6 +453,7 @@
   // Each loader is wrapped in safeQuery so a network error never freezes the
   // admin panel in a half-rendered state.
   function switchAdminTab(tab) {
+    if (!document.getElementById('admin')) return;
     document.querySelectorAll('.admin-tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === tab));
     document.querySelectorAll('.admin-panel').forEach((p) => p.classList.toggle('active', p.id === 'admin-tab-' + tab));
     if (tab === 'students') { safeQuery(loadTeacherStudents, 'تعذّر تحميل الطلاب'); }
@@ -874,9 +875,7 @@
       syncUserClassFromDb,
       syncWrongQuestionsFromDb,
       openAdmin: () => {
-        show('admin');
-        switchAdminTab('students');
-        loadTeacherClasses();
+        if (typeof showLeaderboard === 'function') showLeaderboard();
       },
     };
   }

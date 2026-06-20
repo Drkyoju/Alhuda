@@ -426,11 +426,13 @@ function startDemoFromLogin() {
   state.userName = '';
   state.demoMode = false;
   pendingLoginAfterDemo = true;
-  document.getElementById('demo-name').textContent = DEFAULT_PLAYER;
+  const demoName = document.getElementById('demo-name');
+  if (demoName) demoName.textContent = DEFAULT_PLAYER;
   show('demo-intro');
 }
 function showDemoIntro(name) {
-  document.getElementById('demo-name').textContent = name || DEFAULT_PLAYER;
+  const demoName = document.getElementById('demo-name');
+  if (demoName) demoName.textContent = name || DEFAULT_PLAYER;
   show('demo-intro');
 }
 async function beginDemo() {
@@ -578,9 +580,10 @@ function feedbackItemKey(f) {
 
 async function showAdminFeedback() {
   if (adminFeedbackLoading) return;
-  adminFeedbackLoading = true;
   const list = document.getElementById('admin-feedback-list');
   const status = document.getElementById('admin-feedback-status');
+  if (!list || !status) return;
+  adminFeedbackLoading = true;
   list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:16px;">جاري التحميل...</p>';
   try {
   const backup = await syncPendingFeedback();
@@ -1202,6 +1205,8 @@ async function endGame() {
     });
     if (scoreErr && typeof showToast === 'function') {
       showToast('تعذّر حفظ النتيجة — تحقق من الاتصال', 'err');
+    } else {
+      invalidateLbCache();
     }
   }
   if (window.AlhudaPlatform?.onGameEndHook) await AlhudaPlatform.onGameEndHook();
@@ -1263,6 +1268,32 @@ function toggleTrainingMode() {
 
 /* ── Leaderboard & Profile ── */
 let lbPeriod = 'week';
+let lbCache = { day: null, week: null };
+let topLeaderLoading = false;
+const LB_CACHE_MS = 45000;
+
+function invalidateLbCache() {
+  lbCache = { day: null, week: null };
+}
+
+async function fetchLeaderboardRankings(period, forceRefresh) {
+  const cached = lbCache[period];
+  if (!forceRefresh && cached && Date.now() - cached.at < LB_CACHE_MS) {
+    return cached.ranked;
+  }
+  const start = getLbPeriodStart(period);
+  const { data: scores, error } = await db.from('scores')
+    .select('user_id,score')
+    .gte('played_at', start.toISOString())
+    .limit(1000);
+  if (error) return cached?.ranked || [];
+  const ranked = aggregateTotalPoints(scores);
+  const userIds = [...new Set(ranked.map(s => s.user_id).filter(Boolean))].slice(0, 80);
+  const nameMap = await fetchNameMap(userIds);
+  const withNames = ranked.map(r => ({ ...r, name: nameMap[r.user_id] || 'مجهول' }));
+  lbCache[period] = { at: Date.now(), ranked: withNames, scores, nameMap };
+  return withNames;
+}
 
 function getLbPeriodStart(period) {
   const now = new Date();
@@ -1312,20 +1343,9 @@ function aggregateTotalPoints(scores) {
 
 async function fetchNameMap(userIds) {
   if (!userIds.length) return {};
-  const { data: profiles } = await db.from('profiles').select('id,name').in('id', userIds);
+  const ids = [...new Set(userIds)].slice(0, 80);
+  const { data: profiles } = await db.from('profiles').select('id,name').in('id', ids);
   return Object.fromEntries((profiles || []).map(p => [p.id, p.name]));
-}
-
-async function fetchLeaderboardRankings(period) {
-  const start = getLbPeriodStart(period);
-  const { data: scores, error } = await db.from('scores')
-    .select('user_id,score')
-    .gte('played_at', start.toISOString())
-    .limit(1000);
-  if (error) return [];
-  const ranked = aggregateTotalPoints(scores);
-  const nameMap = await fetchNameMap([...new Set(ranked.map(s => s.user_id).filter(Boolean))]);
-  return ranked.map(r => ({ ...r, name: nameMap[r.user_id] || 'مجهول' }));
 }
 
 function formatTopLeaderLine(entry) {
@@ -1333,27 +1353,35 @@ function formatTopLeaderLine(entry) {
   return `🥇 ${entry.name} — ⭐${entry.score} (${entry.games} لعبة)`;
 }
 
-async function updateTopLeaderPreview() {
+async function updateTopLeaderPreview(forceRefresh) {
   const dayEl = document.getElementById('top-leader-day');
   const weekEl = document.getElementById('top-leader-week');
   if (!dayEl || !weekEl) return;
-  dayEl.textContent = 'جاري التحميل...';
-  weekEl.textContent = 'جاري التحميل...';
+  if (topLeaderLoading) return;
+  topLeaderLoading = true;
+  const hadCache = lbCache.day && lbCache.week && !forceRefresh;
+  if (!hadCache) {
+    dayEl.textContent = 'جاري التحميل...';
+    weekEl.textContent = 'جاري التحميل...';
+  }
   try {
     const [dayRank, weekRank] = await Promise.all([
-      fetchLeaderboardRankings('day'),
-      fetchLeaderboardRankings('week'),
+      fetchLeaderboardRankings('day', forceRefresh),
+      fetchLeaderboardRankings('week', forceRefresh),
     ]);
     dayEl.textContent = formatTopLeaderLine(dayRank[0]);
     weekEl.textContent = formatTopLeaderLine(weekRank[0]);
   } catch (e) {
     dayEl.textContent = 'تعذّر التحميل';
     weekEl.textContent = 'تعذّر التحميل';
+  } finally {
+    topLeaderLoading = false;
   }
 }
 
 function renderLeaderboardList(ranked, nameMap) {
   const list = document.getElementById('lb-list');
+  if (!list) return;
   if (!ranked.length) {
     const emptyMsg = lbPeriod === 'day'
       ? 'لا توجد نتائج اليوم بعد. كن/ي أول/ة! 🌟'
@@ -1366,37 +1394,45 @@ function renderLeaderboardList(ranked, nameMap) {
   const rankHtml = myRank > 0 ? `<div class="rank-badge">🏅 ترتيبك: #${myRank}</div>` : '';
   list.innerHTML = rankHtml + ranked.slice(0, 30).map((s, i) => {
     const isYou = state.user && s.user_id === state.user.id;
-    const name = nameMap[s.user_id] || 'مجهول';
+    const name = nameMap[s.user_id] || s.name || 'مجهول';
     return `<div class="lb-row ${i===0?'top1':i===1?'top2':i===2?'top3':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${escapeHtml(name)}${isYou?' (أنت)':''}</span><span class="lb-score">⭐${s.score}${s.games ? ' <small style="opacity:0.7">(' + s.games + ')</small>' : ''}</span></div>`;
   }).join('');
 }
 
-async function loadLeaderboard(period) {
+async function loadLeaderboard(period, forceRefresh) {
   lbPeriod = period;
   document.querySelectorAll('.lb-tabs .tab-btn').forEach(t => t.classList.toggle('active', t.dataset.period === period));
-  document.getElementById('lb-reset-hint').textContent = formatLbCountdown(period);
-  document.getElementById('lb-hero-sub').textContent = period === 'day'
-    ? 'مجموع نقاط اليوم — تُصفّر عند منتصف الليل'
-    : 'مجموع نقاط الأسبوع — تُصفّر كل أحد';
-
-  const start = getLbPeriodStart(period);
-  const { data: scores, error } = await db.from('scores')
-    .select('user_id,score')
-    .gte('played_at', start.toISOString())
-    .limit(1000);
+  const resetHint = document.getElementById('lb-reset-hint');
+  const heroSub = document.getElementById('lb-hero-sub');
+  if (resetHint) resetHint.textContent = formatLbCountdown(period);
+  if (heroSub) {
+    heroSub.textContent = period === 'day'
+      ? 'مجموع نقاط اليوم — تُصفّر عند منتصف الليل'
+      : 'مجموع نقاط الأسبوع — تُصفّر كل أحد';
+  }
 
   const list = document.getElementById('lb-list');
-  if (error) {
-    list.innerHTML = '<p style="text-align:center;color:var(--coral);padding:20px 0;">تعذّر تحميل اللوحة</p>';
+  if (!list) return;
+
+  const cached = lbCache[period];
+  if (!forceRefresh && cached && Date.now() - cached.at < LB_CACHE_MS) {
+    renderLeaderboardList(cached.ranked, cached.nameMap);
     return;
   }
 
-  const ranked = aggregateTotalPoints(scores);
-  const nameMap = await fetchNameMap([...new Set(ranked.map(s => s.user_id).filter(Boolean))]);
+  list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:20px 0;">جاري التحميل...</p>';
+
+  const ranked = await fetchLeaderboardRankings(period, forceRefresh);
+  if (!ranked.length && !lbCache[period]) {
+    list.innerHTML = '<p style="text-align:center;color:var(--coral);padding:20px 0;">تعذّر تحميل اللوحة</p>';
+    return;
+  }
+  const nameMap = lbCache[period]?.nameMap || Object.fromEntries(ranked.map(r => [r.user_id, r.name]));
   renderLeaderboardList(ranked, nameMap);
 }
 
 function setLbPeriod(period) {
+  if (period === lbPeriod) return;
   loadLeaderboard(period);
 }
 
