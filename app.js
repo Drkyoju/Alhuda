@@ -300,16 +300,12 @@ function updateDailyMission() {
   el.querySelector('.dm-check').textContent = done ? '✓' : '0/1';
 }
 function updateTopbarStats() {
-  const streakChip = document.getElementById('topbar-streak');
   const xpChip = document.getElementById('topbar-xp');
   if (!state.userName) {
-    streakChip.classList.remove('show');
     xpChip.classList.remove('show');
     return;
   }
   const p = ensureProgress();
-  streakChip.innerHTML = '<span class="streak-fire">🔥</span>' + (p.dailyStreak || 0);
-  streakChip.classList.add('show');
   xpChip.textContent = '✨ ' + (p.xp || 0);
   xpChip.classList.add('show');
 }
@@ -356,14 +352,13 @@ function updateWelcomeGamification() {
   document.getElementById('level-title').textContent = info.title;
   document.getElementById('level-xp-text').textContent = (p.xp || 0) + (info.nextMin ? ' / ' + info.nextMin : '') + ' نقطة خبرة';
   document.getElementById('xp-bar-fill').style.width = info.pct + '%';
-  document.getElementById('daily-streak-val').textContent = p.dailyStreak || 0;
-  document.getElementById('daily-quote').textContent = QUOTES[Math.floor(Date.now() / 86400000) % QUOTES.length];
   document.getElementById('stat-stars').textContent = last.score || 0;
   document.getElementById('stat-xp').textContent = p.xp || 0;
   document.getElementById('stat-games').textContent = p.totalGames || 0;
   updateDailyMission();
   updateBookProgress();
   updateTopbarStats();
+  updateTopLeaderPreview();
 }
 function checkBadges(gameResult) {
   const p = ensureProgress();
@@ -809,13 +804,8 @@ function goHome() {
     trainingBtn.textContent = '🏋️ وضع التدريب';
     trainingBtn.classList.remove('btn-green');
   }
-  const icon = state.userType === 'teacher' ? '👨‍🏫' : '🎓';
-  const role = state.userType === 'teacher' ? 'معلم/ة' : 'متعلم/ة';
-  document.getElementById('welcome-user').textContent = icon + ' ' + role + ' · ' + state.userName;
+  document.getElementById('welcome-user').textContent = '🎓 متعلم/ة · ' + state.userName;
   document.getElementById('welcome-greeting').textContent = 'مرحباً يا ' + state.userName + '! 👋';
-  document.getElementById('admin-link').style.display = state.userType === 'teacher' ? 'flex' : 'none';
-  const bottomAdmin = document.getElementById('bottom-nav-admin');
-  if (bottomAdmin) bottomAdmin.style.display = state.userType === 'teacher' ? 'flex' : 'none';
   updateBookButtons();
   updateLevelCounts();
   updateQuestionRangeUI();
@@ -838,17 +828,6 @@ function logout() {
   if (loginName) loginName.value = '';
   document.getElementById('login-err').textContent = '';
   show('login-screen');
-  setLoginTab('student');
-}
-
-function setLoginTab(t) {
-  loginTab = t;
-  document.getElementById('tab-student').classList.toggle('active', t === 'student');
-  document.getElementById('tab-teacher').classList.toggle('active', t === 'teacher');
-  document.getElementById('login-title').textContent = t === 'student' ? 'دخول المتعلمين' : 'دخول المعلمين';
-  document.getElementById('login-email').style.display = t === 'teacher' ? 'block' : 'none';
-  document.getElementById('login-pass').style.display = t === 'teacher' ? 'block' : 'none';
-  document.getElementById('login-name').style.display = t === 'teacher' ? 'none' : 'block';
 }
 
 async function doLogin() {
@@ -859,7 +838,6 @@ async function doLogin() {
   loginInProgress = true;
   if (btn) { btn.disabled = true; btn.textContent = 'جاري الدخول...'; }
   try {
-  if (loginTab === 'student') {
     const name = document.getElementById('login-name').value.trim();
     if (!name) { document.getElementById('login-err').textContent = 'اكتب/ي اسمك من فضلك'; return; }
     const { data, error } = await studentSignIn(name);
@@ -870,7 +848,7 @@ async function doLogin() {
     }
     const { data: existing } = await db.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
     if (existing) {
-      await db.from('profiles').update({ name }).eq('id', data.user.id);
+      await db.from('profiles').update({ name, role: 'student' }).eq('id', data.user.id);
     } else {
       await db.from('profiles').upsert({ id: data.user.id, name, role: 'student' });
     }
@@ -885,24 +863,6 @@ async function doLogin() {
     } else {
       goHome();
     }
-  } else {
-    const email = document.getElementById('login-email').value.trim();
-    const pass = document.getElementById('login-pass').value.trim();
-    if (!email || !pass) { document.getElementById('login-err').textContent = 'أدخل/ي البريد وكلمة المرور'; return; }
-    const { data, error } = await db.auth.signInWithPassword({ email, password:pass });
-    if (error) { document.getElementById('login-err').textContent = 'بيانات غير صحيحة'; return; }
-    const { data:profile } = await db.from('profiles').select('*').eq('id', data.user.id).single();
-    if (!profile || profile.role !== 'teacher') {
-      await db.auth.signOut();
-      document.getElementById('login-err').textContent = 'لستَ/ِ معلم/ة';
-      return;
-    }
-    state.user = data.user; state.userType = 'teacher'; state.userName = profile.name;
-    state.userEmail = email;
-    localStorage.setItem('savedEmail', email);
-    await db.from('profiles').upsert({ id:data.user.id, name:profile.name, email, role:'teacher' });
-    goHome();
-  }
   } finally {
     loginInProgress = false;
     if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
@@ -1193,7 +1153,6 @@ async function endGame() {
       unlockBadge('stage_clear');
     }
     saveProgress(p);
-    updateDailyStreak();
   }
 
   let xpGain = 0;
@@ -1235,20 +1194,17 @@ async function endGame() {
 
   if (state.user && !isTraining) {
     const qFrom = parseInt(document.getElementById('q-from-input').value, 10) || 1;
+    const gamePoints = state.score + xpGain;
     const { error: scoreErr } = await db.from('scores').insert({
       user_id: state.user.id, book: state.book, level: state.level,
-      sub_level: qFrom, score: state.score, correct: state.correct, total: state.total,
+      sub_level: qFrom, score: gamePoints, correct: state.correct, total: state.total,
       played_at: new Date().toISOString()
     });
     if (scoreErr && typeof showToast === 'function') {
       showToast('تعذّر حفظ النتيجة — تحقق من الاتصال', 'err');
     }
   }
-  if (state.challengeMode && !isTraining) saveChallengeResult();
-  const chLbBtn = document.getElementById('btn-ch-result-lb');
-  if (chLbBtn) chLbBtn.style.display = state.challengeCode ? 'inline-block' : 'none';
   if (window.AlhudaPlatform?.onGameEndHook) await AlhudaPlatform.onGameEndHook();
-  state.challengeMode = false;
 }
 
 function shuffleArr(arr) {
@@ -1343,13 +1299,57 @@ function formatLbCountdown(period) {
   return `يتجدد لوحة الأسبوع خلال ${hours} ساعة و ${mins} دقيقة`;
 }
 
-function aggregateBestScores(scores) {
-  const bestByUser = {};
+function aggregateTotalPoints(scores) {
+  const byUser = {};
   for (const s of scores || []) {
     if (!s.user_id) continue;
-    if (!bestByUser[s.user_id] || s.score > bestByUser[s.user_id].score) bestByUser[s.user_id] = s;
+    if (!byUser[s.user_id]) byUser[s.user_id] = { user_id: s.user_id, score: 0, games: 0 };
+    byUser[s.user_id].score += (s.score || 0);
+    byUser[s.user_id].games += 1;
   }
-  return Object.values(bestByUser).sort((a, b) => b.score - a.score);
+  return Object.values(byUser).sort((a, b) => b.score - a.score);
+}
+
+async function fetchNameMap(userIds) {
+  if (!userIds.length) return {};
+  const { data: profiles } = await db.from('profiles').select('id,name').in('id', userIds);
+  return Object.fromEntries((profiles || []).map(p => [p.id, p.name]));
+}
+
+async function fetchLeaderboardRankings(period) {
+  const start = getLbPeriodStart(period);
+  const { data: scores, error } = await db.from('scores')
+    .select('user_id,score')
+    .gte('played_at', start.toISOString())
+    .limit(1000);
+  if (error) return [];
+  const ranked = aggregateTotalPoints(scores);
+  const nameMap = await fetchNameMap([...new Set(ranked.map(s => s.user_id).filter(Boolean))]);
+  return ranked.map(r => ({ ...r, name: nameMap[r.user_id] || 'مجهول' }));
+}
+
+function formatTopLeaderLine(entry) {
+  if (!entry) return 'لا أحد بعد — كن/ي الأول/ة! 🌟';
+  return `🥇 ${entry.name} — ⭐${entry.score} (${entry.games} لعبة)`;
+}
+
+async function updateTopLeaderPreview() {
+  const dayEl = document.getElementById('top-leader-day');
+  const weekEl = document.getElementById('top-leader-week');
+  if (!dayEl || !weekEl) return;
+  dayEl.textContent = 'جاري التحميل...';
+  weekEl.textContent = 'جاري التحميل...';
+  try {
+    const [dayRank, weekRank] = await Promise.all([
+      fetchLeaderboardRankings('day'),
+      fetchLeaderboardRankings('week'),
+    ]);
+    dayEl.textContent = formatTopLeaderLine(dayRank[0]);
+    weekEl.textContent = formatTopLeaderLine(weekRank[0]);
+  } catch (e) {
+    dayEl.textContent = 'تعذّر التحميل';
+    weekEl.textContent = 'تعذّر التحميل';
+  }
 }
 
 function renderLeaderboardList(ranked, nameMap) {
@@ -1367,7 +1367,7 @@ function renderLeaderboardList(ranked, nameMap) {
   list.innerHTML = rankHtml + ranked.slice(0, 30).map((s, i) => {
     const isYou = state.user && s.user_id === state.user.id;
     const name = nameMap[s.user_id] || 'مجهول';
-    return `<div class="lb-row ${i===0?'top1':i===1?'top2':i===2?'top3':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${escapeHtml(name)}${isYou?' (أنت)':''}</span><span class="lb-score">⭐${s.score}</span></div>`;
+    return `<div class="lb-row ${i===0?'top1':i===1?'top2':i===2?'top3':''}${isYou?' lb-you':''}"><span class="lb-rank">${i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)}</span><span class="lb-name">${escapeHtml(name)}${isYou?' (أنت)':''}</span><span class="lb-score">⭐${s.score}${s.games ? ' <small style="opacity:0.7">(' + s.games + ')</small>' : ''}</span></div>`;
   }).join('');
 }
 
@@ -1376,15 +1376,14 @@ async function loadLeaderboard(period) {
   document.querySelectorAll('.lb-tabs .tab-btn').forEach(t => t.classList.toggle('active', t.dataset.period === period));
   document.getElementById('lb-reset-hint').textContent = formatLbCountdown(period);
   document.getElementById('lb-hero-sub').textContent = period === 'day'
-    ? 'تنافس/ي مع الآخرين — أفضل نتيجة اليوم'
-    : 'تنافس/ي مع الآخرين — أفضل نتيجة هذا الأسبوع';
+    ? 'مجموع نقاط اليوم — تُصفّر عند منتصف الليل'
+    : 'مجموع نقاط الأسبوع — تُصفّر كل أحد';
 
   const start = getLbPeriodStart(period);
   const { data: scores, error } = await db.from('scores')
-    .select('*')
+    .select('user_id,score')
     .gte('played_at', start.toISOString())
-    .order('score', { ascending: false })
-    .limit(500);
+    .limit(1000);
 
   const list = document.getElementById('lb-list');
   if (error) {
@@ -1392,12 +1391,8 @@ async function loadLeaderboard(period) {
     return;
   }
 
-  const ranked = aggregateBestScores(scores);
-  const userIds = [...new Set(ranked.map(s => s.user_id).filter(Boolean))];
-  const { data: profiles } = userIds.length
-    ? await db.from('profiles').select('id,name').in('id', userIds)
-    : { data: [] };
-  const nameMap = Object.fromEntries((profiles || []).map(p => [p.id, p.name]));
+  const ranked = aggregateTotalPoints(scores);
+  const nameMap = await fetchNameMap([...new Set(ranked.map(s => s.user_id).filter(Boolean))]);
   renderLeaderboardList(ranked, nameMap);
 }
 
@@ -1422,7 +1417,7 @@ async function showProfile() {
       totalCorrect = Math.max(totalCorrect, data.reduce((a, s) => a + s.correct, 0));
     }
   }
-  const avatar = state.userType === 'teacher' ? '👩‍🏫' : '👩‍🎓';
+  const avatar = '👩‍🎓';
   let badgesHtml = '<div class="badges-grid">';
   for (const [id, b] of Object.entries(BADGES)) {
     const unlocked = (p.badges || []).includes(id);
@@ -1433,7 +1428,7 @@ async function showProfile() {
     <div class="profile-hero">${avatar}</div>
     <h3 style="text-align:center;margin-bottom:4px;">${escapeHtml(state.userName)}</h3>
     <p style="text-align:center;color:var(--emerald);font-weight:800;font-size:0.9em;">${info.title}</p>
-    <p style="text-align:center;color:var(--text-soft);font-size:0.85em;">${state.userType==='teacher'?'معلم/ة':'متعلم/ة'} · 🔥 ${p.dailyStreak||0} يوم متتالي</p>
+    <p style="text-align:center;color:var(--text-soft);font-size:0.85em;">متعلم/ة · 🏅 ${(p.badges||[]).length} / ${Object.keys(BADGES).length} شارة</p>
     <div class="profile-stat-row">
       <div class="profile-stat"><div class="val">${totalGames}</div><div class="lbl">ألعاب</div></div>
       <div class="profile-stat"><div class="val">${bestScore}</div><div class="lbl">أفضل نتيجة</div></div>
@@ -1447,123 +1442,20 @@ async function showProfile() {
   show('profile-screen');
 }
 
-function startChallenge() {
-  document.getElementById('challenge-msg').textContent = '';
-  document.getElementById('challenge-code').value = '';
-  show('challenge-screen');
-}
-async function createChallenge() {
-  const questions = getQuestionsForGame();
-  if (!questions.length) {
-    document.getElementById('challenge-msg').textContent = '❌ لا توجد أسئلة. اختار/ي كتاباً ومستوى أولاً.';
-    return;
-  }
-  const code = 'CH' + Date.now().toString(36).toUpperCase();
-  state.challengeCode = code;
-  state.challengeMode = true;
-  localStorage.setItem('ch_q_' + code, JSON.stringify(questions));
-  const fromEl = document.getElementById('q-from-input');
-  const toEl = document.getElementById('q-to-input');
-  const payload = {
-    v: 2,
-    ids: questions.map((q) => q.id).filter(Boolean),
-    book: state.book,
-    level: state.level,
-    q_from: parseInt(fromEl?.value, 10) || 1,
-    q_to: parseInt(toEl?.value, 10) || questions.length,
-  };
-  const { error } = await db.from('challenges').upsert({ code, questions: payload, created_by: state.user?.id || null });
-  let copyNote = '';
-  try {
-    await navigator.clipboard.writeText(code);
-    copyNote = '<br><span style="font-size:0.8em;color:var(--emerald);">✅ تم نسخ الرمز!</span>';
-  } catch (e) {}
-  document.getElementById('challenge-msg').innerHTML =
-    '✅ رمز التحدي: <strong style="font-size:1.3em;color:var(--emerald);">' + code + '</strong>' + copyNote +
-    '<br><span style="font-size:0.8em;color:var(--text-soft);">شارك/ي الرمز مع صديق/ة — ادخل/ي من «دخول التحدي»</span>' +
-    (error ? '<br><span style="font-size:0.75em;color:var(--orange);">ملاحظة: شغّل/ي supabase_challenges.sql للمشاركة بين الأجهزة</span>' : '');
-  const chLb = document.getElementById('btn-ch-lb');
-  if (chLb) { chLb.style.display = 'block'; document.getElementById('challenge-code').value = code; }
-}
-async function joinChallenge() {
-  const code = document.getElementById('challenge-code').value.trim().toUpperCase();
-  if (!code) { document.getElementById('challenge-msg').textContent = '❌ أدخل/ي رمز التحدي'; return; }
-  let qs = JSON.parse(localStorage.getItem('ch_q_' + code) || 'null');
-  if (!qs?.length) {
-    if (!state.user) {
-      document.getElementById('challenge-msg').textContent = '❌ سجّل/ي دخولك أولاً للانضمام لتحدي من جهاز آخر';
-      return;
-    }
-    const { data } = await db.from('challenges').select('questions').eq('code', code).maybeSingle();
-    qs = parseChallengePayload(data?.questions);
-  }
-  if (!qs?.length) { document.getElementById('challenge-msg').textContent = '❌ رمز غير صالح أو منتهي'; return; }
-  state.challengeCode = code;
-  state.challengeMode = true;
-  state.questions = qs;
-  state.total = qs.length;
-  state.homeworkId = null;
-  state.demoMode = false;
-  trainingMode = false;
-  document.getElementById('challenge-msg').textContent = '✅ تم الدخول — جاري البدء...';
-  startGame();
-}
-async function saveChallengeResult() {
-  if (!state.challengeCode) return;
-  const entry = {
-    name: state.userName || 'مجهول',
-    user_id: state.user?.id || null,
-    score: state.score,
-    correct: state.correct,
-    total: state.total,
-    at: new Date().toISOString(),
-  };
-  const key = 'ch_results_' + state.challengeCode;
-  const list = JSON.parse(localStorage.getItem(key) || '[]');
-  list.push(entry);
-  localStorage.setItem(key, JSON.stringify(list.slice(-50)));
-  if (!state.user?.id) return;
-  try {
-    const { error } = await db.from('challenge_results').insert({
-      code: state.challengeCode,
-      user_name: entry.name,
-      user_id: state.user.id,
-      score: entry.score,
-      correct: entry.correct,
-      total: entry.total,
-    });
-    if (error && typeof showToast === 'function') showToast('تعذّر حفظ نتيجة التحدي', 'err');
-  } catch (e) {
-    if (typeof showToast === 'function') showToast('تعذّر حفظ نتيجة التحدي', 'err');
-  }
-}
-function openAdmin() {
-  if (state.userType !== 'teacher') return;
-  if (window.AlhudaPlatform?.openAdmin) AlhudaPlatform.openAdmin();
-  else {
-    show('admin');
-    if (typeof switchAdminTab === 'function') switchAdminTab('students');
-    else if (typeof showAdminFeedback === 'function') showAdminFeedback();
-  }
-}
-
 async function restoreSession() {
   const { data: { session } } = await db.auth.getSession();
   if (!session?.user) return false;
   const { data: profile } = await db.from('profiles').select('name,role').eq('id', session.user.id).single();
-  if (!profile) return false;
+  if (!profile || profile.role !== 'student') {
+    await db.auth.signOut();
+    return false;
+  }
   state.user = session.user;
-  state.userType = profile.role;
+  state.userType = 'student';
   state.userName = profile.name || localStorage.getItem('savedName') || DEFAULT_PLAYER;
-  if (profile.role === 'student') localStorage.setItem('savedName', state.userName);
-  state.userEmail = profile.role === 'teacher' ? (localStorage.getItem('savedEmail') || '') : '';
+  localStorage.setItem('savedName', state.userName);
   if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
   if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
-  if (profile.role === 'teacher') {
-    setLoginTab('teacher');
-    goHome();
-    return true;
-  }
   if (!localStorage.getItem('demoDone')) {
     showDemoIntro(state.userName);
     return true;
@@ -1582,11 +1474,7 @@ async function restoreSession() {
   const savedName = localStorage.getItem('savedName');
   const loginScreenActive = document.getElementById('login-screen')?.classList.contains('active');
   if (savedName && loginScreenActive) document.getElementById('login-name').value = savedName;
-  const savedEmail = localStorage.getItem('savedEmail');
-  if (savedEmail) document.getElementById('login-email').value = savedEmail;
-  ['login-name', 'login-email', 'login-pass'].forEach(id => {
-    document.getElementById(id)?.addEventListener('keydown', e => {
-      if (e.key === 'Enter') doLogin();
-    });
+  document.getElementById('login-name')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
   });
 })();

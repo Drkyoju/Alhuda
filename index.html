@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body class="islamic-bg login-mode">
 
@@ -39,7 +39,6 @@
   <header class="app-topbar">
     <img src="images.jpeg" alt="شعار جمعية الهدى والحكمة" class="site-logo">
     <div class="topbar-center">
-      <span class="topbar-chip streak" id="topbar-streak"><span class="streak-fire">🔥</span>0</span>
       <span class="topbar-chip xp" id="topbar-xp">✨ 0</span>
     </div>
     <button class="topbar-btn icon-only" onclick="toggleSettings()" id="settings-btn" aria-label="الإعدادات">⚙️</button>
@@ -109,23 +108,16 @@
         <p class="login-hint" id="login-hint">🎮 انضم/ي وابدأ/ي رحلة التعلّم!</p>
       </div>
       <div class="card">
-        <div class="tab-row">
-          <button class="tab-btn active" onclick="setLoginTab('student')" id="tab-student">🎓 طالب/ة</button>
-          <button class="tab-btn" onclick="setLoginTab('teacher')" id="tab-teacher">👨‍🏫 معلم/ة</button>
-        </div>
-        <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">دخول المتعلمين</h2>
+        <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">ادخل/ي باسمك وابدأ/ي 🎮</h2>
         <input type="text" class="input" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name">
         <p style="font-size:0.75em;color:var(--text-soft);margin:-6px 0 10px;font-weight:600;">اسمك يُحفظ على هذا الجهاز — سجّل/ي خروجاً لتغيير الاسم</p>
-        <input type="email" class="input" id="login-email" placeholder="البريد الإلكتروني" style="display:none;" autocomplete="email">
-        <input type="password" class="input" id="login-pass" placeholder="كلمة المرور" style="display:none;" autocomplete="current-password">
         <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
         <button class="btn btn-green btn-xl" onclick="doLogin()" id="btn-login">دخول 🎮</button>
         <button class="btn btn-blue btn-sm" onclick="startDemoFromLogin()" style="width:100%;margin-top:10px;">📝 نموذج أسئلة تجريبي</button>
       </div>
       <div class="login-features">
         <div class="login-feature"><strong>🏅</strong>مستويات وشارات</div>
-        <div class="login-feature"><strong>🔥</strong>سلسلة يومية</div>
-        <div class="login-feature"><strong>⚔️</strong>تحديات</div>
+        <div class="login-feature"><strong>🏆</strong>لوحة متصدرين يومية وأسبوعية</div>
       </div>
     </div>
   </div>
@@ -250,6 +242,13 @@
         </div>
       </div>
 
+      <div class="top-leader-card card" id="top-leader-card">
+        <div class="section-label">🏆 المتصدرون</div>
+        <div class="top-leader-row"><span>📅 اليوم:</span><strong id="top-leader-day">—</strong></div>
+        <div class="top-leader-row"><span>📆 الأسبوع:</span><strong id="top-leader-week">—</strong></div>
+        <button class="btn btn-white btn-sm" onclick="showLeaderboard()" style="width:100%;margin-top:8px;">عرض اللوحة الكاملة</button>
+      </div>
+
       <div class="welcome-meta-row">
         <div class="level-card">
           <div class="level-top">
@@ -266,11 +265,6 @@
           </div>
           <div class="dm-check">0/1</div>
         </div>
-      </div>
-
-      <div class="daily-banner" id="daily-banner">
-        <div>🔥 سلسلة الأيام: <span id="daily-streak-val">0</span> يوم</div>
-        <div class="quote" id="daily-quote">من سار على الدرب وصل ✨</div>
       </div>
 
       <div id="class-banner" class="class-banner" style="display:none;"></div>
@@ -301,14 +295,8 @@
         <button class="icon-action" onclick="showProfile()">
           <div class="icon-action-circle">👤</div><span>ملفي</span>
         </button>
-        <button class="icon-action" onclick="startChallenge()">
-          <div class="icon-action-circle">⚔️</div><span>تحدي</span>
-        </button>
         <button class="icon-action" onclick="logout()">
           <div class="icon-action-circle">🚪</div><span>خروج</span>
-        </button>
-        <button class="icon-action" id="admin-link" style="display:none;" onclick="openAdmin()">
-          <div class="icon-action-circle">⚙️</div><span>إدارة</span>
         </button>
       </div>
     </div>
@@ -359,12 +347,11 @@
       <div class="stats-grid">
         <div class="stat-card"><div>⭐</div><div class="big" id="fin-score">0</div><div class="lbl">نقاط</div></div>
         <div class="stat-card"><div>✅</div><div class="big" id="fin-correct">0</div><div class="lbl">صحيحة</div></div>
-        <div class="stat-card"><div>🔥</div><div class="big" id="fin-streak">0</div><div class="lbl">سلسلة</div></div>
+        <div class="stat-card"><div>⚡</div><div class="big" id="fin-streak">0</div><div class="lbl">متتالية</div></div>
       </div>
       <button class="btn btn-gold btn-xl" onclick="startCountdown()">العب مجدداً 🎮</button>
       <button class="btn btn-blue btn-sm" id="btn-review-mistakes" onclick="startReview()" style="display:none;margin-top:8px;">📋 مراجعة الأخطاء</button>
       <button class="btn btn-sm btn-white" onclick="shareScore()" id="share-btn" style="margin-top:8px;">📤 شارك/ي نتيجتك</button>
-      <button class="btn btn-sm btn-white" id="btn-ch-result-lb" onclick="loadChallengeLeaderboard(state.challengeCode)" style="display:none;margin-top:8px;">🏆 نتائج التحدي</button>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
     </div>
   </div>
@@ -416,7 +403,7 @@
         <button class="tab-btn active" data-period="week" onclick="setLbPeriod('week')">📆 الأسبوع</button>
       </div>
       <p class="lb-reset-hint" id="lb-reset-hint">يتجدد خلال —</p>
-      <p class="lb-subhint">أفضل نتيجة لكل متعلم/ة في الفترة المختارة</p>
+      <p class="lb-subhint">مجموع نقاط كل لعبة — كلما لعبت/ِ أكثر ارتفع/ِ ترتيبك</p>
       <div id="lb-list"></div>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:16px auto 0;width:100%;">🏠 الرئيسية</button>
       </div>
@@ -437,146 +424,11 @@
     </div>
   </div>
 
-  <!-- ═══════════ CHALLENGE ═══════════ -->
-  <div id="challenge-screen" class="screen page-screen">
-    <div class="page-shell">
-      <div class="page-hero">
-        <h2>⚔️ تحدي الأصدقاء</h2>
-        <p>أنشئ/ي تحدياً وشارك/ي الرمز مع الأصدقاء</p>
-      </div>
-      <div class="card" style="text-align:center;">
-      <input type="text" class="input" id="challenge-code" placeholder="أدخل/ي رمز التحدي...">
-      <div style="display:flex;gap:8px;justify-content:center;margin-top:4px;">
-        <button class="btn btn-gold btn-sm" onclick="createChallenge()" style="flex:1;">إنشاء تحدي</button>
-        <button class="btn btn-orange btn-sm" onclick="joinChallenge()" style="flex:1;">دخول التحدي</button>
-      </div>
-      <div id="challenge-msg" style="margin-top:12px;font-weight:800;font-size:0.9em;min-height:24px;"></div>
-      <button class="btn btn-white btn-sm" id="btn-ch-lb" onclick="loadChallengeLeaderboard(document.getElementById('challenge-code').value.trim().toUpperCase())" style="margin-top:8px;width:100%;display:none;">🏆 نتائج هذا التحدي</button>
-      <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:12px;width:100%;">🏠 الرئيسية</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════ CHALLENGE LEADERBOARD ═══════════ -->
-  <div id="challenge-leaderboard-screen" class="screen page-screen">
-    <div class="page-shell">
-      <div class="page-hero">
-        <h2>🏆 نتائج التحدي</h2>
-        <p>رمز: <strong id="ch-lb-code">—</strong></p>
-      </div>
-      <div class="card">
-        <div id="ch-lb-list" class="ch-lb-list"></div>
-        <button class="btn btn-sm btn-white" onclick="show('challenge-screen')" style="margin-top:12px;width:100%;">← رجوع للتحدي</button>
-        <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:8px;width:100%;">🏠 الرئيسية</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════ ADMIN / TEACHER ═══════════ -->
-  <div id="admin" class="screen">
-    <div class="admin-header">
-      <h2 style="font-size:1em;font-weight:900;">👨‍🏫 لوحة المعلم/ة</h2>
-      <button onclick="goHome()" style="background:rgba(255,255,255,.2);border:none;color:white;padding:8px 16px;border-radius:10px;font-size:0.85em;font-family:'Tajawal',sans-serif;cursor:pointer;font-weight:700;">← رجوع</button>
-    </div>
-    <div class="admin-body">
-      <div class="admin-tabs">
-        <button class="admin-tab active" data-tab="students" onclick="switchAdminTab('students')">👥 الطلاب</button>
-        <button class="admin-tab" data-tab="classes" onclick="switchAdminTab('classes')">🏫 الصفوف</button>
-        <button class="admin-tab" data-tab="homework" onclick="switchAdminTab('homework')">📋 واجبات</button>
-        <button class="admin-tab" data-tab="questions" onclick="switchAdminTab('questions')">✏️ أسئلة</button>
-        <button class="admin-tab" data-tab="stats" onclick="switchAdminTab('stats')">📊 إحصائيات</button>
-        <button class="admin-tab" data-tab="feedback" onclick="switchAdminTab('feedback')">💬 آراء</button>
-      </div>
-
-      <div id="admin-tab-students" class="admin-panel active card">
-        <h3 style="margin-bottom:10px;">متابعة الطلاب</h3>
-        <p style="color:var(--text-soft);font-size:0.85em;margin-bottom:12px;">الطلاب المنضمون لصفوفك ونتائجهم</p>
-        <div id="teacher-students-list"></div>
-      </div>
-
-      <div id="admin-tab-classes" class="admin-panel card">
-        <h3 style="margin-bottom:10px;">إنشاء صف</h3>
-        <input type="text" class="input" id="new-class-name" placeholder="اسم الصف (مثل: أصول — مجموعة أ)">
-        <button class="btn btn-green btn-sm" style="width:100%;margin-top:8px;" onclick="createClass()">➕ إنشاء صف ورمز</button>
-        <p id="class-create-msg" style="font-size:0.8em;margin-top:8px;font-weight:800;"></p>
-        <h4 style="margin:16px 0 8px;">صفوفك</h4>
-        <div id="teacher-classes-list"></div>
-      </div>
-
-      <div id="admin-tab-homework" class="admin-panel card">
-        <h3 style="margin-bottom:10px;">إرسال واجب</h3>
-        <select class="input" id="hw-class-select"></select>
-        <input type="text" class="input" id="hw-title" placeholder="عنوان الواجب" style="margin-top:8px;">
-        <select class="input" id="hw-book" style="margin-top:8px;">
-          <option value="tawheed">كتاب التوحيد</option>
-          <option value="usool">الأصول الثلاثة</option>
-          <option value="nawawi">الأربعون النووية</option>
-        </select>
-        <select class="input" id="hw-level" style="margin-top:8px;">
-          <option value="easy">سهل</option>
-          <option value="medium">متوسط</option>
-          <option value="hard">صعب</option>
-          <option value="all">الكل</option>
-        </select>
-        <div style="display:flex;gap:8px;margin-top:8px;">
-          <input type="number" class="input" id="hw-from" placeholder="من سؤال" value="1" min="1">
-          <input type="number" class="input" id="hw-to" placeholder="إلى سؤال" value="20" min="1">
-        </div>
-        <input type="date" class="input" id="hw-due" style="margin-top:8px;">
-        <button class="btn btn-gold btn-sm" style="width:100%;margin-top:10px;" onclick="createHomework()">إرسال الواجب</button>
-        <p id="hw-create-msg" style="font-size:0.8em;margin-top:8px;font-weight:800;"></p>
-      </div>
-
-      <div id="admin-tab-questions" class="admin-panel card">
-        <h3 style="margin-bottom:10px;">تعديل سؤال</h3>
-        <input type="text" class="input" id="q-edit-search" placeholder="بحث في نص السؤال..." oninput="loadQuestionEditorList()">
-        <div id="question-editor-list" style="margin-top:10px;max-height:200px;overflow-y:auto;"></div>
-        <div id="question-editor-form" class="q-edit-form" style="display:none;margin-top:14px;">
-          <textarea class="feedback-textarea" id="q-edit-text" rows="2" placeholder="نص السؤال"></textarea>
-          <div id="q-edit-mc-fields">
-            <input class="input" id="q-edit-opt0" placeholder="خيار ١">
-            <input class="input" id="q-edit-opt1" placeholder="خيار ٢">
-            <input class="input" id="q-edit-opt2" placeholder="خيار ٣">
-            <input class="input" id="q-edit-opt3" placeholder="خيار ٤">
-            <input class="input" id="q-edit-correct" type="number" min="0" max="3" placeholder="رقم الإجابة الصحيحة (0-3)">
-          </div>
-          <div id="q-edit-tf-fields" style="display:none;">
-            <select class="input" id="q-edit-tf">
-              <option value="true">الإجابة الصحيحة: صح ✓</option>
-              <option value="false">الإجابة الصحيحة: خطأ ✗</option>
-            </select>
-          </div>
-          <textarea class="feedback-textarea" id="q-edit-exp" rows="2" placeholder="الشرح"></textarea>
-          <button class="btn btn-green btn-sm" style="width:100%;" onclick="saveQuestionEdit()">💾 حفظ التعديل</button>
-          <p id="q-edit-msg" style="font-size:0.8em;margin-top:6px;font-weight:800;"></p>
-        </div>
-      </div>
-
-      <div id="admin-tab-stats" class="admin-panel card">
-        <h3 style="margin-bottom:10px;">أصعب الأسئلة</h3>
-        <p style="color:var(--text-soft);font-size:0.85em;margin-bottom:10px;">الأسئلة الأكثر خطأً من الطلاب</p>
-        <div id="teacher-stats-list"></div>
-      </div>
-
-      <div id="admin-tab-feedback" class="admin-panel card">
-        <h3 style="margin-bottom:10px;">آراء المتعلمين</h3>
-        <div class="admin-feedback-toolbar">
-          <button class="btn btn-green btn-sm" onclick="showAdminFeedback()">🔄 تحديث الآراء</button>
-          <button class="btn btn-white btn-sm" onclick="exportFeedbackCsv()">📥 تصدير CSV</button>
-        </div>
-        <div id="admin-feedback-list"></div>
-        <p id="admin-feedback-status" style="font-size:0.75em;color:var(--text-soft);text-align:center;margin-top:8px;"></p>
-      </div>
-    </div>
-  </div>
-
   <!-- Confetti & Combo -->
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="التنقل الرئيسي">
     <button type="button" data-nav="home" onclick="goHome()"><span class="nav-ico">🏠</span><span>الرئيسية</span></button>
     <button type="button" data-nav="rank" onclick="showLeaderboard()"><span class="nav-ico">🏆</span><span>المتصدرين</span></button>
-    <button type="button" data-nav="challenge" onclick="startChallenge()"><span class="nav-ico">⚔️</span><span>تحدي</span></button>
     <button type="button" data-nav="profile" onclick="showProfile()"><span class="nav-ico">👤</span><span>ملفي</span></button>
-    <button type="button" data-nav="admin" id="bottom-nav-admin" style="display:none;" onclick="openAdmin()"><span class="nav-ico">⚙️</span><span>إدارة</span></button>
   </nav>
   <div class="confetti-wrap" id="confetti-wrap"></div>
   <div class="combo" id="combo">🔥 سلسلة!</div>
@@ -585,9 +437,9 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 <script src="auth.js?v=9"></script>
-<script src="enhancements.js?v=3"></script>
+<script src="enhancements.js?v=4"></script>
 <script src="platform.js?v=4"></script>
 <script>
 (async function boot() {
@@ -600,7 +452,6 @@
   selectLevel('easy');
   if (await restoreSession()) return;
   show('login-screen');
-  setLoginTab('student');
   updateTopbarStats();
 })();
 </script>

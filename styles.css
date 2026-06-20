@@ -547,6 +547,27 @@
       font-size: 0.82em;
     }
     .play-zone .section-label:first-child { margin-top: 0; }
+    .top-leader-card {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 14px 16px;
+    }
+    .top-leader-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85em;
+      font-weight: 700;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border-soft);
+    }
+    .top-leader-row:last-of-type { border-bottom: none; }
+    .top-leader-row strong {
+      color: var(--emerald-dark);
+      text-align: left;
+      font-size: 0.95em;
+    }
     .welcome-meta-row {
       width: 100%;
       display: grid;
@@ -1797,7 +1818,7 @@
     .login-hero { width: 100%; max-width: 440px; padding: 0 8px; }
     .login-features {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
       margin-top: 12px;
       width: 100%;
