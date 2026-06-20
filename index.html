@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body class="islamic-bg login-mode">
 
@@ -87,9 +87,9 @@
         <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">كل إجابة صحيحة تقرّبك من المستوى التالي</p>
       </div>
       <div class="onb-slide">
-        <div class="onb-icon">🏫</div>
-        <h3>انضم/ي لصفك</h3>
-        <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">اطلب/ي رمز الصف من معلم/تك وادخل/ي من الشاشة الرئيسية</p>
+        <div class="onb-icon">🏆</div>
+        <h3>تنافس/ي وتقدّم/ي</h3>
+        <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">شاهد/ي لوحة المتصدرين واجمع/ي الشارات مع كل إجابة صحيحة</p>
       </div>
       <div class="onb-dots"><span class="onb-dot on"></span><span class="onb-dot"></span><span class="onb-dot"></span></div>
       <button class="btn btn-gold btn-xl" onclick="onboardingNext()">التالي</button>
@@ -195,7 +195,7 @@
 
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
       <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;margin-top:10px;">📋 مراجعة أخطاء النموذج</button>
-      <p id="feedback-msg" style="margin-top:10px;font-weight:800;font-size:0.85em;min-height:20px;"></p>
+      <p id="feedback-msg" class="feedback-status-msg"></p>
       <button class="btn btn-sm btn-white" onclick="finishDemoFlow()" style="margin-top:8px;width:100%;">📚 جرّب/ي كتاباً آخر</button>
       </div>
     </div>
@@ -290,15 +290,6 @@
           <div class="dm-check">0/1</div>
         </div>
       </div>
-
-      <div id="class-banner" class="class-banner" style="display:none;"></div>
-      <div id="homework-banner" class="homework-banner" style="display:none;"></div>
-
-      <div class="class-join-row" id="class-join-row" style="display:none;">
-        <input type="text" class="input" id="class-code-input" placeholder="رمز الصف (مثل CLS...)">
-        <button class="btn btn-green btn-sm" onclick="joinClass()">انضم/ي للصف</button>
-      </div>
-      <p id="class-join-msg" style="font-size:0.8em;color:var(--emerald);font-weight:800;margin:-6px 0 10px;"></p>
 
       <div class="welcome-progress-section">
         <div class="section-label">📈 تقدّمك في الكتب</div>
@@ -479,7 +470,7 @@
 <script src="app.js?v=18"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=5"></script>
-<script src="platform.js?v=5"></script>
+<script src="platform.js?v=6"></script>
 <script>
 (async function boot() {
   updateBismillahPadding();

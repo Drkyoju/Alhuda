@@ -952,20 +952,20 @@
     .feedback-screen-inner { max-width: 420px; width: 100%; }
     .rating-row { display: flex; justify-content: center; gap: 10px; margin: 16px 0; flex-wrap: wrap; }
     .rating-btn {
-      min-width: 72px; padding: 14px 10px; border: 3px solid var(--border); border-radius: 16px;
+      min-width: 88px; padding: 16px 12px; border: 3px solid var(--border); border-radius: 16px;
       background: var(--white); cursor: pointer; font-family: 'Tajawal', sans-serif; font-weight: 800;
-      font-size: 0.85em; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      font-size: 1.05em; transition: 0.2s; display: flex; flex-direction: column; align-items: center; gap: 6px;
     }
-    .rating-btn .r-emoji { font-size: 1.6em; }
+    .rating-btn .r-emoji { font-size: 2em; }
     .rating-btn.sel { border-color: var(--emerald); background: var(--emerald-light); transform: scale(1.05); }
     .feedback-label {
-      font-size: 0.88em;
+      font-size: 1.12em;
       color: var(--text-soft);
       font-weight: 800;
-      margin: 12px 0 8px;
+      margin: 14px 0 10px;
     }
     .feedback-label:first-of-type { margin-top: 0; }
-    .feedback-optional { font-weight: 600; font-size: 0.85em; opacity: 0.75; }
+    .feedback-optional { font-weight: 600; font-size: 0.92em; opacity: 0.75; }
     .want-program-row {
       display: flex;
       justify-content: center;
@@ -975,27 +975,27 @@
     }
     .want-program-btn {
       flex: 1;
-      min-width: 120px;
-      padding: 14px 12px;
+      min-width: 140px;
+      padding: 16px 14px;
       border: 3px solid var(--border);
       border-radius: 16px;
       background: var(--white);
       cursor: pointer;
       font-family: 'Tajawal', sans-serif;
       font-weight: 800;
-      font-size: 0.9em;
+      font-size: 1.12em;
       transition: 0.2s;
     }
     .want-program-btn.sel { border-color: var(--emerald); background: var(--emerald-light); transform: scale(1.03); }
     .feedback-textarea {
-      width: 100%; min-height: 100px; padding: 14px; border: 2px solid var(--border); border-radius: 14px;
-      font-family: 'Tajawal', sans-serif; font-size: 1em; direction: rtl; resize: vertical;
+      width: 100%; min-height: 110px; padding: 16px; border: 2px solid var(--border); border-radius: 14px;
+      font-family: 'Tajawal', sans-serif; font-size: 1.15em; direction: rtl; resize: vertical;
       margin-bottom: 12px; background: var(--cream);
     }
     .feedback-textarea:focus { outline: none; border-color: var(--emerald); box-shadow: 0 0 0 3px rgba(45, 90, 61, 0.12); }
     .feedback-info-row { display: flex; gap: 10px; margin-bottom: 12px; }
-    .feedback-info-row .input { flex: 1; margin-bottom: 0; }
-    .feedback-info-row .input:last-child { max-width: 110px; flex: 0 0 110px; }
+    .feedback-info-row .input { flex: 1; margin-bottom: 0; font-size: 1.15em; min-height: 52px; }
+    .feedback-info-row .input:last-child { max-width: 120px; flex: 0 0 120px; }
     .self-correct-box {
       background: var(--gold-glow); border: 2px solid var(--gold); border-radius: 14px;
       padding: 12px 14px; margin-top: 8px; font-weight: 800; font-size: 0.9em;
@@ -2825,4 +2825,16 @@
     body.game-mode .float-deco,
     body.game-mode .glow-orb { display: none; }
 
-  
+    /* ── نموذج التقييم — خطوط أكبر ── */
+    #feedback-screen .page-hero h2 { font-size: 1.9em; }
+    #feedback-screen .page-hero p { font-size: 1.08em; }
+    #feedback-screen .demo-badge { font-size: 1em; padding: 8px 18px; }
+    #feedback-screen .feedback-screen-inner h3 { font-size: 1.45em; margin-bottom: 18px; }
+    #feedback-screen .btn-xl { font-size: 1.28em; min-height: 60px; }
+    #feedback-screen .btn-sm { font-size: 1.08em; min-height: 48px; }
+    .feedback-status-msg {
+      margin-top: 10px;
+      font-weight: 800;
+      font-size: 1.08em;
+      min-height: 20px;
+    }

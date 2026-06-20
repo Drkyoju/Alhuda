@@ -753,13 +753,9 @@
   function onWelcomeHome() {
     renderBookProgress();
     updateDailyMissionUI();
-    renderClassBanner();
-    loadStudentHomework();
-    const joinRow = document.getElementById('class-join-row');
-    if (joinRow) joinRow.style.display = state.userType === 'student' ? 'flex' : 'none';
     const mistakeBtn = document.getElementById('btn-mistakes');
     const p = ensureProgressExt();
-    if (mistakeBtn) mistakeBtn.style.display = (p.wrongQuestionIds?.length && state.userType !== 'teacher') ? 'inline-flex' : 'none';
+    if (mistakeBtn) mistakeBtn.style.display = p.wrongQuestionIds?.length ? 'inline-flex' : 'none';
   }
 
   async function syncUserClassFromDb() {
@@ -854,17 +850,11 @@
 
   function init() {
     window.recordQuestionAttempt = recordQuestionAttempt;
-    window.joinClass = joinClass;
-    window.createClass = createClass;
-    window.switchAdminTab = switchAdminTab;
-    window.saveQuestionEdit = saveQuestionEdit;
-    window.createHomework = createHomework;
     window.startMistakeReview = startMistakeReview;
     window.startExamReview = startExamReview;
     window.showCertificate = showCertificate;
     window.onboardingNext = onboardingNext;
     window.closeOnboarding = closeOnboarding;
-    window.loadQuestionEditorList = loadQuestionEditorList;
     window.AlhudaPlatform = {
       onWelcomeHome,
       onGameEndHook,
