@@ -518,6 +518,43 @@
       }
     }
     #login-screen .card { animation: cardPop 0.5s ease 0.1s both; }
+    #login-screen .org-name {
+      font-size: 1.22em;
+      font-weight: 800;
+      color: var(--gold-dark);
+      line-height: 1.45;
+    }
+    #login-screen .brand-sub {
+      font-size: 1.05em;
+      font-weight: 700;
+      color: var(--text-soft);
+    }
+    #login-screen .login-hint {
+      font-size: 0.95em;
+      margin-top: 2px;
+      margin-bottom: 4px;
+    }
+    #login-screen .login-feature {
+      font-size: 0.92em;
+      padding: 14px 10px;
+    }
+    #login-screen .login-feature strong {
+      font-size: 1.55em;
+      margin-bottom: 6px;
+    }
+    #login-screen #login-title {
+      font-size: 1.22em;
+      margin-bottom: 14px;
+      font-weight: 900;
+      color: var(--emerald-dark);
+    }
+    #login-screen .login-name-hint {
+      font-size: 0.85em;
+      color: var(--text-soft);
+      margin: -6px 0 10px;
+      font-weight: 600;
+      line-height: 1.5;
+    }
     @keyframes cardPop {
       from { opacity: 0; transform: scale(0.95) translateY(20px); }
       to { opacity: 1; transform: scale(1) translateY(0); }

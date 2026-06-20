@@ -928,8 +928,8 @@ function selectLevel(l) {
   const max = pool.length;
   const toEl = document.getElementById('q-to-input');
   const fromEl = document.getElementById('q-from-input');
-  fromEl.value = 1;
-  toEl.value = max ? Math.min(20, max) : 1;
+  if (fromEl) fromEl.value = 1;
+  if (toEl) toEl.value = max ? Math.min(20, max) : 1;
   updateQuestionRangeUI();
 }
 function updateBookButtons() {
@@ -1479,6 +1479,10 @@ async function showLeaderboard() {
 }
 
 async function showProfile() {
+  if (!state.user) {
+    show('login-screen');
+    return;
+  }
   const p = ensureProgress();
   const info = getLevelInfo(p.xp || 0);
   let totalGames = p.totalGames || 0, bestScore = p.bestScore || 0, totalCorrect = p.totalCorrect || 0;

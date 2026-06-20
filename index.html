@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body class="islamic-bg login-mode">
 
@@ -112,9 +112,9 @@
         </div>
       </div>
       <div class="card">
-        <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">ادخل/ي باسمك وابدأ/ي 🎮</h2>
+        <h2 id="login-title">ادخل/ي باسمك وابدأ/ي 🎮</h2>
         <input type="text" class="input" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name">
-        <p style="font-size:0.75em;color:var(--text-soft);margin:-6px 0 10px;font-weight:600;">اسمك يُحفظ على هذا الجهاز — سجّل/ي خروجاً لتغيير الاسم</p>
+        <p class="login-name-hint">اسمك يُحفظ على هذا الجهاز — سجّل/ي خروجاً لتغيير الاسم</p>
         <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
         <button class="btn btn-green btn-xl" onclick="doLogin()" id="btn-login">دخول 🎮</button>
         <button class="btn btn-blue btn-sm" onclick="startDemoFromLogin()" style="width:100%;margin-top:10px;">📝 نموذج أسئلة تجريبي</button>
@@ -452,7 +452,7 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=11"></script>
+<script src="app.js?v=12"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=5"></script>
 <script src="platform.js?v=5"></script>
