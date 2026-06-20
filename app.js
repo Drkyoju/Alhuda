@@ -422,7 +422,6 @@ function highlightCorrectAnswer(q) {
 }
 function startDemoFromLogin() {
   document.getElementById('login-err').textContent = '';
-  if (typeof clearLoginLockout === 'function') clearLoginLockout();
   state.userName = '';
   state.demoMode = false;
   pendingLoginAfterDemo = true;
@@ -844,23 +843,9 @@ async function doLogin() {
     const name = document.getElementById('login-name').value.trim();
     if (!name) { document.getElementById('login-err').textContent = 'اكتب/ي اسمك من فضلك'; return; }
 
-    const { data: { session } } = await db.auth.getSession();
-    if (session?.user) {
-      const { data: profile } = await db.from('profiles').select('name,role').eq('id', session.user.id).maybeSingle();
-      if (profile?.role === 'student' && profile.name === name) {
-        state.user = session.user;
-        state.userType = 'student';
-        state.userName = name;
-        localStorage.setItem('savedName', name);
-        if (typeof markKnownStudentName === 'function') markKnownStudentName(name.trim().normalize('NFC'));
-        if (!localStorage.getItem('demoDone')) {
-          pendingLoginAfterDemo = false;
-          showDemoIntro(name);
-        } else {
-          goHome();
-        }
-        return;
-      }
+    const { data: { session: existingSession } } = await db.auth.getSession();
+    if (existingSession?.user) {
+      const { data: profile } = await db.from('profiles').select('name,role').eq('id', existingSession.user.id).maybeSingle();
       if (profile?.name && profile.name !== name) {
         await db.auth.signOut();
       }
@@ -880,7 +865,6 @@ async function doLogin() {
     }
     state.user = data.user; state.userType = 'student'; state.userName = name; state.userEmail = '';
     localStorage.setItem('savedName', name);
-    if (typeof markKnownStudentName === 'function') markKnownStudentName(name.trim().normalize('NFC'));
     if (typeof trackEvent === 'function') trackEvent('login', { role: 'student' });
     if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
     if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
@@ -1514,7 +1498,6 @@ async function restoreSession() {
   state.userType = 'student';
   state.userName = profile.name || localStorage.getItem('savedName') || DEFAULT_PLAYER;
   localStorage.setItem('savedName', state.userName);
-  if (typeof markKnownStudentName === 'function') markKnownStudentName(state.userName.trim().normalize('NFC'));
   if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
   if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
   if (!localStorage.getItem('demoDone')) {
