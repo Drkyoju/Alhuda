@@ -105,6 +105,28 @@ async function saveFeedbackToCloud(row) {
   return !error;
 }
 
+async function notifyFeedbackEmail(payload) {
+  try {
+    const res = await fetch('/api/feedback-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_name: payload.user_name,
+        rating: payload.rating,
+        ratingLabel: feedbackRatingLabel(payload.rating),
+        message: payload.message,
+        source: payload.source || 'demo',
+      }),
+    });
+    if (!res.ok) return false;
+    const data = await res.json().catch(() => ({}));
+    return !!data.ok;
+  } catch (e) {
+    console.warn('feedback email notify:', e);
+    return false;
+  }
+}
+
 function getProgress() {
   return JSON.parse(localStorage.getItem('playerProgress') || '{}');
 }
@@ -552,6 +574,8 @@ async function submitFeedback() {
   };
   const cloudSaved = await saveFeedbackToCloud(buildFeedbackInsertRow(payload));
   payload.cloudSaved = cloudSaved;
+  const emailSent = await notifyFeedbackEmail(payload);
+  payload.emailSent = emailSent;
   const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
   backup.unshift(payload);
   localStorage.setItem('feedbackBackup', JSON.stringify(backup.slice(0, 200)));
@@ -560,9 +584,15 @@ async function submitFeedback() {
     const refreshed = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
     if (refreshed.find(x => x.localId === payload.localId)?.cloudSaved) payload.cloudSaved = true;
   }
-  if (payload.cloudSaved) {
+  if (payload.cloudSaved && emailSent) {
     msgEl.style.color = 'var(--emerald)';
-    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه! شكراً لمساهمتك/ِ 💚';
+    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه وإرساله بالإيميل! شكراً 💚';
+  } else if (payload.cloudSaved) {
+    msgEl.style.color = 'var(--emerald)';
+    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه! (تحقّق/ي من تفعيل الإيميل في أول مرة) 💚';
+  } else if (emailSent) {
+    msgEl.style.color = 'var(--emerald)';
+    msgEl.textContent = '✅ وصل رأيك/ِ بالإيميل! (حُفظ محلياً — راجع/ي Supabase) 💚';
   } else {
     msgEl.style.color = 'var(--orange)';
     msgEl.textContent = '⚠️ حُفظ على جهازك — شغّل/ي supabase_feedback.sql في Supabase لمزامنة الآراء';
