@@ -23,7 +23,7 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
-let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, pendingLoginAfterDemo = false;
+let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, pendingLoginAfterDemo = false, loginInProgress = false;
 let lastFeedbackItems = [], countdownTimer = null, adminFeedbackLoading = false;
 
 const FEEDBACK_RATING_LABELS = {
@@ -427,6 +427,7 @@ function highlightCorrectAnswer(q) {
 }
 function startDemoFromLogin() {
   document.getElementById('login-err').textContent = '';
+  if (typeof clearLoginLockout === 'function') clearLoginLockout();
   state.userName = '';
   state.demoMode = false;
   pendingLoginAfterDemo = true;
@@ -866,9 +867,11 @@ function setLoginTab(t) {
 }
 
 async function doLogin() {
+  if (loginInProgress) return;
   document.getElementById('login-err').textContent = '';
   const btn = document.getElementById('btn-login');
   const btnLabel = btn?.textContent || 'دخول 🎮';
+  loginInProgress = true;
   if (btn) { btn.disabled = true; btn.textContent = 'جاري الدخول...'; }
   try {
   if (loginTab === 'student') {
@@ -918,6 +921,7 @@ async function doLogin() {
     goHome();
   }
   } finally {
+    loginInProgress = false;
     if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
   }
 }
