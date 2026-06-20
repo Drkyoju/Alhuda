@@ -7,6 +7,7 @@ const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول ا�
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
 const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
 const DEMO_COUNT = 15;
+const LOGIN_LOCKED = true;
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
   usool: ['👤 المؤلف','📖 الكتاب','📚 المسائل الأربع','📚 العلم','🕌 الرب','🙏 العبادة','👤 النبي','📿 الدين','🤲 الدعاء','🛡️ التوكل','🆘 الاستعانة','📿 الاستعاذة']
@@ -22,7 +23,7 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
 let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let lastFeedbackItems = [], countdownTimer = null, adminFeedbackLoading = false;
 
@@ -192,29 +193,33 @@ function onRangeInputChange() {
   updateQuestionRangeUI();
 }
 
-function buildDemoQuestions() {
-  const picked = [];
-  for (const book of ['tawheed', 'usool', 'nawawi']) {
-    const easy = getOrderedPool(book, 'easy');
-    const med = getOrderedPool(book, 'medium');
-    picked.push(...easy.slice(0, 8), ...med.slice(0, 4));
-  }
+function buildDemoQuestions(book) {
+  const pool = getOrderedPool(book, 'all');
+  const out = [];
   const seen = new Set();
-  const uniq = [];
-  for (const q of picked) {
-    if (!seen.has(q.id)) { seen.add(q.id); uniq.push(q); }
+  for (const q of pool) {
+    if (seen.has(q.id)) continue;
+    seen.add(q.id);
+    out.push(q);
+    if (out.length >= DEMO_COUNT) return out;
   }
-  for (let i = uniq.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [uniq[i], uniq[j]] = [uniq[j], uniq[i]];
-  }
-  if (uniq.length >= DEMO_COUNT) return uniq.slice(0, DEMO_COUNT);
-  const out = [...uniq];
   for (const q of DEMO_FALLBACK) {
+    if (q.book !== book) continue;
+    if (seen.has(q.id)) continue;
+    seen.add(q.id);
+    out.push(q);
     if (out.length >= DEMO_COUNT) break;
-    if (!seen.has(q.id)) { seen.add(q.id); out.push(q); }
   }
   return out.slice(0, DEMO_COUNT);
+}
+
+function updateDemoBookPicker() {
+  const counts = { tawheed: 0, usool: 0, nawawi: 0 };
+  for (const book of Object.keys(counts)) {
+    counts[book] = buildDemoQuestions(book).length;
+    const el = document.getElementById('demo-pick-count-' + book);
+    if (el) el.textContent = counts[book] + ' سؤال';
+  }
 }
 
 function escapeHtml(s) {
@@ -429,21 +434,31 @@ function startDemoFromLogin() {
   state.userName = '';
   state.demoMode = false;
   pendingLoginAfterDemo = true;
-  beginDemo();
+  updateDemoBookPicker();
+  show('demo-intro');
 }
 function showDemoIntro(name) {
   const demoName = document.getElementById('demo-name');
   if (demoName) demoName.textContent = name || DEFAULT_PLAYER;
+  updateDemoBookPicker();
   show('demo-intro');
 }
-async function beginDemo() {
+async function beginDemo(book) {
+  if (!book) book = state.demoBook || 'tawheed';
+  state.demoBook = book;
   state.demoMode = true;
   state.wrongLog = [];
-  state.questions = buildDemoQuestions();
+  state.questions = buildDemoQuestions(book);
+  if (!state.questions.length) {
+    alert('لا توجد أسئلة لهذا الكتاب — حاول/ي لاحقاً');
+    show('demo-intro');
+    return;
+  }
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
   state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.answered = false;
   state.total = state.questions.length;
-  document.getElementById('demo-bar').textContent = `📝 نموذج تجريبي — ${state.total} أسئلة للتجربة`;
+  const bookLabel = BOOK_LABELS[book] || book;
+  document.getElementById('demo-bar').textContent = `📝 نموذج تجريبي — ${bookLabel} — ${state.total} سؤالاً`;
   document.getElementById('demo-bar').style.display = 'block';
   document.getElementById('training-bar').style.display = 'none';
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
@@ -454,6 +469,11 @@ async function beginDemo() {
 }
 async function skipDemo() {
   localStorage.setItem('demoDone', '1');
+  if (LOGIN_LOCKED) {
+    pendingLoginAfterDemo = false;
+    show('login-screen');
+    return;
+  }
   if (pendingLoginAfterDemo && !state.user) {
     pendingLoginAfterDemo = false;
     const name = (document.getElementById('login-name')?.value || '').trim();
@@ -514,6 +534,7 @@ async function submitFeedback() {
   parts.push(`العمر: ${age}`);
   parts.push(`هل تريد/ين البرنامج؟ ${feedbackWantProgram ? 'نعم ✅' : 'لا ❌'}`);
   parts.push(`التقييم: ${feedbackRatingLabel(feedbackRating)}`);
+  if (state.demoBook) parts.push(`الكتاب: ${BOOK_LABELS[state.demoBook] || state.demoBook}`);
   if (improveText) parts.push(`اقتراحات وتحسينات:\n${improveText}`);
   if (likeText) parts.push(`ملاحظات إضافية:\n${likeText}`);
   if (state.total) parts.push(`نتيجة النموذج: ${state.correct}/${state.total} صحيحة`);
@@ -558,21 +579,25 @@ async function submitFeedback() {
 }
 async function finishDemoFlow() {
   localStorage.setItem('demoDone', '1');
-  if (pendingLoginAfterDemo && !state.user) {
-    pendingLoginAfterDemo = false;
-    const name = (document.getElementById('login-name')?.value || '').trim();
-    if (name) {
-      await doLogin();
+  if (!state.user) {
+    if (LOGIN_LOCKED) {
+      pendingLoginAfterDemo = true;
+      updateDemoBookPicker();
+      show('demo-intro');
       return;
+    }
+    if (pendingLoginAfterDemo) {
+      pendingLoginAfterDemo = false;
+      const name = (document.getElementById('login-name')?.value || '').trim();
+      if (name) {
+        await doLogin();
+        return;
+      }
     }
     show('login-screen');
     return;
   }
-  if (state.user) {
-    goHome();
-  } else {
-    show('login-screen');
-  }
+  goHome();
 }
 function mergeFeedbackItems(server, backup) {
   const items = [...(server || [])];
@@ -875,6 +900,10 @@ function logout() {
 }
 
 async function doLogin() {
+  if (LOGIN_LOCKED) {
+    document.getElementById('login-err').textContent = '🔒 الدخول مغلق مؤقتاً — جرّب/ي النموذج التجريبي';
+    return;
+  }
   if (loginInProgress) return;
   document.getElementById('login-err').textContent = '';
   const btn = document.getElementById('btn-login');
@@ -1532,6 +1561,28 @@ async function showProfile() {
   show('profile-screen');
 }
 
+function applyLoginLockUI() {
+  const nameInput = document.getElementById('login-name');
+  const loginBtn = document.getElementById('btn-login');
+  const block = document.getElementById('login-locked-block');
+  if (!nameInput || !loginBtn) return;
+  if (LOGIN_LOCKED) {
+    nameInput.disabled = true;
+    nameInput.setAttribute('aria-disabled', 'true');
+    loginBtn.disabled = true;
+    loginBtn.setAttribute('aria-disabled', 'true');
+    block?.classList.add('is-locked');
+  } else {
+    nameInput.disabled = false;
+    nameInput.removeAttribute('aria-disabled');
+    nameInput.placeholder = 'اكتب/ي اسمك هنا...';
+    loginBtn.disabled = false;
+    loginBtn.removeAttribute('aria-disabled');
+    loginBtn.textContent = 'دخول 🎮';
+    block?.classList.remove('is-locked');
+  }
+}
+
 async function restoreSession() {
   const { data: { session } } = await db.auth.getSession();
   if (!session?.user) return false;
@@ -1563,8 +1614,9 @@ async function restoreSession() {
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   const savedName = localStorage.getItem('savedName');
   const loginScreenActive = document.getElementById('login-screen')?.classList.contains('active');
-  if (savedName && loginScreenActive) document.getElementById('login-name').value = savedName;
+  if (savedName && loginScreenActive && !LOGIN_LOCKED) document.getElementById('login-name').value = savedName;
+  applyLoginLockUI();
   document.getElementById('login-name')?.addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
+    if (e.key === 'Enter' && !LOGIN_LOCKED) doLogin();
   });
 })();

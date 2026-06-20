@@ -578,6 +578,68 @@
       padding: 20px 24px;
       margin-top: 4px;
     }
+    #login-screen .login-btn-locked,
+    #login-screen .login-btn-locked:disabled {
+      background: linear-gradient(135deg, #9aa5a0, #7a8580) !important;
+      color: rgba(255,255,255,0.92) !important;
+      cursor: not-allowed !important;
+      opacity: 0.85;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+    #login-screen .login-locked-block.is-locked .login-input-locked {
+      background: #eef0ee;
+      color: var(--text-soft);
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+    #login-screen .login-lock-notice {
+      color: var(--orange);
+      font-weight: 800;
+    }
+    #login-screen .login-demo-hint {
+      text-align: center;
+      font-size: 0.82em;
+      font-weight: 700;
+      color: var(--emerald);
+      margin: 8px 0 0;
+    }
+    .demo-pick-lead {
+      text-align: center;
+      color: var(--text-soft);
+      font-weight: 700;
+      font-size: 0.88em;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .demo-book-pick-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+    .demo-book-pick {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--border-gold);
+      border-radius: var(--radius-md);
+      background: var(--glass);
+      cursor: pointer;
+      font-family: inherit;
+      text-align: right;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .demo-book-pick:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--gold);
+    }
+    .demo-book-pick-icon { font-size: 1.6em; flex-shrink: 0; }
+    .demo-book-pick-title { flex: 1; font-weight: 900; font-size: 0.95em; color: var(--emerald-dark); }
+    .demo-book-pick-count { font-size: 0.78em; font-weight: 800; color: var(--gold-dark); white-space: nowrap; }
     @keyframes cardPop {
       from { opacity: 0; transform: scale(0.95) translateY(20px); }
       to { opacity: 1; transform: scale(1) translateY(0); }

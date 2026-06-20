@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body class="islamic-bg login-mode">
 
@@ -112,31 +112,48 @@
         </div>
       </div>
       <div class="card login-card">
-        <button type="button" class="btn btn-gold btn-xl btn-demo-login" onclick="startDemoFromLogin()">📝 نموذج أسئلة تجريبي — ١٥ سؤال</button>
+        <button type="button" class="btn btn-gold btn-xl btn-demo-login" onclick="startDemoFromLogin()">📝 نموذج أسئلة تجريبي</button>
+        <p class="login-demo-hint">اختار/ي كتاباً — ١٥ سؤالاً لكل كتاب</p>
         <p class="login-or-divider">أو</p>
-        <h2 id="login-title">ادخل/ي باسمك وابدأ/ي 🎮</h2>
-        <input type="text" class="input" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name">
-        <p class="login-name-hint">اسمك يُحفظ على هذا الجهاز — سجّل/ي خروجاً لتغيير الاسم</p>
-        <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
-        <button class="btn btn-green btn-xl btn-login-main" onclick="doLogin()" id="btn-login">دخول 🎮</button>
+        <div class="login-locked-block" id="login-locked-block">
+          <h2 id="login-title">🔒 ادخل/ي باسمك وابدأ/ي 🎮</h2>
+          <input type="text" class="input login-input-locked" id="login-name" placeholder="🔒 الدخول مغلق مؤقتاً" autocomplete="name" disabled aria-disabled="true">
+          <p class="login-name-hint login-lock-notice">الدخول العادي مغلق الآن — جرّب/ي النموذج التجريبي أولاً</p>
+          <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
+          <button type="button" class="btn btn-green btn-xl btn-login-main login-btn-locked" id="btn-login" disabled aria-disabled="true">🔒 دخول — مغلق مؤقتاً</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════ DEMO INTRO ═══════════ -->
+  <!-- ═══════════ DEMO BOOK PICKER ═══════════ -->
   <div id="demo-intro" class="screen page-screen">
     <div class="page-shell">
       <div class="page-hero">
-        <h2>نموذج تجريبي</h2>
-        <p>تعرّف/ي على التجربة قبل البدء</p>
+        <h2>📝 نموذج تجريبي</h2>
+        <p>اختار/ي كتاباً — ١٥ سؤالاً لكل كتاب</p>
       </div>
       <div class="card demo-intro-card">
-      <div class="demo-badge">١٥ سؤالاً تجريبياً</div>
-      <img src="images.jpeg" alt="" class="logo-img sm" style="margin:0 auto 12px;">
-      <h3 style="margin-bottom:8px;">مرحباً! 👋</h3>
-      <p>جرّب/ي <strong>١٥ سؤالاً</strong> بدون تسجيل — ابدأ/ي مباشرة!<br>بعدها عبّي اسمك/ِ وعمرك ورأيك/ِ في النموذج — رأيك/ِ يهمنا! 💬</p>
-      <button class="btn btn-gold btn-xl" onclick="beginDemo()">يلا نبدأ! 🎮</button>
-      <button class="btn btn-sm btn-white" onclick="skipDemo()" style="margin-top:10px;width:100%;">تخطي → الدخول مباشرة</button>
+      <div class="demo-badge">٣ كتب × ١٥ سؤال</div>
+      <p class="demo-pick-lead">جرّب/ي أي كتاب بدون تسجيل — بعدها عبّي نموذج التقييم 💬</p>
+      <div class="demo-book-pick-list">
+        <button type="button" class="demo-book-pick" onclick="beginDemo('tawheed')">
+          <span class="demo-book-pick-icon">📖</span>
+          <span class="demo-book-pick-title">كتاب التوحيد</span>
+          <span class="demo-book-pick-count" id="demo-pick-count-tawheed">١٥ سؤال</span>
+        </button>
+        <button type="button" class="demo-book-pick" onclick="beginDemo('usool')">
+          <span class="demo-book-pick-icon">📗</span>
+          <span class="demo-book-pick-title">الأصول الثلاثة</span>
+          <span class="demo-book-pick-count" id="demo-pick-count-usool">١٥ سؤال</span>
+        </button>
+        <button type="button" class="demo-book-pick" onclick="beginDemo('nawawi')">
+          <span class="demo-book-pick-icon">📘</span>
+          <span class="demo-book-pick-title">الأربعون النووية</span>
+          <span class="demo-book-pick-count" id="demo-pick-count-nawawi">١٥ سؤال</span>
+        </button>
+      </div>
+      <button class="btn btn-sm btn-white" onclick="show('login-screen')" style="margin-top:14px;width:100%;">← رجوع</button>
       </div>
     </div>
   </div>
@@ -179,7 +196,7 @@
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
       <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;margin-top:10px;">📋 مراجعة أخطاء النموذج</button>
       <p id="feedback-msg" style="margin-top:10px;font-weight:800;font-size:0.85em;min-height:20px;"></p>
-      <button class="btn btn-sm btn-white" onclick="finishDemoFlow()" style="margin-top:8px;width:100%;">متابعة للرئيسية 🏠</button>
+      <button class="btn btn-sm btn-white" onclick="finishDemoFlow()" style="margin-top:8px;width:100%;">📚 جرّب/ي كتاباً آخر</button>
       </div>
     </div>
   </div>
@@ -459,7 +476,7 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=13"></script>
+<script src="app.js?v=14"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=5"></script>
 <script src="platform.js?v=5"></script>
