@@ -6,7 +6,7 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول الثلاثة', nawawi:'الأربعون النووية', merge3:'الكتب الثلاثة' };
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
 const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
-const DEMO_COUNT = 5;
+const DEMO_COUNT = 15;
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
   usool: ['👤 المؤلف','📖 الكتاب','📚 المسائل الأربع','📚 العلم','🕌 الرب','🙏 العبادة','👤 النبي','📿 الدين','🤲 الدعاء','🛡️ التوكل','🆘 الاستعانة','📿 الاستعاذة']
@@ -23,7 +23,7 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
-let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, pendingLoginAfterDemo = false, loginInProgress = false;
+let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let lastFeedbackItems = [], countdownTimer = null, adminFeedbackLoading = false;
 
 const FEEDBACK_RATING_LABELS = {
@@ -197,12 +197,16 @@ function buildDemoQuestions() {
   for (const book of ['tawheed', 'usool', 'nawawi']) {
     const easy = getOrderedPool(book, 'easy');
     const med = getOrderedPool(book, 'medium');
-    picked.push(...easy.slice(0, 4), ...med.slice(0, 2));
+    picked.push(...easy.slice(0, 8), ...med.slice(0, 4));
   }
   const seen = new Set();
   const uniq = [];
   for (const q of picked) {
     if (!seen.has(q.id)) { seen.add(q.id); uniq.push(q); }
+  }
+  for (let i = uniq.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [uniq[i], uniq[j]] = [uniq[j], uniq[i]];
   }
   if (uniq.length >= DEMO_COUNT) return uniq.slice(0, DEMO_COUNT);
   const out = [...uniq];
@@ -425,9 +429,7 @@ function startDemoFromLogin() {
   state.userName = '';
   state.demoMode = false;
   pendingLoginAfterDemo = true;
-  const demoName = document.getElementById('demo-name');
-  if (demoName) demoName.textContent = DEFAULT_PLAYER;
-  show('demo-intro');
+  beginDemo();
 }
 function showDemoIntro(name) {
   const demoName = document.getElementById('demo-name');
@@ -468,7 +470,9 @@ function endDemo() {
   state.demoMode = false;
   document.getElementById('demo-bar').style.display = 'none';
   feedbackRating = 0;
+  feedbackWantProgram = null;
   document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.want-program-btn').forEach(b => b.classList.remove('sel'));
   const fbName = document.getElementById('feedback-name');
   const fbAge = document.getElementById('feedback-age');
   if (fbName) fbName.value = state.user ? (state.userName || '') : '';
@@ -487,6 +491,11 @@ function setRating(r, el) {
   document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('sel'));
   el.classList.add('sel');
 }
+function setWantProgram(want, el) {
+  feedbackWantProgram = want;
+  document.querySelectorAll('.want-program-btn').forEach(b => b.classList.remove('sel'));
+  el.classList.add('sel');
+}
 async function submitFeedback() {
   const name = (document.getElementById('feedback-name')?.value || '').trim();
   const age = (document.getElementById('feedback-age')?.value || '').trim();
@@ -494,17 +503,21 @@ async function submitFeedback() {
   const improveText = (document.getElementById('feedback-improve')?.value || '').trim();
   const msgEl = document.getElementById('feedback-msg');
   const btn = document.getElementById('btn-submit-feedback');
-  if (!FEEDBACK_RATING_LABELS[feedbackRating]) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اختار/ي تقييماً أولاً'; return; }
+  if (!FEEDBACK_RATING_LABELS[feedbackRating]) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اختار/ي: هل أعجبك البرنامج؟'; return; }
+  if (feedbackWantProgram === null) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اختار/ي: هل تريد/ين استخدام البرنامج؟'; return; }
   if (!name) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اكتب/ي اسمك من فضلك'; return; }
+  if (!age) { msgEl.style.color = 'var(--coral)'; msgEl.textContent = 'اكتب/ي عمرك من فضلك'; return; }
   btn.disabled = true;
   btn.textContent = 'جاري الإرسال...';
   try {
   const parts = [];
-  if (age) parts.push(`العمر: ${age}`);
-  if (likeText) parts.push(`هل أعجبك البرنامج؟\n${likeText}`);
+  parts.push(`العمر: ${age}`);
+  parts.push(`هل تريد/ين البرنامج؟ ${feedbackWantProgram ? 'نعم ✅' : 'لا ❌'}`);
+  parts.push(`التقييم: ${feedbackRatingLabel(feedbackRating)}`);
   if (improveText) parts.push(`اقتراحات وتحسينات:\n${improveText}`);
-  if (state.total) parts.push(`(النموذج: ${state.correct}/${state.total} صحيحة)`);
-  const fullMsg = parts.join('\n\n') || null;
+  if (likeText) parts.push(`ملاحظات إضافية:\n${likeText}`);
+  if (state.total) parts.push(`نتيجة النموذج: ${state.correct}/${state.total} صحيحة`);
+  const fullMsg = parts.join('\n\n');
   const payload = {
     user_name: name || state.userName || 'مجهول',
     user_email: state.userEmail || null,
@@ -540,7 +553,7 @@ async function submitFeedback() {
   localStorage.setItem('demoDone', '1');
   } finally {
     btn.disabled = false;
-    btn.textContent = 'إرسال رأيي 📨';
+    btn.textContent = 'إرسال وحفظ رأيي 📨';
   }
 }
 async function finishDemoFlow() {
