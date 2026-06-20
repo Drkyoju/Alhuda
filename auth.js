@@ -1,18 +1,20 @@
-/* Student accounts: name only → stable Supabase user per name on this device.
- *
- * Credentials are derived deterministically from the normalized name (no PIN).
- * Supabase session persists in the browser; localStorage keeps the last name
- * for quick return visits. Teachers still use email + password (see app.js).
+/* Student accounts: name only → stable Supabase user per name.
+ * Minimizes auth API calls (1 for returning names) and auto-retries on rate limits.
  */
 (function () {
   const PRIMARY_DOMAIN = 'alhuda.students.internal';
   const PEPPER = 'alhuda-integrity-v2-name';
   const CONFIRM_MSG =
     'أوقف تأكيد البريد في Supabase: Authentication → Email → Confirm email = OFF، ثم شغّل supabase_fix_student_auth.sql';
+  const KNOWN_NAMES_KEY = 'alhudaKnownNames';
 
   try {
     sessionStorage.removeItem('alhudaLoginLockout');
   } catch (e) {}
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   async function sha256Hex(input) {
     const data = new TextEncoder().encode(input);
@@ -26,6 +28,24 @@
     return String(name || '').trim().normalize('NFC');
   }
 
+  function isKnownName(nameNorm) {
+    try {
+      const list = JSON.parse(localStorage.getItem(KNOWN_NAMES_KEY) || '[]');
+      return list.includes(nameNorm);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function markKnownName(nameNorm) {
+    try {
+      const set = new Set(JSON.parse(localStorage.getItem(KNOWN_NAMES_KEY) || '[]'));
+      set.add(nameNorm);
+      const list = [...set];
+      localStorage.setItem(KNOWN_NAMES_KEY, JSON.stringify(list.slice(-200)));
+    } catch (e) {}
+  }
+
   async function nameOnlyCredentials(name) {
     const norm = normalizeName(name);
     const id = (await sha256Hex(`alhuda|${norm}|name-only|${PEPPER}`)).slice(0, 24);
@@ -37,13 +57,16 @@
 
   function isRateLimit(err) {
     const msg = err?.message || '';
-    return /rate limit|too many|429/i.test(msg) || err?.status === 429;
+    return /rate limit|too many|429|over_request_rate|slow down/i.test(msg) || err?.status === 429;
   }
   function isConfirmError(err) {
     return /not confirmed|confirm your email|email.*confirm/i.test(err?.message || '');
   }
   function isAlreadyRegistered(err) {
     return /already|registered|exists/i.test(err?.message || '');
+  }
+  function isInvalidCredentials(err) {
+    return /invalid login credentials/i.test(err?.message || '');
   }
 
   async function signInOnly(creds) {
@@ -57,26 +80,65 @@
     return { error: { message: 'الخادم مشغول — انتظر ٣٠ ثانية وحاول مجدداً' } };
   }
 
+  /* Retry auth calls when Supabase rate-limits (common in classrooms / shared Wi‑Fi). */
+  async function authWithRetry(action, attempts) {
+    const max = attempts || 3;
+    let last = null;
+    for (let i = 0; i < max; i++) {
+      last = await action();
+      const err = last?.error;
+      if (!err || !isRateLimit(err)) return last;
+      if (i < max - 1) await sleep(1500 + i * 2000);
+    }
+    return last;
+  }
+
   async function studentSignIn(name) {
     if (!normalizeName(name)) return { error: { message: 'اكتب/ي اسمك أولاً' } };
 
+    const nameNorm = normalizeName(name);
+
     try {
       const creds = await nameOnlyCredentials(name);
+      const known = isKnownName(nameNorm);
 
-      let res = await signInOnly(creds);
-      if (res.error && isRateLimit(res.error)) return serverBusyErr();
-      if (!res.error) return res;
+      /* Returning name on this device → single sign-in call */
+      if (known) {
+        const res = await authWithRetry(() => signInOnly(creds));
+        if (res.error && isRateLimit(res.error)) return serverBusyErr();
+        if (!res.error) {
+          markKnownName(nameNorm);
+          return res;
+        }
+        if (!isInvalidCredentials(res.error)) {
+          return { error: { message: res.error?.message || 'تعذّر الدخول' } };
+        }
+      }
 
-      let signUp = await signUpOnly(creds);
+      /* New name → sign-up first (avoids failed sign-in + sign-up = 2 wasted calls) */
+      let signUp = await authWithRetry(() => signUpOnly(creds));
       if (signUp.error && isRateLimit(signUp.error)) return serverBusyErr();
       if (signUp.error && isConfirmError(signUp.error)) return { error: { message: CONFIRM_MSG } };
       if (!signUp.error) {
-        if (signUp.data?.session) return { data: signUp.data, error: null };
-        res = await signInOnly(creds);
+        if (signUp.data?.session) {
+          markKnownName(nameNorm);
+          return { data: signUp.data, error: null };
+        }
+        const res = await authWithRetry(() => signInOnly(creds));
         if (res.error && isRateLimit(res.error)) return serverBusyErr();
-        if (!res.error) return res;
+        if (!res.error) {
+          markKnownName(nameNorm);
+          return res;
+        }
       }
+
       if (signUp.error && isAlreadyRegistered(signUp.error)) {
+        const res = await authWithRetry(() => signInOnly(creds));
+        if (res.error && isRateLimit(res.error)) return serverBusyErr();
+        if (!res.error) {
+          markKnownName(nameNorm);
+          return res;
+        }
         return { error: { message: 'تعذّر الدخول — حاول/ي مجدداً بعد لحظات' } };
       }
 
@@ -87,6 +149,7 @@
   }
 
   window.studentSignIn = studentSignIn;
+  window.markKnownStudentName = markKnownName;
   window.clearLoginLockout = function () {
     try {
       sessionStorage.removeItem('alhudaLoginLockout');
