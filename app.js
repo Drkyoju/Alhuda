@@ -80,8 +80,8 @@ async function syncPendingFeedback() {
   let changed = false;
   for (const item of backup) {
     if (item.cloudSaved || item.id) continue;
-    const ok = await saveFeedbackToCloud(buildFeedbackInsertRow(item));
-    if (ok) {
+    const result = await saveFeedbackToCloud(buildFeedbackInsertRow(item));
+    if (result.ok) {
       item.cloudSaved = true;
       changed = true;
     }
@@ -91,10 +91,11 @@ async function syncPendingFeedback() {
 }
 
 function buildFeedbackInsertRow(item) {
+  const demoGuest = (item.source || 'demo') === 'demo';
   return {
     user_name: item.user_name,
     user_email: item.user_email || null,
-    user_id: item.user_id || null,
+    user_id: demoGuest ? null : (item.user_id || null),
     rating: item.rating,
     message: item.message,
     source: item.source || 'demo',
@@ -102,8 +103,11 @@ function buildFeedbackInsertRow(item) {
 }
 async function saveFeedbackToCloud(row) {
   const { error } = await db.from('feedback').insert(row);
-  if (error) console.warn('feedback insert:', error);
-  return !error;
+  if (error) {
+    console.warn('feedback insert:', error.message, error);
+    return { ok: false, error: error.message };
+  }
+  return { ok: true };
 }
 
 async function notifyFeedbackEmail(payload) {
@@ -596,30 +600,31 @@ async function submitFeedback() {
     localId: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
     cloudSaved: false,
   };
-  const cloudSaved = await saveFeedbackToCloud(buildFeedbackInsertRow(payload));
-  payload.cloudSaved = cloudSaved;
+  const saveResult = await saveFeedbackToCloud(buildFeedbackInsertRow(payload));
+  payload.cloudSaved = saveResult.ok;
+  payload.cloudError = saveResult.error || '';
   const emailSent = await notifyFeedbackEmail(payload);
   payload.emailSent = emailSent;
   const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
   backup.unshift(payload);
   localStorage.setItem('feedbackBackup', JSON.stringify(backup.slice(0, 200)));
-  if (!cloudSaved) {
+  if (!payload.cloudSaved) {
     await syncPendingFeedback();
     const refreshed = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
     if (refreshed.find(x => x.localId === payload.localId)?.cloudSaved) payload.cloudSaved = true;
   }
   if (payload.cloudSaved && emailSent) {
     msgEl.style.color = 'var(--emerald)';
-    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه وإرساله بالإيميل! شكراً 💚';
+    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه في Supabase وإرساله بالإيميل! شكراً 💚';
   } else if (payload.cloudSaved) {
     msgEl.style.color = 'var(--emerald)';
-    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه! (تحقّق/ي من تفعيل الإيميل في أول مرة) 💚';
+    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه في Supabase! شكراً 💚';
   } else if (emailSent) {
-    msgEl.style.color = 'var(--emerald)';
-    msgEl.textContent = '✅ وصل رأيك/ِ بالإيميل! (حُفظ محلياً — راجع/ي Supabase) 💚';
+    msgEl.style.color = 'var(--orange)';
+    msgEl.textContent = '⚠️ وصل بالإيميل فقط — Supabase يحتاج إصلاح: شغّل/ي supabase_feedback.sql في SQL Editor';
   } else {
     msgEl.style.color = 'var(--orange)';
-    msgEl.textContent = '⚠️ حُفظ على جهازك — شغّل/ي supabase_feedback.sql في Supabase لمزامنة الآراء';
+    msgEl.textContent = '⚠️ لم يُحفظ في Supabase — افتح/ي SQL Editor وشغّل/ي ملف supabase_feedback.sql ثم أعد الإرسال';
   }
   state.userName = name;
   localStorage.setItem('savedName', name);
