@@ -8,6 +8,7 @@ const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3
 const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
 const DEMO_COUNT = 15;
 const LOGIN_LOCKED = true;
+const FEEDBACK_NOTIFY_EMAIL = 'hd.hk1444920@gmail.com';
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
   usool: ['👤 المؤلف','📖 الكتاب','📚 المسائل الأربع','📚 العلم','🕌 الرب','🙏 العبادة','👤 النبي','📿 الدين','🤲 الدعاء','🛡️ التوكل','🆘 الاستعانة','📿 الاستعاذة']
@@ -106,23 +107,46 @@ async function saveFeedbackToCloud(row) {
 }
 
 async function notifyFeedbackEmail(payload) {
+  const emailBody = {
+    user_name: payload.user_name,
+    rating: payload.rating,
+    ratingLabel: feedbackRatingLabel(payload.rating),
+    message: payload.message,
+    source: payload.source || 'demo',
+  };
+
   try {
     const res = await fetch('/api/feedback-notify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(emailBody),
+    });
+    if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      if (data.ok) return true;
+    }
+  } catch (e) {
+    console.warn('feedback email worker:', e);
+  }
+
+  try {
+    const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(FEEDBACK_NOTIFY_EMAIL)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        user_name: payload.user_name,
-        rating: payload.rating,
-        ratingLabel: feedbackRatingLabel(payload.rating),
-        message: payload.message,
-        source: payload.source || 'demo',
+        _subject: '📨 رد جديد — المكتبة الثلاثية',
+        _template: 'table',
+        _captcha: 'false',
+        الاسم: emailBody.user_name || '—',
+        التقييم: emailBody.ratingLabel || String(emailBody.rating ?? '—'),
+        المصدر: emailBody.source,
+        التفاصيل: emailBody.message || '—',
       }),
     });
-    if (!res.ok) return false;
     const data = await res.json().catch(() => ({}));
-    return !!data.ok;
+    return data.success === 'true' || data.success === true;
   } catch (e) {
-    console.warn('feedback email notify:', e);
+    console.warn('feedback email formsubmit:', e);
     return false;
   }
 }
