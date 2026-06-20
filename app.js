@@ -795,6 +795,31 @@ function updateWelcomeStats() {
   updateWelcomeGamification();
 }
 
+function goBackFromFeature() {
+  if (state.user) goHome();
+  else show('login-screen');
+}
+
+function showLevelsPreview() {
+  const el = document.getElementById('levels-preview-content');
+  if (!el) return;
+  const levelsHtml = LEVELS.map((l, i) => {
+    const next = LEVELS[i + 1];
+    const range = next ? `${l.min} – ${next.min - 1} نقطة` : `${l.min}+ نقطة`;
+    return `<div class="levels-preview-row"><span>${l.title}</span><span class="levels-preview-pts">${range}</span></div>`;
+  }).join('');
+  const badgesHtml = Object.values(BADGES).map(b =>
+    `<div class="levels-preview-badge"><span class="b-icon">${b.icon}</span><span class="b-name">${b.name}</span><span class="b-desc">${b.desc}</span></div>`
+  ).join('');
+  el.innerHTML = `
+    <p class="section-label" style="margin-top:0;">📈 المستويات</p>
+    <div class="levels-preview-list">${levelsHtml}</div>
+    <p class="section-label">🏅 الشارات</p>
+    <div class="levels-preview-badges">${badgesHtml}</div>
+    <p style="font-size:0.8em;color:var(--text-soft);text-align:center;margin-top:12px;font-weight:700;">ادخل/ي باسمك والعب/ي لتحصل/ين عليها!</p>`;
+  show('levels-preview-screen');
+}
+
 function goHome() {
   state.homeworkId = null;
   state.challengeMode = false;
@@ -805,6 +830,10 @@ function goHome() {
   if (trainingBtn) {
     trainingBtn.textContent = '🏋️ وضع التدريب';
     trainingBtn.classList.remove('btn-green');
+  }
+  if (!state.user) {
+    show('login-screen');
+    return;
   }
   document.getElementById('welcome-user').textContent = '🎓 متعلم/ة · ' + state.userName;
   document.getElementById('welcome-greeting').textContent = 'مرحباً يا ' + state.userName + '! 👋';

@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body class="islamic-bg login-mode">
 
@@ -106,6 +106,10 @@
         <div class="org-name">جمعية الهدى والحكمة</div>
         <div class="brand-sub">أسئلة تعليمية تفاعلية</div>
         <p class="login-hint" id="login-hint">🎮 انضم/ي وابدأ/ي رحلة التعلّم!</p>
+        <div class="login-features" id="login-features">
+          <button type="button" class="login-feature" id="btn-levels-preview"><strong>🏅</strong>مستويات وشارات</button>
+          <button type="button" class="login-feature" id="btn-leaderboard-preview"><strong>🏆</strong>لوحة متصدرين يومية وأسبوعية</button>
+        </div>
       </div>
       <div class="card">
         <h2 id="login-title" style="font-size:1.1em;margin-bottom:14px;">ادخل/ي باسمك وابدأ/ي 🎮</h2>
@@ -114,10 +118,6 @@
         <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
         <button class="btn btn-green btn-xl" onclick="doLogin()" id="btn-login">دخول 🎮</button>
         <button class="btn btn-blue btn-sm" onclick="startDemoFromLogin()" style="width:100%;margin-top:10px;">📝 نموذج أسئلة تجريبي</button>
-      </div>
-      <div class="login-features">
-        <div class="login-feature"><strong>🏅</strong>مستويات وشارات</div>
-        <div class="login-feature"><strong>🏆</strong>لوحة متصدرين يومية وأسبوعية</div>
       </div>
     </div>
   </div>
@@ -405,7 +405,22 @@
       <p class="lb-reset-hint" id="lb-reset-hint">يتجدد خلال —</p>
       <p class="lb-subhint">مجموع نقاط كل لعبة — كلما لعبت/ِ أكثر ارتفع/ِ ترتيبك</p>
       <div id="lb-list"></div>
-      <button class="btn btn-sm btn-white" onclick="goHome()" style="display:block;margin:16px auto 0;width:100%;">🏠 الرئيسية</button>
+      <button class="btn btn-sm btn-white" onclick="goBackFromFeature()" style="display:block;margin:16px auto 0;width:100%;">← رجوع</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ LEVELS PREVIEW (from login) ═══════════ -->
+  <div id="levels-preview-screen" class="screen page-screen">
+    <div class="page-shell">
+      <div class="page-hero">
+        <h2>🏅 المستويات والشارات</h2>
+        <p>العب/ي واجمع/ي نقاط الخبرة والإنجازات</p>
+      </div>
+      <div class="card">
+        <div id="levels-preview-content"></div>
+        <button class="btn btn-green btn-xl" onclick="show('login-screen')" style="width:100%;margin-top:12px;">ادخل/ي وابدأ/ي 🎮</button>
+        <button class="btn btn-sm btn-white" onclick="goBackFromFeature()" style="width:100%;margin-top:8px;">← رجوع</button>
       </div>
     </div>
   </div>
@@ -437,9 +452,9 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=9"></script>
+<script src="app.js?v=11"></script>
 <script src="auth.js?v=11"></script>
-<script src="enhancements.js?v=4"></script>
+<script src="enhancements.js?v=5"></script>
 <script src="platform.js?v=5"></script>
 <script>
 (async function boot() {
@@ -450,6 +465,8 @@
   if (qCount > 0) document.getElementById('login-hint').textContent = '📚 ' + qCount + ' سؤال في انتظارك!';
   updateLevelCounts();
   selectLevel('easy');
+  document.getElementById('btn-levels-preview')?.addEventListener('click', () => showLevelsPreview());
+  document.getElementById('btn-leaderboard-preview')?.addEventListener('click', () => showLeaderboard());
   if (await restoreSession()) return;
   show('login-screen');
   updateTopbarStats();

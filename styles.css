@@ -777,6 +777,7 @@
       color: var(--emerald);
       font-weight: 700;
       margin-top: -4px;
+      margin-bottom: 2px;
     }
 
     .rank-badge {
@@ -1820,18 +1821,63 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      margin-top: 12px;
+      margin: 10px 0 4px;
       width: 100%;
+      position: relative;
+      z-index: 5;
     }
     .login-feature {
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
       background: var(--glass);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border-gold);
       border-radius: var(--radius-md);
       padding: 12px 10px;
       box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.82em;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.35;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
     }
-    .login-feature strong { color: var(--gold-dark); }
+    .login-feature:hover,
+    .login-feature:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--gold);
+      outline: none;
+    }
+    .login-feature:active { transform: scale(0.98); }
+    .login-feature strong { color: var(--gold-dark); display: block; font-size: 1.4em; margin-bottom: 4px; }
+    .levels-preview-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .levels-preview-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--emerald-soft);
+      border-radius: var(--radius-md);
+      font-weight: 800;
+      font-size: 0.85em;
+    }
+    .levels-preview-pts { color: var(--text-soft); font-size: 0.85em; font-weight: 700; }
+    .levels-preview-badges { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .levels-preview-badge {
+      background: var(--glass);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .levels-preview-badge .b-icon { font-size: 1.5em; display: block; }
+    .levels-preview-badge .b-name { font-size: 0.75em; font-weight: 900; display: block; margin-top: 4px; }
+    .levels-preview-badge .b-desc { font-size: 0.65em; color: var(--text-soft); font-weight: 600; display: block; margin-top: 2px; }
     .login-footer {
       font-family: var(--font-display);
       font-size: 0.85em;
