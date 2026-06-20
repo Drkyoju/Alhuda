@@ -458,22 +458,15 @@ async function skipDemo() {
   localStorage.setItem('demoDone', '1');
   if (pendingLoginAfterDemo && !state.user) {
     pendingLoginAfterDemo = false;
-    // Same guard as finishDemoFlow: don't try to log in with empty fields.
-    const pin = (document.getElementById('login-pin')?.value || '').trim();
     const name = (document.getElementById('login-name')?.value || '').trim();
-    if (!pin || !name) {
-      show('login-screen');
-      document.getElementById('login-err').textContent = pin && !name
-        ? 'اكتب/ي اسمك لإنشاء حسابك'
-        : !pin && name
-          ? 'اكتب/ي رمز الدخول لإنهاء تسجيلك'
-          : '';
+    if (name) {
+      await doLogin();
       return;
     }
-    await doLogin();
-  } else {
-    goHome();
+    show('login-screen');
+    return;
   }
+  goHome();
 }
 function endDemo() {
   state.demoMode = false;
@@ -558,22 +551,15 @@ async function finishDemoFlow() {
   localStorage.setItem('demoDone', '1');
   if (pendingLoginAfterDemo && !state.user) {
     pendingLoginAfterDemo = false;
-    // If there's no PIN entered yet, don't try to log in (it would silently
-    // fail and leave the user stuck on feedback-screen). Send them to the
-    // login screen with a helpful prompt instead.
-    const pin = (document.getElementById('login-pin')?.value || '').trim();
     const name = (document.getElementById('login-name')?.value || '').trim();
-    if (!pin || !name) {
-      show('login-screen');
-      document.getElementById('login-err').textContent = pin && !name
-        ? 'اكتب/ي اسمك لإنشاء حسابك'
-        : !pin && name
-          ? 'اكتب/ي رمز الدخول لإنهاء تسجيلك'
-          : '';
+    if (name) {
+      await doLogin();
       return;
     }
-    await doLogin();
-  } else if (state.user) {
+    show('login-screen');
+    return;
+  }
+  if (state.user) {
     goHome();
   } else {
     show('login-screen');
@@ -848,6 +834,9 @@ function logout() {
   state.demoMode = false;
   trainingMode = false;
   updateTopbarStats();
+  const loginName = document.getElementById('login-name');
+  if (loginName) loginName.value = '';
+  document.getElementById('login-err').textContent = '';
   show('login-screen');
   setLoginTab('student');
 }
@@ -860,10 +849,6 @@ function setLoginTab(t) {
   document.getElementById('login-email').style.display = t === 'teacher' ? 'block' : 'none';
   document.getElementById('login-pass').style.display = t === 'teacher' ? 'block' : 'none';
   document.getElementById('login-name').style.display = t === 'teacher' ? 'none' : 'block';
-  const pinEl = document.getElementById('login-pin');
-  const pinHint = pinEl?.nextElementSibling;
-  if (pinEl) pinEl.style.display = t === 'teacher' ? 'none' : 'block';
-  if (pinHint && pinHint.tagName === 'P') pinHint.style.display = t === 'teacher' ? 'none' : 'block';
 }
 
 async function doLogin() {
@@ -876,13 +861,11 @@ async function doLogin() {
   try {
   if (loginTab === 'student') {
     const name = document.getElementById('login-name').value.trim();
-    const pin = document.getElementById('login-pin').value.trim();
     if (!name) { document.getElementById('login-err').textContent = 'اكتب/ي اسمك من فضلك'; return; }
-    if (!pin) { document.getElementById('login-err').textContent = 'اكتب/ي رمز الدخول (٤–٦ أرقام)'; return; }
-    const { data, error } = await studentSignIn(name, pin);
+    const { data, error } = await studentSignIn(name);
     if (error) {
       document.getElementById('login-err').textContent = error.message || 'تعذّر الدخول';
-      if (typeof showToast === 'function') showToast('تعذّر الدخول — تحقق من الاسم والرمز', 'err');
+      if (typeof showToast === 'function') showToast('تعذّر الدخول — تحقق/ي من الاسم', 'err');
       return;
     }
     const { data: existing } = await db.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
@@ -1572,6 +1555,7 @@ async function restoreSession() {
   state.user = session.user;
   state.userType = profile.role;
   state.userName = profile.name || localStorage.getItem('savedName') || DEFAULT_PLAYER;
+  if (profile.role === 'student') localStorage.setItem('savedName', state.userName);
   state.userEmail = profile.role === 'teacher' ? (localStorage.getItem('savedEmail') || '') : '';
   if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
   if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
@@ -1596,10 +1580,11 @@ async function restoreSession() {
   soundOn = localStorage.getItem('soundOn') !== 'false';
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   const savedName = localStorage.getItem('savedName');
-  if (savedName) document.getElementById('login-name').value = savedName;
+  const loginScreenActive = document.getElementById('login-screen')?.classList.contains('active');
+  if (savedName && loginScreenActive) document.getElementById('login-name').value = savedName;
   const savedEmail = localStorage.getItem('savedEmail');
   if (savedEmail) document.getElementById('login-email').value = savedEmail;
-  ['login-name', 'login-pin', 'login-email', 'login-pass'].forEach(id => {
+  ['login-name', 'login-email', 'login-pass'].forEach(id => {
     document.getElementById(id)?.addEventListener('keydown', e => {
       if (e.key === 'Enter') doLogin();
     });
