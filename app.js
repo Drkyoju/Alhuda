@@ -890,14 +890,20 @@ function buildBookCitationHtml(q) {
   return `<p class="book-cite-heading">📖 الاستشهاد من الكتاب</p><div class="book-cite-box">${inner}</div>`;
 }
 
-function buildAnswerFeedbackHtml(q, isCorrect = true) {
+function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
   const correctText = getCorrectAnswerText(q);
-  const mark = isCorrect ? '✅' : '❌';
-  const boxClass = isCorrect ? 'why-correct-box is-correct' : 'why-correct-box is-wrong';
+  const wrong = (wrongText || '').trim();
   let html = '<div class="answer-feedback">';
+  if (!isCorrect && wrong) {
+    html += '<div class="why-correct-box is-wrong">';
+    html += '<p class="fb-wrong-label"><strong>❌ الإجابة الخاطئة:</strong></p>';
+    html += `<p class="fb-wrong-answer">${escapeHtml(wrong)}</p>`;
+    html += '</div>';
+  }
   if (correctText) {
+    const boxClass = isCorrect ? 'why-correct-box is-correct' : 'why-correct-box is-correct-reveal';
     html += `<div class="${boxClass}">`;
-    html += `<p class="fb-correct-label"><strong>${mark} الإجابة الصحيحة:</strong></p>`;
+    html += '<p class="fb-correct-label"><strong>✅ الإجابة الصحيحة:</strong></p>';
     html += `<p class="fb-correct-answer">${escapeHtml(correctText)}</p>`;
     html += '</div>';
   }
@@ -1986,10 +1992,10 @@ function pick(btn, isOk) {
     if (trainingMode) {
       selfBox.style.display = 'block';
       selfBox.innerHTML = '<p style="font-size:0.85em;margin-bottom:8px;color:var(--text-soft);">وضع التدريب — لا يُحسب ضدك</p><button type="button" class="btn btn-blue btn-sm" style="width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة والشرح</button>';
-      expEl.innerHTML = buildAnswerFeedbackHtml(q, false);
+      expEl.innerHTML = buildAnswerFeedbackHtml(q, false, picked);
     } else {
       selfBox.style.display = 'none';
-      expEl.innerHTML = buildAnswerFeedbackHtml(q, false);
+      expEl.innerHTML = buildAnswerFeedbackHtml(q, false, picked);
     }
     document.getElementById('show-answer-btn').style.display = trainingMode ? 'block' : 'none';
   }
@@ -2030,11 +2036,8 @@ function renderReviewItem() {
   const total = state.wrongLog.length;
   document.getElementById('review-progress').textContent = `خطأ ${state.reviewIdx + 1} من ${total}`;
   document.getElementById('review-q').textContent = q.q;
-  const pickedNote = item.picked
-    ? `<p class="review-picked">إجابتك: <span>${escapeHtml(item.picked)}</span></p>`
-    : '';
-  document.getElementById('review-answer').innerHTML = pickedNote;
-  document.getElementById('review-exp').innerHTML = buildAnswerFeedbackHtml(q, false);
+  document.getElementById('review-answer').innerHTML = '';
+  document.getElementById('review-exp').innerHTML = buildAnswerFeedbackHtml(q, false, item.picked || '');
   const btn = document.getElementById('btn-review-next');
   btn.textContent = state.reviewIdx >= total - 1 ? 'إنهاء المراجعة ✓' : 'التالي ←';
 }

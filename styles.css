@@ -1020,6 +1020,17 @@
       border-color: var(--coral);
       color: var(--coral-dark);
     }
+    .why-correct-box.is-correct-reveal {
+      margin-top: 8px;
+    }
+    .fb-wrong-label { margin: 0 0 4px; }
+    .fb-wrong-answer {
+      margin: 0;
+      font-size: 1.05em;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.6;
+    }
     .why-correct-box strong { display: block; margin-bottom: 4px; font-size: 0.95em; }
     .fb-correct-label { margin: 0 0 4px; }
     .fb-correct-answer {
