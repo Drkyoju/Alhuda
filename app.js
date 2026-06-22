@@ -862,19 +862,110 @@ function formatPageLabel(page) {
   return 'ص ' + arabicNum(n);
 }
 
-function sanitizeBookQuote(text) {
-  let s = (text || '').trim();
-  if (!s) return '';
-  s = s.replace(/^كتاب التوحيد[^.]{0,80}?\d+\s*/u, '');
+const CANONICAL_QUOTES = {
+  '57e222ad-b48e-442c-8f88-6a512c0a54da': 'إنك تأتي قوماً من أهل الكتاب، فليكن أول ما تدعوهم إليه شهادة أن لا إله إلا الله',
+  'c222d45d-12aa-489b-b6d5-8c71d179b249': 'إنما الأعمال بالنيات، وإنما لكل امرئ ما نوى',
+  '517ed86f-3bc1-49e1-b33e-28d5ca1f4d04': 'إن الحلال بيّن وإن الحرام بيّن وبينهما أمور مشتبهات',
+  '371c3a70-cb31-4f62-a927-3576432f673e': 'لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه',
+  '5d714abc-747b-4e95-8ab4-e31e6f985a3d': 'البر حسن الخلق، والإثم ما حاك في صدرك وكرهت أن يطلع عليه الناس',
+  '7bdfccd0-03b8-4002-a193-faea65aa043d': 'البر حسن الخلق، والإثم ما حاك في صدرك وكرهت أن يطلع عليه الناس',
+  '26f3d3b0-1e3a-4f81-9cf4-aa945f8f0d04': 'إن الله فرض فرائض فلا تضيعوها، وحد حدوداً فلا تعتدوها، وحرم أشياء فلا تنتهكوها',
+  '4505d711-ae74-4891-99f9-4bfb3f1a4eec': 'إن الله تجاوز عن أمتي الخطأ والنسيان وما استكرهوا عليه',
+  '63c2cfd9-1172-45ec-b2af-f28925cc1053': 'لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه',
+  '63d10ede-72e5-4c47-9f9e-cdaeb91e8864': 'لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه',
+  'ef0c9b86-fc95-4c6c-b10d-ef93a2e46153': 'لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه',
+};
+
+function stripArabicDiacritics(s) {
+  return (s || '').replace(/[\u064B-\u065F\u0670\u0610-\u061A\u0640\u200c\u200f]/g, '');
+}
+
+function collapseBrokenArabicSpaces(s) {
+  let out = stripArabicDiacritics(s);
+  for (let i = 0; i < 50; i++) {
+    const n = out.replace(/([\u0621-\u064A\u0671])\s+(?=[\u0621-\u064A\u0671])/g, '$1');
+    if (n === out) return out;
+    out = n;
+  }
+  return out;
+}
+
+function isWorksheetCitation(s) {
+  return /اكتبي|أجيبي|أجيب على|معاني الكلمات|س\s*:|ج\s*:|الدليل على أنه|لشيخ الإسلام محمد بن عبدالوهاب.*\d|^\/|\s\/\s/i.test(s || '');
+}
+
+function postFixCitationPhrases(s) {
+  return (s || '')
+    .replace(/\bأن ل إله\b/g, 'أن لا إله')
+    .replace(/\bإلل لا\b/g, 'إلا الله')
+    .replace(/\bإله إلل لا\b/g, 'إله إلا الله')
+    .replace(/\bلا إله إلا الله\b/g, 'لا إله إلا الله')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function citationTextQuality(s) {
+  if (!s) return 0;
+  const toks = s.split(/\s+/).filter(Boolean);
+  if (!toks.length) return 0;
+  const short = toks.filter((t) => t.replace(/[^\u0621-\u064A]/g, '').length <= 1).length;
+  const latin = (s.match(/[a-zA-Z]/g) || []).length;
+  return Math.max(0, 1 - short / toks.length - latin * 0.15);
+}
+
+function cleanArabicCitation(raw, questionId) {
+  if (questionId && CANONICAL_QUOTES[questionId]) return CANONICAL_QUOTES[questionId];
+  if (!raw || isWorksheetCitation(raw)) return '';
+  let s = raw.trim();
+  s = s.replace(/^كتاب التوحيد[^.«]{0,120}?\d+\s*/u, '');
+  s = s.replace(/لشيخ الإسلام محمد بن عبدالوهاب[^\n«]*/gi, '');
+  s = s.replace(/[]/g, '');
   s = s.replace(/\s+/g, ' ').trim();
+  if (!s || isWorksheetCitation(s)) return '';
+  s = postFixCitationPhrases(collapseBrokenArabicSpaces(s));
+  if (citationTextQuality(s) < 0.5) return '';
   return s;
+}
+
+function extractExplanationSnippet(exp) {
+  const text = (exp || '').trim();
+  if (!text || isWorksheetCitation(text)) return '';
+  const quoted = text.match(/«([^»]+)»/);
+  if (quoted?.[1] && citationTextQuality(cleanArabicCitation(quoted[1])) >= 0.55) {
+    return cleanArabicCitation(quoted[1]);
+  }
+  const first = text.split(/[.!؟\n]/).map((x) => x.trim()).find((x) => x.length >= 12 && !isWorksheetCitation(x));
+  if (!first) return '';
+  const cleaned = postFixCitationPhrases(collapseBrokenArabicSpaces(first));
+  return citationTextQuality(cleaned) >= 0.55 ? cleaned : '';
+}
+
+function formatCitationQuote(s) {
+  const t = (s || '').trim();
+  if (!t) return '';
+  if (t.startsWith('«')) return t;
+  return `«${t}»`;
+}
+
+function pickCitationText(q) {
+  const fromQuote = cleanArabicCitation(q.quote, q.id);
+  if (fromQuote && citationTextQuality(fromQuote) >= 0.5) return formatCitationQuote(fromQuote);
+  const fromExp = extractExplanationSnippet(q.exp);
+  if (fromExp && citationTextQuality(fromExp) > citationTextQuality(fromQuote)) {
+    return formatCitationQuote(fromExp);
+  }
+  return fromQuote ? formatCitationQuote(fromQuote) : (fromExp ? formatCitationQuote(fromExp) : '');
+}
+
+function sanitizeBookQuote(text, questionId) {
+  return cleanArabicCitation(text, questionId);
 }
 
 function buildBookCitationHtml(q) {
   const book = BOOK_LABELS[q.book] || q.book || '';
   const chapter = q.cat || '';
   const pageLabel = formatPageLabel(q.page);
-  const quote = sanitizeBookQuote(q.quote || q.exp || '');
+  const quote = pickCitationText(q);
   if (!book && !chapter && !pageLabel && !quote) return '';
   let inner = '';
   if (quote) {
