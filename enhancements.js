@@ -94,24 +94,25 @@
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
     const swVer = window.ALHUDA_ASSETS?.sw || 39;
+    let pendingReg = null;
+    const activateWaiting = () => {
+      if (pendingReg?.waiting) pendingReg.waiting.postMessage('SKIP_WAITING');
+    };
+    window.addEventListener('pagehide', activateWaiting);
     navigator.serviceWorker.register(`./service-worker.js?v=${swVer}`).then((reg) => {
-      // If a new SW is waiting, hand it control on the next reload.
-      if (reg.waiting) {
-        reg.waiting.postMessage('SKIP_WAITING');
-      }
+      pendingReg = reg;
       reg.addEventListener('updatefound', () => {
         const nw = reg.installing;
         if (!nw) return;
         nw.addEventListener('statechange', () => {
-          if (nw.state === 'installed' && reg.waiting) {
-            // Defer activation to the next navigation; current tab keeps the
-            // currently-running JS/HTML pair consistent.
-            reg.waiting.postMessage('SKIP_WAITING');
+          if (nw.state === 'installed' && navigator.serviceWorker.controller && reg.waiting) {
+            if (typeof showToast === 'function') {
+              showToast('تحديث متاح — سيُطبَّق عند إعادة فتح التطبيق', 'info');
+            }
           }
         });
       });
     }).catch((err) => {
-      // Was previously `.catch(() => {})` which made SW issues undebuggable.
       console.warn('[SW] registration failed:', err);
     });
   }

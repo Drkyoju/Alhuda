@@ -32,13 +32,13 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
-let loginTab = 'student', trainingMode = false, soundOn = true, voiceOn = false, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
+let trainingMode = false, soundOn = true, voiceOn = false, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
 
 const FEEDBACK_RATING_LABELS = {
-  5: { emoji: '😍', label: 'أعجبني' },
-  2: { emoji: '😕', label: 'يحتاج تحسين' },
+  3: { emoji: '😍', label: 'أعجبني' },
+  2: { emoji: '😐', label: 'عادي' },
   1: { emoji: '😞', label: 'ما أعجبني' },
 };
 const DEMO_FALLBACK = [
@@ -67,14 +67,6 @@ const BADGES = {
   games_10: { icon: '🏆', name: 'محترف/ة', desc: 'لعبتَ/ِ ١٠ ألعاب' },
   stage_clear: { icon: '🏅', name: 'جولة ناجحة', desc: 'أنهيتَ/ِ جولة بنجاح!' },
 };
-const QUOTES = [
-  'من سار على الدرب وصل ✨',
-  'طلب العلم فريضة على كل مسلم/ة 📖',
-  'العلم نور والجهل ظلام 🌟',
-  'واصل/ي التعلّم فأنت قادر/ة! 💪',
-  'كل سؤال يقربك من المعرفة 📚',
-  'الصبر مفتاح الفرج 🗝️',
-];
 const ENCOURAGE_OK = ['ممتاز! 🌟', 'أحسنت! 🎉', 'رائع! ⭐', 'مبدع/ة! 💫', 'بارك الله فيك! 🤲'];
 const ENCOURAGE_BAD = ['لا بأس! حاول/ي مرة أخرى 💪', 'تعلّمنا من الخطأ 📖', 'واصل/ي! أنت قادر/ة 🌱'];
 const DEFAULT_PLAYER = 'بطل/ة';
@@ -98,6 +90,7 @@ function setFontPreset(size) {
 
 function showGameTutorialIfNeeded() {
   if (localStorage.getItem('gameTutorialDone')) return;
+  if (sessionStorage.getItem('skipGameTutorial')) return;
   const ov = document.getElementById('game-tutorial-overlay');
   if (!ov) return;
   ov.classList.add('open');
@@ -134,10 +127,11 @@ function feedbackRatingLabel(rating) {
 }
 
 async function syncPendingFeedback() {
-  const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
+  let backup;
+  try { backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]'); } catch { return []; }
   let changed = false;
   for (const item of backup) {
-    if (item.cloudSaved || item.id) continue;
+    if (item.cloudSaved) continue;
     const result = await saveFeedbackToCloud(buildFeedbackInsertRow(item));
     if (result.ok) {
       item.cloudSaved = true;
@@ -190,31 +184,11 @@ async function notifyFeedbackEmail(payload) {
   } catch (e) {
     console.warn('feedback email worker:', e);
   }
-
-  try {
-    const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(FEEDBACK_NOTIFY_EMAIL)}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify({
-        _subject: '📨 رد جديد — المكتبة الثلاثية',
-        _template: 'table',
-        _captcha: 'false',
-        الاسم: emailBody.user_name || '—',
-        التقييم: emailBody.ratingLabel || String(emailBody.rating ?? '—'),
-        المصدر: emailBody.source,
-        التفاصيل: emailBody.message || '—',
-      }),
-    });
-    const data = await res.json().catch(() => ({}));
-    return data.success === 'true' || data.success === true;
-  } catch (e) {
-    console.warn('feedback email formsubmit:', e);
-    return false;
-  }
+  return false;
 }
 
 function getProgress() {
-  return JSON.parse(localStorage.getItem('playerProgress') || '{}');
+  try { return JSON.parse(localStorage.getItem('playerProgress') || '{}'); } catch { return {}; }
 }
 function saveProgress(p) {
   localStorage.setItem('playerProgress', JSON.stringify(p));
@@ -365,6 +339,7 @@ function showConfirm(message) {
     ov.classList.add('open');
     document.body.style.overflow = 'hidden';
     const done = (val) => {
+      ov.removeEventListener('keydown', onKey);
       ov.classList.remove('open');
       ov.hidden = true;
       document.body.style.overflow = '';
@@ -376,11 +351,12 @@ function showConfirm(message) {
     ok.onclick = () => done(true);
     cancel.onclick = () => done(false);
     const onKey = (e) => {
-      if (e.key === 'Escape') { document.removeEventListener('keydown', onKey); done(false); }
+      if (e.key === 'Escape') done(false);
     };
-    document.addEventListener('keydown', onKey);
+    ov.addEventListener('keydown', onKey);
     if (typeof trapFocusInOverlay === 'function') trapFocusInOverlay(ov, document.activeElement);
-    ok.focus();
+    ov.setAttribute('tabindex', '-1');
+    ov.focus();
   });
 }
 
@@ -513,7 +489,8 @@ function awardXP(amount) {
   return p.xp;
 }
 function showLevelUp(title) {
-  document.getElementById('levelup-title').textContent = title;
+  const el = document.getElementById('levelup-title-text');
+  if (el) el.textContent = title;
   document.getElementById('levelup-overlay').classList.add('show');
   playSound('achievement');
 }
@@ -810,7 +787,6 @@ function updateVoiceUI() {
   if (answersBtn) {
     answersBtn.textContent = voiceReadAnswers ? '📢 قراءة الإجابات (مفعل)' : '📢 قراءة الإجابات (متوقف)';
     answersBtn.classList.toggle('btn-green', voiceReadAnswers);
-    answersBtn.style.display = voiceOn ? 'none' : '';
   }
   if (qSpeak) {
     qSpeak.textContent = voiceOn ? '🔊' : '🔇';
@@ -847,23 +823,21 @@ function appendAnswerOption(grid, text, isOk, colorIdx) {
   btn.type = 'button';
   btn.className = 'ans-btn ans-color-' + (colorIdx ?? 0);
   btn.textContent = text;
-  if (voiceOn) {
-    btn.onclick = () => previewAnswer(btn, text, isOk);
-  } else {
-    btn.onclick = () => pick(btn, isOk);
-    if (voiceReadAnswers) {
-      wrap.className = 'ans-row';
-      const sp = document.createElement('button');
-      sp.type = 'button';
-      sp.className = 'voice-btn voice-btn-sm';
-      sp.setAttribute('aria-label', 'اقرأ الإجابة');
-      sp.textContent = '🔊';
-      sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp); };
-      wrap.appendChild(btn);
-      wrap.appendChild(sp);
-      grid.appendChild(wrap);
-      return;
-    }
+  btn.dataset.correct = isOk ? '1' : '0';
+  btn.setAttribute('aria-pressed', 'false');
+  btn.onclick = () => pick(btn, isOk);
+  if (voiceReadAnswers) {
+    wrap.className = 'ans-row';
+    const sp = document.createElement('button');
+    sp.type = 'button';
+    sp.className = 'voice-btn voice-btn-sm';
+    sp.setAttribute('aria-label', 'اقرأ الإجابة');
+    sp.textContent = '🔊';
+    sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp); };
+    wrap.appendChild(btn);
+    wrap.appendChild(sp);
+    grid.appendChild(wrap);
+    return;
   }
   wrap.appendChild(btn);
   grid.appendChild(wrap);
@@ -1000,15 +974,16 @@ function startQuestionTimer() {
   }
   setTimerVisible(true);
   questionTimerLeft = QUESTION_TIME_SEC;
+  const deadline = Date.now() + QUESTION_TIME_SEC * 1000;
   updateTimerUI();
   questionTimerId = setInterval(() => {
-    questionTimerLeft--;
+    questionTimerLeft = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
     updateTimerUI();
     if (questionTimerLeft <= 0) {
       clearQuestionTimer();
       onQuestionTimeUp();
     }
-  }, 1000);
+  }, 250);
 }
 
 function onQuestionTimeUp() {
@@ -1055,14 +1030,8 @@ function onQuestionTimeUp() {
 }
 
 function highlightCorrectAnswer(q) {
-  const btns = document.querySelectorAll('.ans-btn');
-  btns.forEach((btn, i) => {
-    if (q.type === 'tf') {
-      const isCorrect = (i === 0) === q.tf;
-      if (isCorrect) btn.classList.add('reveal-correct');
-    } else if (btn.textContent === q.a[q.c]) {
-      btn.classList.add('reveal-correct');
-    }
+  document.querySelectorAll('.ans-btn').forEach((btn) => {
+    if (btn.dataset.correct === '1') btn.classList.add('reveal-correct');
   });
 }
 function startDemoFromLogin() {
@@ -1233,12 +1202,19 @@ async function submitFeedback() {
   const loginName = document.getElementById('login-name');
   if (loginName) loginName.value = name;
   localStorage.setItem('demoDone', '1');
+  localStorage.setItem('demoFeedbackSubmitted', '1');
+  const finishBtn = document.getElementById('btn-finish-demo');
+  if (finishBtn) finishBtn.style.display = '';
   } finally {
     btn.disabled = false;
     btn.textContent = 'إرسال وحفظ رأيي 📨';
   }
 }
 async function finishDemoFlow() {
+  if (localStorage.getItem('demoFeedbackSubmitted') !== '1') {
+    const skip = await showConfirm('لم تُرسل/ِ التقييم بعد. هل تريد/ين المتابعة بدون إرسال؟');
+    if (!skip) return;
+  }
   localStorage.setItem('demoDone', '1');
   if (!state.user) {
     if (LOGIN_LOCKED) {
@@ -1776,7 +1752,7 @@ function goHome() {
 }
 
 function logout() {
-  db.auth.signOut();
+  void db.auth.signOut().catch(() => {});
   state.user = null; state.userType = ''; state.userName = '';
   state.homeworkId = null;
   state.challengeMode = false;
@@ -1822,10 +1798,15 @@ async function doLogin() {
       return;
     }
     const { data: existing } = await db.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
+    let profileErr;
     if (existing) {
-      await db.from('profiles').update({ name, role: 'student' }).eq('id', data.user.id);
+      ({ error: profileErr } = await db.from('profiles').update({ name, role: 'student' }).eq('id', data.user.id));
     } else {
-      await db.from('profiles').upsert({ id: data.user.id, name, role: 'student' });
+      ({ error: profileErr } = await db.from('profiles').upsert({ id: data.user.id, name, role: 'student' }));
+    }
+    if (profileErr) {
+      setFormError(document.getElementById('login-err'), 'تعذّر حفظ الملف — حاول/ي مرة أخرى');
+      return;
     }
     state.user = data.user; state.userType = 'student'; state.userName = name; state.userEmail = '';
     localStorage.setItem('savedName', name);
@@ -2000,6 +1981,7 @@ function pick(btn, isOk) {
 
   if (isOk) {
     btn.classList.add('correct');
+    btn.setAttribute('aria-pressed', 'true');
     selfBox.style.display = 'none';
     if (!trainingMode && !state.demoMode) {
       state.streak++; state.correct++;
@@ -2023,6 +2005,7 @@ function pick(btn, isOk) {
     setFeedbackContinueVisible(true);
   } else {
     btn.classList.add('wrong');
+    btn.setAttribute('aria-pressed', 'true');
     const picked = btn.textContent;
     if (!trainingMode) {
       state.wrongLog.push({ q, index: state.idx, picked });
@@ -2166,6 +2149,12 @@ async function endGame() {
     lastGameXp = 0;
   }
 
+  if (state.user && !isTraining) {
+    const qFrom = parseInt(document.getElementById('q-from-input')?.value, 10) || 1;
+    const gamePoints = state.score + xpGain;
+    await saveGameScore(gamePoints, qFrom);
+  }
+
   if (state.hearts <= 0 && !isTraining) {
     document.getElementById('go-score').textContent = state.score;
     document.getElementById('go-cor').textContent = state.correct;
@@ -2193,11 +2182,6 @@ async function endGame() {
     show('results');
   }
 
-  if (state.user && !isTraining) {
-    const qFrom = parseInt(document.getElementById('q-from-input').value, 10) || 1;
-    const gamePoints = state.score + xpGain;
-    await saveGameScore(gamePoints, qFrom);
-  }
   if (window.AlhudaPlatform?.onGameEndHook) await AlhudaPlatform.onGameEndHook();
 }
 
@@ -2216,7 +2200,12 @@ function updateProgress() {
   const bar = document.getElementById('progress-bar');
   if (bar) bar.style.width = pct + '%';
   const strip = document.getElementById('q-progress-fill');
+  const stripWrap = document.querySelector('.q-progress-strip');
   if (strip) strip.style.width = pct + '%';
+  if (stripWrap) {
+    stripWrap.setAttribute('aria-valuenow', String(Math.round(pct)));
+    stripWrap.setAttribute('aria-valuetext', `السؤال ${state.idx + 1} من ${state.total}`);
+  }
 }
 function renderHearts() {
   const c = document.getElementById('hearts');
@@ -2232,6 +2221,8 @@ function renderHearts() {
 function showCombo(s) {
   const c = document.getElementById('combo');
   c.textContent = '🔥 سلسلة × ' + s + '!';
+  c.setAttribute('role', 'status');
+  c.setAttribute('aria-live', 'polite');
   c.classList.add('show');
   setTimeout(() => c.classList.remove('show'), 2000);
 }
@@ -2303,7 +2294,7 @@ async function fetchLeaderboardRankings(period, forceRefresh) {
   const { data: scores, error } = await db.from('scores')
     .select('user_id,score')
     .gte('played_at', start.toISOString())
-    .limit(1000);
+    .limit(300);
   if (error) return cached?.ranked || [];
   const ranked = aggregateTotalPoints(scores);
   const userIds = [...new Set(ranked.map(s => s.user_id).filter(Boolean))].slice(0, 80);
@@ -2539,6 +2530,11 @@ async function restoreSession() {
   state.user = session.user;
   state.userType = 'student';
   state.userName = profile.name || localStorage.getItem('savedName') || DEFAULT_PLAYER;
+  const savedName = localStorage.getItem('savedName');
+  if (savedName && profile.name && profile.name !== savedName) {
+    await db.auth.signOut();
+    return false;
+  }
   localStorage.setItem('savedName', state.userName);
   if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
   if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();

@@ -22,7 +22,7 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Run Playwright tests
-        run: npm test
+        run: npm run test:smoke && npm run test:a11y
         env:
           CI: true
 

@@ -351,6 +351,7 @@
 
   function closeOnboarding() {
     localStorage.setItem('onboardingDone', '1');
+    sessionStorage.setItem('skipGameTutorial', '1');
     const ov = document.getElementById('onboarding-overlay');
     if (ov) {
       ov.classList.remove('open');

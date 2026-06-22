@@ -10,7 +10,7 @@
   <title>المكتبة الثلاثية - أسئلة تعليمية</title>
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="enhancements.css?v=8">
+  <link rel="stylesheet" href="enhancements.css?v=9">
   <link rel="stylesheet" href="kids-ui.css?v=5">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -84,11 +84,11 @@
   <div id="countdown-overlay" aria-live="assertive" aria-atomic="true"><span id="countdown-num">3</span></div>
 
   <!-- Level up celebration -->
-  <div class="levelup-overlay" id="levelup-overlay" onclick="if(event.target===this)closeLevelUp()">
+  <div class="levelup-overlay" id="levelup-overlay" role="dialog" aria-modal="true" aria-labelledby="levelup-title" onclick="if(event.target===this)closeLevelUp()">
     <div class="levelup-card">
       <div class="lu-icon">🎖️</div>
-      <h3>ارتقيتَ/ِ مستوى!</h3>
-      <p>أصبحتَ/ِ <strong id="levelup-title">متعلم/ة</strong></p>
+      <h3 id="levelup-title">ارتقيتَ/ِ مستوى!</h3>
+      <p>أصبحتَ/ِ <strong id="levelup-title-text">متعلم/ة</strong></p>
       <button class="btn btn-gold btn-xl" onclick="closeLevelUp()">رائع! 🎉</button>
     </div>
   </div>
@@ -129,7 +129,7 @@
       <div class="gt-slide">
         <div class="onb-icon">👆</div>
         <h3>اختر/ي إجابة</h3>
-        <p>اضغط/ي الإجابة، ثم «تأكيد الاختيار» إن ظهر. راقب/ي الساعة الرملية ⏳ — الوقت محدود!</p>
+        <p>اضغط/ي الإجابة مباشرة. راقب/ي الساعة الرملية ⏳ — الوقت محدود!</p>
       </div>
       <div class="gt-slide">
         <div class="onb-icon">⭐</div>
@@ -216,14 +216,16 @@
       <h3>نموذج التقييم</h3>
       <p class="feedback-label">معلوماتك:</p>
       <div class="feedback-info-row">
+        <label class="sr-only" for="feedback-name">الاسم</label>
         <input type="text" class="input" id="feedback-name" placeholder="الاسم *" autocomplete="name" required>
-        <input type="number" class="input" id="feedback-age" placeholder="العمر *" min="5" max="120" inputmode="numeric" required>
+        <label class="sr-only" for="feedback-age">العمر</label>
+        <input type="text" class="input" id="feedback-age" placeholder="العمر *" inputmode="numeric" pattern="[0-9]*" maxlength="3" required>
       </div>
 
       <p class="feedback-label">هل أعجبك البرنامج؟ *</p>
       <div class="rating-row" id="rating-row">
-        <button type="button" class="rating-btn" onclick="setRating(5,this)" data-r="5" aria-label="أعجبني"><span class="r-emoji" aria-hidden="true">😍</span>أعجبني!</button>
-        <button type="button" class="rating-btn" onclick="setRating(2,this)" data-r="2" aria-label="يحتاج تحسين"><span class="r-emoji" aria-hidden="true">😕</span>يحتاج تحسين</button>
+        <button type="button" class="rating-btn" onclick="setRating(3,this)" data-r="3" aria-label="أعجبني"><span class="r-emoji" aria-hidden="true">😍</span>أعجبني!</button>
+        <button type="button" class="rating-btn" onclick="setRating(2,this)" data-r="2" aria-label="عادي"><span class="r-emoji" aria-hidden="true">😐</span>عادي</button>
         <button type="button" class="rating-btn" onclick="setRating(1,this)" data-r="1" aria-label="ما أعجبني"><span class="r-emoji" aria-hidden="true">😞</span>ما أعجبني</button>
       </div>
 
@@ -242,7 +244,7 @@
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
       <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;margin-top:10px;">📋 مراجعة أخطاء النموذج</button>
       <p id="feedback-msg" class="feedback-status-msg" role="alert" aria-live="polite"></p>
-      <button class="btn btn-sm btn-white" onclick="finishDemoFlow()" style="margin-top:8px;width:100%;">📚 جرّب/ي كتاباً آخر</button>
+      <button class="btn btn-sm btn-white" id="btn-finish-demo" onclick="finishDemoFlow()" style="display:none;margin-top:8px;width:100%;">📚 جرّب/ي كتاباً آخر</button>
       </div>
     </div>
   </div>
@@ -388,7 +390,7 @@
         <span class="badge badge-blue" id="q-book-badge"></span>
         <span class="badge-tf" id="q-type-badge" style="display:none;">✅ صح أو خطأ</span>
       </div>
-      <div class="q-progress-strip" aria-hidden="true"><div class="q-progress-fill" id="q-progress-fill"></div></div>
+      <div class="q-progress-strip" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="تقدّم الجولة"><div class="q-progress-fill" id="q-progress-fill"></div></div>
       <div class="q-with-timer">
         <div class="q-box-row">
           <div class="q-box" id="q-text">...</div>
@@ -545,8 +547,8 @@
     <button type="button" data-nav="logout" onclick="logout()"><span class="nav-ico">🚪</span><span>خروج</span></button>
   </nav>
   <div class="confetti-wrap" id="confetti-wrap"></div>
-  <div class="combo" id="combo">🔥 سلسلة!</div>
-  <div class="ach-toast" id="ach-toast">
+  <div class="combo" id="combo" role="status" aria-live="polite">🔥 سلسلة!</div>
+  <div class="ach-toast" id="ach-toast" role="status" aria-live="polite">
     <span class="ach-icon" id="ach-icon">🏅</span>
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
@@ -568,10 +570,10 @@
   </div>
 
 <script src="version.js"></script>
-<script src="app.js?v=41"></script>
+<script src="app.js?v=42"></script>
 <script src="auth.js?v=11"></script>
-<script src="enhancements.js?v=8"></script>
-<script src="platform.js?v=11"></script>
+<script src="enhancements.js?v=9"></script>
+<script src="platform.js?v=12"></script>
 <script>
 (async function boot() {
   updateBismillahPadding();
