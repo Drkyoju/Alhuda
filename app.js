@@ -571,14 +571,18 @@ async function speakText(text, btn) {
 function speakQuestion() {
   const q = state.questions[state.idx];
   if (!q?.q || !voiceOn) return;
-  speakText(q.q, document.getElementById('btn-voice-toggle'));
+  speakText(q.q, document.getElementById('btn-speak-question'));
+}
+
+function onQuestionSpeakerClick() {
+  if (!voiceOn) toggleGameVoice();
+  speakQuestion();
 }
 
 function updateVoiceUI() {
   const voiceBtn = document.getElementById('voice-btn');
   const answersBtn = document.getElementById('voice-answers-btn');
-  const gameToggle = document.getElementById('btn-voice-toggle');
-  const qBox = document.getElementById('q-text');
+  const qSpeak = document.getElementById('btn-speak-question');
   if (voiceBtn) {
     voiceBtn.textContent = voiceOn ? '🗣️ القراءة الصوتية (مفعل)' : '🔇 القراءة الصوتية (متوقف)';
     voiceBtn.classList.toggle('btn-green', voiceOn);
@@ -588,15 +592,11 @@ function updateVoiceUI() {
     answersBtn.classList.toggle('btn-green', voiceReadAnswers);
     answersBtn.style.display = voiceOn ? 'none' : '';
   }
-  if (gameToggle) {
-    gameToggle.textContent = voiceOn ? '🔊' : '🔇';
-    gameToggle.classList.toggle('voice-on', voiceOn);
-    gameToggle.classList.toggle('voice-off', !voiceOn);
-    gameToggle.setAttribute('aria-label', voiceOn ? 'إيقاف الصوت' : 'تشغيل الصوت');
-  }
-  if (qBox) {
-    qBox.classList.toggle('voice-readable', voiceOn);
-    qBox.title = voiceOn ? 'اضغط/ي لسماع السؤال' : '';
+  if (qSpeak) {
+    qSpeak.textContent = voiceOn ? '🔊' : '🔇';
+    qSpeak.classList.toggle('voice-on', voiceOn);
+    qSpeak.classList.toggle('voice-off', !voiceOn);
+    qSpeak.setAttribute('aria-label', voiceOn ? 'اقرأ السؤال / إيقاف الصوت' : 'تشغيل الصوت');
   }
 }
 
@@ -661,7 +661,7 @@ function previewAnswer(btn, text, isOk) {
   state.selectedIsOk = isOk;
   const confirmBtn = document.getElementById('btn-confirm-answer');
   if (confirmBtn) confirmBtn.style.display = 'block';
-  if (voiceOn) speakText(text, document.getElementById('btn-voice-toggle'));
+  if (voiceOn) speakText(text, document.getElementById('btn-speak-question'));
 }
 
 function confirmAnswer() {
@@ -1520,10 +1520,6 @@ function renderQ() {
     ? `السؤال ${state.idx + 1} من ${state.total}`
     : `سؤال ${state.qFrom + state.idx} — ${state.idx + 1}/${state.total}`;
   document.getElementById('q-text').textContent = q.q;
-  const qBox = document.getElementById('q-text');
-  if (qBox) {
-    qBox.onclick = voiceOn ? () => speakQuestion() : null;
-  }
   document.getElementById('q-book-badge').textContent = BOOK_LABELS[q.book] || q.book;
   document.getElementById('q-type-badge').style.display = q.type === 'tf' ? 'inline-block' : 'none';
   updateVoiceUI();

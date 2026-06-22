@@ -328,7 +328,6 @@
       <button class="close-btn" onclick="goHome()" aria-label="رجوع">✕</button>
       <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
       <div id="hearts" style="display:flex;gap:2px;"></div>
-      <button type="button" class="close-btn voice-toggle-btn" id="btn-voice-toggle" onclick="toggleGameVoice()" aria-label="القراءة الصوتية">🔊</button>
       <button class="close-btn game-settings-btn" onclick="toggleSettings()" aria-label="الإعدادات">⚙️</button>
       <div class="q-timer" id="q-timer" aria-label="الوقت المتبقي">
         <svg class="q-timer-svg" viewBox="0 0 44 44" aria-hidden="true">
@@ -347,7 +346,10 @@
         <span class="badge badge-blue" id="q-book-badge"></span>
         <span class="badge-tf" id="q-type-badge" style="display:none;">✅ صح أو خطأ</span>
       </div>
-      <div class="q-box voice-readable" id="q-text" title="اضغط/ي لسماع السؤال">...</div>
+      <div class="q-box-row">
+        <div class="q-box" id="q-text">...</div>
+        <button type="button" class="voice-btn" id="btn-speak-question" onclick="onQuestionSpeakerClick()" aria-label="القراءة الصوتية">🔊</button>
+      </div>
       <div class="ans-grid" id="ans-grid"></div>
       <button id="btn-confirm-answer" class="btn btn-green btn-xl confirm-answer-btn" style="display:none;" onclick="confirmAnswer()">✅ تأكيد الاختيار</button>
       <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:12px;width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة</button>
@@ -479,7 +481,7 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=24"></script>
+<script src="app.js?v=25"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=5"></script>
 <script src="platform.js?v=7"></script>

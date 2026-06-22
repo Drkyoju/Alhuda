@@ -1466,6 +1466,26 @@
       line-height: 1.7;
       margin-bottom: 16px;
     }
+    .q-box-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .q-box-row .q-box {
+      flex: 1;
+      margin-bottom: 0;
+      min-width: 0;
+    }
+    .voice-btn.voice-on {
+      background: var(--emerald-light);
+      border-color: var(--emerald);
+    }
+    .voice-btn.voice-off {
+      background: var(--red-light);
+      border-color: var(--coral);
+      opacity: 0.85;
+    }
     .voice-toggle-btn.voice-on {
       background: var(--emerald-light);
       border-color: var(--emerald);
