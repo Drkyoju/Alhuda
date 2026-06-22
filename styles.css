@@ -3053,3 +3053,78 @@
       font-size: 1.08em;
       min-height: 20px;
     }
+
+    /* ── وضوح القراءة على الجوال ── */
+    #game .q-box,
+    #game .ans-btn {
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
+      hyphens: none;
+    }
+    #game .ans-btn {
+      overflow: visible;
+      line-height: 1.55;
+      height: auto;
+      text-align: center;
+    }
+    #game .ans-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+      width: 100%;
+    }
+    #game .ans-row .ans-btn {
+      flex: 1;
+      min-width: 0;
+    }
+    @media (max-width: 480px) {
+      #game .q-box {
+        font-size: clamp(17px, var(--base-font-size, 18px), 20px) !important;
+        line-height: 1.75 !important;
+        padding: 16px 14px !important;
+      }
+      #game .ans-btn {
+        font-size: clamp(16px, var(--base-font-size, 18px), 19px) !important;
+        padding: 14px 16px !important;
+        min-height: 52px;
+      }
+      #game .ans-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px;
+      }
+      #game .q-meta {
+        gap: 8px;
+        line-height: 1.4;
+      }
+      #game .q-num,
+      #game .q-meta .badge {
+        font-size: clamp(12px, calc(var(--base-font-size, 18px) * 0.78), 14px) !important;
+      }
+      #game .feedback #fb-title,
+      #game .feedback #fb-exp {
+        font-size: clamp(15px, var(--base-font-size, 18px), 18px) !important;
+        line-height: 1.65 !important;
+      }
+    }
+    @media (max-width: 360px) {
+      .q-with-timer {
+        flex-wrap: wrap;
+      }
+      .q-box-row {
+        width: 100%;
+        order: 1;
+      }
+      .q-timer-hourglass {
+        order: 2;
+        flex-direction: row;
+        width: auto;
+        gap: 6px;
+        padding: 4px 8px;
+        margin-top: 4px;
+      }
+      .q-timer-hourglass .q-timer-svg {
+        width: 28px;
+        height: 36px;
+      }
+    }
