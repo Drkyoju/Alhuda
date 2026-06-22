@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=13">
 </head>
 <body class="islamic-bg login-mode">
 
@@ -329,13 +329,6 @@
       <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
       <div id="hearts" style="display:flex;gap:2px;"></div>
       <button class="close-btn game-settings-btn" onclick="toggleSettings()" aria-label="الإعدادات">⚙️</button>
-      <div class="q-timer" id="q-timer" aria-label="الوقت المتبقي">
-        <svg class="q-timer-svg" viewBox="0 0 44 44" aria-hidden="true">
-          <circle class="q-timer-bg" cx="22" cy="22" r="19"></circle>
-          <circle class="q-timer-ring" id="q-timer-ring" cx="22" cy="22" r="19"></circle>
-        </svg>
-        <span class="q-timer-num" id="q-timer-num">45</span>
-      </div>
       <span class="score-badge">⭐ <span id="score-display">0</span></span>
     </div>
     <div class="q-area">
@@ -346,9 +339,35 @@
         <span class="badge badge-blue" id="q-book-badge"></span>
         <span class="badge-tf" id="q-type-badge" style="display:none;">✅ صح أو خطأ</span>
       </div>
-      <div class="q-box-row">
-        <div class="q-box" id="q-text">...</div>
-        <button type="button" class="voice-btn" id="btn-speak-question" onclick="onQuestionSpeakerClick()" aria-label="القراءة الصوتية">🔊</button>
+      <div class="q-with-timer">
+        <div class="q-box-row">
+          <div class="q-box" id="q-text">...</div>
+          <button type="button" class="voice-btn" id="btn-speak-question" onclick="onQuestionSpeakerClick()" aria-label="القراءة الصوتية">🔊</button>
+        </div>
+        <div class="q-timer q-timer-hourglass" id="q-timer" aria-label="الوقت المتبقي">
+          <svg class="q-timer-svg" viewBox="0 0 56 72" aria-hidden="true">
+            <defs>
+              <linearGradient id="hg-sand-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#e8c96a"/>
+                <stop offset="100%" stop-color="#b8943f"/>
+              </linearGradient>
+              <clipPath id="hg-clip-top">
+                <polygon points="16,12 40,12 32,30 24,30"/>
+              </clipPath>
+              <clipPath id="hg-clip-bottom">
+                <polygon points="24,34 32,34 40,56 16,56"/>
+              </clipPath>
+            </defs>
+            <rect class="hg-cap" x="10" y="4" width="36" height="5" rx="2.5"/>
+            <rect class="hg-cap" x="10" y="63" width="36" height="5" rx="2.5"/>
+            <path class="hg-glass" d="M16 11 L40 11 L32 32 L40 57 L16 57 L24 32 Z"/>
+            <rect id="q-timer-sand-top" class="hg-sand" clip-path="url(#hg-clip-top)" x="15" y="12" width="26" height="18" fill="url(#hg-sand-grad)"/>
+            <line class="hg-stream" id="q-timer-stream" x1="28" y1="30" x2="28" y2="34" stroke="url(#hg-sand-grad)" stroke-width="2.5" stroke-linecap="round"/>
+            <rect id="q-timer-sand-bottom" class="hg-sand" clip-path="url(#hg-clip-bottom)" x="15" y="56" width="26" height="0" fill="url(#hg-sand-grad)"/>
+            <circle class="hg-pivot" cx="28" cy="32" r="2.5"/>
+          </svg>
+          <span class="q-timer-num" id="q-timer-num">٤٥</span>
+        </div>
       </div>
       <div class="ans-grid" id="ans-grid"></div>
       <button id="btn-confirm-answer" class="btn btn-green btn-xl confirm-answer-btn" style="display:none;" onclick="confirmAnswer()">✅ تأكيد الاختيار</button>
@@ -481,7 +500,7 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=25"></script>
+<script src="app.js?v=27"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=5"></script>
 <script src="platform.js?v=7"></script>

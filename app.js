@@ -8,7 +8,10 @@ const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3
 const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
 const DEMO_COUNT = 15;
 const QUESTION_TIME_SEC = 45;
-const TIMER_RING_LEN = 119.38;
+const TIMER_SAND_TOP_H = 18;
+const TIMER_SAND_BOTTOM_H = 22;
+const TIMER_SAND_TOP_Y = 12;
+const TIMER_SAND_BOTTOM_Y = 56;
 const LOGIN_LOCKED = true;
 const FEEDBACK_NOTIFY_EMAIL = 'hd.hk1444920@gmail.com';
 const CHAPTER_ORDER = {
@@ -736,13 +739,25 @@ function clearQuestionTimer() {
 }
 
 function updateTimerUI() {
-  const ring = document.getElementById('q-timer-ring');
+  const sandTop = document.getElementById('q-timer-sand-top');
+  const sandBottom = document.getElementById('q-timer-sand-bottom');
+  const stream = document.getElementById('q-timer-stream');
   const num = document.getElementById('q-timer-num');
   const wrap = document.getElementById('q-timer');
-  if (!ring || !num || !wrap) return;
+  if (!num || !wrap) return;
   const pct = Math.max(0, questionTimerLeft / QUESTION_TIME_SEC);
   num.textContent = questionTimerLeft.toLocaleString('ar-SA');
-  ring.style.strokeDashoffset = String(TIMER_RING_LEN * (1 - pct));
+  if (sandTop) {
+    const h = TIMER_SAND_TOP_H * pct;
+    sandTop.setAttribute('height', String(h));
+    sandTop.setAttribute('y', String(TIMER_SAND_TOP_Y + TIMER_SAND_TOP_H - h));
+  }
+  if (sandBottom) {
+    const h = TIMER_SAND_BOTTOM_H * (1 - pct);
+    sandBottom.setAttribute('height', String(h));
+    sandBottom.setAttribute('y', String(TIMER_SAND_BOTTOM_Y - h));
+  }
+  if (stream) stream.style.opacity = pct > 0.02 && pct < 0.98 ? '1' : '0';
   wrap.classList.toggle('timer-warn', questionTimerLeft <= 10 && questionTimerLeft > 5);
   wrap.classList.toggle('timer-danger', questionTimerLeft <= 5);
 }
@@ -1290,6 +1305,8 @@ function show(id) {
   document.body.style.overflow = '';
   updateBismillahPadding();
   window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
 }
 
 function updateWelcomeStats() {
