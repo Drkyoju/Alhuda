@@ -824,7 +824,7 @@
   }
 
   async function loadQuestionsCached() {
-    const cacheKey = 'questionsCacheV1';
+    const cacheKey = 'questionsCacheV2';
     const ttl = state.userType === 'teacher' ? 60000 : 900000;
     // Guard against corrupted sessionStorage: a JSON.parse throw used to
     // hard-crash the whole game; now it's treated as a cache miss.

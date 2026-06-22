@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body class="islamic-bg login-mode">
 
@@ -330,6 +330,13 @@
       <div id="hearts" style="display:flex;gap:2px;"></div>
       <button type="button" class="close-btn voice-toggle-btn" id="btn-voice-toggle" onclick="toggleGameVoice()" aria-label="القراءة الصوتية">🔊</button>
       <button class="close-btn game-settings-btn" onclick="toggleSettings()" aria-label="الإعدادات">⚙️</button>
+      <div class="q-timer" id="q-timer" aria-label="الوقت المتبقي">
+        <svg class="q-timer-svg" viewBox="0 0 44 44" aria-hidden="true">
+          <circle class="q-timer-bg" cx="22" cy="22" r="19"></circle>
+          <circle class="q-timer-ring" id="q-timer-ring" cx="22" cy="22" r="19"></circle>
+        </svg>
+        <span class="q-timer-num" id="q-timer-num">45</span>
+      </div>
       <span class="score-badge">⭐ <span id="score-display">0</span></span>
     </div>
     <div class="q-area">
@@ -472,10 +479,10 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=22"></script>
+<script src="app.js?v=23"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=5"></script>
-<script src="platform.js?v=6"></script>
+<script src="platform.js?v=7"></script>
 <script>
 (async function boot() {
   updateBismillahPadding();

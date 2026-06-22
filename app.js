@@ -7,6 +7,8 @@ const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول ا�
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
 const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
 const DEMO_COUNT = 15;
+const QUESTION_TIME_SEC = 45;
+const TIMER_RING_LEN = 119.38;
 const LOGIN_LOCKED = true;
 const FEEDBACK_NOTIFY_EMAIL = 'hd.hk1444920@gmail.com';
 const CHAPTER_ORDER = {
@@ -26,7 +28,7 @@ function chapterSortIndex(book, chapter) {
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
 let loginTab = 'student', trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
-let lastFeedbackItems = [], countdownTimer = null, adminFeedbackLoading = false;
+let lastFeedbackItems = [], countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC, adminFeedbackLoading = false;
 
 const FEEDBACK_RATING_LABELS = {
   5: { emoji: '😍', label: 'أعجبني' },
@@ -34,9 +36,9 @@ const FEEDBACK_RATING_LABELS = {
   1: { emoji: '😞', label: 'ما أعجبني' },
 };
 const DEMO_FALLBACK = [
-  { id:'demo1', book:'tawheed', type:'tf', q:'التوحيد هو إفراد الله تعالى بالعبادة.', tf:true, exp:'نعم! التوحيد هو إفراد الله في الربوبية والألوهية والأسماء والصفات.' },
-  { id:'demo2', book:'usool', type:'mc', q:'ما هي الأصول الثلاثة؟', a:['معرفة الرب ومعرفة الدين ومعرفة نبيك','الصلاة والزكاة والصوم','الإيمان والإحسان والإخلاص','القرآن والسنة والإجماع'], c:0, exp:'الأصول الثلاثة: معرفة الرب، ومعرفة الدين بمعرفة دينك، ومعرفة نبيك محمد ﷺ.' },
-  { id:'demo3', book:'nawawi', type:'tf', q:'أول حديث في الأربعون النووية: «إنما الأعمال بالنيات».', tf:true, exp:'صحيح! وهو أول حديث في الأربعون النووية للإمام النووي رحمه الله.' },
+  { id:'demo1', book:'tawheed', type:'tf', q:'التوحيد هو إفراد الله تعالى بالعبادة.', tf:true, exp:'نعم! التوحيد هو إفراد الله في الربوبية والألوهية والأسماء والصفات.', quote:'«العبادة هي التوحيد»', page:12, cat:'🕌 حق الله' },
+  { id:'demo2', book:'usool', type:'mc', q:'ما هي الأصول الثلاثة؟', a:['معرفة الرب ومعرفة الدين ومعرفة نبيك','الصلاة والزكاة والصوم','الإيمان والإحسان والإخلاص','القرآن والسنة والإجماع'], c:0, exp:'الأصول الثلاثة: معرفة الرب، ومعرفة الدين بمعرفة دينك، ومعرفة نبيك محمد ﷺ.', quote:'«تَعَلَّمْ أَنَّهُ لَا يَجِبُ عَلَى أَحَدٍ مِنَ الْخَلْقِ أَنْ يُعَبَّدَ إِلَّا اللَّهُ»', page:8, cat:'📚 المسائل الأربع' },
+  { id:'demo3', book:'nawawi', type:'tf', q:'أول حديث في الأربعون النووية: «إنما الأعمال بالنيات».', tf:true, exp:'صحيح! وهو أول حديث في الأربعون النووية للإمام النووي رحمه الله.', quote:'«إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ»', page:1, cat:'الأربعون النووية' },
   { id:'demo4', book:'tawheed', type:'tf', q:'الشرك الأكبر يُخرج من الملة.', tf:true, exp:'الشرك الأكبر من أعظم الكبائر ويُبقي صاحبه في النار إن مات عليه.' },
   { id:'demo5', book:'usool', type:'tf', q:'العبادة هي الطاعة والخضوع لله.', tf:true, exp:'العبادة اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال.' },
 ];
@@ -684,6 +686,131 @@ function getCorrectAnswerText(q) {
   if (q.type === 'tf') return q.tf ? 'صح ✓' : 'خطأ ✗';
   return q.a && q.c != null ? q.a[q.c] : '';
 }
+
+function formatPageLabel(page) {
+  if (page == null || page === '') return '';
+  const n = Number(page);
+  if (!Number.isFinite(n)) return '';
+  return 'ص ' + n.toLocaleString('ar-SA');
+}
+
+function buildBookCitationHtml(q) {
+  const book = BOOK_LABELS[q.book] || q.book || '';
+  const chapter = q.cat || '';
+  const pageLabel = formatPageLabel(q.page);
+  const quote = (q.quote || '').trim();
+  if (!book && !chapter && !pageLabel && !quote) return '';
+  let html = '<div class="book-cite-box"><strong>📚 الاستشهاد من الكتاب</strong>';
+  if (quote) {
+    html += `<blockquote class="book-cite-quote">${escapeHtml(quote)}</blockquote>`;
+  }
+  const meta = [];
+  if (book) meta.push(escapeHtml(book));
+  if (chapter) meta.push(escapeHtml(chapter));
+  if (pageLabel) meta.push(pageLabel);
+  html += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
+  html += '</div>';
+  return html;
+}
+
+function buildAnswerFeedbackHtml(q, isCorrect) {
+  const why = q.exp || (isCorrect ? 'إجابة صحيحة — بارك الله فيك!' : '');
+  const correctText = getCorrectAnswerText(q);
+  let html = '<div class="why-correct-box">';
+  if (!isCorrect && correctText) {
+    html += `<strong>✅ الإجابة الصحيحة:</strong> ${escapeHtml(correctText)}`;
+    if (why) html += `<p style="margin-top:8px;"><strong>📖 الشرح:</strong> ${escapeHtml(why)}</p>`;
+  } else {
+    html += `<strong>✅ لماذا صحيح؟</strong> ${escapeHtml(why)}`;
+  }
+  html += '</div>';
+  html += buildBookCitationHtml(q);
+  return html;
+}
+
+function clearQuestionTimer() {
+  if (questionTimerId) {
+    clearInterval(questionTimerId);
+    questionTimerId = null;
+  }
+}
+
+function updateTimerUI() {
+  const ring = document.getElementById('q-timer-ring');
+  const num = document.getElementById('q-timer-num');
+  const wrap = document.getElementById('q-timer');
+  if (!ring || !num || !wrap) return;
+  const pct = Math.max(0, questionTimerLeft / QUESTION_TIME_SEC);
+  num.textContent = questionTimerLeft.toLocaleString('ar-SA');
+  ring.style.strokeDashoffset = String(TIMER_RING_LEN * (1 - pct));
+  wrap.classList.toggle('timer-warn', questionTimerLeft <= 10 && questionTimerLeft > 5);
+  wrap.classList.toggle('timer-danger', questionTimerLeft <= 5);
+}
+
+function setTimerVisible(show) {
+  const wrap = document.getElementById('q-timer');
+  if (wrap) wrap.style.display = show ? 'flex' : 'none';
+}
+
+function startQuestionTimer() {
+  clearQuestionTimer();
+  if (trainingMode) {
+    setTimerVisible(false);
+    return;
+  }
+  setTimerVisible(true);
+  questionTimerLeft = QUESTION_TIME_SEC;
+  updateTimerUI();
+  questionTimerId = setInterval(() => {
+    questionTimerLeft--;
+    updateTimerUI();
+    if (questionTimerLeft <= 0) {
+      clearQuestionTimer();
+      onQuestionTimeUp();
+    }
+  }, 1000);
+}
+
+function onQuestionTimeUp() {
+  if (state.answered) return;
+  if (state.selectedBtn) {
+    pick(state.selectedBtn, state.selectedIsOk);
+    return;
+  }
+  state.answered = true;
+  document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+  hideConfirmAnswerBtn();
+  stopSpeaking();
+  const q = state.questions[state.idx];
+  const fb = document.getElementById('feedback');
+  const n = state.userName || DEFAULT_PLAYER;
+  const expEl = document.getElementById('fb-exp');
+  const selfBox = document.getElementById('fb-self-correct');
+  if (!trainingMode) state.wrongLog.push({ q, index: state.idx, picked: '—' });
+  if (!trainingMode && !state.demoMode) {
+    state.hearts--; state.streak = 0; state.wrong++;
+    renderHearts();
+    playSound('wrong');
+    if (state.hearts <= 0) {
+      fb.className = 'feedback show bad';
+      document.getElementById('fb-icon').textContent = '💔';
+      document.getElementById('fb-title').textContent = `${n}، انتهت المحاولات — راجع/ي أخطاءك لاحقاً 💪`;
+      selfBox.style.display = 'none';
+      expEl.textContent = '';
+      setTimeout(() => endGame(), 1800);
+      return;
+    }
+  } else if (state.demoMode) {
+    state.wrong++;
+    playSound('wrong');
+  }
+  fb.className = 'feedback show bad';
+  document.getElementById('fb-icon').textContent = '⏱️';
+  document.getElementById('fb-title').textContent = `${n}، انتهى الوقت!`;
+  selfBox.style.display = 'none';
+  expEl.innerHTML = buildAnswerFeedbackHtml(q, false);
+}
+
 function highlightCorrectAnswer(q) {
   const btns = document.querySelectorAll('.ans-btn');
   btns.forEach((btn, i) => {
@@ -989,7 +1116,8 @@ async function loadQuestions() {
     fmt[q.book].push({
       id:q.id, book:q.book, cat:q.chapter, level:q.level, type:q.type,
       q:q.question_text, a:q.type==='mc'?q.options:null,
-      c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation
+      c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation,
+      quote:q.source_quote || null, page:q.book_page != null ? q.book_page : null
     });
   });
   for (const book of Object.keys(fmt)) {
@@ -1091,6 +1219,7 @@ function show(id) {
   if (id !== 'game') {
     clearCountdown();
     stopSpeaking();
+    clearQuestionTimer();
   }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById(id);
@@ -1354,10 +1483,12 @@ function renderQ() {
       appendAnswerOption(grid, q.a[i], i === q.c);
     });
   }
+  startQuestionTimer();
 }
 
 function pick(btn, isOk) {
   if (state.answered) return;
+  clearQuestionTimer();
   stopSpeaking();
   hideConfirmAnswerBtn();
   state.answered = true;
@@ -1388,8 +1519,7 @@ function pick(btn, isOk) {
     fb.className = 'feedback show ok';
     document.getElementById('fb-icon').textContent = '🎉';
     document.getElementById('fb-title').textContent = state.demoMode ? `أحسنت يا ${n}! 🌟` : ENCOURAGE_OK[Math.floor(Math.random() * ENCOURAGE_OK.length)];
-    const why = q.exp || 'إجابة صحيحة — بارك الله فيك!';
-    expEl.innerHTML = `<div class="why-correct-box"><strong>✅ لماذا صحيح؟</strong>${escapeHtml(why)}</div>`;
+    expEl.innerHTML = buildAnswerFeedbackHtml(q, true);
   } else {
     btn.classList.add('wrong');
     const picked = btn.textContent;
@@ -1421,10 +1551,10 @@ function pick(btn, isOk) {
     if (trainingMode) {
       selfBox.style.display = 'block';
       selfBox.innerHTML = '<p style="font-size:0.85em;margin-bottom:8px;color:var(--text-soft);">وضع التدريب — لا يُحسب ضدك</p><button type="button" class="btn btn-blue btn-sm" style="width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة والشرح</button>';
-      expEl.textContent = '';
+      expEl.innerHTML = buildAnswerFeedbackHtml(q, false);
     } else {
       selfBox.style.display = 'none';
-      expEl.textContent = '';
+      expEl.innerHTML = buildAnswerFeedbackHtml(q, false);
     }
     document.getElementById('show-answer-btn').style.display = trainingMode ? 'block' : 'none';
   }
@@ -1469,7 +1599,7 @@ function renderReviewItem() {
     `📌 الإجابة الصحيحة:<br><strong>${escapeHtml(getCorrectAnswerText(q))}</strong>${pickedNote}`;
   const exp = q.exp || '—';
   document.getElementById('review-exp').innerHTML =
-    `<strong>📖 الدليل والشرح:</strong>${escapeHtml(exp)}`;
+    `<strong>📖 الدليل والشرح:</strong>${escapeHtml(exp)}${buildBookCitationHtml(q)}`;
   const btn = document.getElementById('btn-review-next');
   btn.textContent = state.reviewIdx >= total - 1 ? 'إنهاء المراجعة ✓' : 'التالي ←';
 }
@@ -1492,8 +1622,8 @@ function revealAnswer() {
   const q = state.questions[state.idx];
   if (q) highlightCorrectAnswer(q);
   const expEl = document.getElementById('fb-exp');
-  if (q?.exp) {
-    expEl.innerHTML = `<div class="why-correct-box"><strong>💡 الإجابة والشرح (تدريب)</strong>${escapeHtml(q.exp)}</div>`;
+  if (q?.exp || q?.quote || q?.page) {
+    expEl.innerHTML = buildAnswerFeedbackHtml(q, true);
   }
   document.getElementById('show-answer-btn').style.display = 'none';
 }
