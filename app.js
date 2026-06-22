@@ -874,7 +874,18 @@ function stripArabicDiacritics(s) {
   return (s || '').replace(/[\u064B-\u065F\u0670\u0610-\u061A\u0640\u200c\u200f]/g, '');
 }
 
+function hasBrokenArabicSpacing(s) {
+  if (hasOcrTashkeelGaps(s)) return true;
+  const toks = (s || '').split(/\s+/).filter(Boolean);
+  if (toks.length < 2) return false;
+  const singles = toks.filter((t) => t.replace(/[^\u0621-\u064A]/g, '').length <= 1).length;
+  return singles / toks.length >= 0.2;
+}
+
 function collapseBrokenArabicSpaces(s) {
+  if (!hasBrokenArabicSpacing(s)) {
+    return stripArabicDiacritics(s).replace(/\s+/g, ' ').trim();
+  }
   let out = stripArabicDiacritics(s);
   for (let i = 0; i < 50; i++) {
     const n = out.replace(/([\u0621-\u064A\u0671])\s+(?=[\u0621-\u064A\u0671])/g, '$1');

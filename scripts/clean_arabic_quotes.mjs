@@ -54,7 +54,18 @@ function stripDiac(s) {
   return (s || '').replace(/[\u064B-\u065F\u0670\u0610-\u061A\u0640\u200c\u200f]/g, '');
 }
 
+function hasBrokenArabicSpacing(s) {
+  if (hasOcrTashkeelGaps(s)) return true;
+  const toks = (s || '').split(/\s+/).filter(Boolean);
+  if (toks.length < 2) return false;
+  const singles = toks.filter((t) => t.replace(/[^\u0621-\u064A]/g, '').length <= 1).length;
+  return singles / toks.length >= 0.2;
+}
+
 function collapseArabicSpaces(s) {
+  if (!hasBrokenArabicSpacing(s)) {
+    return stripDiac(s).replace(/\s+/g, ' ').trim();
+  }
   let out = stripDiac(s);
   for (let i = 0; i < 50; i++) {
     const n = out.replace(/([\u0621-\u064A\u0671])\s+(?=[\u0621-\u064A\u0671])/g, '$1');
@@ -187,12 +198,11 @@ function wrapQuote(s) {
 }
 
 function pickBestCitation(row) {
+  if (CANONICAL_BY_ID[row.id]) return wrapQuote(CANONICAL_BY_ID[row.id]);
+
   const candidates = [];
-  if (CANONICAL_BY_ID[row.id]) {
-    candidates.push({ t: CANONICAL_BY_ID[row.id], q: 1 });
-  }
   if (row.source_quote) {
-    const c = cleanArabicCitation(row.source_quote, row.id);
+    const c = cleanArabicCitation(row.source_quote);
     if (c) candidates.push({ t: c, q: quoteQuality(c) });
   }
   const fromExp = extractExplanationSnippet(row.explanation);
