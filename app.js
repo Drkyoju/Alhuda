@@ -246,7 +246,7 @@ function onRangeInputChange() {
 }
 
 function buildDemoQuestions(book) {
-  const pool = getOrderedPool(book, 'all');
+  const pool = dedupeQuestionList(getOrderedPool(book, 'all'));
   const out = [];
   const seen = new Set();
   for (const q of pool) {
@@ -1081,6 +1081,58 @@ function adjustFontSize(size) {
 }
 
 /* ── Data ── */
+function normQuestionText(text) {
+  return (text || '')
+    .replace(/[\uf000-\uf0ff]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
+    .replace(/[\u064B-\u065F\u0670]/g, '')
+    .replace(/[^\w\u0600-\u06FF\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function isNearDuplicateQuestion(a, b) {
+  const na = normQuestionText(a);
+  const nb = normQuestionText(b);
+  if (!na || !nb) return false;
+  if (na === nb) return true;
+  if (na.length > 15 && (na.includes(nb) || nb.includes(na))) return true;
+  const aw = na.split(' ');
+  const bw = nb.split(' ');
+  if (!aw.length || !bw.length) return false;
+  let inter = 0;
+  const bwSet = new Set(bw);
+  for (const w of aw) if (bwSet.has(w)) inter++;
+  return inter / Math.max(aw.length, bw.length) >= 0.9;
+}
+
+function pickBetterQuestion(a, b) {
+  const la = (a.q || '').length;
+  const lb = (b.q || '').length;
+  if (la !== lb) return la > lb ? a : b;
+  return a;
+}
+
+function dedupeQuestionList(questions) {
+  const kept = [];
+  for (const q of questions) {
+    const idx = kept.findIndex(k => k.book === q.book && isNearDuplicateQuestion(k.q, q.q));
+    if (idx === -1) {
+      kept.push(q);
+      continue;
+    }
+    const better = pickBetterQuestion(kept[idx], q);
+    if (better === q) kept[idx] = q;
+  }
+  return kept;
+}
+
+function dedupeGameQuestions(questions) {
+  return dedupeQuestionList(questions);
+}
+
 async function loadQuestions() {
   let data;
   let error;
@@ -1128,6 +1180,10 @@ async function loadQuestions() {
       const lvl = { easy: 0, medium: 1, hard: 2 };
       return (lvl[a.level] || 1) - (lvl[b.level] || 1);
     });
+    const before = fmt[book].length;
+    fmt[book] = dedupeQuestionList(fmt[book]);
+    const removed = before - fmt[book].length;
+    if (removed > 0) console.info(`[questions] removed ${removed} near-duplicate(s) in ${book}`);
   }
   QUESTIONS = fmt;
 }
@@ -1176,7 +1232,7 @@ function getQuestionsForGame() {
     const seed = (state.book === 'tawheed' ? 1 : state.book === 'usool' ? 2 : state.book === 'nawawi' ? 4 : 7) * 10000 + from * 100 + state.bankVersion;
     slice = seededShuffle(slice, seed);
   }
-  return slice;
+  return dedupeGameQuestions(slice);
 }
 
 function seededShuffle(arr, seed) {
