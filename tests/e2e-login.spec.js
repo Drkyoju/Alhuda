@@ -21,7 +21,9 @@ test('login → play 1 question → results → score saved', async ({ page }) =
   const testName = 'E2E_' + Date.now().toString(36);
   let scorePosted = false;
   page.on('response', (res) => {
-    if (res.url().includes('/rest/v1/scores') && res.request().method() === 'POST') {
+    if (res.request().method() !== 'POST') return;
+    const url = res.url();
+    if (url.includes('/rest/v1/rpc/submit_score') || url.includes('/rest/v1/scores')) {
       scorePosted = res.ok();
     }
   });

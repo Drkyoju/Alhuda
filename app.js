@@ -372,21 +372,7 @@ async function insertScoreRow(row) {
     p_total: row.total,
   });
   if (!rpcErr) return { ok: true };
-  const rpcMissing = rpcErr.code === 'PGRST202'
-    || /function.*submit_score.*does not exist/i.test(rpcErr.message || '')
-    || /could not find the function/i.test(rpcErr.message || '');
-  if (!rpcMissing) return { ok: false, error: rpcErr };
-  const { error } = await db.from('scores').insert({
-    user_id: uid,
-    book: row.book,
-    level: row.level,
-    sub_level: row.sub_level || 1,
-    score: row.score,
-    correct: row.correct,
-    total: row.total,
-    played_at: row.played_at || new Date().toISOString(),
-  });
-  return { ok: !error, error: error || rpcErr };
+  return { ok: false, error: rpcErr };
 }
 
 function queuePendingScore(row) {
@@ -843,27 +829,6 @@ function appendAnswerOption(grid, text, isOk, colorIdx) {
   grid.appendChild(wrap);
 }
 
-function hideConfirmAnswerBtn() {
-  const el = document.getElementById('btn-confirm-answer');
-  if (el) el.style.display = 'none';
-}
-
-function previewAnswer(btn, text, isOk) {
-  if (state.answered) return;
-  document.querySelectorAll('.ans-btn').forEach(b => b.classList.remove('sel'));
-  btn.classList.add('sel');
-  state.selectedBtn = btn;
-  state.selectedIsOk = isOk;
-  const confirmBtn = document.getElementById('btn-confirm-answer');
-  if (confirmBtn) confirmBtn.style.display = 'block';
-  if (voiceOn) speakText(text, document.getElementById('btn-speak-question'));
-}
-
-function confirmAnswer() {
-  if (state.answered || !state.selectedBtn) return;
-  hideConfirmAnswerBtn();
-  pick(state.selectedBtn, state.selectedIsOk);
-}
 async function shareScore() {
   const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجرّب/ي أنت أيضاً!';
   if (navigator.share) {
@@ -889,11 +854,19 @@ function formatPageLabel(page) {
   return 'ص ' + arabicNum(n);
 }
 
+function sanitizeBookQuote(text) {
+  let s = (text || '').trim();
+  if (!s) return '';
+  s = s.replace(/^كتاب التوحيد[^.]{0,80}?\d+\s*/u, '');
+  s = s.replace(/\s+/g, ' ').trim();
+  return s;
+}
+
 function buildBookCitationHtml(q) {
   const book = BOOK_LABELS[q.book] || q.book || '';
   const chapter = q.cat || '';
   const pageLabel = formatPageLabel(q.page);
-  const quote = (q.quote || '').trim();
+  const quote = sanitizeBookQuote(q.quote || q.exp || '');
   if (!book && !chapter && !pageLabel && !quote) return '';
   let inner = '';
   if (quote) {
@@ -988,13 +961,8 @@ function startQuestionTimer() {
 
 function onQuestionTimeUp() {
   if (state.answered) return;
-  if (state.selectedBtn) {
-    pick(state.selectedBtn, state.selectedIsOk);
-    return;
-  }
   state.answered = true;
   document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
-  hideConfirmAnswerBtn();
   stopSpeaking();
   const q = state.questions[state.idx];
   const fb = document.getElementById('feedback');
@@ -1937,9 +1905,6 @@ function renderQ() {
   stopSpeaking();
   const q = state.questions[state.idx];
   state.answered = false;
-  state.selectedBtn = null;
-  state.selectedIsOk = null;
-  hideConfirmAnswerBtn();
   document.getElementById('show-answer-btn').style.display = 'none';
   document.getElementById('q-num').textContent = (state.demoMode || state.challengeMode)
     ? `السؤال ${state.idx + 1} من ${state.total}`
@@ -1969,7 +1934,6 @@ function pick(btn, isOk) {
   if (state.answered) return;
   clearQuestionTimer();
   stopSpeaking();
-  hideConfirmAnswerBtn();
   state.answered = true;
   document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
   const fb = document.getElementById('feedback');
