@@ -622,12 +622,12 @@ function toggleVoiceAnswers() {
   if (document.getElementById('game')?.classList.contains('active') && state.questions.length) renderQ();
 }
 
-function appendAnswerOption(grid, text, isOk) {
+function appendAnswerOption(grid, text, isOk, colorIdx) {
   const wrap = document.createElement('div');
   wrap.className = 'ans-row ans-row-single';
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = 'ans-btn';
+  btn.className = 'ans-btn ans-color-' + (colorIdx ?? 0);
   btn.textContent = text;
   if (voiceOn) {
     btn.onclick = () => previewAnswer(btn, text, isOk);
@@ -1545,11 +1545,11 @@ function renderQ() {
   grid.innerHTML = '';
   if (q.type === 'tf') {
     ['صح ✓', 'خطأ ✗'].forEach((txt, i) => {
-      appendAnswerOption(grid, txt, (i === 0) === q.tf);
+      appendAnswerOption(grid, txt, (i === 0) === q.tf, i === 0 ? 0 : 3);
     });
   } else {
-    shuffleArr([0,1,2,3].slice(0, (q.a || []).length)).forEach(i => {
-      appendAnswerOption(grid, q.a[i], i === q.c);
+    shuffleArr([0,1,2,3].slice(0, (q.a || []).length)).forEach((i, orderIdx) => {
+      appendAnswerOption(grid, q.a[i], i === q.c, orderIdx);
     });
   }
   startQuestionTimer();

@@ -97,7 +97,7 @@
     // update is waiting, prompt it to take over on the NEXT page load by
     // sending SKIP_WAITING — avoids the previous "new JS, old HTML tab"
     // runtime error pattern from unconditional skipWaiting().
-    navigator.serviceWorker.register('./service-worker.js?v=23').then((reg) => {
+    navigator.serviceWorker.register('./service-worker.js?v=35').then((reg) => {
       // If a new SW is waiting, hand it control on the next reload.
       if (reg.waiting) {
         reg.waiting.postMessage('SKIP_WAITING');
@@ -119,9 +119,37 @@
     });
   }
 
+  function initKidsUI() {
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.ans-btn');
+      if (!btn || btn.disabled) return;
+      const rect = btn.getBoundingClientRect();
+      btn.style.setProperty('--rx', ((e.clientX - rect.left) / rect.width * 100) + '%');
+      btn.style.setProperty('--ry', ((e.clientY - rect.top) / rect.height * 100) + '%');
+      btn.classList.remove('kid-ripple');
+      void btn.offsetWidth;
+      btn.classList.add('kid-ripple');
+    }, { passive: true });
+
+    if (typeof updateScore === 'function' && !updateScore._kids) {
+      const origScore = updateScore;
+      updateScore = function () {
+        origScore();
+        const badge = document.querySelector('.score-badge');
+        if (badge) {
+          badge.classList.remove('score-pop');
+          void badge.offsetWidth;
+          badge.classList.add('score-pop');
+        }
+      };
+      updateScore._kids = true;
+    }
+  }
+
   function initEnhancements() {
     wrapShow();
     registerServiceWorker();
+    initKidsUI();
     // Idempotency guard: previously a second initEnhancements() call (e.g.,
     // from a deferred script) would wrap toggleTrainingMode again, double-
     // toggling the class.

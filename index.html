@@ -13,18 +13,23 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="enhancements.css?v=2">
+  <link rel="stylesheet" href="kids-ui.css?v=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="styles.css?v=13">
 </head>
-<body class="islamic-bg login-mode">
+<body class="islamic-bg login-mode kids-theme">
 
   <!-- Floating decorations -->
-  <div class="float-deco" style="top:15%;right:8%;animation-delay:0s;">📖</div>
-  <div class="float-deco" style="top:60%;left:5%;animation-delay:2s;">⭐</div>
-  <div class="float-deco" style="top:35%;left:10%;animation-delay:4s;">🌙</div>
+  <div class="float-deco float-deco-kids" style="top:15%;right:8%;animation-delay:0s;">📖</div>
+  <div class="float-deco float-deco-kids" style="top:60%;left:5%;animation-delay:2s;">⭐</div>
+  <div class="float-deco float-deco-kids" style="top:35%;left:10%;animation-delay:4s;">🌙</div>
+  <div class="float-deco float-deco-kids" style="top:8%;left:12%;animation-delay:1s;">🌟</div>
+  <div class="float-deco float-deco-kids" style="top:75%;right:6%;animation-delay:3s;">🎨</div>
+  <div class="float-deco float-deco-kids" style="top:45%;right:4%;animation-delay:5s;">🎈</div>
+  <div class="float-deco float-deco-kids" style="top:22%;left:3%;animation-delay:6s;">✨</div>
   <div class="glow-orb gold"></div>
   <div class="glow-orb emerald"></div>
 
@@ -324,6 +329,12 @@
 
   <!-- ═══════════ GAME ═══════════ -->
   <div id="game" class="screen">
+    <div class="kid-bubbles" aria-hidden="true">
+      <span class="kid-bubble kb1">⭐</span>
+      <span class="kid-bubble kb2">🌈</span>
+      <span class="kid-bubble kb3">🎈</span>
+      <span class="kid-bubble kb4">✨</span>
+    </div>
     <div class="top-bar">
       <button class="close-btn" onclick="goHome()" aria-label="رجوع">✕</button>
       <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
@@ -500,9 +511,9 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=27"></script>
+<script src="app.js?v=28"></script>
 <script src="auth.js?v=11"></script>
-<script src="enhancements.js?v=5"></script>
+<script src="enhancements.js?v=6"></script>
 <script src="platform.js?v=7"></script>
 <script>
 (async function boot() {
