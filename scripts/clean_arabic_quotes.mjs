@@ -41,6 +41,21 @@ const CANONICAL_BY_ID = {
   '7622c398-510e-464f-86ee-0c79abdb4c64': 'التوحيد يكفر الذنوب، فمن مات على التوحيد غير مشرك بالله شيئاً دخل الجنة',
   '8230d37a-f5c5-4dea-b8d2-ee499eec99e6': 'توحيد الله بإخلاص العبادة له والبراءة من عبادة كل ما سواه',
   'cfe3b156-db45-49b2-8f99-009186fbdb2b': 'التوحيد هو إفراد الله بالعبادة وترك عبادة ما سواه، والبراءة من ذلك',
+  'd3ef73b7-d767-4445-a6d7-c1f92032be45': 'من حلف بغير الله فقد كفر أو أشرك',
+  '4140eba5-8540-463b-b584-4e5747ce9e4c': 'من حلف بغير الله فقد كفر أو أشرك',
+  '8a3feed1-0e87-415f-aa2d-fa03bdcd6d64': 'من حلف بغير الله فقد كفر أو أشرك',
+  'ee68f5c9-03bb-4caf-9383-d47e0637a1db': 'دخل الجنة رجل في ذباب ودخل النار رجل في ذباب',
+  'fa79f07c-f0d9-4a92-a28b-ee47d2104c53': 'دخل الجنة رجل في ذباب ودخل النار رجل في ذباب',
+  '2e2b218a-f71d-4895-b2b9-395db4e4b483': 'دخل الجنة رجل في ذباب ودخل النار رجل في ذباب',
+  '7bbf72dc-8805-4aa3-bfdd-2eb08cf26244': 'دخل الجنة رجل في ذباب ودخل النار رجل في ذباب',
+  '683878a9-ad19-4e8f-bbc3-09fa94dc1906': 'دخل الجنة رجل في ذباب ودخل النار رجل في ذباب',
+  '8d25d864-1e34-416c-8d28-78df561a8036': 'دخل الجنة رجل في ذباب ودخل النار رجل في ذباب',
+  'd94cc110-7562-4abd-a741-7fbe304f9d20': 'دخل الجنة رجل في ذباب ودخل النار رجل في ذباب',
+  '9d0fc66c-0113-4603-9da1-241e64b9ca61': 'من تعلق تميمة فقد أشرك',
+  'b8d049a1-9269-448f-b283-a29386643a8e': 'من علّق تميمة فلا أتم الله له',
+  'c549c1de-82ac-4d19-9a1c-f02cc6b3da5a': 'الشرك الأكبر والشرك الأصغر',
+  'fbfb9bfc-051e-4609-aabc-42d625497283': 'اللهم لا تجعل قبري وثناً يعبد، اشتد غضب الله على قوم اتخذوا قبور أنبيائهم مساجد',
+  'c326df42-7dd5-45e1-b22e-a9d620f4f136': 'الطيرة شرك، الطيرة شرك، وما منا إلا',
 };
 
 const PHRASE_PRIORITY = [
@@ -57,9 +72,9 @@ function stripDiac(s) {
 function hasBrokenArabicSpacing(s) {
   if (hasOcrTashkeelGaps(s)) return true;
   const toks = (s || '').split(/\s+/).filter(Boolean);
-  if (toks.length < 2) return false;
+  if (toks.length < 4) return false;
   const singles = toks.filter((t) => t.replace(/[^\u0621-\u064A]/g, '').length <= 1).length;
-  return singles / toks.length >= 0.2;
+  return singles / toks.length >= 0.35;
 }
 
 function collapseArabicSpaces(s) {
@@ -159,10 +174,27 @@ function quoteQuality(s) {
   return Math.max(0, score);
 }
 
+function hasGluedWords(s) {
+  for (const tok of (s || '').split(/\s+/)) {
+    const ar = tok.replace(/[^\u0621-\u064A]/g, '');
+    if (ar.length > 15) return true;
+  }
+  return false;
+}
+
+function stripWorksheetAnswerPrefix(s) {
+  return (s || '')
+    .replace(/^«?\s*/, '')
+    .replace(/»\s*$/, '')
+    .replace(/^الإجابة\s*الصحيحة\s*:\s*/i, '')
+    .trim();
+}
+
 function isGarbageCitation(s) {
   if (!s) return true;
   if (isWorksheetGarbage(s)) return true;
   if (hasOcrTashkeelGaps(s)) return true;
+  if (hasGluedWords(s)) return true;
   if ((s.match(/[a-zA-Z]/g) || []).length > 2) return true;
   return quoteQuality(s) < 0.45;
 }
@@ -210,7 +242,17 @@ function pickBestCitation(row) {
 
   candidates.sort((a, b) => b.q - a.q);
   const best = candidates.find((c) => !isGarbageCitation(c.t));
-  return best ? wrapQuote(best.t) : null;
+  if (!best) return null;
+
+  const current = normVal(row.source_quote);
+  if (current && hasGluedWords(current) && !hasGluedWords(wrapQuote(best.t))) {
+    return wrapQuote(best.t);
+  }
+  if (current && !hasGluedWords(current) && hasGluedWords(wrapQuote(best.t))) {
+    const plain = stripWorksheetAnswerPrefix(current);
+    return plain ? wrapQuote(plain) : current.startsWith('«') ? current : wrapQuote(current);
+  }
+  return wrapQuote(best.t);
 }
 
 function sqlEscape(s) {

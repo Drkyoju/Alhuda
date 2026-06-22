@@ -877,9 +877,9 @@ function stripArabicDiacritics(s) {
 function hasBrokenArabicSpacing(s) {
   if (hasOcrTashkeelGaps(s)) return true;
   const toks = (s || '').split(/\s+/).filter(Boolean);
-  if (toks.length < 2) return false;
+  if (toks.length < 4) return false;
   const singles = toks.filter((t) => t.replace(/[^\u0621-\u064A]/g, '').length <= 1).length;
-  return singles / toks.length >= 0.2;
+  return singles / toks.length >= 0.35;
 }
 
 function collapseBrokenArabicSpaces(s) {
@@ -899,10 +899,19 @@ function isWorksheetCitation(s) {
   return /اكتبي|أجيبي|أجيب على|معاني الكلمات|اذكري مناسبة|الأسئلة التالية|س\s*:|ج\s*:|الدليل على أنه|لشيخ الإسلام محمد بن عبدالوهاب.*\d|^[\/.]/i.test(s || '');
 }
 
+function hasGluedWords(s) {
+  for (const tok of (s || '').split(/\s+/)) {
+    const ar = tok.replace(/[^\u0621-\u064A]/g, '');
+    if (ar.length > 15) return true;
+  }
+  return false;
+}
+
 function isGarbageCitation(s) {
   if (!s) return true;
   if (isWorksheetCitation(s)) return true;
   if (hasOcrTashkeelGaps(s)) return true;
+  if (hasGluedWords(s)) return true;
   if ((s.match(/[a-zA-Z]/g) || []).length > 2) return true;
   return citationTextQuality(s) < 0.45;
 }
