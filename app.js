@@ -32,8 +32,9 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
-let loginTab = 'student', trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
+let loginTab = 'student', trainingMode = false, soundOn = true, voiceOn = false, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
+let gameEndTimer = null, syncPendingScoresInFlight = null;
 
 const FEEDBACK_RATING_LABELS = {
   5: { emoji: '😍', label: 'أعجبني' },
@@ -98,7 +99,9 @@ function setFontPreset(size) {
 function showGameTutorialIfNeeded() {
   if (localStorage.getItem('gameTutorialDone')) return;
   const ov = document.getElementById('game-tutorial-overlay');
-  ov?.classList.add('open');
+  if (!ov) return;
+  ov.classList.add('open');
+  ov.setAttribute('aria-hidden', 'false');
   trapFocusInOverlay(ov);
 }
 
@@ -118,8 +121,11 @@ function gameTutorialNext() {
 function closeGameTutorial() {
   localStorage.setItem('gameTutorialDone', '1');
   const ov = document.getElementById('game-tutorial-overlay');
-  ov?.classList.remove('open');
-  releaseFocusTrap(ov);
+  if (ov) {
+    ov.classList.remove('open');
+    ov.setAttribute('aria-hidden', 'true');
+    releaseFocusTrap(ov);
+  }
 }
 
 function feedbackRatingLabel(rating) {
@@ -369,6 +375,10 @@ function showConfirm(message) {
     };
     ok.onclick = () => done(true);
     cancel.onclick = () => done(false);
+    const onKey = (e) => {
+      if (e.key === 'Escape') { document.removeEventListener('keydown', onKey); done(false); }
+    };
+    document.addEventListener('keydown', onKey);
     if (typeof trapFocusInOverlay === 'function') trapFocusInOverlay(ov, document.activeElement);
     ok.focus();
   });
@@ -386,6 +396,10 @@ async function insertScoreRow(row) {
     p_total: row.total,
   });
   if (!rpcErr) return { ok: true };
+  const rpcMissing = rpcErr.code === 'PGRST202'
+    || /function.*submit_score.*does not exist/i.test(rpcErr.message || '')
+    || /could not find the function/i.test(rpcErr.message || '');
+  if (!rpcMissing) return { ok: false, error: rpcErr };
   const { error } = await db.from('scores').insert({
     user_id: uid,
     book: row.book,
@@ -409,16 +423,44 @@ function queuePendingScore(row) {
 
 async function syncPendingScores() {
   if (!state.user?.id) return;
-  let list;
-  try { list = JSON.parse(localStorage.getItem(PENDING_SCORES_KEY) || '[]'); } catch { return; }
-  if (!list.length) return;
-  const kept = [];
-  for (const row of list) {
-    const r = await insertScoreRow({ ...row, user_id: state.user.id });
-    if (r.ok) invalidateLbCache();
-    else kept.push(row);
-  }
-  localStorage.setItem(PENDING_SCORES_KEY, JSON.stringify(kept));
+  if (syncPendingScoresInFlight) return syncPendingScoresInFlight;
+  syncPendingScoresInFlight = (async () => {
+    let list;
+    try { list = JSON.parse(localStorage.getItem(PENDING_SCORES_KEY) || '[]'); } catch { return; }
+    if (!list.length) return;
+    const kept = [];
+    for (const row of list) {
+      if (row.user_id && row.user_id !== state.user.id) {
+        kept.push(row);
+        continue;
+      }
+      const r = await insertScoreRow({ ...row, user_id: state.user.id });
+      if (r.ok) invalidateLbCache();
+      else kept.push(row);
+    }
+    localStorage.setItem(PENDING_SCORES_KEY, JSON.stringify(kept));
+  })().finally(() => { syncPendingScoresInFlight = null; });
+  return syncPendingScoresInFlight;
+}
+
+function setFeedbackPanelOpen(open) {
+  document.getElementById('game')?.classList.toggle('feedback-open', !!open);
+}
+
+function setFeedbackContinueVisible(visible) {
+  const btn = document.querySelector('#feedback .fb-continue-btn');
+  if (btn) btn.style.display = visible ? '' : 'none';
+}
+
+function scheduleEndGame(delay = 1800) {
+  if (state.gameEnded || state.gameEnding) return;
+  state.gameEnding = true;
+  setFeedbackContinueVisible(false);
+  clearTimeout(gameEndTimer);
+  gameEndTimer = setTimeout(() => {
+    gameEndTimer = null;
+    void endGame();
+  }, delay);
 }
 
 async function saveGameScore(gamePoints, qFrom) {
@@ -572,7 +614,8 @@ function renderStars(pct) {
 }
 function updateWelcomeGamification() {
   const p = ensureProgress();
-  const last = JSON.parse(localStorage.getItem('lastStats') || '{}');
+  let last = {};
+  try { last = JSON.parse(localStorage.getItem('lastStats') || '{}'); } catch { last = {}; }
   const info = getLevelInfo(p.xp || 0);
   document.getElementById('level-title').textContent = info.title;
   document.getElementById('level-xp-text').textContent = (p.xp || 0) + (info.nextMin ? ' / ' + info.nextMin : '') + ' نقطة خبرة';
@@ -994,7 +1037,8 @@ function onQuestionTimeUp() {
       document.getElementById('fb-title').textContent = `${n}، انتهت المحاولات — راجع/ي أخطاءك لاحقاً 💪`;
       selfBox.style.display = 'none';
       expEl.textContent = '';
-      setTimeout(() => void endGame(), 1800);
+      setFeedbackPanelOpen(true);
+      scheduleEndGame(1800);
       return;
     }
   } else if (state.demoMode) {
@@ -1006,6 +1050,8 @@ function onQuestionTimeUp() {
   document.getElementById('fb-title').textContent = `${n}، انتهى الوقت!`;
   selfBox.style.display = 'none';
   expEl.innerHTML = buildAnswerFeedbackHtml(q, false);
+  setFeedbackPanelOpen(true);
+  setFeedbackContinueVisible(true);
 }
 
 function highlightCorrectAnswer(q) {
@@ -1167,19 +1213,19 @@ async function submitFeedback() {
   }
   if (payload.cloudSaved && emailSent) {
     msgEl.style.color = 'var(--emerald)';
-    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه في Supabase وإرساله بالإيميل! شكراً 💚';
+    msgEl.textContent = '✅ شكراً! وصل رأيك/ِ بنجاح 💚';
     if (typeof showToast === 'function') showToast('تم إرسال رأيك بنجاح', 'info');
   } else if (payload.cloudSaved) {
     msgEl.style.color = 'var(--emerald)';
-    msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه في Supabase! شكراً 💚';
+    msgEl.textContent = '✅ شكراً! تم حفظ رأيك/ِ 💚';
     if (typeof showToast === 'function') showToast('تم حفظ رأيك', 'info');
   } else if (emailSent) {
     msgEl.style.color = 'var(--orange)';
-    msgEl.textContent = '⚠️ وصل بالإيميل فقط — لم يُحفظ في قاعدة البيانات بعد';
-    if (typeof showToast === 'function') showToast('وصل بالإيميل — تحقق/ي من Supabase', 'err');
+    msgEl.textContent = '⚠️ وصل رأيك/ِ — شكراً! حاول/ي لاحقاً إن لم يظهر في السجل';
+    if (typeof showToast === 'function') showToast('تم الإرسال جزئياً', 'err');
   } else {
     msgEl.style.color = 'var(--orange)';
-    msgEl.textContent = '⚠️ لم يُحفظ في قاعدة البيانات — تحقق/ي من الاتصال ثم أعد الإرسال';
+    msgEl.textContent = '⚠️ تعذّر الإرسال — تحقق/ي من الاتصال وحاول/ي مرة أخرى';
     if (typeof showToast === 'function') showToast('تعذّر الإرسال — حاول/ي لاحقاً', 'err');
   }
   state.userName = name;
@@ -1337,11 +1383,18 @@ function toggleSettings() {
   const ov = document.getElementById('settings-overlay');
   const open = ov.classList.toggle('open');
   document.body.style.overflow = open ? 'hidden' : '';
+  ov.setAttribute('aria-hidden', open ? 'false' : 'true');
   if (!open) {
     document.body.classList.remove('training-active');
     releaseFocusTrap(ov);
+    if (ov._escHandler) {
+      document.removeEventListener('keydown', ov._escHandler);
+      ov._escHandler = null;
+    }
   } else {
     trapFocusInOverlay(ov, document.getElementById('settings-btn'));
+    ov._escHandler = (e) => { if (e.key === 'Escape') toggleSettings(); };
+    document.addEventListener('keydown', ov._escHandler);
   }
 }
 function adjustFontSize(size) {
@@ -1867,7 +1920,8 @@ async function startCountdown() {
 function startGame() {
   if (!state.demoMode) {
     if (state.challengeMode) {
-      const stored = JSON.parse(localStorage.getItem('ch_q_' + state.challengeCode) || 'null');
+      let stored = null;
+      try { stored = JSON.parse(localStorage.getItem('ch_q_' + state.challengeCode) || 'null'); } catch { stored = null; }
       if (stored?.length) state.questions = stored;
       else if (!state.questions?.length) {
         showAlert('لا توجد أسئلة لهذا التحدي.');
@@ -1882,9 +1936,13 @@ function startGame() {
   state.qFrom = parseInt(document.getElementById('q-from-input')?.value, 10) || 1;
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
   state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.wrongLog = []; state.answered = false;
+  state.gameEnded = false; state.gameEnding = false;
+  clearTimeout(gameEndTimer);
   state.total = state.questions.length;
   renderHearts(); updateScore(); updateProgress();
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
+  setFeedbackPanelOpen(false);
+  setFeedbackContinueVisible(true);
   document.getElementById('training-bar').style.display = trainingMode ? 'block' : 'none';
   document.getElementById('demo-bar').style.display = state.demoMode ? 'block' : 'none';
   document.getElementById('show-answer-btn').style.display = 'none';
@@ -1961,6 +2019,8 @@ function pick(btn, isOk) {
     document.getElementById('fb-icon').textContent = '🎉';
     document.getElementById('fb-title').textContent = state.demoMode ? `أحسنت يا ${n}! 🌟` : ENCOURAGE_OK[Math.floor(Math.random() * ENCOURAGE_OK.length)];
     expEl.innerHTML = buildAnswerFeedbackHtml(q, true);
+    setFeedbackPanelOpen(true);
+    setFeedbackContinueVisible(true);
   } else {
     btn.classList.add('wrong');
     const picked = btn.textContent;
@@ -1977,7 +2037,8 @@ function pick(btn, isOk) {
         document.getElementById('fb-title').textContent = `${n}، انتهت المحاولات — راجع/ي أخطاءك لاحقاً 💪`;
         selfBox.style.display = 'none';
         expEl.textContent = '';
-        setTimeout(() => void endGame(), 1800);
+        setFeedbackPanelOpen(true);
+        scheduleEndGame(1800);
         return;
       }
     } else if (state.demoMode) {
@@ -1998,14 +2059,18 @@ function pick(btn, isOk) {
       expEl.innerHTML = buildAnswerFeedbackHtml(q, false, picked);
     }
     document.getElementById('show-answer-btn').style.display = trainingMode ? 'block' : 'none';
+    setFeedbackPanelOpen(true);
+    setFeedbackContinueVisible(true);
   }
   persistGameSession();
 }
 
 function nextQ() {
+  if (state.gameEnding || state.gameEnded) return;
   stopSpeaking();
   state.idx++;
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
+  setFeedbackPanelOpen(false);
   document.getElementById('fb-self-correct').style.display = 'none';
   document.getElementById('fb-exp').textContent = '';
   if (state.idx >= state.questions.length) {
@@ -2067,6 +2132,11 @@ function revealAnswer() {
 }
 
 async function endGame() {
+  if (state.gameEnded) return;
+  state.gameEnded = true;
+  state.gameEnding = true;
+  clearTimeout(gameEndTimer);
+  setFeedbackPanelOpen(false);
   clearGameSession();
   if (state.demoMode) { endDemo(); return; }
   const pct = state.correct / Math.max(1, state.total);
@@ -2150,9 +2220,12 @@ function updateProgress() {
 }
 function renderHearts() {
   const c = document.getElementById('hearts');
+  if (!c) return;
+  const labels = ['لا محاولات', 'محاولة واحدة', 'محاولتان', '٣ محاولات', '٤ محاولات', '٥ محاولات'];
+  c.setAttribute('aria-label', labels[state.hearts] || `${state.hearts} محاولات متبقية`);
   c.innerHTML = '';
   for (let i = 0; i < 5; i++) {
-    c.innerHTML += `<span style="font-size:16px;transition:.3s;${i >= state.hearts ? 'filter:grayscale(1) opacity(.3);transform:scale(.75);' : ''}">❤️</span>`;
+    c.innerHTML += `<span aria-hidden="true" style="font-size:16px;transition:.3s;${i >= state.hearts ? 'filter:grayscale(1) opacity(.3);transform:scale(.75);' : ''}">❤️</span>`;
   }
 }
 
@@ -2470,7 +2543,8 @@ async function restoreSession() {
   if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
   if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
   void syncPendingScores();
-  if (!localStorage.getItem('demoDone')) {
+  const progress = ensureProgress();
+  if (!localStorage.getItem('demoDone') && !(progress.totalGames > 0)) {
     showDemoIntro(state.userName);
     return true;
   }

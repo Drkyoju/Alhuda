@@ -126,7 +126,7 @@
   function _currentGameBookBuckets() {
     if (!state.questions?.length) return null;
     const buckets = { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } };
-    const wrong = new Set((state.wrongLog || []).map((w) => w.id));
+    const wrong = new Set((state.wrongLog || []).map((w) => w.q?.id).filter(Boolean));
     state.questions.forEach((q) => {
       const b = q && q.book && buckets[q.book] ? q.book : null;
       if (!b) return;

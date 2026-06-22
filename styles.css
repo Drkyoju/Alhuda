@@ -62,8 +62,8 @@
     body.login-mode #settings-btn {
       position: fixed;
       top: max(10px, env(safe-area-inset-top));
-      left: 14px;
-      right: auto;
+      inset-inline-start: 14px;
+      inset-inline-end: auto;
       z-index: 2200;
       pointer-events: auto;
     }
@@ -2794,6 +2794,10 @@
     #game .q-area {
       max-width: 640px;
       margin: 0 auto;
+      padding-bottom: 24px;
+      transition: padding-bottom 0.25s ease;
+    }
+    #game.feedback-open .q-area {
       padding-bottom: max(52dvh, 120px);
     }
     #game .q-meta .badge {
@@ -2897,6 +2901,9 @@
     #game .feedback .fb-continue-btn {
       flex-shrink: 0;
       margin-top: 8px !important;
+      border-top: 1px solid rgba(201, 169, 98, 0.35);
+      padding-top: 10px !important;
+      background: rgba(255, 255, 255, 0.98);
     }
     .fb-continue-btn,
     .confirm-answer-btn {
@@ -3039,7 +3046,8 @@
       .q-with-timer { gap: 6px; align-items: flex-start; }
       .top-bar { gap: 6px; padding-left: 10px; padding-right: 10px; }
       .score-badge { font-size: 0.7em; padding: 3px 8px; }
-      #game .q-area { padding: 14px 12px max(52dvh, 110px); }
+      #game .q-area { padding: 14px 12px 24px; }
+      #game.feedback-open .q-area { padding: 14px 12px max(52dvh, 110px); }
       #game .feedback #fb-title {
         font-size: 0.9em !important;
       }
@@ -3197,6 +3205,7 @@
     .font-preset-btn {
       flex: 1;
       min-width: 64px;
+      min-height: 44px;
       border: 2px solid var(--border);
       border-radius: 12px;
       padding: 8px 6px;
@@ -3265,7 +3274,7 @@
     /* ── تثبيت PWA ── */
     .pwa-install-banner {
       position: fixed;
-      bottom: calc(12px + env(safe-area-inset-bottom));
+      bottom: calc(72px + env(safe-area-inset-bottom));
       left: 12px;
       right: 12px;
       z-index: 2900;
@@ -3287,6 +3296,10 @@
       background: transparent;
       font-size: 1.1em;
       cursor: pointer;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 8px;
+    }
       color: var(--text-soft);
     }
 
@@ -3388,4 +3401,13 @@
     .mobile-bottom-nav button:focus-visible {
       outline: 3px solid var(--gold);
       outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .float-deco, .glow-orb, .hero-pulse, .btn-hero-play,
+      .kids-theme .feedback.show, .kids-theme .feedback .fb-icon-wrap,
+      .q-box.kids-q-animate, .kids-bar-glow, .lux-pulse, .shimmer-card::after {
+        animation: none !important;
+        transition: none !important;
+      }
     }
