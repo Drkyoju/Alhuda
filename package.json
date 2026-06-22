@@ -2,10 +2,17 @@
   "name": "alhuda",
   "private": true,
   "scripts": {
-    "test:smoke": "playwright test",
-    "serve": "python3 -m http.server 8765"
+    "test": "playwright test",
+    "test:smoke": "playwright test tests/smoke.spec.js",
+    "test:a11y": "playwright test tests/a11y.spec.js",
+    "test:e2e": "playwright test tests/e2e-login.spec.js",
+    "serve": "python3 -m http.server 8765",
+    "icons": "node scripts/generate-icons.mjs",
+    "lighthouse": "npx lighthouse https://alhuda.ryodan71.workers.dev --only-categories=performance,accessibility,best-practices --chrome-flags='--headless' --output=json --output-path=./lighthouse-report.json"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.0"
+    "@axe-core/playwright": "^4.11.3",
+    "@playwright/test": "^1.49.0",
+    "sharp": "^0.34.3"
   }
 }

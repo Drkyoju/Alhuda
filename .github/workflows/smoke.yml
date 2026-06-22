@@ -22,7 +22,7 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
-      - name: Run smoke tests
-        run: npm run test:smoke
+      - name: Run Playwright tests
+        run: npm test
         env:
           CI: true

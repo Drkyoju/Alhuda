@@ -168,11 +168,30 @@
     });
   }
 
+  function initOfflineBanner() {
+    const el = document.getElementById('offline-banner');
+    if (!el) return;
+    let toasted = false;
+    const sync = () => {
+      const off = !navigator.onLine;
+      el.hidden = !off;
+      if (off && !toasted && typeof showToast === 'function') {
+        showToast('لا يوجد اتصال — بعض الميزات قد لا تعمل', 'err');
+        toasted = true;
+      }
+      if (!off) toasted = false;
+    };
+    window.addEventListener('online', sync);
+    window.addEventListener('offline', sync);
+    sync();
+  }
+
   function initEnhancements() {
     wrapShow();
     registerServiceWorker();
     initPwaInstall();
     initKidsUI();
+    initOfflineBanner();
     // Idempotency guard: previously a second initEnhancements() call (e.g.,
     // from a deferred script) would wrap toggleTrainingMode again, double-
     // toggling the class.

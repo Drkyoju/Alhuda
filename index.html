@@ -8,26 +8,26 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>المكتبة الثلاثية - أسئلة تعليمية</title>
-  <link rel="icon" href="images.jpeg" type="image/jpeg">
-  <link rel="apple-touch-icon" href="images.jpeg">
-  <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="enhancements.css?v=2">
   <link rel="stylesheet" href="kids-ui.css?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=16">
+  <link rel="stylesheet" href="styles.css?v=20">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
-  <div id="app-loading" class="app-loading" aria-live="polite" aria-busy="true">
+  <div id="app-loading" class="app-loading" aria-live="polite" aria-busy="false" aria-hidden="true">
     <div class="app-loading-inner">
       <div class="app-loading-spinner" aria-hidden="true"></div>
       <p>جاري تحميل الأسئلة...</p>
     </div>
   </div>
+
+  <div id="offline-banner" class="offline-banner" hidden role="status" aria-live="polite">📡 لا يوجد اتصال — بعض الميزات قد لا تعمل</div>
 
   <!-- Floating decorations -->
   <div class="float-deco float-deco-kids" style="top:15%;right:8%;animation-delay:0s;">📖</div>
@@ -49,7 +49,7 @@
 
   <!-- شريط علوي — يختفي في الدخول واللعب -->
   <header class="app-topbar">
-    <img src="images.jpeg" alt="شعار جمعية الهدى والحكمة" class="site-logo">
+    <img src="icons/icon.svg" alt="شعار جمعية الهدى والحكمة" class="site-logo" width="48" height="48">
     <div class="topbar-center">
       <span class="topbar-chip xp" id="topbar-xp">✨ 0</span>
     </div>
@@ -68,6 +68,7 @@
           <button type="button" class="font-preset-btn" data-size="16" onclick="setFontPreset(16)">صغير</button>
           <button type="button" class="font-preset-btn" data-size="18" onclick="setFontPreset(18)">متوسط</button>
           <button type="button" class="font-preset-btn" data-size="20" onclick="setFontPreset(20)">كبير</button>
+          <button type="button" class="font-preset-btn" data-size="22" onclick="setFontPreset(22)">كبير جداً</button>
         </div>
         <span class="val" id="fs-label">18</span>
       </div>
@@ -126,7 +127,7 @@
       <div class="gt-slide">
         <div class="onb-icon">👆</div>
         <h3>اختر/ي إجابة</h3>
-        <p>اضغط/ي على الإجابة الصحيحة، ثم «متابعة» للسؤال التالي.</p>
+        <p>اضغط/ي الإجابة، ثم «تأكيد الاختيار» إن ظهر. راقب/ي الساعة الرملية ⏳ — الوقت محدود!</p>
       </div>
       <div class="gt-slide">
         <div class="onb-icon">⭐</div>
@@ -143,7 +144,7 @@
   <div id="login-screen" class="screen active">
     <div class="login-hero">
       <div class="logo-wrap">
-        <img src="images.jpeg" alt="جمعية الهدى والحكمة" class="logo-img">
+        <img src="icons/icon.svg" alt="جمعية الهدى والحكمة" class="logo-img" width="104" height="104">
         <div class="brand-title">المكتبة الثلاثية</div>
         <div class="org-name">جمعية الهدى والحكمة</div>
         <div class="brand-sub">أسئلة تعليمية تفاعلية</div>
@@ -155,14 +156,14 @@
       </div>
       <div class="card login-card">
         <button type="button" class="btn btn-gold btn-xl btn-demo-login" onclick="startDemoFromLogin()">📝 نموذج أسئلة تجريبي</button>
-        <p class="login-demo-hint">اختار/ي كتاباً — ١٥ سؤالاً لكل كتاب</p>
+        <p class="login-demo-hint">اختار/ي كتاباً — ٨ أسئلة لكل كتاب</p>
         <p class="login-or-divider">أو</p>
         <div class="login-locked-block" id="login-locked-block">
-          <h2 id="login-title">🔒 ادخل/ي باسمك وابدأ/ي 🎮</h2>
-          <input type="text" class="input login-input-locked" id="login-name" placeholder="🔒 الدخول مغلق مؤقتاً" autocomplete="name" disabled aria-disabled="true">
-          <p class="login-name-hint login-lock-notice">الدخول العادي مغلق الآن — جرّب/ي النموذج التجريبي أولاً</p>
+          <h2 id="login-title">ادخل/ي باسمك وابدأ/ي 🎮</h2>
+          <input type="text" class="input login-input-locked" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name">
+          <p class="login-name-hint login-lock-notice" hidden>الدخول العادي مغلق الآن — جرّب/ي النموذج التجريبي أولاً</p>
           <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
-          <button type="button" class="btn btn-green btn-xl btn-login-main login-btn-locked" id="btn-login" disabled aria-disabled="true">🔒 دخول — مغلق مؤقتاً</button>
+          <button type="button" class="btn btn-green btn-xl btn-login-main" id="btn-login" aria-label="دخول">دخول 🎮</button>
         </div>
       </div>
     </div>
@@ -173,26 +174,26 @@
     <div class="page-shell">
       <div class="page-hero">
         <h2>📝 نموذج تجريبي</h2>
-        <p>اختار/ي كتاباً — ١٥ سؤالاً لكل كتاب</p>
+        <p>اختار/ي كتاباً — ٨ أسئلة لكل كتاب</p>
       </div>
       <div class="card demo-intro-card">
-      <div class="demo-badge">٣ كتب × ١٥ سؤال</div>
+      <div class="demo-badge">٣ كتب × ٨ أسئلة</div>
       <p class="demo-pick-lead">جرّب/ي أي كتاب بدون تسجيل — بعدها عبّي نموذج التقييم 💬</p>
       <div class="demo-book-pick-list">
         <button type="button" class="demo-book-pick" onclick="beginDemo('tawheed')">
           <span class="demo-book-pick-icon">📖</span>
           <span class="demo-book-pick-title">كتاب التوحيد</span>
-          <span class="demo-book-pick-count" id="demo-pick-count-tawheed">١٥ سؤال</span>
+          <span class="demo-book-pick-count" id="demo-pick-count-tawheed">٨ أسئلة</span>
         </button>
         <button type="button" class="demo-book-pick" onclick="beginDemo('usool')">
           <span class="demo-book-pick-icon">📗</span>
           <span class="demo-book-pick-title">الأصول الثلاثة</span>
-          <span class="demo-book-pick-count" id="demo-pick-count-usool">١٥ سؤال</span>
+          <span class="demo-book-pick-count" id="demo-pick-count-usool">٨ أسئلة</span>
         </button>
         <button type="button" class="demo-book-pick" onclick="beginDemo('nawawi')">
           <span class="demo-book-pick-icon">📘</span>
           <span class="demo-book-pick-title">الأربعون النووية</span>
-          <span class="demo-book-pick-count" id="demo-pick-count-nawawi">١٥ سؤال</span>
+          <span class="demo-book-pick-count" id="demo-pick-count-nawawi">٨ أسئلة</span>
         </button>
       </div>
       <button class="btn btn-sm btn-white" onclick="show('login-screen')" style="margin-top:14px;width:100%;">← رجوع</button>
@@ -218,9 +219,9 @@
 
       <p class="feedback-label">هل أعجبك البرنامج؟ *</p>
       <div class="rating-row" id="rating-row">
-        <button type="button" class="rating-btn" onclick="setRating(5,this)" data-r="5"><span class="r-emoji">😍</span>أعجبني!</button>
-        <button type="button" class="rating-btn" onclick="setRating(2,this)" data-r="2"><span class="r-emoji">😕</span>يحتاج تحسين</button>
-        <button type="button" class="rating-btn" onclick="setRating(1,this)" data-r="1"><span class="r-emoji">😞</span>ما أعجبني</button>
+        <button type="button" class="rating-btn" onclick="setRating(5,this)" data-r="5" aria-label="أعجبني"><span class="r-emoji" aria-hidden="true">😍</span>أعجبني!</button>
+        <button type="button" class="rating-btn" onclick="setRating(2,this)" data-r="2" aria-label="يحتاج تحسين"><span class="r-emoji" aria-hidden="true">😕</span>يحتاج تحسين</button>
+        <button type="button" class="rating-btn" onclick="setRating(1,this)" data-r="1" aria-label="ما أعجبني"><span class="r-emoji" aria-hidden="true">😞</span>ما أعجبني</button>
       </div>
 
       <p class="feedback-label">هل تريد/ين استخدام البرنامج؟ *</p>
@@ -371,7 +372,7 @@
       <span class="kid-bubble kb4">✨</span>
     </div>
     <div class="top-bar">
-      <button class="close-btn" onclick="goHome()" aria-label="رجوع">✕</button>
+      <button class="close-btn" onclick="requestLeaveGame()" aria-label="رجوع">✕</button>
       <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
       <div id="hearts" style="display:flex;gap:2px;"></div>
       <button class="close-btn game-settings-btn" onclick="toggleSettings()" aria-label="الإعدادات">⚙️</button>
@@ -379,7 +380,7 @@
     </div>
     <div class="q-area">
       <div id="training-bar" class="training-bar" style="display:none;">🎯 وضع التدريب — لا تُخصم المحاولات</div>
-      <div id="demo-bar" class="training-bar" style="display:none;background:var(--teal-soft);border-color:var(--sky);">📝 نموذج تجريبي — ١٥ سؤالاً</div>
+      <div id="demo-bar" class="training-bar" style="display:none;background:var(--teal-soft);border-color:var(--sky);">📝 نموذج تجريبي — ٨ أسئلة</div>
       <div class="q-meta">
         <span class="q-num" id="q-num"></span>
         <span class="badge badge-blue" id="q-book-badge"></span>
@@ -420,7 +421,7 @@
       <button id="btn-confirm-answer" class="btn btn-green btn-sm confirm-answer-btn" style="display:none;" onclick="confirmAnswer()">✅ تأكيد الاختيار</button>
       <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:12px;width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة</button>
     </div>
-    <div class="feedback" id="feedback">
+    <div class="feedback" id="feedback" aria-live="polite" aria-atomic="true">
       <div class="fb-inner">
         <div class="fb-icon-wrap" id="fb-icon"></div>
         <div class="fb-title" id="fb-title"></div>
@@ -554,10 +555,10 @@
   </div>
 
 <script src="version.js"></script>
-<script src="app.js?v=30"></script>
+<script src="app.js?v=35"></script>
 <script src="auth.js?v=11"></script>
-<script src="enhancements.js?v=7"></script>
-<script src="platform.js?v=7"></script>
+<script src="enhancements.js?v=8"></script>
+<script src="platform.js?v=9"></script>
 <script>
 (async function boot() {
   updateBismillahPadding();
@@ -574,6 +575,7 @@
   selectLevel('easy');
   document.getElementById('btn-levels-preview')?.addEventListener('click', () => showLevelsPreview());
   document.getElementById('btn-leaderboard-preview')?.addEventListener('click', () => showLeaderboard());
+  if (tryRestoreGameSession()) return;
   if (await restoreSession()) return;
   show('login-screen');
   updateTopbarStats();

@@ -24,6 +24,9 @@ Thumbs.db
 
 # Node (if added later)
 node_modules/
+test-results/
+playwright-report/
+lighthouse-report.json
 .wrangler/
 .dev.vars
 

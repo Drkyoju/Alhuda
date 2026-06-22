@@ -239,7 +239,7 @@
     .topbar-btn:active { transform: scale(0.95); }
     .topbar-btn.icon-only { padding: 0; width: 44px; }
     .site-logo {
-      max-width: 68px;
+      max-width: 80px;
       height: auto;
       border-radius: 10px;
       background: var(--white);
@@ -258,12 +258,12 @@
     }
     .logo-img {
       width: auto;
-      max-width: 140px;
+      max-width: 168px;
       height: auto;
-      max-height: 110px;
+      max-height: 132px;
       border-radius: 16px;
       background: var(--white);
-      padding: 10px;
+      padding: 12px;
       box-shadow: 0 8px 28px rgba(45, 90, 61, 0.18);
       animation: logoFloat 3s ease-in-out infinite;
       object-fit: contain;
@@ -1310,12 +1310,6 @@
       color: var(--gray);
       margin-top: 6px;
     }
-    .admin-feedback-toolbar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-    .admin-feedback-toolbar .btn { flex: 1; font-size: 0.8em; }
 
     .org-website-btn {
       display: flex;
@@ -1352,11 +1346,6 @@
     }
     .org-website-btn.compact .owb-icon { width: 38px; height: 38px; font-size: 1.1em; }
 
-    #admin-feedback-list {
-      max-height: 55vh;
-      overflow-y: auto;
-      text-align: right;
-    }
 
     /* Action row */
     .action-row {
@@ -1805,43 +1794,6 @@
     .profile-stat .val { font-size: 1.4em; font-weight: 900; color: var(--emerald); }
     .profile-stat .lbl { font-size: 0.7em; color: var(--text-soft); font-weight: 700; }
 
-    /* ── Admin ── */
-    #admin {
-      background: var(--teal-soft);
-      justify-content: flex-start;
-      padding: 0;
-      width: 100%;
-    }
-    .admin-header {
-      width: 100%;
-      background: linear-gradient(135deg, var(--emerald), var(--sky));
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: white;
-      position: sticky;
-      top: var(--app-header-h);
-      z-index: 100;
-    }
-    .admin-body { max-width: 760px; margin: 0 auto; padding: 20px 16px; width: 100%; }
-    .admin-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
-    .admin-tab {
-      flex: 1; min-width: 72px; padding: 8px 6px; border-radius: 10px; border: 2px solid var(--border);
-      background: var(--white); font-family: inherit; font-weight: 800; font-size: 0.72em; cursor: pointer;
-    }
-    .admin-tab.active { background: var(--emerald); color: white; border-color: var(--emerald); }
-    .admin-panel { display: none; }
-    .admin-panel.active { display: block; }
-    .admin-list-item {
-      padding: 10px 12px; border-radius: 12px; background: var(--cream); margin-bottom: 8px;
-      border: 1px solid var(--border); font-size: 0.82em; line-height: 1.5;
-    }
-    .admin-list-item strong { display: block; margin-bottom: 4px; }
-    .teacher-table-wrap { overflow-x: auto; }
-    .teacher-table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
-    .teacher-table th, .teacher-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); text-align: right; }
-    .teacher-table th { color: var(--emerald-dark); font-weight: 900; }
     .book-progress-grid { display: grid; gap: 10px; margin-bottom: 14px; }
     .book-progress-item {
       background: var(--white); border: 1px solid var(--border-gold); border-radius: 14px; padding: 12px;
@@ -1866,7 +1818,6 @@
     .hist-list { list-style: none; padding: 0; margin: 0; font-size: 0.82em; color: var(--text-soft); }
     .hist-list li { padding: 6px 0; border-bottom: 1px solid var(--border); }
     .cert-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-    .q-edit-form .input, .q-edit-form textarea { margin-bottom: 8px; }
     #onboarding-overlay {
       display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(22,56,40,0.92);
       align-items: center; justify-content: center; padding: 20px;
@@ -2035,7 +1986,7 @@
       border-radius: 12px;
       border: 1px solid var(--border-gold);
       box-shadow: var(--shadow-sm);
-      max-width: 48px;
+      max-width: 56px;
     }
     .topbar-btn {
       background: var(--glass);
@@ -2682,11 +2633,6 @@
     }
     .page-screen .card { margin-top: 0; }
 
-    #admin .admin-header {
-      background: var(--grad-emerald);
-      box-shadow: 0 4px 20px rgba(15,36,25,0.2);
-    }
-    #admin .card { text-align: right; }
 
     /* ═══════════════════════════════════════════
        تصميم داخلي موحّد — كل الشاشات
@@ -2914,57 +2860,6 @@
       margin-top: 12px;
     }
 
-    /* ── لوحة المعلم ── */
-    #admin {
-      background: var(--cream);
-      min-height: 100dvh;
-    }
-    .admin-body { padding: 16px 14px 32px; }
-    .admin-tabs {
-      background: var(--white);
-      border: 1px solid var(--border-gold);
-      border-radius: var(--radius-lg);
-      padding: 6px;
-      gap: 4px;
-      box-shadow: var(--shadow-sm);
-    }
-    .admin-tab {
-      border: none;
-      border-radius: var(--radius-sm);
-      background: transparent;
-      color: var(--text-soft);
-      font-size: 0.68em;
-      padding: 10px 4px;
-      transition: all 0.2s;
-    }
-    .admin-tab.active {
-      background: var(--grad-emerald);
-      color: white;
-      box-shadow: 0 4px 12px rgba(22, 56, 40, 0.2);
-    }
-    .admin-panel.card {
-      text-align: right;
-      padding: 18px 16px;
-      margin-bottom: 0;
-    }
-    .admin-panel h3, .admin-panel h4 {
-      font-family: var(--font-display);
-      color: var(--emerald-dark);
-      text-align: right;
-    }
-    .admin-list-item {
-      background: var(--ivory);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      transition: border-color 0.2s;
-    }
-    .admin-list-item:hover { border-color: var(--border-gold); }
-    .teacher-table {
-      background: var(--white);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-    }
-    .teacher-table th { background: var(--emerald-light); }
 
     /* ── إعدادات وonboarding ── */
     .settings-sheet {
@@ -3042,7 +2937,7 @@
     @media (max-width: 480px) {
       .login-hero { width: 100%; padding: 0 4px; }
       .card { padding: 20px 16px; border-radius: var(--radius-lg); }
-      .logo-img { max-width: 120px; max-height: 96px; }
+      .logo-img { max-width: 148px; max-height: 118px; }
       .brand-title { font-size: 1.45em; }
       .book-select-row { gap: 8px; }
       .book-btn { min-height: 88px; padding: 12px 8px; font-size: 0.75em; }
@@ -3303,3 +3198,46 @@
       cursor: pointer;
       color: var(--text-soft);
     }
+
+    /* ── إمكانية الوصول: تركيز لوحة المفاتيح ── */
+    .btn:focus-visible,
+    .ans-btn:focus-visible,
+    .book-btn:focus-visible,
+    .level-btn:focus-visible,
+    .input:focus-visible,
+    .demo-book-pick:focus-visible,
+    .font-preset-btn:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    /* ── جوال: تقليل الزخارف المتحركة ── */
+    @media (max-width: 600px) {
+      .float-deco-kids { display: none; }
+      .glow-orb { opacity: 0.35; }
+      .kid-bubbles { opacity: 0.5; }
+    }
+
+    .site-logo,
+    .logo-img {
+      object-fit: contain;
+      border-radius: 12px;
+    }
+
+    .offline-banner {
+      position: fixed;
+      top: calc(env(safe-area-inset-top, 0px) + 8px);
+      left: 12px;
+      right: 12px;
+      z-index: 4000;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: #fff3e6;
+      border: 2px solid var(--orange);
+      color: #7a3e00;
+      font-weight: 800;
+      font-size: 0.85em;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .offline-banner[hidden] { display: none !important; }

@@ -6,7 +6,8 @@ const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول الثلاثة', nawawi:'الأربعون النووية', merge3:'الكتب الثلاثة' };
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
 const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
-const DEMO_COUNT = 15;
+const DEMO_COUNT = 8;
+const GAME_RESUME_KEY = 'alhudaGameResumeV1';
 const QUESTION_TIME_SEC = 45;
 const TIMER_SAND_TOP_H = 18;
 const TIMER_SAND_BOTTOM_H = 22;
@@ -31,7 +32,7 @@ function chapterSortIndex(book, chapter) {
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
 let loginTab = 'student', trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
-let lastFeedbackItems = [], countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC, adminFeedbackLoading = false;
+let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 
 const FEEDBACK_RATING_LABELS = {
   5: { emoji: '😍', label: 'أعجبني' },
@@ -80,6 +81,8 @@ function setAppLoading(show, msg) {
   const el = document.getElementById('app-loading');
   if (!el) return;
   el.classList.toggle('show', !!show);
+  el.setAttribute('aria-busy', show ? 'true' : 'false');
+  el.setAttribute('aria-hidden', show ? 'false' : 'true');
   const p = el.querySelector('p');
   if (p && msg) p.textContent = msg;
 }
@@ -93,7 +96,9 @@ function setFontPreset(size) {
 
 function showGameTutorialIfNeeded() {
   if (localStorage.getItem('gameTutorialDone')) return;
-  document.getElementById('game-tutorial-overlay')?.classList.add('open');
+  const ov = document.getElementById('game-tutorial-overlay');
+  ov?.classList.add('open');
+  trapFocusInOverlay(ov);
 }
 
 function gameTutorialNext() {
@@ -111,7 +116,9 @@ function gameTutorialNext() {
 
 function closeGameTutorial() {
   localStorage.setItem('gameTutorialDone', '1');
-  document.getElementById('game-tutorial-overlay')?.classList.remove('open');
+  const ov = document.getElementById('game-tutorial-overlay');
+  ov?.classList.remove('open');
+  releaseFocusTrap(ov);
 }
 
 function feedbackRatingLabel(rating) {
@@ -307,12 +314,16 @@ function buildDemoQuestions(book) {
   return out.slice(0, DEMO_COUNT);
 }
 
+function arabicNum(n) {
+  return String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[+d]);
+}
+
 function updateDemoBookPicker() {
   const counts = { tawheed: 0, usool: 0, nawawi: 0 };
   for (const book of Object.keys(counts)) {
     counts[book] = buildDemoQuestions(book).length;
     const el = document.getElementById('demo-pick-count-' + book);
-    if (el) el.textContent = counts[book] + ' سؤال';
+    if (el) el.textContent = arabicNum(counts[book]) + ' أسئلة';
   }
 }
 
@@ -593,6 +604,10 @@ async function speakTextCloud(text, btn) {
   });
 }
 
+function toastTtsFail() {
+  if (typeof showToast === 'function') showToast('تعذّر تشغيل الصوت — تحقق من الاتصال', 'err');
+}
+
 async function speakText(text, btn) {
   if (!voiceOn || !text) return;
   const clean = stripForSpeech(text);
@@ -604,7 +619,7 @@ async function speakText(text, btn) {
     if (e.name === 'AbortError') return;
     clearTtsAudio();
     console.warn('cloud tts:', e);
-    speakTextBrowser(clean, btn);
+    if (!speakTextBrowser(clean, btn)) toastTtsFail();
     return;
   }
   clearTtsAudio(btn);
@@ -914,7 +929,7 @@ async function beginDemo(book) {
   state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.answered = false;
   state.total = state.questions.length;
   const bookLabel = BOOK_LABELS[book] || book;
-  document.getElementById('demo-bar').textContent = `📝 نموذج تجريبي — ${bookLabel} — ${state.total} سؤالاً`;
+  document.getElementById('demo-bar').textContent = `📝 نموذج تجريبي — ${bookLabel} — ${arabicNum(state.total)} أسئلة`;
   document.getElementById('demo-bar').style.display = 'block';
   document.getElementById('training-bar').style.display = 'none';
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
@@ -943,6 +958,7 @@ async function skipDemo() {
   goHome();
 }
 function endDemo() {
+  clearGameSession();
   state.demoMode = false;
   document.getElementById('demo-bar').style.display = 'none';
   feedbackRating = 0;
@@ -1022,15 +1038,19 @@ async function submitFeedback() {
   if (payload.cloudSaved && emailSent) {
     msgEl.style.color = 'var(--emerald)';
     msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه في Supabase وإرساله بالإيميل! شكراً 💚';
+    if (typeof showToast === 'function') showToast('تم إرسال رأيك بنجاح', 'info');
   } else if (payload.cloudSaved) {
     msgEl.style.color = 'var(--emerald)';
     msgEl.textContent = '✅ وصل رأيك/ِ وتم حفظه في Supabase! شكراً 💚';
+    if (typeof showToast === 'function') showToast('تم حفظ رأيك', 'info');
   } else if (emailSent) {
     msgEl.style.color = 'var(--orange)';
     msgEl.textContent = '⚠️ وصل بالإيميل فقط — Supabase يحتاج إصلاح: شغّل/ي supabase_feedback.sql في SQL Editor';
+    if (typeof showToast === 'function') showToast('وصل بالإيميل — تحقق/ي من Supabase', 'err');
   } else {
     msgEl.style.color = 'var(--orange)';
     msgEl.textContent = '⚠️ لم يُحفظ في Supabase — افتح/ي SQL Editor وشغّل/ي ملف supabase_feedback.sql ثم أعد الإرسال';
+    if (typeof showToast === 'function') showToast('تعذّر الإرسال — حاول/ي لاحقاً', 'err');
   }
   state.userName = name;
   localStorage.setItem('savedName', name);
@@ -1064,78 +1084,128 @@ async function finishDemoFlow() {
   }
   goHome();
 }
-function mergeFeedbackItems(server, backup) {
-  const items = [...(server || [])];
-  const seen = new Set(items.map(f => feedbackItemKey(f)));
-  for (const f of backup || []) {
-    if (f.cloudSaved || f.id) continue;
-    const key = f.localId || feedbackItemKey(f);
-    if (seen.has(key)) continue;
-    seen.add(key);
-    items.push(f);
-  }
-  return items.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-}
-function feedbackItemKey(f) {
-  return `${f.user_name || ''}|${f.created_at || ''}|${f.rating || ''}|${(f.message || '').slice(0, 60)}`;
+function getFocusable(root) {
+  if (!root) return [];
+  return [...root.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+    .filter((el) => !el.disabled && el.offsetParent !== null);
 }
 
-async function showAdminFeedback() {
-  if (adminFeedbackLoading) return;
-  const list = document.getElementById('admin-feedback-list');
-  const status = document.getElementById('admin-feedback-status');
-  if (!list || !status) return;
-  adminFeedbackLoading = true;
-  list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:16px;">جاري التحميل...</p>';
-  try {
-  const backup = await syncPendingFeedback();
-  const { data, error } = await db.from('feedback').select('*').order('created_at', { ascending: false }).limit(200);
-  lastFeedbackItems = mergeFeedbackItems(data, backup);
-  if (!lastFeedbackItems.length) {
-    list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:20px 0;">لا توجد آراء بعد.</p>';
-    status.textContent = error ? 'تعذّر الاتصال بـ Supabase — شغّل/ي supabase_feedback.sql' : '';
+function trapFocusInOverlay(overlay, returnFocusEl) {
+  if (!overlay) return;
+  releaseFocusTrap(overlay);
+  overlay._focusReturn = returnFocusEl || null;
+  const focusables = getFocusable(overlay);
+  focusables[0]?.focus();
+  overlay._trapKeydown = (e) => {
+    if (e.key !== 'Tab' || !focusables.length) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  overlay.addEventListener('keydown', overlay._trapKeydown);
+}
+
+function releaseFocusTrap(overlay) {
+  if (!overlay?._trapKeydown) return;
+  overlay.removeEventListener('keydown', overlay._trapKeydown);
+  overlay._trapKeydown = null;
+  overlay._focusReturn?.focus();
+  overlay._focusReturn = null;
+}
+
+function clearGameSession() {
+  try { sessionStorage.removeItem(GAME_RESUME_KEY); } catch (e) {}
+}
+
+function persistGameSession() {
+  if (!document.getElementById('game')?.classList.contains('active')) return;
+  if (!state.questions?.length || state.idx >= state.questions.length) {
+    clearGameSession();
     return;
   }
-  list.innerHTML = lastFeedbackItems.map(f => `
-    <div class="feedback-item">
-      <div class="fb-head">
-        <span>${escapeHtml(f.user_name || 'مجهول')}</span>
-        <span>${escapeHtml(feedbackRatingLabel(f.rating))}</span>
-      </div>
-      <div class="fb-msg">${escapeHtml(f.message || '—').replace(/\n/g, '<br>')}</div>
-      <div class="fb-meta">${f.created_at ? new Date(f.created_at).toLocaleString('ar') : ''}${f.source ? ' · ' + escapeHtml(f.source) : ''}${!f.cloudSaved && !f.id ? ' · بانتظار المزامنة' : ''}</div>
-    </div>`).join('');
-  status.textContent = `${lastFeedbackItems.length} رأي — ${data?.length || 0} في السحابة${error ? ' (تحذير: ' + error.message + ')' : ''}`;
-  } finally {
-    adminFeedbackLoading = false;
-  }
+  try {
+    sessionStorage.setItem(GAME_RESUME_KEY, JSON.stringify({
+      at: Date.now(),
+      demoMode: !!state.demoMode,
+      demoBook: state.demoBook || '',
+      book: state.book,
+      level: state.level,
+      qFrom: state.qFrom || 1,
+      idx: state.idx,
+      score: state.score,
+      hearts: state.hearts,
+      streak: state.streak,
+      maxStreak: state.maxStreak,
+      correct: state.correct,
+      wrong: state.wrong,
+      total: state.total,
+      trainingMode: !!trainingMode,
+      questionIds: state.questions.map((q) => q.id).filter(Boolean),
+      wrongLog: state.wrongLog || [],
+    }));
+  } catch (e) {}
 }
 
-function exportFeedbackCsv() {
-  if (!lastFeedbackItems.length) { alert('لا توجد آراء للتصدير. اضغط/ي «تحديث الآراء» أولاً.'); return; }
-  const rows = [['الاسم','التقييم','الرأي','المصدر','التاريخ']];
-  for (const f of lastFeedbackItems) {
-    rows.push([
-      f.user_name || '',
-      feedbackRatingLabel(f.rating),
-      (f.message || '').replace(/\n/g, ' '),
-      f.source || '',
-      f.created_at || ''
-    ]);
+function tryRestoreGameSession() {
+  let data;
+  try {
+    const raw = sessionStorage.getItem(GAME_RESUME_KEY);
+    if (!raw) return false;
+    data = JSON.parse(raw);
+  } catch (e) {
+    clearGameSession();
+    return false;
   }
-  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
-  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'feedback-alhuda-' + new Date().toISOString().slice(0, 10) + '.csv';
-  a.click();
+  if (!data?.questionIds?.length || Date.now() - (data.at || 0) > 3600000) {
+    clearGameSession();
+    return false;
+  }
+  if (!confirm('لديك/ِ جولة غير مكتملة. هل تريد/ين متابعتها؟')) {
+    clearGameSession();
+    return false;
+  }
+  const qs = resolveQuestionsByIds(data.questionIds);
+  if (qs.length !== data.questionIds.length) {
+    clearGameSession();
+    if (typeof showToast === 'function') showToast('تعذّر استئناف الجولة — حمّل/ي الأسئلة مجدداً', 'err');
+    return false;
+  }
+  state.questions = qs;
+  state.demoMode = !!data.demoMode;
+  state.demoBook = data.demoBook || '';
+  state.book = data.book || 'tawheed';
+  state.level = data.level || 'easy';
+  state.qFrom = data.qFrom || 1;
+  state.idx = data.idx || 0;
+  state.score = data.score || 0;
+  state.hearts = data.hearts ?? 5;
+  state.streak = data.streak || 0;
+  state.maxStreak = data.maxStreak || 0;
+  state.correct = data.correct || 0;
+  state.wrong = data.wrong || 0;
+  state.total = data.total || qs.length;
+  state.wrongLog = data.wrongLog || [];
+  state.answered = false;
+  trainingMode = !!data.trainingMode;
+  document.getElementById('demo-bar').style.display = state.demoMode ? 'block' : 'none';
+  document.getElementById('training-bar').style.display = trainingMode ? 'block' : 'none';
+  show('game');
+  renderQ();
+  if (typeof showToast === 'function') showToast('تم استئناف الجولة', 'info');
+  return true;
 }
 
 function toggleSettings() {
   const ov = document.getElementById('settings-overlay');
   const open = ov.classList.toggle('open');
   document.body.style.overflow = open ? 'hidden' : '';
-  if (!open) document.body.classList.remove('training-active');
+  if (!open) {
+    document.body.classList.remove('training-active');
+    releaseFocusTrap(ov);
+  } else {
+    trapFocusInOverlay(ov, document.getElementById('settings-btn'));
+  }
 }
 function adjustFontSize(size) {
   document.documentElement.style.setProperty('--base-font-size', size + 'px');
@@ -1200,29 +1270,66 @@ function dedupeGameQuestions(questions) {
   return dedupeQuestionList(questions);
 }
 
+function ingestBookQuestions(book, rows) {
+  if (!['tawheed', 'usool', 'nawawi'].includes(book)) return;
+  const mapped = (rows || []).map((q) => ({
+    id: q.id, book: q.book, cat: q.chapter, level: q.level, type: q.type,
+    q: q.question_text, a: q.type === 'mc' ? q.options : null,
+    c: q.type === 'mc' ? q.correct_index : null, tf: q.type === 'tf' ? q.is_true : null, exp: q.explanation,
+    quote: q.source_quote || null, page: q.book_page != null ? q.book_page : null,
+  }));
+  mapped.sort((a, b) => {
+    const ca = chapterSortIndex(book, a.cat);
+    const cb = chapterSortIndex(book, b.cat);
+    if (ca !== cb) return ca - cb;
+    const lvl = { easy: 0, medium: 1, hard: 2 };
+    return (lvl[a.level] || 1) - (lvl[b.level] || 1);
+  });
+  const before = mapped.length;
+  QUESTIONS[book] = dedupeQuestionList(mapped);
+  const removed = before - QUESTIONS[book].length;
+  if (removed > 0) console.info(`[questions] removed ${removed} near-duplicate(s) in ${book}`);
+}
+
+async function fetchAllQuestionsParallel() {
+  const books = ['tawheed', 'usool', 'nawawi'];
+  const parts = await Promise.all(books.map(async (book) => {
+    const res = await db.from('questions').select('*').eq('language', 'ar').eq('book', book);
+    return { book, data: res.data, error: res.error };
+  }));
+  const error = parts.find((p) => p.error)?.error || null;
+  const data = parts.flatMap((p) => p.data || []);
+  return { data, error, parts };
+}
+
 async function loadQuestions() {
   setAppLoading(true, 'جاري تحميل الأسئلة...');
-  let data;
   let error;
   try {
+  let data;
   if (window.AlhudaPlatform?.loadQuestionsCached) {
     try {
       data = await AlhudaPlatform.loadQuestionsCached();
     } catch (e) {
-      const res = await db.from('questions').select('*').eq('language', 'ar');
+      const res = await fetchAllQuestionsParallel();
       data = res.data;
       error = res.error;
     }
   } else {
-    const res = await db.from('questions').select('*').eq('language', 'ar');
+    const res = await fetchAllQuestionsParallel();
     data = res.data;
     error = res.error;
   }
   if (error) {
     console.error(error);
     const hint = document.getElementById('login-hint');
-    if (hint) hint.textContent = '⚠️ تعذّر تحميل الأسئلة — تحقق من الاتصال';
-    if (typeof showToast === 'function') showToast('تعذّر تحميل الأسئلة — تحقق من الاتصال', 'err');
+    if (hint) hint.textContent = navigator.onLine === false
+      ? '⚠️ لا يوجد اتصال — تحقق/ي من الشبكة'
+      : '⚠️ تعذّر تحميل الأسئلة — تحقق من الاتصال';
+    if (typeof showToast === 'function') showToast(
+      navigator.onLine === false ? 'لا يوجد اتصال بالإنترنت' : 'تعذّر تحميل الأسئلة — تحقق من الاتصال',
+      'err'
+    );
     return;
   }
   if (!data?.length) {
@@ -1231,30 +1338,14 @@ async function loadQuestions() {
     if (typeof showToast === 'function') showToast('لا توجد أسئلة متاحة', 'err');
     return;
   }
-  const fmt = { tawheed:[], usool:[], nawawi:[] };
-  data.forEach(q => {
+  const fmt = { tawheed: [], usool: [], nawawi: [] };
+  (data || []).forEach((q) => {
     if (!fmt[q.book]) return;
-    fmt[q.book].push({
-      id:q.id, book:q.book, cat:q.chapter, level:q.level, type:q.type,
-      q:q.question_text, a:q.type==='mc'?q.options:null,
-      c:q.type==='mc'?q.correct_index:null, tf:q.type==='tf'?q.is_true:null, exp:q.explanation,
-      quote:q.source_quote || null, page:q.book_page != null ? q.book_page : null
-    });
+    fmt[q.book].push(q);
   });
   for (const book of Object.keys(fmt)) {
-    fmt[book].sort((a, b) => {
-      const ca = chapterSortIndex(book, a.cat);
-      const cb = chapterSortIndex(book, b.cat);
-      if (ca !== cb) return ca - cb;
-      const lvl = { easy: 0, medium: 1, hard: 2 };
-      return (lvl[a.level] || 1) - (lvl[b.level] || 1);
-    });
-    const before = fmt[book].length;
-    fmt[book] = dedupeQuestionList(fmt[book]);
-    const removed = before - fmt[book].length;
-    if (removed > 0) console.info(`[questions] removed ${removed} near-duplicate(s) in ${book}`);
+    ingestBookQuestions(book, fmt[book]);
   }
-  QUESTIONS = fmt;
   } finally {
     setAppLoading(false);
   }
@@ -1396,7 +1487,25 @@ function showLevelsPreview() {
   show('levels-preview-screen');
 }
 
+function shouldConfirmLeaveGame() {
+  const gameEl = document.getElementById('game');
+  if (!gameEl?.classList.contains('active')) return false;
+  if (!state.questions?.length) return false;
+  return state.idx < state.questions.length;
+}
+
+function requestLeaveGame() {
+  if (shouldConfirmLeaveGame()) {
+    if (!confirm('هل تريد/ين الخروج؟ ستفقد/ين تقدّم هذه الجولة.')) return;
+  }
+  stopSpeaking();
+  clearQuestionTimer();
+  clearGameSession();
+  goHome();
+}
+
 function goHome() {
+  clearGameSession();
   state.homeworkId = null;
   state.challengeMode = false;
   state.challengeCode = '';
@@ -1451,6 +1560,8 @@ async function doLogin() {
   try {
     const name = document.getElementById('login-name').value.trim();
     if (!name) { document.getElementById('login-err').textContent = 'اكتب/ي اسمك من فضلك'; return; }
+    if (name.length < 2) { document.getElementById('login-err').textContent = 'الاسم قصير جداً (حرفان على الأقل)'; return; }
+    if (name.length > 40) { document.getElementById('login-err').textContent = 'الاسم طويل جداً (٤٠ حرفاً كحد أقصى)'; return; }
 
     const { data: { session: existingSession } } = await db.auth.getSession();
     if (existingSession?.user) {
@@ -1612,6 +1723,7 @@ function renderQ() {
   }
   startQuestionTimer();
   if (voiceOn) speakQuestion();
+  persistGameSession();
 }
 
 function pick(btn, isOk) {
@@ -1758,6 +1870,7 @@ function revealAnswer() {
 }
 
 async function endGame() {
+  clearGameSession();
   if (state.demoMode) { endDemo(); return; }
   const pct = state.correct / Math.max(1, state.total);
   const isTraining = trainingMode;
@@ -2140,7 +2253,7 @@ function applyLoginLockUI() {
     loginBtn.setAttribute('aria-disabled', 'true');
     block?.classList.add('is-locked');
     if (title) title.textContent = '🔒 ادخل/ي باسمك وابدأ/ي 🎮';
-    if (notice) notice.style.display = '';
+    if (notice) { notice.hidden = false; notice.style.display = ''; }
   } else {
     nameInput.disabled = false;
     nameInput.removeAttribute('aria-disabled');
@@ -2150,7 +2263,7 @@ function applyLoginLockUI() {
     loginBtn.textContent = 'دخول 🎮';
     block?.classList.remove('is-locked');
     if (title) title.textContent = 'ادخل/ي باسمك وابدأ/ي 🎮';
-    if (notice) notice.style.display = 'none';
+    if (notice) { notice.hidden = true; notice.style.display = 'none'; }
   }
 }
 
@@ -2195,5 +2308,8 @@ async function restoreSession() {
   applyLoginLockUI();
   document.getElementById('login-name')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !LOGIN_LOCKED) doLogin();
+  });
+  document.getElementById('btn-login')?.addEventListener('click', () => {
+    if (!LOGIN_LOCKED) doLogin();
   });
 })();
