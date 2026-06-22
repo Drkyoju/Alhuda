@@ -583,7 +583,7 @@ function updateVoiceUI() {
   if (answersBtn) {
     answersBtn.textContent = voiceReadAnswers ? '📢 قراءة الإجابات (مفعل)' : '📢 قراءة الإجابات (متوقف)';
     answersBtn.classList.toggle('btn-green', voiceReadAnswers);
-    answersBtn.style.display = voiceOn ? '' : 'none';
+    answersBtn.style.display = voiceOn ? 'none' : '';
   }
   if (qSpeak) qSpeak.style.display = voiceOn ? '' : 'none';
 }
@@ -603,25 +603,55 @@ function toggleVoiceAnswers() {
   if (document.getElementById('game')?.classList.contains('active') && state.questions.length) renderQ();
 }
 
-function appendAnswerOption(grid, text, onPick) {
+function appendAnswerOption(grid, text, isOk) {
   const wrap = document.createElement('div');
-  wrap.className = voiceReadAnswers && voiceOn ? 'ans-row' : 'ans-row ans-row-single';
+  wrap.className = 'ans-row ans-row-single';
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'ans-btn';
   btn.textContent = text;
-  btn.onclick = () => onPick(btn);
-  wrap.appendChild(btn);
-  if (voiceReadAnswers && voiceOn) {
-    const sp = document.createElement('button');
-    sp.type = 'button';
-    sp.className = 'voice-btn voice-btn-sm';
-    sp.setAttribute('aria-label', 'اقرأ الإجابة');
-    sp.textContent = '🔊';
-    sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp); };
-    wrap.appendChild(sp);
+  if (voiceOn) {
+    btn.onclick = () => previewAnswer(btn, text, isOk);
+  } else {
+    btn.onclick = () => pick(btn, isOk);
+    if (voiceReadAnswers) {
+      wrap.className = 'ans-row';
+      const sp = document.createElement('button');
+      sp.type = 'button';
+      sp.className = 'voice-btn voice-btn-sm';
+      sp.setAttribute('aria-label', 'اقرأ الإجابة');
+      sp.textContent = '🔊';
+      sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp); };
+      wrap.appendChild(btn);
+      wrap.appendChild(sp);
+      grid.appendChild(wrap);
+      return;
+    }
   }
+  wrap.appendChild(btn);
   grid.appendChild(wrap);
+}
+
+function hideConfirmAnswerBtn() {
+  const el = document.getElementById('btn-confirm-answer');
+  if (el) el.style.display = 'none';
+}
+
+function previewAnswer(btn, text, isOk) {
+  if (state.answered) return;
+  document.querySelectorAll('.ans-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  state.selectedBtn = btn;
+  state.selectedIsOk = isOk;
+  const confirmBtn = document.getElementById('btn-confirm-answer');
+  if (confirmBtn) confirmBtn.style.display = 'block';
+  speakText(text, btn);
+}
+
+function confirmAnswer() {
+  if (state.answered || !state.selectedBtn) return;
+  hideConfirmAnswerBtn();
+  pick(state.selectedBtn, state.selectedIsOk);
 }
 async function shareScore() {
   const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجرّب/ي أنت أيضاً!';
@@ -1283,6 +1313,9 @@ function renderQ() {
   stopSpeaking();
   const q = state.questions[state.idx];
   state.answered = false;
+  state.selectedBtn = null;
+  state.selectedIsOk = null;
+  hideConfirmAnswerBtn();
   document.getElementById('show-answer-btn').style.display = 'none';
   document.getElementById('q-num').textContent = (state.demoMode || state.challengeMode)
     ? `السؤال ${state.idx + 1} من ${state.total}`
@@ -1296,11 +1329,11 @@ function renderQ() {
   grid.innerHTML = '';
   if (q.type === 'tf') {
     ['صح ✓', 'خطأ ✗'].forEach((txt, i) => {
-      appendAnswerOption(grid, txt, (btn) => pick(btn, (i === 0) === q.tf));
+      appendAnswerOption(grid, txt, (i === 0) === q.tf);
     });
   } else {
     shuffleArr([0,1,2,3].slice(0, (q.a || []).length)).forEach(i => {
-      appendAnswerOption(grid, q.a[i], (btn) => pick(btn, i === q.c));
+      appendAnswerOption(grid, q.a[i], i === q.c);
     });
   }
 }
@@ -1308,6 +1341,7 @@ function renderQ() {
 function pick(btn, isOk) {
   if (state.answered) return;
   stopSpeaking();
+  hideConfirmAnswerBtn();
   state.answered = true;
   document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
   const fb = document.getElementById('feedback');

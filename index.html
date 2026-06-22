@@ -344,6 +344,7 @@
         <button type="button" class="voice-btn" id="btn-speak-question" onclick="speakQuestion()" aria-label="اقرأ السؤال">🔊</button>
       </div>
       <div class="ans-grid" id="ans-grid"></div>
+      <button id="btn-confirm-answer" class="btn btn-green btn-xl confirm-answer-btn" style="display:none;" onclick="confirmAnswer()">✅ تأكيد الاختيار</button>
       <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:12px;width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة</button>
     </div>
     <div class="feedback" id="feedback">
@@ -473,7 +474,7 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=20"></script>
+<script src="app.js?v=21"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=5"></script>
 <script src="platform.js?v=6"></script>
