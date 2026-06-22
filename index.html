@@ -17,7 +17,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=28">
+  <link rel="stylesheet" href="styles.css?v=29">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -159,7 +159,8 @@
       <div class="card login-card">
         <button type="button" class="btn btn-gold btn-xl btn-demo-login" onclick="startDemoFromLogin()">📝 نموذج أسئلة تجريبي</button>
         <p class="login-demo-hint">اختار/ي كتاباً — ٨ أسئلة لكل كتاب</p>
-        <p class="login-or-divider">أو</p>
+        <p class="login-demo-only-notice" id="login-demo-only-notice" hidden>🔒 الأسئلة الكاملة مغلقة — النموذج التجريبي فقط</p>
+        <p class="login-or-divider" id="login-or-divider">أو</p>
         <div class="login-locked-block" id="login-locked-block">
           <h2 id="login-title">ادخل/ي باسمك وابدأ/ي 🎮</h2>
           <label class="sr-only" for="login-name">اسمك</label>
@@ -242,6 +243,10 @@
       <textarea class="feedback-textarea" id="feedback-like" placeholder="أي تعليق آخر عن تجربتك..."></textarea>
 
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
+      <div class="real-game-locked-cta" id="real-game-locked-cta">
+        <p class="real-game-locked-note">🔒 الأسئلة الكاملة مغلقة حالياً — شكراً لمشاركتك!</p>
+        <button type="button" class="btn btn-xl real-game-locked-btn" disabled aria-disabled="true">📚 الدخول للأسئلة الحقيقية — مغلق 🔒</button>
+      </div>
       <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;margin-top:10px;">📋 مراجعة أخطاء النموذج</button>
       <p id="feedback-msg" class="feedback-status-msg" role="alert" aria-live="polite"></p>
       <button class="btn btn-sm btn-white" id="btn-finish-demo" onclick="finishDemoFlow()" style="display:none;margin-top:8px;width:100%;">📚 جرّب/ي كتاباً آخر</button>
@@ -569,7 +574,7 @@
   </div>
 
 <script src="version.js"></script>
-<script src="app.js?v=43"></script>
+<script src="app.js?v=44"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=9"></script>
 <script src="platform.js?v=12"></script>

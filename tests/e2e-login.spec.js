@@ -1,54 +1,39 @@
 const { test, expect } = require('@playwright/test');
 
-async function prepStudent(page) {
+test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
-    localStorage.setItem('demoDone', '1');
-    localStorage.setItem('gameTutorialDone', '1');
-    localStorage.setItem('onboardingDone', '1');
     localStorage.setItem('voiceOn', 'false');
     localStorage.setItem('soundOn', 'false');
+    localStorage.setItem('gameTutorialDone', '1');
   });
-}
+});
 
-async function dismissOnboarding(page) {
-  const ov = page.locator('#onboarding-overlay.open');
-  if (await ov.isVisible().catch(() => false)) {
-    await page.getByRole('button', { name: /تخطي|فهمت/ }).first().click();
-  }
-}
-
-test('login → play 1 question → results → score saved', async ({ page }) => {
-  const testName = 'E2E_' + Date.now().toString(36);
-  let scorePosted = false;
-  page.on('response', (res) => {
-    if (res.request().method() !== 'POST') return;
-    const url = res.url();
-    if (url.includes('/rest/v1/rpc/submit_score') || url.includes('/rest/v1/scores')) {
-      scorePosted = res.ok();
-    }
-  });
-
-  await prepStudent(page);
+test('demo-only mode: login locked, demo playable', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 45000 });
 
-  await page.locator('#login-name').fill(testName);
-  await page.locator('#btn-login').click();
+  await expect(page.locator('#login-demo-only-notice')).toBeVisible();
+  await expect(page.locator('#login-name')).toBeDisabled();
+  await expect(page.locator('#btn-login')).toBeDisabled();
+  await expect(page.locator('#login-or-divider')).toBeHidden();
 
-  await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 45000 });
-  await dismissOnboarding(page);
+  await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
+  await expect(page.locator('#demo-intro')).toHaveClass(/active/);
+  await expect(page.locator('#demo-pick-count-tawheed')).toContainText('٨');
 
-  await page.locator('#advanced-range-fold summary').click();
-  await page.locator('#q-from-input').fill('1');
-  await page.locator('#q-to-input').fill('1');
-  await page.locator('#btn-start-game').click();
-
+  await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
   await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 25000 });
+  await expect(page.locator('#demo-bar')).toContainText('٨');
+  await expect(page.locator('.ans-btn').first()).toBeVisible();
+});
 
-  await page.locator('.ans-btn').first().click();
-  await page.getByRole('button', { name: /متابعة/ }).click();
-
-  await expect(page.locator('#results.active, #gameover.active')).toBeVisible({ timeout: 15000 });
-  await expect(page.locator('body')).toHaveAttribute('data-score-save', 'ok', { timeout: 10000 });
-  expect(scorePosted).toBe(true);
+test('feedback screen shows locked real-game CTA', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#app-loading')).toBeHidden({ timeout: 45000 });
+  await page.evaluate(() => {
+    if (typeof endDemo === 'function') endDemo();
+    else document.getElementById('feedback-screen')?.classList.add('active');
+  });
+  await expect(page.locator('#real-game-locked-cta')).toBeVisible();
+  await expect(page.locator('.real-game-locked-btn')).toBeDisabled();
 });

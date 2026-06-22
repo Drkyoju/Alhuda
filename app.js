@@ -14,7 +14,7 @@ const TIMER_SAND_TOP_H = 18;
 const TIMER_SAND_BOTTOM_H = 22;
 const TIMER_SAND_TOP_Y = 12;
 const TIMER_SAND_BOTTOM_Y = 56;
-const LOGIN_LOCKED = false;
+const LOGIN_LOCKED = true;
 const FEEDBACK_NOTIFY_EMAIL = 'hd.hk1444920@gmail.com';
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
@@ -70,6 +70,14 @@ const BADGES = {
 const ENCOURAGE_OK = ['ممتاز! 🌟', 'أحسنت! 🎉', 'رائع! ⭐', 'مبدع/ة! 💫', 'بارك الله فيك! 🤲'];
 const ENCOURAGE_BAD = ['لا بأس! حاول/ي مرة أخرى 💪', 'تعلّمنا من الخطأ 📖', 'واصل/ي! أنت قادر/ة 🌱'];
 const DEFAULT_PLAYER = 'بطل/ة';
+
+function isRealGameLocked() {
+  return LOGIN_LOCKED && !state.demoMode;
+}
+
+function showRealGameLockedAlert() {
+  showAlert('🔒 الأسئلة الكاملة مغلقة حالياً — جرّب/ي النموذج التجريبي فقط (٨ أسئلة لكل كتاب)');
+}
 
 function setAppLoading(show, msg) {
   const el = document.getElementById('app-loading');
@@ -1184,13 +1192,13 @@ async function finishDemoFlow() {
     if (!skip) return;
   }
   localStorage.setItem('demoDone', '1');
+  if (LOGIN_LOCKED) {
+    pendingLoginAfterDemo = true;
+    updateDemoBookPicker();
+    show('demo-intro');
+    return;
+  }
   if (!state.user) {
-    if (LOGIN_LOCKED) {
-      pendingLoginAfterDemo = true;
-      updateDemoBookPicker();
-      show('demo-intro');
-      return;
-    }
     if (pendingLoginAfterDemo) {
       pendingLoginAfterDemo = false;
       const name = (document.getElementById('login-name')?.value || '').trim();
@@ -1274,6 +1282,10 @@ async function tryRestoreGameSession() {
     if (!raw) return false;
     data = JSON.parse(raw);
   } catch (e) {
+    clearGameSession();
+    return false;
+  }
+  if (LOGIN_LOCKED && !data?.demoMode) {
     clearGameSession();
     return false;
   }
@@ -1441,9 +1453,14 @@ function booksForState(book) {
 }
 
 function updateLoginQuestionHint() {
-  const total = QUESTION_BOOKS.reduce((n, b) => n + (QUESTIONS[b]?.length || 0), 0);
   const hint = document.getElementById('login-hint');
-  if (!hint || total <= 0) return;
+  if (!hint) return;
+  if (LOGIN_LOCKED) {
+    hint.textContent = '📝 النموذج التجريبي فقط — ٨ أسئلة لكل كتاب';
+    return;
+  }
+  const total = QUESTION_BOOKS.reduce((n, b) => n + (QUESTIONS[b]?.length || 0), 0);
+  if (total <= 0) return;
   const allLoaded = QUESTION_BOOKS.every((b) => bookLoadState[b]);
   hint.textContent = allLoaded
     ? '📚 ' + total + ' سؤال في انتظارك!'
@@ -1622,6 +1639,10 @@ function clearCountdown() {
 
 /* ── Navigation ── */
 function show(id) {
+  if (LOGIN_LOCKED && id === 'welcome') {
+    show('login-screen');
+    return;
+  }
   if (id !== 'game') {
     clearCountdown();
     stopSpeaking();
@@ -1650,7 +1671,7 @@ function updateWelcomeStats() {
 }
 
 function goBackFromFeature() {
-  if (state.user) goHome();
+  if (state.user && !LOGIN_LOCKED) goHome();
   else show('login-screen');
 }
 
@@ -1703,7 +1724,7 @@ function goHome() {
     trainingBtn.textContent = '🏋️ وضع التدريب';
     trainingBtn.classList.remove('btn-green');
   }
-  if (!state.user) {
+  if (LOGIN_LOCKED || !state.user) {
     show('login-screen');
     return;
   }
@@ -1827,6 +1848,10 @@ function updateBookButtons() {
 }
 async function startCountdown() {
   if (countdownTimer) return;
+  if (isRealGameLocked()) {
+    showRealGameLockedAlert();
+    return;
+  }
   if (!state.demoMode && !state.challengeMode) {
     try {
       await ensureBooksLoaded(booksForState(state.book));
@@ -1867,6 +1892,10 @@ async function startCountdown() {
 }
 
 function startGame() {
+  if (isRealGameLocked()) {
+    showRealGameLockedAlert();
+    return;
+  }
   if (!state.demoMode) {
     if (state.challengeMode) {
       let stored = null;
@@ -2459,6 +2488,8 @@ function applyLoginLockUI() {
   const nameInput = document.getElementById('login-name');
   const loginBtn = document.getElementById('btn-login');
   const block = document.getElementById('login-locked-block');
+  const divider = document.getElementById('login-or-divider');
+  const features = document.getElementById('login-features');
   const title = document.getElementById('login-title');
   const notice = document.querySelector('.login-lock-notice');
   if (!nameInput || !loginBtn) return;
@@ -2468,9 +2499,20 @@ function applyLoginLockUI() {
     loginBtn.disabled = true;
     loginBtn.setAttribute('aria-disabled', 'true');
     block?.classList.add('is-locked');
-    if (title) title.textContent = '🔒 ادخل/ي باسمك وابدأ/ي 🎮';
-    if (notice) { notice.hidden = false; notice.style.display = ''; }
+    if (block) block.style.display = 'none';
+    if (divider) divider.style.display = 'none';
+    if (features) features.style.display = 'none';
+    if (title) title.textContent = '🔒 الدخول مغلق مؤقتاً';
+    if (notice) { notice.hidden = false; notice.style.display = ''; notice.textContent = 'الأسئلة الكاملة مغلقة — النموذج التجريبي فقط (٨ أسئلة لكل كتاب)'; }
+    const demoOnlyNotice = document.getElementById('login-demo-only-notice');
+    if (demoOnlyNotice) demoOnlyNotice.hidden = false;
+    updateLoginQuestionHint();
   } else {
+    const demoOnlyNotice = document.getElementById('login-demo-only-notice');
+    if (demoOnlyNotice) demoOnlyNotice.hidden = true;
+    if (block) block.style.display = '';
+    if (divider) divider.style.display = '';
+    if (features) features.style.display = '';
     nameInput.disabled = false;
     nameInput.removeAttribute('aria-disabled');
     nameInput.placeholder = 'اكتب/ي اسمك هنا...';
@@ -2484,6 +2526,13 @@ function applyLoginLockUI() {
 }
 
 async function restoreSession() {
+  if (LOGIN_LOCKED) {
+    await db.auth.signOut().catch(() => {});
+    state.user = null;
+    state.userType = '';
+    state.userName = '';
+    return false;
+  }
   const { data: { session } } = await db.auth.getSession();
   if (!session?.user) return false;
   const { data: profile, error } = await db.from('profiles').select('name,role').eq('id', session.user.id).maybeSingle();

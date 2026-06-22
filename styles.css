@@ -606,6 +606,37 @@
       color: var(--emerald);
       margin: 8px 0 0;
     }
+    #login-screen .login-demo-only-notice {
+      text-align: center;
+      font-size: 0.84em;
+      font-weight: 800;
+      color: var(--orange);
+      margin: 10px 0 0;
+      line-height: 1.5;
+    }
+    .real-game-locked-cta {
+      margin-top: 14px;
+      padding: 14px 12px;
+      border-radius: 14px;
+      background: #f4f6f5;
+      border: 2px dashed rgba(45, 90, 61, 0.22);
+      text-align: center;
+    }
+    .real-game-locked-note {
+      font-weight: 800;
+      color: var(--text-soft);
+      font-size: 0.9em;
+      margin: 0 0 10px;
+      line-height: 1.5;
+    }
+    .real-game-locked-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #9aa5a0, #7a8580) !important;
+      color: rgba(255,255,255,0.92) !important;
+      cursor: not-allowed !important;
+      opacity: 0.9;
+      box-shadow: none !important;
+    }
     .demo-pick-lead {
       text-align: center;
       color: var(--text-soft);

@@ -33,12 +33,12 @@ test('demo flow shows question and answers', async ({ page }) => {
   expect((qText || '').length).toBeGreaterThan(5);
 });
 
-test('login is unlocked on first paint', async ({ page }) => {
+test('login is locked — demo only', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#login-name')).toBeEnabled({ timeout: 5000 });
-  await expect(page.locator('#login-name')).toHaveAttribute('placeholder', /اكتب/);
-  await expect(page.locator('#btn-login')).toHaveText('دخول 🎮');
-  await expect(page.locator('body')).not.toContainText('الدخول مغلق');
+  await expect(page.locator('#login-name')).toBeDisabled({ timeout: 5000 });
+  await expect(page.locator('#btn-login')).toBeDisabled();
+  await expect(page.locator('#login-demo-only-notice')).toBeVisible();
+  await expect(page.getByRole('button', { name: /نموذج أسئلة تجريبي/ })).toBeEnabled();
 });
 
 test('offline banner hidden when online', async ({ page }) => {
