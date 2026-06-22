@@ -17,8 +17,15 @@ async function dismissOnboarding(page) {
   }
 }
 
-test('login → play 1 question → results', async ({ page }) => {
+test('login → play 1 question → results → score saved', async ({ page }) => {
   const testName = 'E2E_' + Date.now().toString(36);
+  let scorePosted = false;
+  page.on('response', (res) => {
+    if (res.url().includes('/rest/v1/scores') && res.request().method() === 'POST') {
+      scorePosted = res.ok();
+    }
+  });
+
   await prepStudent(page);
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 45000 });
@@ -33,10 +40,12 @@ test('login → play 1 question → results', async ({ page }) => {
   await page.locator('#q-to-input').fill('1');
   await page.locator('#btn-start-game').click();
 
-  await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 20000 });
+  await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 25000 });
 
   await page.locator('.ans-btn').first().click();
   await page.getByRole('button', { name: /متابعة/ }).click();
 
   await expect(page.locator('#results.active, #gameover.active')).toBeVisible({ timeout: 15000 });
+  await expect(page.locator('body')).toHaveAttribute('data-score-save', 'ok', { timeout: 10000 });
+  expect(scorePosted).toBe(true);
 });

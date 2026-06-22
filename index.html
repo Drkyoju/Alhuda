@@ -14,9 +14,10 @@
   <link rel="stylesheet" href="kids-ui.css?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=20">
+  <link rel="stylesheet" href="styles.css?v=21">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -555,7 +556,7 @@
   </div>
 
 <script src="version.js"></script>
-<script src="app.js?v=35"></script>
+<script src="app.js?v=36"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=8"></script>
 <script src="platform.js?v=9"></script>
@@ -569,16 +570,15 @@
     console.error(e);
     if (typeof showToast === 'function') showToast('تعذّر تحميل التطبيق', 'err');
   }
-  const qCount = (QUESTIONS.tawheed?.length||0) + (QUESTIONS.usool?.length||0) + (QUESTIONS.nawawi?.length||0);
-  if (qCount > 0) document.getElementById('login-hint').textContent = '📚 ' + qCount + ' سؤال في انتظارك!';
   updateLevelCounts();
   selectLevel('easy');
   document.getElementById('btn-levels-preview')?.addEventListener('click', () => showLevelsPreview());
   document.getElementById('btn-leaderboard-preview')?.addEventListener('click', () => showLeaderboard());
-  if (tryRestoreGameSession()) return;
+  if (await tryRestoreGameSession()) return;
   if (await restoreSession()) return;
   show('login-screen');
   updateTopbarStats();
+  updateLoginQuestionHint();
 })();
 </script>
 </body>

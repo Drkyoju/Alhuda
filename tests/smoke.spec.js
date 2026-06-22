@@ -39,6 +39,14 @@ test('offline banner hidden when online', async ({ page }) => {
   await expect(page.locator('#offline-banner')).toBeHidden();
 });
 
+test('offline banner shows when network is off', async ({ page, context }) => {
+  await page.goto('/');
+  await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
+  await context.setOffline(true);
+  await page.evaluate(() => window.dispatchEvent(new Event('offline')));
+  await expect(page.locator('#offline-banner')).toBeVisible({ timeout: 5000 });
+});
+
 test('game exit asks before leaving mid-round', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });

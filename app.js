@@ -916,6 +916,13 @@ function showDemoIntro(name) {
 }
 async function beginDemo(book) {
   if (!book) book = state.demoBook || 'tawheed';
+  try {
+    await loadBookQuestions(book);
+  } catch (e) {
+    alert('تعذّر تحميل أسئلة هذا الكتاب — تحقق/ي من الاتصال');
+    show('demo-intro');
+    return;
+  }
   state.demoBook = book;
   state.demoMode = true;
   state.wrongLog = [];
@@ -1147,7 +1154,7 @@ function persistGameSession() {
   } catch (e) {}
 }
 
-function tryRestoreGameSession() {
+async function tryRestoreGameSession() {
   let data;
   try {
     const raw = sessionStorage.getItem(GAME_RESUME_KEY);
@@ -1163,6 +1170,13 @@ function tryRestoreGameSession() {
   }
   if (!confirm('لديك/ِ جولة غير مكتملة. هل تريد/ين متابعتها؟')) {
     clearGameSession();
+    return false;
+  }
+  try {
+    await ensureBooksLoaded(QUESTION_BOOKS);
+  } catch (e) {
+    clearGameSession();
+    if (typeof showToast === 'function') showToast('تعذّر استئناف الجولة — تحقق/ي من الاتصال', 'err');
     return false;
   }
   const qs = resolveQuestionsByIds(data.questionIds);
@@ -1291,61 +1305,99 @@ function ingestBookQuestions(book, rows) {
   if (removed > 0) console.info(`[questions] removed ${removed} near-duplicate(s) in ${book}`);
 }
 
-async function fetchAllQuestionsParallel() {
-  const books = ['tawheed', 'usool', 'nawawi'];
-  const parts = await Promise.all(books.map(async (book) => {
-    const res = await db.from('questions').select('*').eq('language', 'ar').eq('book', book);
-    return { book, data: res.data, error: res.error };
-  }));
-  const error = parts.find((p) => p.error)?.error || null;
-  const data = parts.flatMap((p) => p.data || []);
-  return { data, error, parts };
+async function fetchBookQuestions(book) {
+  const res = await db.from('questions').select('*').eq('language', 'ar').eq('book', book);
+  return { data: res.data, error: res.error };
+}
+
+const QUESTION_BOOKS = ['tawheed', 'usool', 'nawawi'];
+const bookLoadState = { tawheed: false, usool: false, nawawi: false };
+const bookLoadPromises = {};
+
+function booksForState(book) {
+  if (book === 'merge3') return [...QUESTION_BOOKS];
+  if (QUESTION_BOOKS.includes(book)) return [book];
+  return [...QUESTION_BOOKS];
+}
+
+function updateLoginQuestionHint() {
+  const total = QUESTION_BOOKS.reduce((n, b) => n + (QUESTIONS[b]?.length || 0), 0);
+  const hint = document.getElementById('login-hint');
+  if (!hint || total <= 0) return;
+  const allLoaded = QUESTION_BOOKS.every((b) => bookLoadState[b]);
+  hint.textContent = allLoaded
+    ? '📚 ' + total + ' سؤال في انتظارك!'
+    : '📚 ' + total + '+ سؤال — جاري تحميل الباقي...';
+}
+
+async function loadBookQuestions(book) {
+  if (!QUESTION_BOOKS.includes(book)) return [];
+  if (bookLoadState[book] && QUESTIONS[book]?.length) return QUESTIONS[book];
+  if (bookLoadPromises[book]) return bookLoadPromises[book];
+  bookLoadPromises[book] = (async () => {
+    const { data, error } = await fetchBookQuestions(book);
+    if (error) throw error;
+    ingestBookQuestions(book, data || []);
+    bookLoadState[book] = true;
+    updateLevelCounts();
+    updateDemoBookPicker();
+    updateLoginQuestionHint();
+    return QUESTIONS[book];
+  })();
+  try {
+    return await bookLoadPromises[book];
+  } catch (e) {
+    delete bookLoadPromises[book];
+    throw e;
+  }
+}
+
+async function ensureBooksLoaded(books) {
+  await Promise.all([...new Set(books)].map((b) => loadBookQuestions(b)));
+}
+
+function loadRemainingBooksInBackground() {
+  Promise.all(
+    QUESTION_BOOKS.filter((b) => !bookLoadState[b]).map((b) => loadBookQuestions(b))
+  ).then(() => {
+    updateLoginQuestionHint();
+    updateLevelCounts();
+  }).catch((e) => console.warn('background question load:', e));
 }
 
 async function loadQuestions() {
   setAppLoading(true, 'جاري تحميل الأسئلة...');
-  let error;
   try {
-  let data;
-  if (window.AlhudaPlatform?.loadQuestionsCached) {
-    try {
-      data = await AlhudaPlatform.loadQuestionsCached();
-    } catch (e) {
-      const res = await fetchAllQuestionsParallel();
-      data = res.data;
-      error = res.error;
+    if (window.AlhudaPlatform?.loadQuestionsCached) {
+      try {
+        const data = await AlhudaPlatform.loadQuestionsCached();
+        const fmt = { tawheed: [], usool: [], nawawi: [] };
+        (data || []).forEach((q) => { if (fmt[q.book]) fmt[q.book].push(q); });
+        for (const book of QUESTION_BOOKS) {
+          ingestBookQuestions(book, fmt[book]);
+          bookLoadState[book] = true;
+        }
+        updateLoginQuestionHint();
+        return;
+      } catch (e) { /* cache miss — lazy load */ }
     }
-  } else {
-    const res = await fetchAllQuestionsParallel();
-    data = res.data;
-    error = res.error;
-  }
-  if (error) {
-    console.error(error);
+    await loadBookQuestions('tawheed');
+    updateLoginQuestionHint();
+    loadRemainingBooksInBackground();
+  } catch (e) {
+    console.error(e);
     const hint = document.getElementById('login-hint');
-    if (hint) hint.textContent = navigator.onLine === false
-      ? '⚠️ لا يوجد اتصال — تحقق/ي من الشبكة'
-      : '⚠️ تعذّر تحميل الأسئلة — تحقق من الاتصال';
-    if (typeof showToast === 'function') showToast(
-      navigator.onLine === false ? 'لا يوجد اتصال بالإنترنت' : 'تعذّر تحميل الأسئلة — تحقق من الاتصال',
-      'err'
-    );
-    return;
-  }
-  if (!data?.length) {
-    const hint = document.getElementById('login-hint');
-    if (hint) hint.textContent = '⚠️ لا توجد أسئلة في قاعدة البيانات';
-    if (typeof showToast === 'function') showToast('لا توجد أسئلة متاحة', 'err');
-    return;
-  }
-  const fmt = { tawheed: [], usool: [], nawawi: [] };
-  (data || []).forEach((q) => {
-    if (!fmt[q.book]) return;
-    fmt[q.book].push(q);
-  });
-  for (const book of Object.keys(fmt)) {
-    ingestBookQuestions(book, fmt[book]);
-  }
+    if (hint) {
+      hint.textContent = navigator.onLine === false
+        ? '⚠️ لا يوجد اتصال — تحقق/ي من الشبكة'
+        : '⚠️ تعذّر تحميل الأسئلة — تحقق من الاتصال';
+    }
+    if (typeof showToast === 'function') {
+      showToast(
+        navigator.onLine === false ? 'لا يوجد اتصال بالإنترنت' : 'تعذّر تحميل الأسئلة — تحقق من الاتصال',
+        'err'
+      );
+    }
   } finally {
     setAppLoading(false);
   }
@@ -1410,11 +1462,26 @@ function seededShuffle(arr, seed) {
 }
 
 function refreshQuestions() {
-  state.bankVersion++;
-  updateQuestionRangeUI();
+  sessionStorage.removeItem('questionsCacheV3');
+  QUESTION_BOOKS.forEach((b) => {
+    bookLoadState[b] = false;
+    delete bookLoadPromises[b];
+    QUESTIONS[b] = [];
+  });
   const btn = document.getElementById('btn-start-game');
-  btn.textContent = '✅ تم التحديث!';
-  setTimeout(() => { btn.textContent = 'ابدأ اللعبة'; }, 2000);
+  if (btn) btn.textContent = 'جاري التحديث...';
+  ensureBooksLoaded(booksForState(state.book)).then(() => {
+    state.bankVersion++;
+    updateQuestionRangeUI();
+    updateLoginQuestionHint();
+    if (btn) {
+      btn.textContent = '✅ تم التحديث!';
+      setTimeout(() => { btn.textContent = 'ابدأ اللعبة 🎮'; }, 2000);
+    }
+  }).catch(() => {
+    if (typeof showToast === 'function') showToast('تعذّر تحديث الأسئلة', 'err');
+    if (btn) btn.textContent = 'ابدأ اللعبة 🎮';
+  });
 }
 
 function updateBismillahPadding() {
@@ -1608,6 +1675,8 @@ function selectBook(b) {
   updateBookButtons();
   updateLevelCounts();
   selectLevel('easy');
+  const toLoad = b === 'merge3' ? QUESTION_BOOKS : [b];
+  toLoad.forEach((book) => loadBookQuestions(book).catch(() => {}));
 }
 function selectLevel(l) {
   state.level = l;
@@ -1629,9 +1698,15 @@ function updateBookButtons() {
   const el = document.getElementById(id);
   if (el) el.classList.add('sel');
 }
-function startCountdown() {
+async function startCountdown() {
   if (countdownTimer) return;
   if (!state.demoMode && !state.challengeMode) {
+    try {
+      await ensureBooksLoaded(booksForState(state.book));
+    } catch (e) {
+      if (typeof showToast === 'function') showToast('تعذّر تحميل أسئلة هذا الكتاب', 'err');
+      return;
+    }
     const qs = getQuestionsForGame();
     if (!qs.length) {
       alert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر، أو غيّر/ي نطاق الأسئلة.');
@@ -1936,8 +2011,10 @@ async function endGame() {
     });
     if (scoreErr && typeof showToast === 'function') {
       showToast('تعذّر حفظ النتيجة — تحقق من الاتصال', 'err');
-    } else {
+      document.body.dataset.scoreSave = 'error';
+    } else if (!scoreErr) {
       invalidateLbCache();
+      document.body.dataset.scoreSave = 'ok';
     }
   }
   if (window.AlhudaPlatform?.onGameEndHook) await AlhudaPlatform.onGameEndHook();
