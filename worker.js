@@ -1,5 +1,7 @@
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
+import { DEFAULT_ARABIC_VOICE, synthesizeArabicSpeech } from './edge-tts.js';
+
 function corsHeaders(request) {
   const origin = request.headers.get('Origin') || '*';
   return {
@@ -99,11 +101,75 @@ async function handleFeedbackNotify(request, env) {
   });
 }
 
+const TTS_MAX_CHARS = 800;
+
+async function handleTts(request) {
+  const cors = corsHeaders(request);
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { headers: cors });
+  }
+  if (request.method !== 'POST') {
+    return new Response(JSON.stringify({ ok: false, error: 'Method not allowed' }), {
+      status: 405,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return new Response(JSON.stringify({ ok: false, error: 'Invalid JSON' }), {
+      status: 400,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+
+  const text = typeof body?.text === 'string' ? body.text.trim() : '';
+  if (!text) {
+    return new Response(JSON.stringify({ ok: false, error: 'Missing text' }), {
+      status: 400,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+  if (text.length > TTS_MAX_CHARS) {
+    return new Response(JSON.stringify({ ok: false, error: 'Text too long' }), {
+      status: 400,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+
+  const voice = typeof body?.voice === 'string' && body.voice.trim()
+    ? body.voice.trim()
+    : DEFAULT_ARABIC_VOICE;
+
+  try {
+    const stream = await synthesizeArabicSpeech(text, voice);
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        ...cors,
+        'Content-Type': 'audio/mpeg',
+        'Cache-Control': 'public, max-age=86400',
+      },
+    });
+  } catch (err) {
+    console.warn('[tts]', err);
+    return new Response(JSON.stringify({ ok: false, error: 'TTS failed' }), {
+      status: 502,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/api/feedback-notify') {
       return handleFeedbackNotify(request, env);
+    }
+    if (url.pathname === '/api/tts') {
+      return handleTts(request);
     }
     return env.ASSETS.fetch(request);
   },

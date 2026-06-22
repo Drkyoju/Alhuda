@@ -452,8 +452,12 @@ function toggleSound() {
   if (soundOn) playSound('correct');
 }
 
-/* ── Voice reading (Web Speech API) ── */
+/* ── Voice reading (Edge Neural TTS + browser fallback) ── */
+const TTS_VOICE = 'ar-SA-ZariyahNeural';
 let cachedArabicVoice = null;
+let ttsAudio = null;
+let ttsAbort = null;
+let ttsObjectUrl = null;
 
 function stripForSpeech(text) {
   return (text || '')
@@ -462,30 +466,58 @@ function stripForSpeech(text) {
     .trim();
 }
 
+function scoreArabicVoice(v) {
+  const name = (v.name || '').toLowerCase();
+  const lang = (v.lang || '').toLowerCase();
+  let score = 0;
+  if (lang === 'ar-sa') score += 40;
+  else if (lang.startsWith('ar')) score += 25;
+  if (/zariyah|hamed|maj(ed)?|tarik|naayf|salma|shakir|premium|enhanced|neural|google|microsoft|natural/.test(name)) score += 30;
+  if (/compact|low|robot|espeak|festival/.test(name)) score -= 40;
+  if (v.localService === false) score += 10;
+  return score;
+}
+
 function loadArabicVoice() {
   if (!('speechSynthesis' in window)) return null;
-  const voices = speechSynthesis.getVoices();
-  cachedArabicVoice = voices.find(v => v.lang === 'ar-SA')
-    || voices.find(v => v.lang.startsWith('ar'))
-    || voices.find(v => v.lang.includes('ar'))
-    || null;
+  const voices = speechSynthesis.getVoices().filter(v => (v.lang || '').toLowerCase().includes('ar'));
+  if (!voices.length) return null;
+  voices.sort((a, b) => scoreArabicVoice(b) - scoreArabicVoice(a));
+  cachedArabicVoice = voices[0];
   return cachedArabicVoice;
 }
 
-function stopSpeaking() {
-  if (!('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
-  document.querySelectorAll('.voice-btn.speaking').forEach(b => b.classList.remove('speaking'));
+function clearTtsAudio(btn) {
+  if (ttsAbort) {
+    ttsAbort.abort();
+    ttsAbort = null;
+  }
+  if (ttsAudio) {
+    ttsAudio.onended = null;
+    ttsAudio.onerror = null;
+    ttsAudio.pause();
+    ttsAudio = null;
+  }
+  if (ttsObjectUrl) {
+    URL.revokeObjectURL(ttsObjectUrl);
+    ttsObjectUrl = null;
+  }
+  if (btn) btn.classList.remove('speaking');
 }
 
-function speakText(text, btn) {
-  if (!voiceOn || !text || !('speechSynthesis' in window)) return;
-  stopSpeaking();
-  const u = new SpeechSynthesisUtterance(stripForSpeech(text));
+function stopSpeaking() {
+  clearTtsAudio();
+  document.querySelectorAll('.voice-btn.speaking').forEach(b => b.classList.remove('speaking'));
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+}
+
+function speakTextBrowser(text, btn) {
+  if (!('speechSynthesis' in window)) return false;
+  const u = new SpeechSynthesisUtterance(text);
   u.lang = 'ar-SA';
   const voice = cachedArabicVoice || loadArabicVoice();
   if (voice) u.voice = voice;
-  u.rate = 0.9;
+  u.rate = 0.85;
   u.pitch = 1;
   if (btn) {
     btn.classList.add('speaking');
@@ -493,6 +525,45 @@ function speakText(text, btn) {
     u.onerror = () => btn.classList.remove('speaking');
   }
   speechSynthesis.speak(u);
+  return true;
+}
+
+async function speakTextCloud(text, btn) {
+  ttsAbort = new AbortController();
+  const res = await fetch('/api/tts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text, voice: TTS_VOICE }),
+    signal: ttsAbort.signal,
+  });
+  if (!res.ok) throw new Error('tts failed');
+  const blob = await res.blob();
+  if (!blob.size) throw new Error('empty audio');
+  ttsObjectUrl = URL.createObjectURL(blob);
+  ttsAudio = new Audio(ttsObjectUrl);
+  if (btn) btn.classList.add('speaking');
+  await ttsAudio.play();
+  await new Promise((resolve, reject) => {
+    ttsAudio.onended = resolve;
+    ttsAudio.onerror = () => reject(new Error('audio error'));
+  });
+}
+
+async function speakText(text, btn) {
+  if (!voiceOn || !text) return;
+  const clean = stripForSpeech(text);
+  if (!clean) return;
+  stopSpeaking();
+  try {
+    await speakTextCloud(clean, btn);
+  } catch (e) {
+    if (e.name === 'AbortError') return;
+    clearTtsAudio();
+    console.warn('cloud tts:', e);
+    speakTextBrowser(clean, btn);
+    return;
+  }
+  clearTtsAudio(btn);
 }
 
 function speakQuestion() {
