@@ -25,7 +25,7 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
-let loginTab = 'student', trainingMode = false, soundOn = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
+let loginTab = 'student', trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let lastFeedbackItems = [], countdownTimer = null, adminFeedbackLoading = false;
 
 const FEEDBACK_RATING_LABELS = {
@@ -451,6 +451,107 @@ function toggleSound() {
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   if (soundOn) playSound('correct');
 }
+
+/* ── Voice reading (Web Speech API) ── */
+let cachedArabicVoice = null;
+
+function stripForSpeech(text) {
+  return (text || '')
+    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function loadArabicVoice() {
+  if (!('speechSynthesis' in window)) return null;
+  const voices = speechSynthesis.getVoices();
+  cachedArabicVoice = voices.find(v => v.lang === 'ar-SA')
+    || voices.find(v => v.lang.startsWith('ar'))
+    || voices.find(v => v.lang.includes('ar'))
+    || null;
+  return cachedArabicVoice;
+}
+
+function stopSpeaking() {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  document.querySelectorAll('.voice-btn.speaking').forEach(b => b.classList.remove('speaking'));
+}
+
+function speakText(text, btn) {
+  if (!voiceOn || !text || !('speechSynthesis' in window)) return;
+  stopSpeaking();
+  const u = new SpeechSynthesisUtterance(stripForSpeech(text));
+  u.lang = 'ar-SA';
+  const voice = cachedArabicVoice || loadArabicVoice();
+  if (voice) u.voice = voice;
+  u.rate = 0.9;
+  u.pitch = 1;
+  if (btn) {
+    btn.classList.add('speaking');
+    u.onend = () => btn.classList.remove('speaking');
+    u.onerror = () => btn.classList.remove('speaking');
+  }
+  speechSynthesis.speak(u);
+}
+
+function speakQuestion() {
+  const q = state.questions[state.idx];
+  if (!q?.q) return;
+  speakText(q.q, document.getElementById('btn-speak-question'));
+}
+
+function updateVoiceUI() {
+  const voiceBtn = document.getElementById('voice-btn');
+  const answersBtn = document.getElementById('voice-answers-btn');
+  const qSpeak = document.getElementById('btn-speak-question');
+  if (voiceBtn) {
+    voiceBtn.textContent = voiceOn ? '🗣️ القراءة الصوتية (مفعل)' : '🔇 القراءة الصوتية (متوقف)';
+    voiceBtn.classList.toggle('btn-green', voiceOn);
+  }
+  if (answersBtn) {
+    answersBtn.textContent = voiceReadAnswers ? '📢 قراءة الإجابات (مفعل)' : '📢 قراءة الإجابات (متوقف)';
+    answersBtn.classList.toggle('btn-green', voiceReadAnswers);
+    answersBtn.style.display = voiceOn ? '' : 'none';
+  }
+  if (qSpeak) qSpeak.style.display = voiceOn ? '' : 'none';
+}
+
+function toggleVoice() {
+  voiceOn = !voiceOn;
+  localStorage.setItem('voiceOn', voiceOn);
+  if (!voiceOn) stopSpeaking();
+  updateVoiceUI();
+  if (document.getElementById('game')?.classList.contains('active') && state.questions.length) renderQ();
+}
+
+function toggleVoiceAnswers() {
+  voiceReadAnswers = !voiceReadAnswers;
+  localStorage.setItem('voiceReadAnswers', voiceReadAnswers);
+  updateVoiceUI();
+  if (document.getElementById('game')?.classList.contains('active') && state.questions.length) renderQ();
+}
+
+function appendAnswerOption(grid, text, onPick) {
+  const wrap = document.createElement('div');
+  wrap.className = voiceReadAnswers && voiceOn ? 'ans-row' : 'ans-row ans-row-single';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'ans-btn';
+  btn.textContent = text;
+  btn.onclick = () => onPick(btn);
+  wrap.appendChild(btn);
+  if (voiceReadAnswers && voiceOn) {
+    const sp = document.createElement('button');
+    sp.type = 'button';
+    sp.className = 'voice-btn voice-btn-sm';
+    sp.setAttribute('aria-label', 'اقرأ الإجابة');
+    sp.textContent = '🔊';
+    sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp); };
+    wrap.appendChild(sp);
+  }
+  grid.appendChild(wrap);
+}
 async function shareScore() {
   const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجرّب/ي أنت أيضاً!';
   if (navigator.share) {
@@ -872,7 +973,10 @@ function clearCountdown() {
 
 /* ── Navigation ── */
 function show(id) {
-  if (id !== 'game') clearCountdown();
+  if (id !== 'game') {
+    clearCountdown();
+    stopSpeaking();
+  }
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screen = document.getElementById(id);
   if (!screen) {
@@ -1105,6 +1209,7 @@ function startGame() {
 
 function renderQ() {
   if (state.idx >= state.questions.length) { endGame(); return; }
+  stopSpeaking();
   const q = state.questions[state.idx];
   state.answered = false;
   document.getElementById('show-answer-btn').style.display = 'none';
@@ -1114,32 +1219,24 @@ function renderQ() {
   document.getElementById('q-text').textContent = q.q;
   document.getElementById('q-book-badge').textContent = BOOK_LABELS[q.book] || q.book;
   document.getElementById('q-type-badge').style.display = q.type === 'tf' ? 'inline-block' : 'none';
+  updateVoiceUI();
   updateProgress();
   const grid = document.getElementById('ans-grid');
   grid.innerHTML = '';
   if (q.type === 'tf') {
     ['صح ✓', 'خطأ ✗'].forEach((txt, i) => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'ans-btn';
-      btn.textContent = txt;
-      btn.onclick = () => pick(btn, (i === 0) === q.tf);
-      grid.appendChild(btn);
+      appendAnswerOption(grid, txt, (btn) => pick(btn, (i === 0) === q.tf));
     });
   } else {
     shuffleArr([0,1,2,3].slice(0, (q.a || []).length)).forEach(i => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'ans-btn';
-      btn.textContent = q.a[i];
-      btn.onclick = () => pick(btn, i === q.c);
-      grid.appendChild(btn);
+      appendAnswerOption(grid, q.a[i], (btn) => pick(btn, i === q.c));
     });
   }
 }
 
 function pick(btn, isOk) {
   if (state.answered) return;
+  stopSpeaking();
   state.answered = true;
   document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
   const fb = document.getElementById('feedback');
@@ -1211,6 +1308,7 @@ function pick(btn, isOk) {
 }
 
 function nextQ() {
+  stopSpeaking();
   state.idx++;
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
   document.getElementById('fb-self-correct').style.display = 'none';
@@ -1671,6 +1769,13 @@ async function restoreSession() {
   document.getElementById('font-size-slider').value = s;
   soundOn = localStorage.getItem('soundOn') !== 'false';
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
+  voiceOn = localStorage.getItem('voiceOn') !== 'false';
+  voiceReadAnswers = localStorage.getItem('voiceReadAnswers') === 'true';
+  updateVoiceUI();
+  if ('speechSynthesis' in window) {
+    loadArabicVoice();
+    speechSynthesis.onvoiceschanged = loadArabicVoice;
+  }
   const savedName = localStorage.getItem('savedName');
   const loginScreenActive = document.getElementById('login-screen')?.classList.contains('active');
   if (savedName && loginScreenActive && !LOGIN_LOCKED) document.getElementById('login-name').value = savedName;
