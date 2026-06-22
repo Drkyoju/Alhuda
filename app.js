@@ -880,28 +880,29 @@ function buildBookCitationHtml(q) {
   if (!book && !chapter && !pageLabel && !quote) return '';
   let inner = '';
   if (quote) {
-    inner += `<blockquote class="book-cite-quote">${escapeHtml(quote)}</blockquote>`;
+    inner += `<p class="book-cite-quote">${escapeHtml(quote)}</p>`;
   }
   const meta = [];
   if (book) meta.push(escapeHtml(book));
   if (chapter) meta.push(escapeHtml(chapter));
   if (pageLabel) meta.push(pageLabel);
   inner += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
-  return `<details class="book-cite-fold" open><summary>📖 الاستشهاد من الكتاب</summary><div class="book-cite-box">${inner}</div></details>`;
+  return `<p class="book-cite-heading">📖 الاستشهاد من الكتاب</p><div class="book-cite-box">${inner}</div>`;
 }
 
-function buildAnswerFeedbackHtml(q, isCorrect) {
-  const why = q.exp || (isCorrect ? 'إجابة صحيحة — بارك الله فيك!' : '');
+function buildAnswerFeedbackHtml(q, isCorrect = true) {
   const correctText = getCorrectAnswerText(q);
-  let html = '<div class="why-correct-box">';
-  if (!isCorrect && correctText) {
-    html += `<strong>✅ الإجابة الصحيحة:</strong> ${escapeHtml(correctText)}`;
-    if (why) html += `<p class="fb-explain"><strong>📖 الشرح:</strong> ${escapeHtml(why)}</p>`;
-  } else {
-    html += `<p class="fb-explain"><strong>✅ لماذا صحيح؟</strong> ${escapeHtml(why)}</p>`;
+  const mark = isCorrect ? '✅' : '❌';
+  const boxClass = isCorrect ? 'why-correct-box is-correct' : 'why-correct-box is-wrong';
+  let html = '<div class="answer-feedback">';
+  if (correctText) {
+    html += `<div class="${boxClass}">`;
+    html += `<p class="fb-correct-label"><strong>${mark} الإجابة الصحيحة:</strong></p>`;
+    html += `<p class="fb-correct-answer">${escapeHtml(correctText)}</p>`;
+    html += '</div>';
   }
-  html += '</div>';
   html += buildBookCitationHtml(q);
+  html += '</div>';
   return html;
 }
 
@@ -2029,12 +2030,11 @@ function renderReviewItem() {
   const total = state.wrongLog.length;
   document.getElementById('review-progress').textContent = `خطأ ${state.reviewIdx + 1} من ${total}`;
   document.getElementById('review-q').textContent = q.q;
-  const pickedNote = item.picked ? `<br><span style="font-size:0.85em;color:var(--coral);">إجابتك: ${escapeHtml(item.picked)}</span>` : '';
-  document.getElementById('review-answer').innerHTML =
-    `📌 الإجابة الصحيحة:<br><strong>${escapeHtml(getCorrectAnswerText(q))}</strong>${pickedNote}`;
-  const exp = q.exp || '—';
-  document.getElementById('review-exp').innerHTML =
-    `<strong>📖 الدليل والشرح:</strong>${escapeHtml(exp)}${buildBookCitationHtml(q)}`;
+  const pickedNote = item.picked
+    ? `<p class="review-picked">إجابتك: <span>${escapeHtml(item.picked)}</span></p>`
+    : '';
+  document.getElementById('review-answer').innerHTML = pickedNote;
+  document.getElementById('review-exp').innerHTML = buildAnswerFeedbackHtml(q, false);
   const btn = document.getElementById('btn-review-next');
   btn.textContent = state.reviewIdx >= total - 1 ? 'إنهاء المراجعة ✓' : 'التالي ←';
 }
@@ -2058,7 +2058,7 @@ function revealAnswer() {
   if (q) highlightCorrectAnswer(q);
   const expEl = document.getElementById('fb-exp');
   if (q?.exp || q?.quote || q?.page) {
-    expEl.innerHTML = buildAnswerFeedbackHtml(q, true);
+    expEl.innerHTML = buildAnswerFeedbackHtml(q, false);
   }
   document.getElementById('show-answer-btn').style.display = 'none';
 }

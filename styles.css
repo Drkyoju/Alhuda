@@ -1015,7 +1015,29 @@
       line-height: 1.65;
       text-align: right;
     }
-    .why-correct-box strong { display: block; margin-bottom: 6px; font-size: 0.95em; }
+    .why-correct-box.is-wrong {
+      background: var(--red-light);
+      border-color: var(--coral);
+      color: var(--coral-dark);
+    }
+    .why-correct-box strong { display: block; margin-bottom: 4px; font-size: 0.95em; }
+    .fb-correct-label { margin: 0 0 4px; }
+    .fb-correct-answer {
+      margin: 0;
+      font-size: 1.05em;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .answer-feedback .book-cite-box { margin-top: 0; }
+    .review-picked {
+      margin: 0;
+      font-size: 0.88em;
+      font-weight: 800;
+      color: var(--coral-dark);
+      line-height: 1.6;
+    }
+    .review-picked span { font-weight: 800; }
     .review-exp {
       background: var(--ivory);
       border: 1px solid var(--border-gold);
@@ -1628,6 +1650,13 @@
     @keyframes timerNumPulse {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.45; }
+    }
+    .book-cite-heading {
+      margin: 14px 0 8px;
+      font-weight: 800;
+      font-size: 0.95em;
+      color: var(--emerald-dark);
+      text-align: right;
     }
     .book-cite-box {
       background: linear-gradient(180deg, #fffdf8, var(--cream));
@@ -2754,7 +2783,7 @@
     #game .q-area {
       max-width: 640px;
       margin: 0 auto;
-      padding-bottom: 180px;
+      padding-bottom: max(52dvh, 120px);
     }
     #game .q-meta .badge {
       border-radius: 999px;
@@ -2772,42 +2801,89 @@
     }
     #game .feedback {
       max-width: 640px;
-      padding: 22px 20px max(22px, env(safe-area-inset-bottom));
+      max-height: min(50dvh, 50vh);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 10px 14px max(10px, env(safe-area-inset-bottom));
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    #game .feedback.ok {
+      background: linear-gradient(180deg, rgba(240, 250, 244, 0.98), rgba(255, 255, 255, 0.97));
+    }
+    #game .feedback.bad {
+      background: linear-gradient(180deg, rgba(253, 245, 245, 0.98), rgba(255, 255, 255, 0.97));
     }
     #game .feedback #fb-title {
       font-family: var(--font-display);
-      font-size: 1.15em;
+      font-size: 0.92em;
       color: var(--emerald-dark);
       font-weight: 900;
-      margin: 8px 0 6px;
+      margin: 2px 0 4px;
+      line-height: 1.45;
     }
     #game .feedback .fb-icon-wrap {
-      font-size: 2.2em;
+      font-size: 1.5em;
       line-height: 1;
       text-align: center;
     }
     #game .feedback .fb-inner {
+      display: flex;
+      flex-direction: column;
       max-width: 560px;
+      width: 100%;
+      max-height: 100%;
+      min-height: 0;
       margin: 0 auto;
+      flex: 1 1 auto;
     }
     #game .feedback #fb-exp {
-      font-size: 1em;
-      line-height: 1.7;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      font-size: 0.88em;
+      line-height: 1.6;
       color: var(--text);
+      padding-left: 2px;
     }
-    #game .feedback .fb-explain {
-      font-size: clamp(1.08rem, calc(var(--base-font-size, 18px) * 1.12), 1.25rem) !important;
-      line-height: 1.85 !important;
-      margin-top: 10px;
-      font-weight: 700;
-      color: var(--text);
+    #game .feedback #fb-exp::-webkit-scrollbar { width: 5px; }
+    #game .feedback #fb-exp::-webkit-scrollbar-thumb {
+      background: rgba(45, 90, 61, 0.25);
+      border-radius: 4px;
     }
     #game .feedback .why-correct-box {
-      font-size: clamp(1rem, var(--base-font-size, 18px), 1.12rem) !important;
-      line-height: 1.75 !important;
+      font-size: 0.88em !important;
+      line-height: 1.55 !important;
+      padding: 8px 10px;
+      margin-top: 4px;
     }
     #game .feedback .why-correct-box strong {
-      font-size: 1em;
+      font-size: 0.95em;
+    }
+    #game .feedback .book-cite-heading {
+      margin: 8px 0 4px;
+      font-size: 0.9em;
+    }
+    #game .feedback .book-cite-box {
+      padding: 10px 12px;
+      margin-top: 0;
+    }
+    #game .feedback .book-cite-quote {
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      font-size: 0.86em !important;
+      line-height: 1.65 !important;
+    }
+    #game .feedback .book-cite-meta {
+      font-size: 0.8em;
+    }
+    #game .feedback .fb-continue-btn {
+      flex-shrink: 0;
+      margin-top: 8px !important;
     }
     .fb-continue-btn,
     .confirm-answer-btn {
@@ -2950,7 +3026,16 @@
       .q-with-timer { gap: 6px; align-items: flex-start; }
       .top-bar { gap: 6px; padding-left: 10px; padding-right: 10px; }
       .score-badge { font-size: 0.7em; padding: 3px 8px; }
-      #game .q-area { padding: 14px 12px 170px; }
+      #game .q-area { padding: 14px 12px max(52dvh, 110px); }
+      #game .feedback #fb-title {
+        font-size: 0.9em !important;
+      }
+      #game .feedback .why-correct-box {
+        font-size: 0.86em !important;
+      }
+      #game .feedback .fb-correct-answer {
+        font-size: 0.95em !important;
+      }
     }
     @media (max-width: 768px) {
       body { background-attachment: scroll; }
@@ -3030,14 +3115,10 @@
         font-size: clamp(12px, calc(var(--base-font-size, 18px) * 0.78), 14px) !important;
       }
       #game .feedback #fb-title {
-        font-size: clamp(16px, var(--base-font-size, 18px), 19px) !important;
-      }
-      #game .feedback .fb-explain {
-        font-size: clamp(18px, calc(var(--base-font-size, 18px) * 1.1), 22px) !important;
-        line-height: 1.85 !important;
+        font-size: clamp(14px, calc(var(--base-font-size, 18px) * 0.85), 16px) !important;
       }
       #game .feedback .why-correct-box {
-        font-size: clamp(16px, var(--base-font-size, 18px), 19px) !important;
+        font-size: clamp(13px, calc(var(--base-font-size, 18px) * 0.82), 15px) !important;
       }
       .q-timer-hourglass {
         width: 52px;
@@ -3135,26 +3216,16 @@
       transition: width 0.45s ease;
     }
 
-    /* ── استشهاد قابل للطي ── */
-    .book-cite-fold {
-      margin-top: 10px;
-      border-radius: 12px;
-      border: 1px solid var(--gold);
-      background: var(--gold-glow);
+    /* ── استشهاد من الكتاب (ثابت بدون طي) ── */
+    .answer-feedback .book-cite-heading {
+      font-size: clamp(1rem, var(--base-font-size, 18px), 1.08rem);
     }
-    .book-cite-fold summary {
-      padding: 10px 14px;
-      font-weight: 800;
-      cursor: pointer;
-      list-style: none;
-      color: var(--emerald-dark);
+    #game .feedback .fb-correct-answer {
+      font-size: 0.95em !important;
     }
-    .book-cite-fold summary::-webkit-details-marker { display: none; }
-    .book-cite-fold .book-cite-box {
-      margin: 0;
-      border: none;
-      border-radius: 0;
-      border-top: 1px solid rgba(201, 169, 98, 0.35);
+    #game .feedback .book-cite-quote {
+      font-size: 0.86em !important;
+      line-height: 1.65 !important;
     }
 
     /* ── تعليمات اللعب ── */
@@ -3297,10 +3368,8 @@
     .want-program-btn:focus-visible,
     .close-btn:focus-visible,
     .tab-btn:focus-visible,
-    .book-cite-fold summary:focus-visible,
+    .book-cite-heading:focus-visible,
     .mobile-bottom-nav button:focus-visible {
       outline: 3px solid var(--gold);
       outline-offset: 2px;
     }
-
-    .book-cite-fold[open] summary { color: var(--emerald-dark); font-weight: 800; }
