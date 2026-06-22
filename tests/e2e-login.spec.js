@@ -36,6 +36,7 @@ test('login → play 1 question → results → score saved', async ({ page }) =
   await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 45000 });
   await dismissOnboarding(page);
 
+  await page.locator('#advanced-range-fold summary').click();
   await page.locator('#q-from-input').fill('1');
   await page.locator('#q-to-input').fill('1');
   await page.locator('#btn-start-game').click();

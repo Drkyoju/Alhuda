@@ -110,6 +110,9 @@ running app.
 | `extract_questions_from_pdfs.py` | Parse teacher PDFs into MC/TF questions |
 | `audit_questions.py` | Detect duplicates, Arabic quality issues |
 | `apply_question_cleanup.py` | Run cleanup against live Supabase |
+| `apply_book_citations.py` | Apply `book_page` / `source_quote` from JSON |
+| `export_citations_worksheet.py` | Export CSV worksheet for page numbers |
+| `match_citations_from_pdfs.py` | Map questions → كتاب المعلم PDF pages |
 | `apply_sync_to_supabase.py` | Apply sync results |
 | `sync_quiz_app_to_supabase.py` | Compare local quiz_app.html with DB |
 | `build_full_cleanup_sql.py` | Generate bulk cleanup SQL |

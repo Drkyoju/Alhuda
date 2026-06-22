@@ -239,13 +239,15 @@
     .topbar-btn:active { transform: scale(0.95); }
     .topbar-btn.icon-only { padding: 0; width: 44px; }
     .site-logo {
-      max-width: 80px;
+      max-width: 96px;
+      max-height: 96px;
       height: auto;
       border-radius: 10px;
       background: var(--white);
       padding: 4px;
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--border);
+      object-fit: contain;
     }
 
     /* ── Logo ── */
@@ -258,9 +260,9 @@
     }
     .logo-img {
       width: auto;
-      max-width: 168px;
+      max-width: 200px;
       height: auto;
-      max-height: 132px;
+      max-height: 158px;
       border-radius: 16px;
       background: var(--white);
       padding: 12px;
@@ -1986,7 +1988,9 @@
       border-radius: 12px;
       border: 1px solid var(--border-gold);
       box-shadow: var(--shadow-sm);
-      max-width: 56px;
+      max-width: 96px;
+      max-height: 96px;
+      object-fit: contain;
     }
     .topbar-btn {
       background: var(--glass);
@@ -2937,7 +2941,7 @@
     @media (max-width: 480px) {
       .login-hero { width: 100%; padding: 0 4px; }
       .card { padding: 20px 16px; border-radius: var(--radius-lg); }
-      .logo-img { max-width: 148px; max-height: 118px; }
+      .logo-img { max-width: 178px; max-height: 140px; }
       .brand-title { font-size: 1.45em; }
       .book-select-row { gap: 8px; }
       .book-btn { min-height: 88px; padding: 12px 8px; font-size: 0.75em; }
@@ -3241,3 +3245,62 @@
       box-shadow: var(--shadow);
     }
     .offline-banner[hidden] { display: none !important; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 5000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(22, 56, 40, 0.45);
+      backdrop-filter: blur(4px);
+    }
+    .confirm-overlay.open { display: flex; }
+    .confirm-sheet { max-width: 360px; width: 100%; text-align: center; padding: 22px 18px; }
+    .confirm-title { font-weight: 800; margin-bottom: 16px; line-height: 1.5; }
+    .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+    .confirm-actions .btn { min-width: 100px; min-height: 48px; }
+
+    .advanced-range-fold { margin-top: 8px; }
+    .advanced-range-fold summary {
+      cursor: pointer;
+      list-style: none;
+      font-weight: 800;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+    }
+    .advanced-range-fold summary::-webkit-details-marker { display: none; }
+
+    @media (max-width: 768px) {
+      body.has-bottom-nav #welcome .nav-dock { display: none; }
+    }
+
+    .close-btn { min-width: 44px; min-height: 44px; }
+
+    .app-loading.show { pointer-events: all; }
+
+    .rating-btn:focus-visible,
+    .want-program-btn:focus-visible,
+    .close-btn:focus-visible,
+    .tab-btn:focus-visible,
+    .book-cite-fold summary:focus-visible,
+    .mobile-bottom-nav button:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    .book-cite-fold[open] summary { color: var(--emerald-dark); font-weight: 800; }

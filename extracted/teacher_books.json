@@ -1,0 +1,6 @@
+{
+  "_readme": "Paths to كتاب المعلم PDFs. Override with env TEACHER_PDF_TAWHEED etc.",
+  "tawheed": "/Users/aibi/Downloads/كتاب_التوحيد_للمعلمات.pdf",
+  "usool": "/Users/aibi/Downloads/الأصول_الثلاثة_للمبتدئين_كتاب_المعلم.pdf",
+  "nawawi": "/Users/aibi/Downloads/الأربعون_النووية_كتاب_المعلم.pdf"
+}

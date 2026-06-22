@@ -125,11 +125,12 @@ body.has-bottom-nav .page-shell {
   justify-content: center;
   gap: 2px;
   font-family: inherit;
-  font-size: 0.68em;
+  font-size: 0.72em;
   font-weight: 800;
   color: var(--text-soft, #6b7c72);
   cursor: pointer;
-  padding: 6px 4px;
+  padding: 10px 6px;
+  min-height: 48px;
   -webkit-tap-highlight-color: transparent;
 }
 .mobile-bottom-nav button .nav-ico { font-size: 1.45em; line-height: 1; }

@@ -50,10 +50,40 @@ async function sendViaFormSubmit(data, to) {
   return json.success === 'true' || json.success === true || res.ok;
 }
 
+const TTS_MAX_CHARS = 800;
+const rateBuckets = new Map();
+
+function clientIp(request) {
+  return request.headers.get('CF-Connecting-IP')
+    || request.headers.get('X-Forwarded-For')?.split(',')[0]?.trim()
+    || 'unknown';
+}
+
+function rateLimit(request, path, limit = 25, windowMs = 60000) {
+  const key = `${clientIp(request)}:${path}`;
+  const now = Date.now();
+  let hits = rateBuckets.get(key) || [];
+  hits = hits.filter((t) => now - t < windowMs);
+  if (hits.length >= limit) return false;
+  hits.push(now);
+  rateBuckets.set(key, hits);
+  return true;
+}
+
+function rateLimitedResponse(cors) {
+  return new Response(JSON.stringify({ ok: false, error: 'Too many requests' }), {
+    status: 429,
+    headers: { ...cors, ...JSON_HEADERS },
+  });
+}
+
 async function handleFeedbackNotify(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: cors });
+  }
+  if (!rateLimit(request, 'feedback', 15, 60000)) {
+    return rateLimitedResponse(cors);
   }
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ ok: false, error: 'Method not allowed' }), {
@@ -101,12 +131,13 @@ async function handleFeedbackNotify(request, env) {
   });
 }
 
-const TTS_MAX_CHARS = 800;
-
 async function handleTts(request) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: cors });
+  }
+  if (!rateLimit(request, 'tts', 40, 60000)) {
+    return rateLimitedResponse(cors);
   }
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ ok: false, error: 'Method not allowed' }), {

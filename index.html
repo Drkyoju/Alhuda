@@ -10,14 +10,14 @@
   <title>المكتبة الثلاثية - أسئلة تعليمية</title>
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
-  <link rel="stylesheet" href="enhancements.css?v=2">
+  <link rel="stylesheet" href="enhancements.css?v=8">
   <link rel="stylesheet" href="kids-ui.css?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=23">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -50,7 +50,7 @@
 
   <!-- شريط علوي — يختفي في الدخول واللعب -->
   <header class="app-topbar">
-    <img src="icons/icon.svg" alt="شعار جمعية الهدى والحكمة" class="site-logo" width="48" height="48">
+    <img src="icons/org-logo.png" alt="شعار جمعية الهدى والحكمة" class="site-logo" width="96" height="96">
     <div class="topbar-center">
       <span class="topbar-chip xp" id="topbar-xp">✨ 0</span>
     </div>
@@ -145,7 +145,7 @@
   <div id="login-screen" class="screen active">
     <div class="login-hero">
       <div class="logo-wrap">
-        <img src="icons/icon.svg" alt="جمعية الهدى والحكمة" class="logo-img" width="104" height="104">
+        <img src="icons/org-logo.png" alt="جمعية الهدى والحكمة" class="logo-img" width="200" height="158">
         <div class="brand-title">المكتبة الثلاثية</div>
         <div class="org-name">جمعية الهدى والحكمة</div>
         <div class="brand-sub">أسئلة تعليمية تفاعلية</div>
@@ -161,9 +161,10 @@
         <p class="login-or-divider">أو</p>
         <div class="login-locked-block" id="login-locked-block">
           <h2 id="login-title">ادخل/ي باسمك وابدأ/ي 🎮</h2>
-          <input type="text" class="input login-input-locked" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name">
+          <label class="sr-only" for="login-name">اسمك</label>
+          <input type="text" class="input login-input-locked" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name" aria-describedby="login-err">
           <p class="login-name-hint login-lock-notice" hidden>الدخول العادي مغلق الآن — جرّب/ي النموذج التجريبي أولاً</p>
-          <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err"></p>
+          <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err" role="alert" aria-live="polite"></p>
           <button type="button" class="btn btn-green btn-xl btn-login-main" id="btn-login" aria-label="دخول">دخول 🎮</button>
         </div>
       </div>
@@ -239,7 +240,7 @@
 
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
       <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;margin-top:10px;">📋 مراجعة أخطاء النموذج</button>
-      <p id="feedback-msg" class="feedback-status-msg"></p>
+      <p id="feedback-msg" class="feedback-status-msg" role="alert" aria-live="polite"></p>
       <button class="btn btn-sm btn-white" onclick="finishDemoFlow()" style="margin-top:8px;width:100%;">📚 جرّب/ي كتاباً آخر</button>
       </div>
     </div>
@@ -289,6 +290,8 @@
           <button class="level-btn" onclick="selectLevel('all')" id="btn-all" data-level="all">الكل<span class="lvl-count" id="cnt-all"></span></button>
         </div>
 
+        <details class="advanced-range-fold" id="advanced-range-fold">
+          <summary class="section-label">⚙️ خيارات متقدمة (نطاق الأسئلة)</summary>
         <div class="q-range-card">
           <p class="pool-info" id="pool-info">متاح: ٠ سؤال</p>
           <div class="pool-breakdown" id="pool-breakdown"></div>
@@ -300,6 +303,7 @@
           </div>
           <p class="q-range-hint" id="q-range-hint">٢٠ سؤالاً بالترتيب</p>
         </div>
+        </details>
 
         <div class="action-row" style="margin-top:8px;">
           <button class="btn btn-gold btn-xl" id="btn-start-game" onclick="startCountdown()">ابدأ اللعبة 🎮</button>
@@ -555,11 +559,21 @@
     <button type="button" class="pwa-install-dismiss" id="pwa-install-dismiss" aria-label="إغلاق">✕</button>
   </div>
 
+  <div id="confirm-overlay" class="confirm-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="confirm-sheet card">
+      <p id="confirm-title" class="confirm-title"></p>
+      <div class="confirm-actions">
+        <button type="button" class="btn btn-white" id="confirm-cancel">لا</button>
+        <button type="button" class="btn btn-green" id="confirm-ok">نعم</button>
+      </div>
+    </div>
+  </div>
+
 <script src="version.js"></script>
-<script src="app.js?v=36"></script>
+<script src="app.js?v=37"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=8"></script>
-<script src="platform.js?v=9"></script>
+<script src="platform.js?v=10"></script>
 <script>
 (async function boot() {
   updateBismillahPadding();
@@ -574,8 +588,13 @@
   selectLevel('easy');
   document.getElementById('btn-levels-preview')?.addEventListener('click', () => showLevelsPreview());
   document.getElementById('btn-leaderboard-preview')?.addEventListener('click', () => showLeaderboard());
-  if (await tryRestoreGameSession()) return;
-  if (await restoreSession()) return;
+  try {
+    if (await tryRestoreGameSession()) return;
+    if (await restoreSession()) return;
+  } catch (e) {
+    console.error(e);
+    if (typeof showToast === 'function') showToast('تعذّر استعادة الجلسة', 'err');
+  }
   show('login-screen');
   updateTopbarStats();
   updateLoginQuestionHint();

@@ -1,0 +1,26 @@
+{
+  "_readme": "Copy to book_citations.json and fill book_page from the teacher book. Run: python3 scripts/apply_book_citations.py",
+  "updates": [
+    {
+      "id": "8230d37a-f5c5-4dea-b8d2-ee499eec99e6",
+      "book": "tawheed",
+      "book_page": null,
+      "source_quote": "«العبادة هي التوحيد»",
+      "note": "مثال — ضع/ي رقم الصفحة من كتاب المعلم"
+    },
+    {
+      "id": "36a87ca3-1a33-46b7-8640-d9cf7215d72d",
+      "book": "usool",
+      "book_page": null,
+      "source_quote": "«تَعَلَّمْ أَنَّهُ لَا يَجِبُ عَلَى أَحَدٍ مِنَ الْخَلْقِ أَنْ يُعَبَّدَ إِلَّا اللَّهُ»",
+      "note": "الأصول الثلاثة — باب معرفة الرب"
+    },
+    {
+      "id": "444a1228-2f73-44f1-99ba-720d9c572f4a",
+      "book": "nawawi",
+      "book_page": null,
+      "source_quote": "«إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ»",
+      "note": "حديث ١ في الأربعون النووية"
+    }
+  ]
+}

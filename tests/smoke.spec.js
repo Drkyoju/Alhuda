@@ -1,5 +1,12 @@
 const { test, expect } = require('@playwright/test');
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('voiceOn', 'false');
+    localStorage.setItem('soundOn', 'false');
+  });
+});
+
 async function dismissOverlays(page) {
   const tutorial = page.locator('#game-tutorial-overlay.open');
   if (await tutorial.isVisible().catch(() => false)) {
@@ -55,11 +62,10 @@ test('game exit asks before leaving mid-round', async ({ page }) => {
   await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
   await dismissOverlays(page);
 
-  page.once('dialog', (d) => {
-    expect(d.message()).toMatch(/الخروج/);
-    d.dismiss();
-  });
+  page.once('dialog', (d) => d.dismiss());
   await page.locator('#game .close-btn').first().click();
+  await expect(page.locator('#confirm-overlay.open')).toBeVisible();
+  await page.locator('#confirm-cancel').click();
   await expect(page.locator('#game')).toHaveClass(/active/);
 });
 

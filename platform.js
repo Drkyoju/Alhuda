@@ -327,7 +327,11 @@
     if (localStorage.getItem('onboardingDone')) return;
     if (!document.getElementById('welcome')?.classList.contains('active')) return;
     const ov = document.getElementById('onboarding-overlay');
-    if (ov) ov.classList.add('open');
+    if (!ov) return;
+    ov.classList.add('open');
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    if (typeof trapFocusInOverlay === 'function') trapFocusInOverlay(ov);
   }
 
   function onboardingNext() {
@@ -347,7 +351,13 @@
 
   function closeOnboarding() {
     localStorage.setItem('onboardingDone', '1');
-    document.getElementById('onboarding-overlay')?.classList.remove('open');
+    const ov = document.getElementById('onboarding-overlay');
+    if (ov) {
+      ov.classList.remove('open');
+      ov.removeAttribute('role');
+      ov.removeAttribute('aria-modal');
+      if (typeof releaseFocusTrap === 'function') releaseFocusTrap(ov);
+    }
   }
 
   async function loadStudentHomework() {
