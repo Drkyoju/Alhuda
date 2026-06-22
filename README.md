@@ -37,8 +37,8 @@ Supabase **publishable** anon key (safe to expose; protected by RLS).
 |---|---|
 | Frontend | Plain HTML / CSS / vanilla JS — no framework, no bundler |
 | Backend | Supabase (Postgres + Auth + Edge) |
-| Deploy | GitHub Pages (push to `main`) |
-| PWA | `manifest.json` + `service-worker.js` (cache v9) |
+| Deploy | Cloudflare Workers (`wrangler deploy` via GitHub Actions on `main`) |
+| PWA | `manifest.json` + `service-worker.js` — bump `version.js` + CACHE when releasing |
 
 ### File map
 
@@ -48,7 +48,9 @@ styles.css              — extracted CSS (~80KB, was inline)
 app.js                  — main app logic (~67KB, was inline)
 auth.js                 — student (name+PIN) auth, SHA-256 + lockout
 platform.js             — classes, teacher dashboard, homework, progress
-enhancements.js         — toasts, analytics, bottom nav, SW registration
+enhancements.js         — toasts, analytics, bottom nav, SW registration, PWA install
+kids-ui.css             — child-friendly colors and motion
+version.js              — cache-bust versions (keep in sync with service-worker.js)
 service-worker.js       — offline caching (network-first JS, cache-first static)
 manifest.json           — PWA manifest with PNG icons + shortcuts
 icons/                  — SVG + generated PNG icons (192/512/maskable/apple)
@@ -121,27 +123,24 @@ All scripts read `SUPABASE_URL` and `SUPABASE_KEY` from the environment
 
 ### Lint / typecheck / test
 
-This project has **no automated test suite, linter, or type checker** yet.
-Verification is manual:
+This project includes a **Playwright smoke test** (`npm run test:smoke`) that
+covers demo login flow and question rendering. CI runs it on every push to
+`main` via `.github/workflows/smoke.yml`.
+
+Additional manual checks:
 
 - `node --check <file>.js` — JS syntax check
-- `python3 -m py_compile scripts/*.py` — Python syntax check
-- Open the app in a browser, exercise login → play → homework → admin flows.
-
-Contributions to add Vitest/Playwright/Jest are very welcome.
+- Open the app on a real phone after deploy (hard refresh)
 
 ### Service worker versioning
 
-When you change any of `app.js`, `auth.js`, `platform.js`, `enhancements.js`,
-or `service-worker.js`:
+When you change cached assets:
 
-1. Bump `CACHE` in `service-worker.js` (e.g., `'alhuda-v9'` → `'alhuda-v10'`).
-2. Bump the matching `?v=N` query in `enhancements.js:registerServiceWorker()`.
-3. Bump the `?v=N` query strings in `index.html` for any asset you changed
-   (CSS/JS).
+1. Bump values in `version.js` (especially `cache` and `sw`).
+2. Match `CACHE` in `service-worker.js` to `version.js` → `cache`.
+3. Bump `?v=N` query strings in `index.html` for changed CSS/JS files.
 
-Users will pick up the new version on the NEXT page load via the
-`SKIP_WAITING` handshake.
+Users pick up the new version on the **next** page load via `SKIP_WAITING`.
 
 ---
 
@@ -151,11 +150,11 @@ Users will pick up the new version on the NEXT page load via the
 git add -A
 git commit -m "release: ..."
 git push origin main
-# GitHub Pages will rebuild and serve within ~1 min.
+# GitHub Actions deploys to Cloudflare Workers (~1 min).
+# Live: https://alhuda.ryodan71.workers.dev/
 ```
 
-The `.nojekyll` file at the repo root disables Jekyll so the `icons/` and
-other asset directories ship untouched.
+Run `supabase_questions_citation.sql` in Supabase when adding book page quotes.
 
 ---
 

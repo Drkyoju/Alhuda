@@ -48,7 +48,7 @@
   function syncBottomNav(screenId) {
     const hide = [
       'login-screen', 'game', 'results', 'gameover', 'countdown-overlay', 'demo-intro',
-      'review-screen', 'feedback-screen', 'onboarding-overlay', 'levels-preview-screen',
+      'review-screen', 'feedback-screen', 'onboarding-overlay', 'game-tutorial-overlay', 'levels-preview-screen',
     ];
     const immersive = hide.includes(screenId);
     setBottomNavVisible(!immersive && !!state?.user);
@@ -93,11 +93,8 @@
 
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
-    // Version query MUST match CACHE in service-worker.js. When a worker
-    // update is waiting, prompt it to take over on the NEXT page load by
-    // sending SKIP_WAITING — avoids the previous "new JS, old HTML tab"
-    // runtime error pattern from unconditional skipWaiting().
-    navigator.serviceWorker.register('./service-worker.js?v=35').then((reg) => {
+    const swVer = window.ALHUDA_ASSETS?.sw || 39;
+    navigator.serviceWorker.register(`./service-worker.js?v=${swVer}`).then((reg) => {
       // If a new SW is waiting, hand it control on the next reload.
       if (reg.waiting) {
         reg.waiting.postMessage('SKIP_WAITING');
@@ -146,9 +143,35 @@
     }
   }
 
+  function initPwaInstall() {
+    const banner = document.getElementById('pwa-install-banner');
+    const btn = document.getElementById('pwa-install-btn');
+    const dismiss = document.getElementById('pwa-install-dismiss');
+    if (!banner || !btn) return;
+    if (localStorage.getItem('pwaInstallDismissed')) return;
+    let deferred;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferred = e;
+      banner.hidden = false;
+    });
+    btn.addEventListener('click', async () => {
+      if (!deferred) return;
+      deferred.prompt();
+      await deferred.userChoice.catch(() => ({}));
+      banner.hidden = true;
+      deferred = null;
+    });
+    dismiss?.addEventListener('click', () => {
+      banner.hidden = true;
+      localStorage.setItem('pwaInstallDismissed', '1');
+    });
+  }
+
   function initEnhancements() {
     wrapShow();
     registerServiceWorker();
+    initPwaInstall();
     initKidsUI();
     // Idempotency guard: previously a second initEnhancements() call (e.g.,
     // from a deferred script) would wrap toggleTrainingMode again, double-

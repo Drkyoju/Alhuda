@@ -13,14 +13,21 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="enhancements.css?v=2">
-  <link rel="stylesheet" href="kids-ui.css?v=3">
+  <link rel="stylesheet" href="kids-ui.css?v=4">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=15">
+  <link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body class="islamic-bg login-mode kids-theme">
+
+  <div id="app-loading" class="app-loading" aria-live="polite" aria-busy="true">
+    <div class="app-loading-inner">
+      <div class="app-loading-spinner" aria-hidden="true"></div>
+      <p>جاري تحميل الأسئلة...</p>
+    </div>
+  </div>
 
   <!-- Floating decorations -->
   <div class="float-deco float-deco-kids" style="top:15%;right:8%;animation-delay:0s;">📖</div>
@@ -54,10 +61,14 @@
     <div class="settings-sheet">
       <div class="sheet-handle"></div>
       <h3>الإعدادات</h3>
-      <div class="setting-row">
+      <div class="setting-row setting-font-presets">
         <span>🔤</span>
         <span>حجم الخط</span>
-        <input type="range" min="14" max="28" value="18" oninput="adjustFontSize(this.value)" id="font-size-slider">
+        <div class="font-preset-row">
+          <button type="button" class="font-preset-btn" data-size="16" onclick="setFontPreset(16)">صغير</button>
+          <button type="button" class="font-preset-btn" data-size="18" onclick="setFontPreset(18)">متوسط</button>
+          <button type="button" class="font-preset-btn" data-size="20" onclick="setFontPreset(20)">كبير</button>
+        </div>
         <span class="val" id="fs-label">18</span>
       </div>
       <button class="btn btn-white" onclick="toggleTrainingMode()" id="training-btn" style="width:100%;margin-bottom:10px;">🏋️ وضع التدريب</button>
@@ -101,6 +112,30 @@
       <div class="onb-dots"><span class="onb-dot on"></span><span class="onb-dot"></span><span class="onb-dot"></span></div>
       <button class="btn btn-gold btn-xl" onclick="onboardingNext()">التالي</button>
       <button class="btn btn-sm btn-white" onclick="closeOnboarding()" style="margin-top:8px;width:100%;">تخطي</button>
+    </div>
+  </div>
+
+  <!-- Game tutorial (first play) -->
+  <div id="game-tutorial-overlay" class="game-tutorial-overlay">
+    <div class="onb-card gt-card">
+      <div class="gt-slide active">
+        <div class="onb-icon">📖</div>
+        <h3>اقرأ/ي السؤال</h3>
+        <p>السؤال كبير وواضح. اضغط/ي 🔊 لتشغيل الصوت أو 🔇 لإيقافه.</p>
+      </div>
+      <div class="gt-slide">
+        <div class="onb-icon">👆</div>
+        <h3>اختر/ي إجابة</h3>
+        <p>اضغط/ي على الإجابة الصحيحة، ثم «متابعة» للسؤال التالي.</p>
+      </div>
+      <div class="gt-slide">
+        <div class="onb-icon">⭐</div>
+        <h3>اجمع/ي نقاطاً!</h3>
+        <p>كل إجابة صحيحة تقرّبك من النجوم والمرتبة الأعلى 🏆</p>
+      </div>
+      <div class="onb-dots gt-dots"><span class="onb-dot gt-dot on"></span><span class="onb-dot gt-dot"></span><span class="onb-dot gt-dot"></span></div>
+      <button class="btn btn-gold btn-xl" onclick="gameTutorialNext()">التالي</button>
+      <button class="btn btn-sm btn-white" onclick="closeGameTutorial()" style="margin-top:8px;width:100%;">فهمت! ✅</button>
     </div>
   </div>
 
@@ -350,6 +385,7 @@
         <span class="badge badge-blue" id="q-book-badge"></span>
         <span class="badge-tf" id="q-type-badge" style="display:none;">✅ صح أو خطأ</span>
       </div>
+      <div class="q-progress-strip" aria-hidden="true"><div class="q-progress-fill" id="q-progress-fill"></div></div>
       <div class="q-with-timer">
         <div class="q-box-row">
           <div class="q-box" id="q-text">...</div>
@@ -511,15 +547,27 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=29"></script>
+  <div id="pwa-install-banner" class="pwa-install-banner" hidden>
+    <span>📲 ثبّت التطبيق على شاشتك الرئيسية</span>
+    <button type="button" class="btn btn-gold btn-sm" id="pwa-install-btn">تثبيت</button>
+    <button type="button" class="pwa-install-dismiss" id="pwa-install-dismiss" aria-label="إغلاق">✕</button>
+  </div>
+
+<script src="version.js"></script>
+<script src="app.js?v=30"></script>
 <script src="auth.js?v=11"></script>
-<script src="enhancements.js?v=6"></script>
+<script src="enhancements.js?v=7"></script>
 <script src="platform.js?v=7"></script>
 <script>
 (async function boot() {
   updateBismillahPadding();
   window.addEventListener('resize', updateBismillahPadding, { passive: true });
-  await loadQuestions();
+  try {
+    await loadQuestions();
+  } catch (e) {
+    console.error(e);
+    if (typeof showToast === 'function') showToast('تعذّر تحميل التطبيق', 'err');
+  }
   const qCount = (QUESTIONS.tawheed?.length||0) + (QUESTIONS.usool?.length||0) + (QUESTIONS.nawawi?.length||0);
   if (qCount > 0) document.getElementById('login-hint').textContent = '📚 ' + qCount + ' سؤال في انتظارك!';
   updateLevelCounts();

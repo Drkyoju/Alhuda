@@ -12,7 +12,7 @@ const TIMER_SAND_TOP_H = 18;
 const TIMER_SAND_BOTTOM_H = 22;
 const TIMER_SAND_TOP_Y = 12;
 const TIMER_SAND_BOTTOM_Y = 56;
-const LOGIN_LOCKED = true;
+const LOGIN_LOCKED = false;
 const FEEDBACK_NOTIFY_EMAIL = 'hd.hk1444920@gmail.com';
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
@@ -76,10 +76,49 @@ const ENCOURAGE_OK = ['ممتاز! 🌟', 'أحسنت! 🎉', 'رائع! ⭐', '
 const ENCOURAGE_BAD = ['لا بأس! حاول/ي مرة أخرى 💪', 'تعلّمنا من الخطأ 📖', 'واصل/ي! أنت قادر/ة 🌱'];
 const DEFAULT_PLAYER = 'بطل/ة';
 
+function setAppLoading(show, msg) {
+  const el = document.getElementById('app-loading');
+  if (!el) return;
+  el.classList.toggle('show', !!show);
+  const p = el.querySelector('p');
+  if (p && msg) p.textContent = msg;
+}
+
+function setFontPreset(size) {
+  adjustFontSize(size);
+  document.querySelectorAll('.font-preset-btn').forEach((b) => {
+    b.classList.toggle('active', Number(b.dataset.size) === Number(size));
+  });
+}
+
+function showGameTutorialIfNeeded() {
+  if (localStorage.getItem('gameTutorialDone')) return;
+  document.getElementById('game-tutorial-overlay')?.classList.add('open');
+}
+
+function gameTutorialNext() {
+  const slides = document.querySelectorAll('.gt-slide');
+  let idx = 0;
+  slides.forEach((s, i) => { if (s.classList.contains('active')) idx = i; });
+  if (idx >= slides.length - 1) {
+    closeGameTutorial();
+    return;
+  }
+  slides[idx].classList.remove('active');
+  slides[idx + 1].classList.add('active');
+  document.querySelectorAll('.gt-dot').forEach((d, i) => d.classList.toggle('on', i === idx + 1));
+}
+
+function closeGameTutorial() {
+  localStorage.setItem('gameTutorialDone', '1');
+  document.getElementById('game-tutorial-overlay')?.classList.remove('open');
+}
+
 function feedbackRatingLabel(rating) {
   const r = FEEDBACK_RATING_LABELS[rating];
   return r ? `${r.emoji} ${r.label}` : `💬 ${rating}`;
 }
+
 async function syncPendingFeedback() {
   const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
   let changed = false;
@@ -704,7 +743,7 @@ function formatPageLabel(page) {
   if (page == null || page === '') return '';
   const n = Number(page);
   if (!Number.isFinite(n)) return '';
-  return 'ص ' + n.toLocaleString('ar-SA');
+  return 'ص ' + String(n);
 }
 
 function buildBookCitationHtml(q) {
@@ -713,17 +752,16 @@ function buildBookCitationHtml(q) {
   const pageLabel = formatPageLabel(q.page);
   const quote = (q.quote || '').trim();
   if (!book && !chapter && !pageLabel && !quote) return '';
-  let html = '<div class="book-cite-box"><strong>📚 الاستشهاد من الكتاب</strong>';
+  let inner = '';
   if (quote) {
-    html += `<blockquote class="book-cite-quote">${escapeHtml(quote)}</blockquote>`;
+    inner += `<blockquote class="book-cite-quote">${escapeHtml(quote)}</blockquote>`;
   }
   const meta = [];
   if (book) meta.push(escapeHtml(book));
   if (chapter) meta.push(escapeHtml(chapter));
   if (pageLabel) meta.push(pageLabel);
-  html += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
-  html += '</div>';
-  return html;
+  inner += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
+  return `<details class="book-cite-fold"><summary>📖 الاستشهاد من الكتاب</summary><div class="book-cite-box">${inner}</div></details>`;
 }
 
 function buildAnswerFeedbackHtml(q, isCorrect) {
@@ -1101,8 +1139,12 @@ function toggleSettings() {
 }
 function adjustFontSize(size) {
   document.documentElement.style.setProperty('--base-font-size', size + 'px');
-  document.getElementById('fs-label').textContent = size;
+  const label = document.getElementById('fs-label');
+  if (label) label.textContent = size;
   localStorage.setItem('fontSize', size);
+  document.querySelectorAll('.font-preset-btn').forEach((b) => {
+    b.classList.toggle('active', Number(b.dataset.size) === Number(size));
+  });
 }
 
 /* ── Data ── */
@@ -1159,8 +1201,10 @@ function dedupeGameQuestions(questions) {
 }
 
 async function loadQuestions() {
+  setAppLoading(true, 'جاري تحميل الأسئلة...');
   let data;
   let error;
+  try {
   if (window.AlhudaPlatform?.loadQuestionsCached) {
     try {
       data = await AlhudaPlatform.loadQuestionsCached();
@@ -1178,7 +1222,7 @@ async function loadQuestions() {
     console.error(error);
     const hint = document.getElementById('login-hint');
     if (hint) hint.textContent = '⚠️ تعذّر تحميل الأسئلة — تحقق من الاتصال';
-    if (typeof showToast === 'function') showToast('تعذّر تحميل الأسئلة', 'err');
+    if (typeof showToast === 'function') showToast('تعذّر تحميل الأسئلة — تحقق من الاتصال', 'err');
     return;
   }
   if (!data?.length) {
@@ -1211,6 +1255,9 @@ async function loadQuestions() {
     if (removed > 0) console.info(`[questions] removed ${removed} near-duplicate(s) in ${book}`);
   }
   QUESTIONS = fmt;
+  } finally {
+    setAppLoading(false);
+  }
 }
 
 function getAllQuestions(book) {
@@ -1317,6 +1364,7 @@ function show(id) {
   window.scrollTo(0, 0);
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
+  if (id === 'game') showGameTutorialIfNeeded();
 }
 
 function updateWelcomeStats() {
@@ -1596,6 +1644,7 @@ function pick(btn, isOk) {
       state.correct++;
       playSound('correct');
     }
+    launchCorrectBurst();
     fb.className = 'feedback show ok';
     document.getElementById('fb-icon').textContent = '🎉';
     document.getElementById('fb-title').textContent = state.demoMode ? `أحسنت يا ${n}! 🌟` : ENCOURAGE_OK[Math.floor(Math.random() * ENCOURAGE_OK.length)];
@@ -1791,7 +1840,13 @@ function shuffleArr(arr) {
 }
 
 function updateScore() { document.getElementById('score-display').textContent = state.score; }
-function updateProgress() { document.getElementById('progress-bar').style.width = (state.idx / Math.max(1, state.total) * 100) + '%'; }
+function updateProgress() {
+  const pct = (state.idx / Math.max(1, state.total) * 100);
+  const bar = document.getElementById('progress-bar');
+  if (bar) bar.style.width = pct + '%';
+  const strip = document.getElementById('q-progress-fill');
+  if (strip) strip.style.width = pct + '%';
+}
 function renderHearts() {
   const c = document.getElementById('hearts');
   c.innerHTML = '';
@@ -1805,6 +1860,26 @@ function showCombo(s) {
   c.textContent = '🔥 سلسلة × ' + s + '!';
   c.classList.add('show');
   setTimeout(() => c.classList.remove('show'), 2000);
+}
+
+function launchCorrectBurst() {
+  const w = document.getElementById('confetti-wrap');
+  if (!w) return;
+  const cols = ['#34D399', '#FCD34D', '#7DD3FC', '#FB7185'];
+  for (let i = 0; i < 12; i++) {
+    setTimeout(() => {
+      const p = document.createElement('div');
+      p.className = 'cp';
+      p.style.left = (20 + Math.random() * 60) + 'vw';
+      p.style.top = '40vh';
+      p.style.background = cols[Math.floor(Math.random() * cols.length)];
+      p.style.animationDuration = (0.8 + Math.random() * 0.6) + 's';
+      p.style.width = (6 + Math.random() * 6) + 'px';
+      p.style.height = (6 + Math.random() * 6) + 'px';
+      w.appendChild(p);
+      setTimeout(() => p.remove(), 1500);
+    }, i * 25);
+  }
 }
 
 function launchConfetti() {
@@ -2055,6 +2130,8 @@ function applyLoginLockUI() {
   const nameInput = document.getElementById('login-name');
   const loginBtn = document.getElementById('btn-login');
   const block = document.getElementById('login-locked-block');
+  const title = document.getElementById('login-title');
+  const notice = document.querySelector('.login-lock-notice');
   if (!nameInput || !loginBtn) return;
   if (LOGIN_LOCKED) {
     nameInput.disabled = true;
@@ -2062,6 +2139,8 @@ function applyLoginLockUI() {
     loginBtn.disabled = true;
     loginBtn.setAttribute('aria-disabled', 'true');
     block?.classList.add('is-locked');
+    if (title) title.textContent = '🔒 ادخل/ي باسمك وابدأ/ي 🎮';
+    if (notice) notice.style.display = '';
   } else {
     nameInput.disabled = false;
     nameInput.removeAttribute('aria-disabled');
@@ -2070,6 +2149,8 @@ function applyLoginLockUI() {
     loginBtn.removeAttribute('aria-disabled');
     loginBtn.textContent = 'دخول 🎮';
     block?.classList.remove('is-locked');
+    if (title) title.textContent = 'ادخل/ي باسمك وابدأ/ي 🎮';
+    if (notice) notice.style.display = 'none';
   }
 }
 
@@ -2098,8 +2179,7 @@ async function restoreSession() {
 /* ── Init ── */
 (async function init() {
   const s = localStorage.getItem('fontSize') || 18;
-  adjustFontSize(s);
-  document.getElementById('font-size-slider').value = s;
+  setFontPreset(s);
   soundOn = localStorage.getItem('soundOn') !== 'false';
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   voiceOn = localStorage.getItem('voiceOn') !== 'false';
