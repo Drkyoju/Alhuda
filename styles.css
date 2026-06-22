@@ -1466,16 +1466,22 @@
       line-height: 1.7;
       margin-bottom: 16px;
     }
-    .q-box-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 16px;
+    .voice-toggle-btn.voice-on {
+      background: var(--emerald-light);
+      border-color: var(--emerald);
+      color: var(--emerald-dark);
     }
-    .q-box-row .q-box {
-      flex: 1;
-      margin-bottom: 0;
-      min-width: 0;
+    .voice-toggle-btn.voice-off {
+      background: var(--red-light);
+      border-color: var(--coral);
+      color: var(--coral-dark);
+      opacity: 0.85;
+    }
+    .q-box.voice-readable {
+      cursor: pointer;
+    }
+    .q-box.voice-readable:active {
+      transform: scale(0.99);
     }
     .voice-btn {
       flex-shrink: 0;
