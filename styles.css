@@ -1488,11 +1488,13 @@
     .voice-btn.voice-on {
       background: var(--emerald-light);
       border-color: var(--emerald);
+      box-shadow: 0 3px 0 var(--emerald-dark), 0 0 0 2px rgba(52, 211, 153, 0.25);
     }
     .voice-btn.voice-off {
       background: var(--red-light);
       border-color: var(--coral);
-      opacity: 0.85;
+      opacity: 1;
+      box-shadow: 0 3px 0 var(--coral-dark);
     }
     .voice-toggle-btn.voice-on {
       background: var(--emerald-light);
@@ -1565,7 +1567,7 @@
     }
     .q-timer-hourglass {
       position: relative;
-      width: 48px;
+      width: 58px;
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
@@ -1578,8 +1580,8 @@
       box-shadow: 0 2px 8px rgba(201, 169, 98, 0.22), inset 0 1px 0 rgba(255,255,255,0.8);
     }
     .q-timer-hourglass .q-timer-svg {
-      width: 40px;
-      height: 52px;
+      width: 46px;
+      height: 58px;
       display: block;
     }
     .q-timer-hourglass .hg-cap {
@@ -1609,11 +1611,14 @@
       50% { stroke-dasharray: 2 3; stroke-dashoffset: 5; }
     }
     .q-timer-hourglass .q-timer-num {
-      font-size: 0.78em;
+      font-size: 1.05em;
       font-weight: 900;
       color: var(--emerald-dark);
       line-height: 1;
       font-variant-numeric: tabular-nums;
+      direction: ltr;
+      unicode-bidi: isolate;
+      letter-spacing: 0.03em;
     }
     .q-timer-hourglass.timer-warn {
       border-color: #c9a040;
@@ -2836,9 +2841,34 @@
       margin: 0 auto;
     }
     #game .feedback #fb-exp {
-      font-size: 0.9em;
-      line-height: 1.65;
+      font-size: 1em;
+      line-height: 1.7;
       color: var(--text);
+    }
+    #game .feedback .fb-explain {
+      font-size: clamp(1.08rem, calc(var(--base-font-size, 18px) * 1.12), 1.25rem) !important;
+      line-height: 1.85 !important;
+      margin-top: 10px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    #game .feedback .why-correct-box {
+      font-size: clamp(1rem, var(--base-font-size, 18px), 1.12rem) !important;
+      line-height: 1.75 !important;
+    }
+    #game .feedback .why-correct-box strong {
+      font-size: 1em;
+    }
+    .fb-continue-btn,
+    .confirm-answer-btn {
+      width: auto !important;
+      min-width: 130px;
+      max-width: 200px;
+      margin: 12px auto 0 !important;
+      display: block;
+      padding: 10px 18px !important;
+      font-size: 0.88em !important;
+      min-height: 44px !important;
     }
 
     /* ── النتائج ── */
@@ -3019,14 +3049,6 @@
       .nav-dock { padding: 10px 6px; }
       .nav-dock .icon-action-circle { width: 46px; height: 46px; }
       .q-with-timer { gap: 6px; align-items: flex-start; }
-      .q-timer-hourglass {
-        width: 40px;
-        padding: 3px 1px;
-        border-radius: 12px;
-      }
-      .q-timer-hourglass .q-timer-svg { width: 32px; height: 42px; }
-      .q-timer-hourglass .q-timer-num { font-size: 0.72em; }
-      .q-box { font-size: 1.02em; padding: 16px 14px; line-height: 1.65; }
       .top-bar { gap: 6px; padding-left: 10px; padding-right: 10px; }
       .score-badge { font-size: 0.7em; padding: 3px 8px; }
       #game .q-area { padding: 14px 12px 170px; }
@@ -3055,18 +3077,25 @@
     }
 
     /* ── وضوح القراءة على الجوال ── */
-    #game .q-box,
-    #game .ans-btn {
+    #game .q-box {
+      font-size: clamp(1.15rem, calc(var(--base-font-size, 18px) * 1.2), 1.5rem) !important;
+      line-height: 1.85 !important;
+      font-weight: 800;
       word-break: break-word;
       overflow-wrap: anywhere;
       white-space: normal;
-      hyphens: none;
     }
     #game .ans-btn {
+      font-size: clamp(0.84rem, calc(var(--base-font-size, 18px) * 0.86), 0.98rem) !important;
+      line-height: 1.5;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: normal;
       overflow: visible;
-      line-height: 1.55;
       height: auto;
       text-align: center;
+      min-height: 46px;
+      padding: 10px 14px !important;
     }
     #game .ans-row {
       display: flex;
@@ -3080,18 +3109,18 @@
     }
     @media (max-width: 480px) {
       #game .q-box {
-        font-size: clamp(17px, var(--base-font-size, 18px), 20px) !important;
-        line-height: 1.75 !important;
-        padding: 16px 14px !important;
+        font-size: clamp(21px, calc(var(--base-font-size, 18px) * 1.18), 26px) !important;
+        line-height: 1.8 !important;
+        padding: 18px 16px !important;
       }
       #game .ans-btn {
-        font-size: clamp(16px, var(--base-font-size, 18px), 19px) !important;
-        padding: 14px 16px !important;
-        min-height: 52px;
+        font-size: clamp(14px, calc(var(--base-font-size, 18px) * 0.84), 16px) !important;
+        padding: 10px 14px !important;
+        min-height: 44px;
       }
       #game .ans-grid {
         grid-template-columns: 1fr !important;
-        gap: 12px;
+        gap: 10px;
       }
       #game .q-meta {
         gap: 8px;
@@ -3101,11 +3130,22 @@
       #game .q-meta .badge {
         font-size: clamp(12px, calc(var(--base-font-size, 18px) * 0.78), 14px) !important;
       }
-      #game .feedback #fb-title,
-      #game .feedback #fb-exp {
-        font-size: clamp(15px, var(--base-font-size, 18px), 18px) !important;
-        line-height: 1.65 !important;
+      #game .feedback #fb-title {
+        font-size: clamp(16px, var(--base-font-size, 18px), 19px) !important;
       }
+      #game .feedback .fb-explain {
+        font-size: clamp(18px, calc(var(--base-font-size, 18px) * 1.1), 22px) !important;
+        line-height: 1.85 !important;
+      }
+      #game .feedback .why-correct-box {
+        font-size: clamp(16px, var(--base-font-size, 18px), 19px) !important;
+      }
+      .q-timer-hourglass {
+        width: 52px;
+        padding: 4px 3px;
+      }
+      .q-timer-hourglass .q-timer-svg { width: 40px; height: 50px; }
+      .q-timer-hourglass .q-timer-num { font-size: 1em; }
     }
     @media (max-width: 360px) {
       .q-with-timer {
@@ -3124,7 +3164,7 @@
         margin-top: 4px;
       }
       .q-timer-hourglass .q-timer-svg {
-        width: 28px;
-        height: 36px;
+        width: 36px;
+        height: 46px;
       }
     }

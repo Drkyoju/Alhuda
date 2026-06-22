@@ -578,7 +578,16 @@ function speakQuestion() {
 }
 
 function onQuestionSpeakerClick() {
-  if (!voiceOn) toggleGameVoice();
+  if (voiceOn) {
+    voiceOn = false;
+    localStorage.setItem('voiceOn', 'false');
+    stopSpeaking();
+    updateVoiceUI();
+    return;
+  }
+  voiceOn = true;
+  localStorage.setItem('voiceOn', 'true');
+  updateVoiceUI();
   speakQuestion();
 }
 
@@ -599,7 +608,8 @@ function updateVoiceUI() {
     qSpeak.textContent = voiceOn ? '🔊' : '🔇';
     qSpeak.classList.toggle('voice-on', voiceOn);
     qSpeak.classList.toggle('voice-off', !voiceOn);
-    qSpeak.setAttribute('aria-label', voiceOn ? 'اقرأ السؤال / إيقاف الصوت' : 'تشغيل الصوت');
+    qSpeak.setAttribute('aria-label', voiceOn ? 'إيقاف الصوت' : 'تشغيل الصوت');
+    qSpeak.setAttribute('aria-pressed', voiceOn ? 'true' : 'false');
   }
 }
 
@@ -722,9 +732,9 @@ function buildAnswerFeedbackHtml(q, isCorrect) {
   let html = '<div class="why-correct-box">';
   if (!isCorrect && correctText) {
     html += `<strong>✅ الإجابة الصحيحة:</strong> ${escapeHtml(correctText)}`;
-    if (why) html += `<p style="margin-top:8px;"><strong>📖 الشرح:</strong> ${escapeHtml(why)}</p>`;
+    if (why) html += `<p class="fb-explain"><strong>📖 الشرح:</strong> ${escapeHtml(why)}</p>`;
   } else {
-    html += `<strong>✅ لماذا صحيح؟</strong> ${escapeHtml(why)}`;
+    html += `<p class="fb-explain"><strong>✅ لماذا صحيح؟</strong> ${escapeHtml(why)}</p>`;
   }
   html += '</div>';
   html += buildBookCitationHtml(q);
@@ -746,7 +756,7 @@ function updateTimerUI() {
   const wrap = document.getElementById('q-timer');
   if (!num || !wrap) return;
   const pct = Math.max(0, questionTimerLeft / QUESTION_TIME_SEC);
-  num.textContent = questionTimerLeft.toLocaleString('ar-SA');
+  num.textContent = String(questionTimerLeft);
   if (sandTop) {
     const h = TIMER_SAND_TOP_H * pct;
     sandTop.setAttribute('height', String(h));
@@ -1553,6 +1563,7 @@ function renderQ() {
     });
   }
   startQuestionTimer();
+  if (voiceOn) speakQuestion();
 }
 
 function pick(btn, isOk) {

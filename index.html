@@ -13,12 +13,12 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="enhancements.css?v=2">
-  <link rel="stylesheet" href="kids-ui.css?v=2">
+  <link rel="stylesheet" href="kids-ui.css?v=3">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=15">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -377,11 +377,11 @@
             <rect id="q-timer-sand-bottom" class="hg-sand" clip-path="url(#hg-clip-bottom)" x="15" y="56" width="26" height="0" fill="url(#hg-sand-grad)"/>
             <circle class="hg-pivot" cx="28" cy="32" r="2.5"/>
           </svg>
-          <span class="q-timer-num" id="q-timer-num">٤٥</span>
+          <span class="q-timer-num" id="q-timer-num">45</span>
         </div>
       </div>
       <div class="ans-grid" id="ans-grid"></div>
-      <button id="btn-confirm-answer" class="btn btn-green btn-xl confirm-answer-btn" style="display:none;" onclick="confirmAnswer()">✅ تأكيد الاختيار</button>
+      <button id="btn-confirm-answer" class="btn btn-green btn-sm confirm-answer-btn" style="display:none;" onclick="confirmAnswer()">✅ تأكيد الاختيار</button>
       <button id="show-answer-btn" class="btn btn-blue btn-sm" style="display:none;margin-top:12px;width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة</button>
     </div>
     <div class="feedback" id="feedback">
@@ -390,7 +390,7 @@
         <div class="fb-title" id="fb-title"></div>
         <div class="fb-exp" id="fb-exp"></div>
         <div class="self-correct-box" id="fb-self-correct" style="display:none;"></div>
-        <button class="btn btn-green btn-xl" onclick="nextQ()" style="width:100%;margin-top:14px;">متابعة ←</button>
+        <button class="btn btn-green btn-sm fb-continue-btn" onclick="nextQ()">متابعة ←</button>
       </div>
     </div>
   </div>
@@ -511,7 +511,7 @@
     <div><div class="ach-name" id="ach-name">إنجاز جديد!</div><div class="ach-desc" id="ach-desc"></div></div>
   </div>
 
-<script src="app.js?v=28"></script>
+<script src="app.js?v=29"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=6"></script>
 <script src="platform.js?v=7"></script>
