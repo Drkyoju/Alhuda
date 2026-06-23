@@ -640,10 +640,69 @@ let ttsAbort = null;
 let ttsObjectUrl = null;
 
 function stripForSpeech(text) {
-  return (text || '')
-    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return removeQuranicVersesForSpeech(
+    (text || '')
+      .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
+}
+
+/** Remove Quranic ayat from TTS — hadith and lesson text stay. */
+function removeQuranicVersesForSpeech(text) {
+  let s = (text || '').trim();
+  if (!s) return '';
+
+  s = s.replace(/﴿[\s\S]*?﴾/g, ' ');
+  s = s.replace(/[\uFD40-\uFDFF\uFDF0-\uFDFF]+/g, ' ');
+  s = s.replace(/\[[^\]]*سورة[^\]]*\]/gi, ' ');
+  s = s.replace(/[-–—]\s*[^\s.]+\s*:\s*\d+/g, ' ');
+
+  s = s.replace(
+    /(قال|قوله|قالت)\s+(الله\s+)?تعالى\s*[:،]?\s*(?:\([^)]*\)|«[^»]*»|"[^"]*"|'[^']*')/gi,
+    (_, verb, allah) => `${verb} ${allah ? 'الله ' : ''}تعالى`
+  );
+  s = s.replace(
+    /(قال|قوله|قالت)\s+(الله\s+)?تعالى\s*"[^"]*"/gi,
+    (_, verb, allah) => `${verb} ${allah ? 'الله ' : ''}تعالى`
+  );
+  s = s.replace(/«\s*(قال|قوله|قالت)\s+(الله\s+)?تعالى[^»]*»/gi, '«$1 $2تعالى»');
+
+  s = s.replace(/\(\s*([^)]{10,})\s*\)/g, (m, inner) => (isQuranicAyahText(inner) ? ' ' : m));
+  s = s.replace(/"([^"]{10,})"/g, (m, inner) => (isQuranicAyahText(inner) ? ' ' : m));
+
+  return s.replace(/\s+/g, ' ').replace(/\s+([،.؛:])/g, '$1').trim();
+}
+
+function isQuranicAyahText(s) {
+  const t = (s || '').replace(/[،.؛:!؟«»"[\]]/g, '').trim();
+  if (!t || t.length < 10) return false;
+  if (/^الإجابة\s*الصحيحة/i.test(t)) return false;
+  if (/رواه|حديث|قال\s*النبي|رسول\s*الله|ﷺ|رضي\s*الله/i.test(t)) return false;
+  if (/^(إنما\s+الأعمال|إن\s+الله\s+تجاوز|لا\s+يؤمن|من\s+حلف|إن\s+الحلال|البر\s+حسن)/i.test(t)) return false;
+  if (/^(إن|إني|إنا|الذين|فمن|ومن|يا\s+أيها|تبارك|سبحان|قل|لقد|وما\s+خلقت|فلا\s+تخاف)/i.test(t)) return true;
+  if (t.length >= 28 && /الله|إيمان|كفر|شرك|جنة|نار|عباد|ربك/i.test(t)) return true;
+  return false;
+}
+
+function buildQuestionSpeechText(q) {
+  return q?.q || '';
+}
+
+function buildFeedbackSpeechText(q) {
+  const parts = [];
+  if (q?.exp) parts.push(q.exp);
+  const quote = typeof pickCitationText === 'function' ? pickCitationText(q) : (q?.quote || '');
+  if (quote) parts.push(String(quote).replace(/^«|»$/g, ''));
+  return parts.filter(Boolean).join('. ');
+}
+
+function speakFeedback(q, wrongText) {
+  if (!voiceOn || !q) return;
+  const parts = [buildFeedbackSpeechText(q)];
+  if (wrongText) parts.unshift(`إجابتك: ${wrongText}`);
+  const text = parts.filter(Boolean).join('. ');
+  if (text) speakText(text, null);
 }
 
 function scoreArabicVoice(v) {
@@ -753,7 +812,7 @@ async function speakText(text, btn) {
 function speakQuestion() {
   const q = state.questions[state.idx];
   if (!q?.q || !voiceOn) return;
-  speakText(q.q, document.getElementById('btn-speak-question'));
+  speakText(buildQuestionSpeechText(q), document.getElementById('btn-speak-question'));
 }
 
 function onQuestionSpeakerClick() {
@@ -2123,6 +2182,7 @@ function pick(btn, isOk) {
     expEl.innerHTML = buildAnswerFeedbackHtml(q, true);
     setFeedbackPanelOpen(true);
     setFeedbackContinueVisible(true);
+    if (voiceOn) speakFeedback(q);
   } else {
     btn.classList.add('wrong');
     btn.setAttribute('aria-pressed', 'true');
@@ -2164,6 +2224,7 @@ function pick(btn, isOk) {
     document.getElementById('show-answer-btn').style.display = trainingMode ? 'block' : 'none';
     setFeedbackPanelOpen(true);
     setFeedbackContinueVisible(true);
+    if (voiceOn) speakFeedback(q, picked);
   }
   persistGameSession();
 }
