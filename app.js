@@ -32,7 +32,7 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
-let trainingMode = false, soundOn = true, voiceOn = false, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
+let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
 
@@ -691,9 +691,15 @@ function buildQuestionSpeechText(q) {
 
 function buildFeedbackSpeechText(q) {
   const parts = [];
+  const correct = getCorrectAnswerText(q);
+  if (correct) parts.push(`الإجابة الصحيحة: ${correct}`);
   if (q?.exp) parts.push(q.exp);
   const quote = typeof pickCitationText === 'function' ? pickCitationText(q) : (q?.quote || '');
   if (quote) parts.push(String(quote).replace(/^«|»$/g, ''));
+  const book = BOOK_LABELS[q?.book] || q?.book || '';
+  if (book) parts.push(`من كتاب ${book}`);
+  const pageLabel = q?.page != null ? formatPageLabel(q.page) : '';
+  if (pageLabel) parts.push(pageLabel);
   return parts.filter(Boolean).join('. ');
 }
 
@@ -792,8 +798,9 @@ function toastTtsFail() {
   if (typeof showToast === 'function') showToast('تعذّر تشغيل الصوت — تحقق من الاتصال', 'err');
 }
 
-async function speakText(text, btn) {
-  if (!voiceOn || !text) return;
+async function speakText(text, btn, { allowAnswers = false } = {}) {
+  const maySpeak = voiceOn || (allowAnswers && voiceReadAnswers);
+  if (!maySpeak || !text) return;
   const clean = stripForSpeech(text);
   if (!clean) return;
   stopSpeaking();
@@ -886,7 +893,7 @@ function appendAnswerOption(grid, text, isOk, colorIdx) {
     sp.className = 'voice-btn voice-btn-sm';
     sp.setAttribute('aria-label', 'اقرأ الإجابة');
     sp.textContent = '🔊';
-    sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp); };
+    sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp, { allowAnswers: true }); };
     wrap.appendChild(btn);
     wrap.appendChild(sp);
     grid.appendChild(wrap);
@@ -2755,8 +2762,10 @@ async function restoreSession() {
   setFontPreset(s);
   soundOn = localStorage.getItem('soundOn') !== 'false';
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
-  voiceOn = localStorage.getItem('voiceOn') === 'true';
-  voiceReadAnswers = localStorage.getItem('voiceReadAnswers') === 'true';
+  voiceOn = localStorage.getItem('voiceOn') !== 'false';
+  voiceReadAnswers = localStorage.getItem('voiceReadAnswers') !== 'false';
+  if (localStorage.getItem('voiceOn') == null) localStorage.setItem('voiceOn', 'true');
+  if (localStorage.getItem('voiceReadAnswers') == null) localStorage.setItem('voiceReadAnswers', 'true');
   updateVoiceUI();
   if ('speechSynthesis' in window) {
     loadArabicVoice();
