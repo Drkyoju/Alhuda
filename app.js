@@ -633,11 +633,13 @@ function toggleSound() {
 }
 
 /* ── Voice reading (Edge Neural TTS + browser fallback) ── */
-const TTS_VOICE = 'ar-SA-ZariyahNeural';
+const TTS_VOICE = 'ar-SA-HamedNeural';
+const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 let cachedArabicVoice = null;
 let ttsAudio = null;
 let ttsAbort = null;
 let ttsObjectUrl = null;
+let hybridSpeechToken = 0;
 
 function stripForSpeech(text) {
   return removeQuranicVersesForSpeech(
@@ -674,15 +676,29 @@ function removeQuranicVersesForSpeech(text) {
   return s.replace(/\s+/g, ' ').replace(/\s+([،.؛:])/g, '$1').trim();
 }
 
+function isHadithQudsiText(s) {
+  const t = (s || '').replace(/[،.؛:!؟«»"[\]]/g, ' ').trim();
+  if (/يؤذيني\s+ابن\s+آدم|إنما\s+الأعمال\s+بالنيات|من\s+لقي\s+الله\s+لا\s+يشرك|إن\s+الله\s+تجاوز\s+عن|أقرب\s+ما\s+يكون\s+العبد/i.test(t)) return true;
+  if (/رواه|حديث|قال\s*النبي|رسول\s*الله|ﷺ|رضي\s*الله/i.test(t)) return true;
+  return false;
+}
+
 function isQuranicAyahText(s) {
   const t = (s || '').replace(/[،.؛:!؟«»"[\]]/g, '').trim();
   if (!t || t.length < 10) return false;
+  if (isHadithQudsiText(t)) return false;
   if (/^الإجابة\s*الصحيحة/i.test(t)) return false;
-  if (/رواه|حديث|قال\s*النبي|رسول\s*الله|ﷺ|رضي\s*الله/i.test(t)) return false;
   if (/^(إنما\s+الأعمال|إن\s+الله\s+تجاوز|لا\s+يؤمن|من\s+حلف|إن\s+الحلال|البر\s+حسن)/i.test(t)) return false;
-  if (/^(إن|إني|إنا|الذين|فمن|ومن|يا\s+أيها|تبارك|سبحان|قل|لقد|وما\s+خلقت|فلا\s+تخاف)/i.test(t)) return true;
+  if (/^(إن|إني|إنا|الذين|فمن|ومن|يا\s+أيها|تبارك|سبحان|قل|لقد|وما\s+خلقت|فلا\s+تخاف|فلا\s+تجعل)/i.test(t)) return true;
   if (t.length >= 28 && /الله|إيمان|كفر|شرك|جنة|نار|عباد|ربك/i.test(t)) return true;
   return false;
+}
+
+function getQuestionContentBlob(q, extra = '') {
+  const parts = [q?.q, q?.exp, extra, q?.quote];
+  if (typeof pickCitationText === 'function') parts.push(pickCitationText(q));
+  if (Array.isArray(q?.a)) parts.push(...q.a);
+  return parts.filter(Boolean).join(' ');
 }
 
 function buildQuestionSpeechText(q) {
@@ -705,10 +721,11 @@ function buildFeedbackSpeechText(q) {
 
 function speakFeedback(q, wrongText) {
   if (!voiceOn || !q) return;
-  const parts = [buildFeedbackSpeechText(q)];
+  const parts = [];
   if (wrongText) parts.unshift(`إجابتك: ${wrongText}`);
+  parts.push(buildFeedbackSpeechText(q));
   const text = parts.filter(Boolean).join('. ');
-  if (text) speakText(text, null);
+  if (text) speakHybrid(text, q, null);
 }
 
 /* ── Quran recitation (Minshawi Murattal — verses.quran.com) ── */
@@ -741,20 +758,39 @@ const SURAH_BY_ARABIC_NAME = {
 const QUESTION_VERSE_KEY = {
   '06457497-1ae6-4bec-8658-6013bb90d3d9': '4:48',
   '9980f48a-b3d0-4514-981c-6f7247604a7d': '6:82',
+  '9c91ebc5-17d3-4598-90dd-2edfe8b65bcc': '6:82',
+  'dd12fb28-2682-48bd-bb75-f0e837d7224b': '6:82',
   '39a35c94-3034-43c9-bcc0-3032b1b01381': '2:256',
   '44c0fa04-4e25-40dc-8b0e-9a4ea3ff9291': '3:175',
   '6dea92e9-ae29-4fda-bbf1-55f3b0f2ac90': '51:56',
+  'cabe3338-0c2a-4919-8fda-3ff1f5683271': '51:56',
   '6236cc16-0c57-47a5-8555-94c1103562e7': '51:56',
+  'b5ff7eaf-2065-47f3-8037-b81eadc02288': '2:267',
+  '62d5943d-857a-43a9-ba34-ec83ef01e96b': '2:267',
+  '1acbe9c3-b9cb-4bbf-8ff1-dc8006de7f8b': '6:57',
+  '27a75181-bb54-44ef-b6dc-b3a84b8cc079': '39:66',
+  '0f1efff9-1444-4eb2-a109-250d262cb098': '2:165',
 };
 
 const KNOWN_AYAH_SNIPPETS = {
   'إن الله لا يغفر أن يشرك به': '4:48',
   'الذين آمنوا ولم يلبسوا إيمانهم بظلم': '6:82',
+  'ولم يلبسوا إيمانهم بظلم': '6:82',
   'فمن يكفر بالطاغوت ويؤمن بالله': '2:256',
   'فلا تخافوهم وخافوني': '3:175',
   'وما خلقت الجن والإنس إلا ليعبدون': '51:56',
-  'يؤذيني ابن آدم يسب': '31:18',
+  'فلا تجعلوا لله أندادا': '39:66',
+  'فلا تجعلوا لله أنداداً': '39:66',
+  'ومن الناس من يتخذ من دون الله أنداداً': '2:165',
+  'إن الله طيب لا يقبل إلا': '2:267',
+  'إن الله هو الحكم': '6:57',
 };
+
+function getQuestionVerseKey(questionId) {
+  if (!questionId) return null;
+  const map = (typeof window !== 'undefined' && window.QUESTION_VERSE_MAP) || {};
+  return map[questionId] || QUESTION_VERSE_KEY[questionId] || null;
+}
 
 function normalizeArabicForMatch(s) {
   return stripArabicDiacritics(s)
@@ -805,8 +841,10 @@ function extractAyahSnippets(text) {
 
 function lookupKnownVerseKey(snippet) {
   const norm = normalizeArabicForMatch(snippet);
-  if (KNOWN_AYAH_SNIPPETS[norm]) return KNOWN_AYAH_SNIPPETS[norm];
-  for (const [key, verseKey] of Object.entries(KNOWN_AYAH_SNIPPETS)) {
+  const extMap = (typeof window !== 'undefined' && window.AYAH_SNIPPET_MAP) || {};
+  const merged = { ...KNOWN_AYAH_SNIPPETS, ...extMap };
+  if (merged[norm]) return merged[norm];
+  for (const [key, verseKey] of Object.entries(merged)) {
     if (norm.includes(key) || key.includes(norm)) return verseKey;
   }
   return null;
@@ -824,10 +862,107 @@ function findVerseKeysSync(text) {
 
 function hasQuranAyahContent(q) {
   if (!q) return false;
-  if (QUESTION_VERSE_KEY[q.id]) return true;
-  const blob = [q.q, q.exp, q.quote, typeof pickCitationText === 'function' ? pickCitationText(q) : ''].filter(Boolean).join(' ');
+  if (getQuestionVerseKey(q.id)) return true;
+  const blob = getQuestionContentBlob(q);
   if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى|قول\s*الله\s+تعالى|﴿|\[?\s*سورة/i.test(blob)) return true;
   return findVerseKeysSync(blob).length > 0;
+}
+
+async function resolveAllVerseKeysForQuestion(q) {
+  const keys = [];
+  const seen = new Set();
+  const add = (k) => { if (k && !seen.has(k)) { seen.add(k); keys.push(k); } };
+  add(getQuestionVerseKey(q?.id));
+  const blob = getQuestionContentBlob(q);
+  for (const k of findVerseKeysSync(blob)) add(k);
+  for (const snippet of extractAyahSnippets(blob)) {
+    if (isHadithQudsiText(snippet)) continue;
+    const known = lookupKnownVerseKey(snippet);
+    if (known) add(known);
+    else add(await searchVerseKey(snippet));
+  }
+  return keys;
+}
+
+const TAALA_AYAH_RE = /(قال|قوله|قالت|قول)\s+(الله\s+)?تعالى\s*[:،]?\s*(?:\(([^)]*)\)|"([^"]*)"|«([^»]*)»)?/gi;
+const STANDALONE_AYAH_RE = /(\(([^)]{10,})\)|"([^"]{10,})"|«([^»]{10,})»)/g;
+
+async function appendStandaloneAyahSegments(text, plan, fallbackKeys) {
+  let lastIndex = 0;
+  for (const m of text.matchAll(STANDALONE_AYAH_RE)) {
+    const inner = (m[2] || m[3] || m[4] || '').trim();
+    if (!isQuranicAyahText(inner) || isHadithQudsiText(inner)) continue;
+    const before = text.slice(lastIndex, m.index);
+    const ttsBefore = stripForSpeech(before);
+    if (ttsBefore) plan.push({ type: 'tts', text: ttsBefore });
+    let verseKey = lookupKnownVerseKey(inner) || await searchVerseKey(inner);
+    if (!verseKey && fallbackKeys.length) verseKey = fallbackKeys.shift();
+    if (verseKey) plan.push({ type: 'quran', verseKey });
+    lastIndex = m.index + m[0].length;
+  }
+  const tail = text.slice(lastIndex);
+  const ttsTail = stripForSpeech(tail);
+  if (ttsTail) plan.push({ type: 'tts', text: ttsTail });
+}
+
+async function buildSpeechPlan(text, q) {
+  const plan = [];
+  const raw = (text || '').trim();
+  if (!raw) return plan;
+  const fallbackKeys = q ? await resolveAllVerseKeysForQuestion(q) : [];
+  const pool = [...fallbackKeys];
+  let lastIndex = 0;
+  let matchedTaala = false;
+  for (const match of raw.matchAll(TAALA_AYAH_RE)) {
+    matchedTaala = true;
+    const before = raw.slice(lastIndex, match.index);
+    const ttsBefore = stripForSpeech(before);
+    if (ttsBefore) plan.push({ type: 'tts', text: ttsBefore });
+    const intro = `${match[1]} ${match[2] ? 'الله ' : ''}تعالى`.replace(/\s+/g, ' ').trim();
+    if (intro) plan.push({ type: 'tts', text: intro });
+    const ayahText = (match[3] || match[4] || match[5] || '').trim();
+    let verseKey = null;
+    if (ayahText && !isHadithQudsiText(ayahText)) {
+      verseKey = lookupKnownVerseKey(ayahText) || await searchVerseKey(ayahText);
+    }
+    if (!verseKey && pool.length) verseKey = pool.shift();
+    if (verseKey) plan.push({ type: 'quran', verseKey });
+    lastIndex = match.index + match[0].length;
+  }
+  const tail = raw.slice(lastIndex);
+  if (matchedTaala) {
+    if (tail.trim()) await appendStandaloneAyahSegments(tail, plan, pool);
+  } else {
+    await appendStandaloneAyahSegments(raw, plan, pool);
+  }
+  const hasQuran = plan.some((s) => s.type === 'quran');
+  if (!hasQuran && pool.length && !isHadithQudsiText(raw) && /تعالى|﴿|سورة/i.test(raw)) {
+    if (!plan.some((s) => s.type === 'tts')) {
+      const ttsOnly = stripForSpeech(raw);
+      if (ttsOnly) plan.push({ type: 'tts', text: ttsOnly });
+    }
+    plan.push({ type: 'quran', verseKey: pool[0] });
+  } else if (!plan.length) {
+    const ttsOnly = stripForSpeech(raw);
+    if (ttsOnly) plan.push({ type: 'tts', text: ttsOnly });
+  }
+  return plan.filter((s) => (s.type === 'tts' && s.text?.trim()) || (s.type === 'quran' && s.verseKey));
+}
+
+function textMayHaveQuranAyah(text, q) {
+  const src = text || '';
+  if (isQuranicAyahText(src)) return true;
+  if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿|\[?\s*سورة|الذاريات\s*[:：]/i.test(src)) {
+    if (!isHadithQudsiText(src)) return true;
+  }
+  if (extractAyahSnippets(src).some(isQuranicAyahText)) return true;
+  if (findVerseKeysSync(src).length) return true;
+  if (q && getQuestionVerseKey(q.id)) {
+    const blob = getQuestionContentBlob(q, src);
+    if (/تعالى|﴿|سورة/i.test(blob) && findVerseKeysSync(blob).length) return true;
+    if (isQuranicAyahText(src) || extractAyahSnippets(blob).some(isQuranicAyahText)) return true;
+  }
+  return false;
 }
 
 async function searchVerseKey(snippet) {
@@ -868,19 +1003,10 @@ async function searchVerseKey(snippet) {
 }
 
 async function resolveVerseKeyForQuestion(q) {
-  if (QUESTION_VERSE_KEY[q?.id]) return QUESTION_VERSE_KEY[q.id];
-  const blob = [q?.q, q?.exp, q?.quote, typeof pickCitationText === 'function' ? pickCitationText(q) : ''].filter(Boolean).join(' ');
-  const syncKeys = findVerseKeysSync(blob);
-  if (syncKeys.length) return syncKeys[0];
-  for (const snippet of extractAyahSnippets(blob)) {
-    const key = await searchVerseKey(snippet);
-    if (key) return key;
-  }
-  if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى/i.test(blob)) {
-    const inner = extractAyahSnippets(blob)[0];
-    if (inner) return searchVerseKey(inner);
-  }
-  return null;
+  const mapped = getQuestionVerseKey(q?.id);
+  if (mapped) return mapped;
+  const keys = await resolveAllVerseKeysForQuestion(q);
+  return keys[0] || null;
 }
 
 function stopQuranAudio() {
@@ -903,13 +1029,16 @@ function bindQuranReciteButton(root, q) {
   });
 }
 
-async function playQuranRecitation(verseKey, btn) {
+async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) {
   const url = verseKeyToMinshawiUrl(verseKey);
   if (!url) {
     if (typeof showToast === 'function') showToast('تعذّر تحديد الآية', 'err');
     return;
   }
-  stopSpeaking();
+  if (interruptAll) {
+    clearTtsAudio();
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+  }
   stopQuranAudio();
   if (btn) btn.classList.add('playing');
   quranAudio = new Audio(url);
@@ -930,6 +1059,7 @@ async function playQuranRecitation(verseKey, btn) {
 
 async function playQuranForQuestion(q, btn) {
   if (!q) return;
+  stopSpeaking();
   if (btn) {
     btn.disabled = true;
     btn.textContent = '⏳ جاري التحميل...';
@@ -1008,6 +1138,7 @@ function clearTtsAudio(btn) {
 }
 
 function stopSpeaking() {
+  hybridSpeechToken += 1;
   clearTtsAudio();
   stopQuranAudio();
   document.querySelectorAll('.voice-btn.speaking').forEach(b => b.classList.remove('speaking'));
@@ -1020,7 +1151,7 @@ function speakTextBrowser(text, btn) {
   u.lang = 'ar-SA';
   const voice = cachedArabicVoice || loadArabicVoice();
   if (voice) u.voice = voice;
-  u.rate = 0.85;
+  u.rate = 0.78;
   u.pitch = 1;
   if (btn) {
     btn.classList.add('speaking');
@@ -1031,12 +1162,12 @@ function speakTextBrowser(text, btn) {
   return true;
 }
 
-async function speakTextCloud(text, btn) {
+async function speakTextCloud(text, btn, voice = TTS_VOICE) {
   ttsAbort = new AbortController();
   const res = await fetch('/api/tts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, voice: TTS_VOICE }),
+    body: JSON.stringify({ text, voice }),
     signal: ttsAbort.signal,
   });
   if (!res.ok) throw new Error('tts failed');
@@ -1052,32 +1183,80 @@ async function speakTextCloud(text, btn) {
   });
 }
 
+async function speakTtsSegment(text, btn, { keepBtnState = true } = {}) {
+  try {
+    await speakTextCloud(text, btn, TTS_VOICE);
+  } catch (e) {
+    if (e.name === 'AbortError') throw e;
+    try {
+      await speakTextCloud(text, btn, TTS_VOICE_FALLBACK);
+    } catch (e2) {
+      if (e2.name === 'AbortError') throw e2;
+      clearTtsAudio(keepBtnState ? null : btn);
+      if (!speakTextBrowser(text, btn)) throw e2;
+      return;
+    }
+  }
+  clearTtsAudio(keepBtnState ? null : btn);
+}
+
+async function speakHybrid(text, q, btn, { allowAnswers = false } = {}) {
+  const maySpeak = voiceOn || (allowAnswers && voiceReadAnswers);
+  if (!maySpeak || !text) return;
+  stopSpeaking();
+  const token = hybridSpeechToken;
+  if (btn) btn.classList.add('speaking');
+  try {
+    const plan = await buildSpeechPlan(text, q);
+    if (!plan.length) {
+      const clean = stripForSpeech(text);
+      if (clean) await speakTtsSegment(clean, btn);
+      return;
+    }
+    for (const seg of plan) {
+      if (token !== hybridSpeechToken) break;
+      if (seg.type === 'quran' && seg.verseKey) {
+        await playQuranRecitation(seg.verseKey, btn, { interruptAll: false });
+      } else if (seg.type === 'tts' && seg.text?.trim()) {
+        await speakTtsSegment(seg.text, btn);
+      }
+    }
+  } catch (e) {
+    if (e.name !== 'AbortError') console.warn('hybrid speech:', e);
+  } finally {
+    if (token === hybridSpeechToken && btn) btn.classList.remove('speaking');
+    clearTtsAudio();
+  }
+}
+
 function toastTtsFail() {
   if (typeof showToast === 'function') showToast('تعذّر تشغيل الصوت — تحقق من الاتصال', 'err');
 }
 
-async function speakText(text, btn, { allowAnswers = false } = {}) {
+async function speakText(text, btn, { allowAnswers = false, question = null } = {}) {
   const maySpeak = voiceOn || (allowAnswers && voiceReadAnswers);
   if (!maySpeak || !text) return;
+  const q = question ?? state.questions?.[state.idx] ?? null;
+  if (textMayHaveQuranAyah(text, q)) {
+    await speakHybrid(text, q, btn, { allowAnswers });
+    return;
+  }
   const clean = stripForSpeech(text);
   if (!clean) return;
   stopSpeaking();
   try {
-    await speakTextCloud(clean, btn);
+    await speakTtsSegment(clean, btn, { keepBtnState: false });
   } catch (e) {
     if (e.name === 'AbortError') return;
-    clearTtsAudio();
     console.warn('cloud tts:', e);
-    if (!speakTextBrowser(clean, btn)) toastTtsFail();
-    return;
+    toastTtsFail();
   }
-  clearTtsAudio(btn);
 }
 
 function speakQuestion() {
   const q = state.questions[state.idx];
   if (!q?.q || !voiceOn) return;
-  speakText(buildQuestionSpeechText(q), document.getElementById('btn-speak-question'));
+  speakHybrid(buildQuestionSpeechText(q), q, document.getElementById('btn-speak-question'));
 }
 
 function onQuestionSpeakerClick() {
@@ -1134,7 +1313,7 @@ function toggleVoiceAnswers() {
   if (document.getElementById('game')?.classList.contains('active') && state.questions.length) renderQ();
 }
 
-function appendAnswerOption(grid, text, isOk, colorIdx) {
+function appendAnswerOption(grid, text, isOk, colorIdx, q) {
   const wrap = document.createElement('div');
   wrap.className = 'ans-row ans-row-single';
   const btn = document.createElement('button');
@@ -1151,7 +1330,7 @@ function appendAnswerOption(grid, text, isOk, colorIdx) {
     sp.className = 'voice-btn voice-btn-sm';
     sp.setAttribute('aria-label', 'اقرأ الإجابة');
     sp.textContent = '🔊';
-    sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp, { allowAnswers: true }); };
+    sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp, { allowAnswers: true, question: q }); };
     wrap.appendChild(btn);
     wrap.appendChild(sp);
     grid.appendChild(wrap);
@@ -2406,11 +2585,11 @@ function renderQ() {
   grid.innerHTML = '';
   if (q.type === 'tf') {
     ['صح ✓', 'خطأ ✗'].forEach((txt, i) => {
-      appendAnswerOption(grid, txt, (i === 0) === q.tf, i === 0 ? 0 : 3);
+      appendAnswerOption(grid, txt, (i === 0) === q.tf, i === 0 ? 0 : 3, q);
     });
   } else {
     shuffleArr([0,1,2,3].slice(0, (q.a || []).length)).forEach((i, orderIdx) => {
-      appendAnswerOption(grid, q.a[i], i === q.c, orderIdx);
+      appendAnswerOption(grid, q.a[i], i === q.c, orderIdx, q);
     });
   }
   startQuestionTimer();

@@ -1,6 +1,7 @@
 /** Microsoft Edge neural TTS (Worker-native, based on cloudflare-edge-tts). */
 
-export const DEFAULT_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
+export const DEFAULT_ARABIC_VOICE = 'ar-SA-HamedNeural';
+export const FALLBACK_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
 
 const READALOUD_BASE = 'speech.platform.bing.com/consumer/speech/synthesize/readaloud';
 const TRUSTED_CLIENT_TOKEN = '6A5AA1D4EAFF4E9FB37E23D68491D6F4';
@@ -92,7 +93,7 @@ function buildSsmlMessage(requestId, voice, text) {
   const ssml =
     "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='ar-SA'>" +
     `<voice name='${voice}'>` +
-    `${escapeXml(removeInvalidXmlCharacters(text))}` +
+    `<prosody rate="-6%" pitch="+1%">${escapeXml(removeInvalidXmlCharacters(text))}</prosody>` +
     '</voice></speak>';
   return (
     `X-RequestId:${requestId}\r\n` +

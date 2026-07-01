@@ -7,12 +7,14 @@
 // which previously could throw on renamed functions. enhancements.js triggers
 // the message on next page load so users get the update on the NEXT visit.
 
-const CACHE = 'alhuda-v61';
+const CACHE = 'alhuda-v64';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './citation-canonical.js',
+  './question-verse-map.js',
+  './ayah-snippet-map.js',
   './icons/icon.svg',
   './icons/org-logo.png',
   './icons/icon-192.png',
