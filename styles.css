@@ -1731,6 +1731,35 @@
       font-weight: 800;
       color: var(--emerald-dark);
     }
+    .quran-recite-slot {
+      margin: 10px 0 4px;
+    }
+    .quran-recite-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px 14px;
+      border: 2px solid var(--gold);
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fff8e8 0%, #f5e6b8 100%);
+      color: var(--emerald-dark);
+      font-family: inherit;
+      font-size: 0.95em;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #c9a84c;
+      transition: 0.2s;
+    }
+    .quran-recite-btn:active { transform: translateY(2px); box-shadow: none; }
+    .quran-recite-btn.playing {
+      background: var(--emerald-light);
+      border-color: var(--emerald);
+      animation: voicePulse 1s ease-in-out infinite;
+    }
+    .book-cite-box .quran-recite-btn { margin-top: 12px; }
     .ans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 500px) { .ans-grid { grid-template-columns: 1fr; } }
     .ans-btn {

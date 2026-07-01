@@ -711,6 +711,263 @@ function speakFeedback(q, wrongText) {
   if (text) speakText(text, null);
 }
 
+/* ── Quran recitation (Minshawi Murattal — verses.quran.com) ── */
+const QURAN_MINSHAWI_AUDIO_BASE = 'https://verses.quran.com/Minshawi/Murattal/mp3/';
+let quranAudio = null;
+const quranVerseKeyCache = new Map();
+
+const SURAH_BY_ARABIC_NAME = {
+  'الفاتحة': 1, 'البقرة': 2, 'آل عمران': 3, 'النساء': 4, 'المائدة': 5, 'الأنعام': 6,
+  'الأعراف': 7, 'الأنفال': 8, 'التوبة': 9, 'يونس': 10, 'هود': 11, 'يوسف': 12, 'الرعد': 13,
+  'إبراهيم': 14, 'الحجر': 15, 'النحل': 16, 'الإسراء': 17, 'الكهف': 18, 'مريم': 19, 'طه': 20,
+  'الأنبياء': 21, 'الحج': 22, 'المؤمنون': 23, 'النور': 24, 'الفرقان': 25, 'الشعراء': 26,
+  'النمل': 27, 'القصص': 28, 'العنكبوت': 29, 'الروم': 30, 'لقمان': 31, 'السجدة': 32,
+  'الأحزاب': 33, 'سبأ': 34, 'فاطر': 35, 'يس': 36, 'الصافات': 37, 'ص': 38, 'الزمر': 39,
+  'غافر': 40, 'فصلت': 41, 'الشورى': 42, 'الزخرف': 43, 'الدخان': 44, 'الجاثية': 45,
+  'الأحقاف': 46, 'محمد': 47, 'الفتح': 48, 'الحجرات': 49, 'ق': 50, 'الذاريات': 51,
+  'الطور': 52, 'النجم': 53, 'القمر': 54, 'الرحمن': 55, 'الواقعة': 56, 'الحديد': 57,
+  'المجادلة': 58, 'الحشر': 59, 'الممتحنة': 60, 'الصف': 61, 'الجمعة': 62, 'المنافقون': 63,
+  'التغابن': 64, 'الطلاق': 65, 'التحريم': 66, 'الملك': 67, 'القلم': 68, 'الحاقة': 69,
+  'المعارج': 70, 'نوح': 71, 'الجن': 72, 'المزمل': 73, 'المدثر': 74, 'القيامة': 75,
+  'الإنسان': 76, 'المرسلات': 77, 'النبأ': 78, 'النازعات': 79, 'عبس': 80, 'التكوير': 81,
+  'الانفطار': 82, 'المطففين': 83, 'الانشقاق': 84, 'البروج': 85, 'الطارق': 86, 'الأعلى': 87,
+  'الغاشية': 88, 'الفجر': 89, 'البلد': 90, 'الشمس': 91, 'الليل': 92, 'الضحى': 93,
+  'الشرح': 94, 'التين': 95, 'العلق': 96, 'القدر': 97, 'البينة': 98, 'الزلزلة': 99,
+  'العاديات': 100, 'القارعة': 101, 'التكاثر': 102, 'العصر': 103, 'الهمزة': 104,
+  'الفيل': 105, 'قريش': 106, 'الماعون': 107, 'الكوثر': 108, 'الكافرون': 109, 'النصر': 110,
+  'المسد': 111, 'الإخلاص': 112, 'الفلق': 113, 'الناس': 114,
+};
+
+const QUESTION_VERSE_KEY = {
+  '06457497-1ae6-4bec-8658-6013bb90d3d9': '4:48',
+  '9980f48a-b3d0-4514-981c-6f7247604a7d': '6:82',
+  '39a35c94-3034-43c9-bcc0-3032b1b01381': '2:256',
+  '44c0fa04-4e25-40dc-8b0e-9a4ea3ff9291': '3:175',
+  '6dea92e9-ae29-4fda-bbf1-55f3b0f2ac90': '51:56',
+  '6236cc16-0c57-47a5-8555-94c1103562e7': '51:56',
+};
+
+const KNOWN_AYAH_SNIPPETS = {
+  'إن الله لا يغفر أن يشرك به': '4:48',
+  'الذين آمنوا ولم يلبسوا إيمانهم بظلم': '6:82',
+  'فمن يكفر بالطاغوت ويؤمن بالله': '2:256',
+  'فلا تخافوهم وخافوني': '3:175',
+  'وما خلقت الجن والإنس إلا ليعبدون': '51:56',
+  'يؤذيني ابن آدم يسب': '31:18',
+};
+
+function normalizeArabicForMatch(s) {
+  return stripArabicDiacritics(s)
+    .replace(/[«»()"[\]،.؛:!؟\-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function verseKeyToMinshawiUrl(verseKey) {
+  const [surah, ayah] = String(verseKey).split(':').map((n) => parseInt(n, 10));
+  if (!surah || !ayah) return '';
+  const file = `${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
+  return `${QURAN_MINSHAWI_AUDIO_BASE}${file}`;
+}
+
+function parseSurahAyahReferences(text) {
+  const refs = [];
+  const cleaned = (text || '').replace(/\s+/g, ' ');
+  const re = /(?:\[?\s*س\s*ورة\s*|سورة\s*)([^\]:]+?)\s*[:：]\s*(\d+)/gi;
+  let m;
+  while ((m = re.exec(cleaned))) {
+    const name = normalizeArabicForMatch(m[1]);
+    const surah = SURAH_BY_ARABIC_NAME[name];
+    const ayah = parseInt(m[2], 10);
+    if (surah && ayah) refs.push(`${surah}:${ayah}`);
+  }
+  const direct = cleaned.match(/(الذاريات|الفاتحة|البقرة|الأنعام|النحل|الأنبياء|محمد)\s*[:：]\s*(\d+)/i);
+  if (direct) {
+    const surah = SURAH_BY_ARABIC_NAME[normalizeArabicForMatch(direct[1])];
+    const ayah = parseInt(direct[2], 10);
+    if (surah && ayah) refs.push(`${surah}:${ayah}`);
+  }
+  return refs;
+}
+
+function extractAyahSnippets(text) {
+  const snippets = [];
+  const src = text || '';
+  for (const m of src.matchAll(/\(([^)]{12,})\)/g)) snippets.push(m[1].trim());
+  for (const m of src.matchAll(/"([^"]{12,})"/g)) snippets.push(m[1].trim());
+  for (const m of src.matchAll(/«([^»]{12,})»/g)) {
+    const inner = m[1].trim();
+    if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى/i.test(inner)) continue;
+    snippets.push(inner);
+  }
+  return snippets;
+}
+
+function lookupKnownVerseKey(snippet) {
+  const norm = normalizeArabicForMatch(snippet);
+  if (KNOWN_AYAH_SNIPPETS[norm]) return KNOWN_AYAH_SNIPPETS[norm];
+  for (const [key, verseKey] of Object.entries(KNOWN_AYAH_SNIPPETS)) {
+    if (norm.includes(key) || key.includes(norm)) return verseKey;
+  }
+  return null;
+}
+
+function findVerseKeysSync(text) {
+  const keys = new Set();
+  for (const ref of parseSurahAyahReferences(text)) keys.add(ref);
+  for (const snippet of extractAyahSnippets(text)) {
+    const key = lookupKnownVerseKey(snippet);
+    if (key) keys.add(key);
+  }
+  return [...keys];
+}
+
+function hasQuranAyahContent(q) {
+  if (!q) return false;
+  if (QUESTION_VERSE_KEY[q.id]) return true;
+  const blob = [q.q, q.exp, q.quote, typeof pickCitationText === 'function' ? pickCitationText(q) : ''].filter(Boolean).join(' ');
+  if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى|قول\s*الله\s+تعالى|﴿|\[?\s*سورة/i.test(blob)) return true;
+  return findVerseKeysSync(blob).length > 0;
+}
+
+async function searchVerseKey(snippet) {
+  const cacheKey = normalizeArabicForMatch(snippet);
+  if (quranVerseKeyCache.has(cacheKey)) return quranVerseKeyCache.get(cacheKey);
+  const known = lookupKnownVerseKey(snippet);
+  if (known) {
+    quranVerseKeyCache.set(cacheKey, known);
+    return known;
+  }
+  try {
+    const q = encodeURIComponent(snippet.slice(0, 60));
+    const res = await fetch(`https://api.quran.com/api/v4/search?q=${q}&size=5&language=ar`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    const results = data?.search?.results || [];
+    const target = normalizeArabicForMatch(snippet);
+    let best = null;
+    let bestScore = 0;
+    for (const row of results) {
+      const verseNorm = normalizeArabicForMatch(row.text || '');
+      const words = target.split(' ').filter((w) => w.length > 2);
+      const hits = words.filter((w) => verseNorm.includes(w)).length;
+      const score = hits / Math.max(1, words.length);
+      if (score > bestScore) {
+        bestScore = score;
+        best = row.verse_key;
+      }
+    }
+    if (best && bestScore >= 0.45) {
+      quranVerseKeyCache.set(cacheKey, best);
+      return best;
+    }
+  } catch (e) {
+    console.warn('quran search:', e);
+  }
+  return null;
+}
+
+async function resolveVerseKeyForQuestion(q) {
+  if (QUESTION_VERSE_KEY[q?.id]) return QUESTION_VERSE_KEY[q.id];
+  const blob = [q?.q, q?.exp, q?.quote, typeof pickCitationText === 'function' ? pickCitationText(q) : ''].filter(Boolean).join(' ');
+  const syncKeys = findVerseKeysSync(blob);
+  if (syncKeys.length) return syncKeys[0];
+  for (const snippet of extractAyahSnippets(blob)) {
+    const key = await searchVerseKey(snippet);
+    if (key) return key;
+  }
+  if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى/i.test(blob)) {
+    const inner = extractAyahSnippets(blob)[0];
+    if (inner) return searchVerseKey(inner);
+  }
+  return null;
+}
+
+function stopQuranAudio() {
+  if (!quranAudio) return;
+  quranAudio.onended = null;
+  quranAudio.onerror = null;
+  quranAudio.pause();
+  quranAudio = null;
+  document.querySelectorAll('.quran-recite-btn.playing').forEach((b) => b.classList.remove('playing'));
+}
+
+function buildQuranReciteButtonHtml() {
+  return '<button type="button" class="quran-recite-btn" data-quran-recite aria-label="استمع لتلاوة الآية — محمد صديق المنشاوي">🎧 استمع للتلاوة — المنشاوي</button>';
+}
+
+function bindQuranReciteButton(root, q) {
+  if (!root || !q) return;
+  root.querySelectorAll('[data-quran-recite]').forEach((btn) => {
+    btn.onclick = () => playQuranForQuestion(q, btn);
+  });
+}
+
+async function playQuranRecitation(verseKey, btn) {
+  const url = verseKeyToMinshawiUrl(verseKey);
+  if (!url) {
+    if (typeof showToast === 'function') showToast('تعذّر تحديد الآية', 'err');
+    return;
+  }
+  stopSpeaking();
+  stopQuranAudio();
+  if (btn) btn.classList.add('playing');
+  quranAudio = new Audio(url);
+  try {
+    await quranAudio.play();
+    await new Promise((resolve, reject) => {
+      quranAudio.onended = resolve;
+      quranAudio.onerror = () => reject(new Error('quran audio error'));
+    });
+  } catch (e) {
+    console.warn('quran play:', e);
+    if (typeof showToast === 'function') showToast('تعذّر تشغيل التلاوة — تحقق من الاتصال', 'err');
+  } finally {
+    if (btn) btn.classList.remove('playing');
+    stopQuranAudio();
+  }
+}
+
+async function playQuranForQuestion(q, btn) {
+  if (!q) return;
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ جاري التحميل...';
+  }
+  try {
+    const verseKey = await resolveVerseKeyForQuestion(q);
+    if (!verseKey) {
+      if (typeof showToast === 'function') showToast('لم نتمكن من تحديد الآية في القرآن', 'err');
+      return;
+    }
+    if (btn) btn.textContent = '🎧 استمع للتلاوة — المنشاوي';
+    await playQuranRecitation(verseKey, btn);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🎧 استمع للتلاوة — المنشاوي';
+    }
+  }
+}
+
+function updateQuranReciteSlot(q) {
+  let slot = document.getElementById('quran-recite-slot');
+  if (!slot) {
+    slot = document.createElement('div');
+    slot.id = 'quran-recite-slot';
+    slot.className = 'quran-recite-slot';
+    document.querySelector('.q-box-row')?.insertAdjacentElement('afterend', slot);
+  }
+  slot.innerHTML = '';
+  if (!hasQuranAyahContent(q)) {
+    slot.style.display = 'none';
+    return;
+  }
+  slot.style.display = '';
+  slot.innerHTML = buildQuranReciteButtonHtml();
+  bindQuranReciteButton(slot, q);
+}
+
 function scoreArabicVoice(v) {
   const name = (v.name || '').toLowerCase();
   const lang = (v.lang || '').toLowerCase();
@@ -752,6 +1009,7 @@ function clearTtsAudio(btn) {
 
 function stopSpeaking() {
   clearTtsAudio();
+  stopQuranAudio();
   document.querySelectorAll('.voice-btn.speaking').forEach(b => b.classList.remove('speaking'));
   if ('speechSynthesis' in window) speechSynthesis.cancel();
 }
@@ -1078,6 +1336,7 @@ function buildBookCitationHtml(q) {
   if (chapter) meta.push(escapeHtml(chapter));
   if (pageLabel) meta.push(pageLabel);
   inner += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
+  if (hasQuranAyahContent(q)) inner += buildQuranReciteButtonHtml();
   return `<p class="book-cite-heading">📖 الاستشهاد من الكتاب</p><div class="book-cite-box">${inner}</div>`;
 }
 
@@ -1101,6 +1360,13 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
   html += buildBookCitationHtml(q);
   html += '</div>';
   return html;
+}
+
+function mountAnswerFeedback(q, html) {
+  const expEl = document.getElementById('fb-exp');
+  if (!expEl) return;
+  expEl.innerHTML = html;
+  bindQuranReciteButton(expEl, q);
 }
 
 function clearQuestionTimer() {
@@ -1193,7 +1459,7 @@ function onQuestionTimeUp() {
   document.getElementById('fb-icon').textContent = '⏱️';
   document.getElementById('fb-title').textContent = `${n}، انتهى الوقت!`;
   selfBox.style.display = 'none';
-  expEl.innerHTML = buildAnswerFeedbackHtml(q, false);
+  mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, false));
   setFeedbackPanelOpen(true);
   setFeedbackContinueVisible(true);
 }
@@ -2148,6 +2414,7 @@ function renderQ() {
     });
   }
   startQuestionTimer();
+  updateQuranReciteSlot(q);
   if (voiceOn) speakQuestion();
   persistGameSession();
 }
@@ -2186,7 +2453,7 @@ function pick(btn, isOk) {
     fb.className = 'feedback show ok';
     document.getElementById('fb-icon').textContent = '🎉';
     document.getElementById('fb-title').textContent = state.demoMode ? `أحسنت يا ${n}! 🌟` : ENCOURAGE_OK[Math.floor(Math.random() * ENCOURAGE_OK.length)];
-    expEl.innerHTML = buildAnswerFeedbackHtml(q, true);
+    mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, true));
     setFeedbackPanelOpen(true);
     setFeedbackContinueVisible(true);
     if (voiceOn) speakFeedback(q);
@@ -2223,10 +2490,10 @@ function pick(btn, isOk) {
     if (trainingMode) {
       selfBox.style.display = 'block';
       selfBox.innerHTML = '<p style="font-size:0.85em;margin-bottom:8px;color:var(--text-soft);">وضع التدريب — لا يُحسب ضدك</p><button type="button" class="btn btn-blue btn-sm" style="width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة والشرح</button>';
-      expEl.innerHTML = buildAnswerFeedbackHtml(q, false, picked);
+      mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, false, picked));
     } else {
       selfBox.style.display = 'none';
-      expEl.innerHTML = buildAnswerFeedbackHtml(q, false, picked);
+      mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, false, picked));
     }
     document.getElementById('show-answer-btn').style.display = trainingMode ? 'block' : 'none';
     setFeedbackPanelOpen(true);
@@ -2273,7 +2540,9 @@ function renderReviewItem() {
   document.getElementById('review-progress').textContent = `خطأ ${state.reviewIdx + 1} من ${total}`;
   document.getElementById('review-q').textContent = q.q;
   document.getElementById('review-answer').innerHTML = '';
-  document.getElementById('review-exp').innerHTML = buildAnswerFeedbackHtml(q, false, item.picked || '');
+  const reviewExp = document.getElementById('review-exp');
+  reviewExp.innerHTML = buildAnswerFeedbackHtml(q, false, item.picked || '');
+  bindQuranReciteButton(reviewExp, q);
   const btn = document.getElementById('btn-review-next');
   btn.textContent = state.reviewIdx >= total - 1 ? 'إنهاء المراجعة ✓' : 'التالي ←';
 }
@@ -2297,7 +2566,7 @@ function revealAnswer() {
   if (q) highlightCorrectAnswer(q);
   const expEl = document.getElementById('fb-exp');
   if (q?.exp || q?.quote || q?.page) {
-    expEl.innerHTML = buildAnswerFeedbackHtml(q, false);
+    mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, false));
   }
   document.getElementById('show-answer-btn').style.display = 'none';
 }
