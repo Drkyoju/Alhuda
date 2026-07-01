@@ -17,7 +17,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=31">
+  <link rel="stylesheet" href="styles.css?v=33">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -437,7 +437,10 @@
     <div class="feedback" id="feedback" aria-live="polite" aria-atomic="true">
       <div class="fb-inner">
         <div class="fb-icon-wrap" id="fb-icon"></div>
-        <div class="fb-title" id="fb-title"></div>
+        <div class="fb-title-row">
+          <div class="fb-title" id="fb-title"></div>
+          <button type="button" class="voice-btn voice-btn-sm fb-speak-btn" id="btn-speak-feedback" onclick="onFeedbackSpeakerClick()" aria-label="اقرأ الشرح والإجابة" style="display:none">🔊</button>
+        </div>
         <div class="fb-exp" id="fb-exp"></div>
         <div class="self-correct-box" id="fb-self-correct" style="display:none;"></div>
         <button class="btn btn-green btn-sm fb-continue-btn" onclick="nextQ()">متابعة →</button>
@@ -582,7 +585,7 @@
 <script src="question-verse-map.js"></script>
 <script src="ayah-snippet-map.js"></script>
 <script src="version.js"></script>
-<script src="app.js?v=59"></script>
+<script src="app.js?v=61"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=9"></script>
 <script src="platform.js?v=13"></script>

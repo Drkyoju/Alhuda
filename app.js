@@ -879,6 +879,39 @@ function getQuestionContentBlob(q, extra = '') {
   return parts.filter(Boolean).join(' ');
 }
 
+function textIsSubstantiallyContained(needle, haystack) {
+  const n = normalizeArabicForMatch(String(needle || '').replace(/^«|»$/g, ''));
+  const h = normalizeArabicForMatch(String(haystack || ''));
+  if (!n || !h) return false;
+  if (h.includes(n)) return true;
+  const words = n.split(' ').filter((w) => w.length > 2);
+  if (words.length < 3) return false;
+  const hits = words.filter((w) => h.includes(w)).length;
+  return hits / words.length >= 0.72;
+}
+
+function dedupeTtsPlan(plan) {
+  const out = [];
+  for (const seg of plan) {
+    if (seg.type !== 'tts') {
+      out.push(seg);
+      continue;
+    }
+    const t = seg.text?.trim();
+    if (!t) continue;
+    const prev = out[out.length - 1];
+    if (prev?.type === 'tts') {
+      if (textIsSubstantiallyContained(t, prev.text) || textIsSubstantiallyContained(prev.text, t)) {
+        if (t.length > prev.text.length) prev.text = t;
+        continue;
+      }
+    }
+    if (out.some((s) => s.type === 'tts' && textIsSubstantiallyContained(t, s.text))) continue;
+    out.push({ type: 'tts', text: t });
+  }
+  return out;
+}
+
 function buildQuestionSpeechText(q) {
   const parts = [q?.q].filter(Boolean);
   if (q && getQuestionVerseKey(q.id)) {
@@ -889,31 +922,56 @@ function buildQuestionSpeechText(q) {
   return parts.join('. ');
 }
 
-function buildFeedbackSpeechText(q) {
+function buildFeedbackSpeechText(q, wrongText) {
   const parts = [];
+  if (wrongText) parts.push(`إجابتك: ${wrongText}`);
   const correct = getCorrectAnswerText(q);
   if (correct) parts.push(`الإجابة الصحيحة: ${correct}`);
-  if (q?.exp) parts.push(q.exp);
-  const quote = typeof pickCitationText === 'function' ? pickCitationText(q) : (q?.quote || '');
-  if (quote) parts.push(String(quote).replace(/^«|»$/g, ''));
-  const book = BOOK_LABELS[q?.book] || q?.book || '';
-  if (book) parts.push(`من كتاب ${book}`);
-  const pageLabel = q?.page != null ? formatPageLabel(q.page) : '';
-  if (pageLabel) parts.push(pageLabel);
+  const exp = (q?.exp || '').trim();
+  const quoteRaw = typeof pickCitationText === 'function' ? pickCitationText(q) : (q?.quote || '');
+  const quote = String(quoteRaw || '').replace(/^«|»$/g, '').trim();
+  if (exp) {
+    parts.push(exp);
+    if (quote && !textIsSubstantiallyContained(quote, exp)) parts.push(quote);
+  } else if (quote) {
+    parts.push(quote);
+  }
+  if (!exp && !quote) {
+    const book = BOOK_LABELS[q?.book] || q?.book || '';
+    if (book) parts.push(`من كتاب ${book}`);
+    const pageLabel = q?.page != null ? formatPageLabel(q.page) : '';
+    if (pageLabel) parts.push(pageLabel);
+  }
   return parts.filter(Boolean).join('. ');
 }
 
-function speakFeedback(q, wrongText) {
-  if (!voiceOn || !q) return;
-  const parts = [];
-  if (wrongText) parts.unshift(`إجابتك: ${wrongText}`);
-  parts.push(buildFeedbackSpeechText(q));
-  const text = parts.filter(Boolean).join('. ');
-  if (text) speakHybrid(text, q, null);
+async function speakFeedbackOnce(q, wrongText, btn) {
+  if (!q) return;
+  const text = buildFeedbackSpeechText(q, wrongText);
+  const clean = stripForSpeech(text);
+  if (!clean) return;
+  stopSpeaking();
+  const token = hybridSpeechToken;
+  if (btn) btn.classList.add('speaking');
+  try {
+    await speakTtsSegment(clean, btn, { keepBtnState: false });
+  } catch (e) {
+    if (e.name !== 'AbortError') console.warn('feedback tts:', e);
+  } finally {
+    if (token === hybridSpeechToken && btn) btn.classList.remove('speaking');
+  }
+}
+
+function onFeedbackSpeakerClick() {
+  const q = state.questions?.[state.idx];
+  if (!q) return;
+  void speakFeedbackOnce(q, state.lastFeedbackWrong || '', document.getElementById('btn-speak-feedback'));
 }
 
 /* ── Quran recitation (علي الحذيفي — Islamic Network CDN, 128kbps max) ── */
 const QURAN_RECITER_LABEL = 'الحذيفي';
+const QURAN_RECITE_BTN_LABEL = `🎧 تلاوة — ${QURAN_RECITER_LABEL}`;
+const QURAN_RECITE_BTN_ARIA = `استمع لتلاوة الآية — علي ${QURAN_RECITER_LABEL}`;
 const QURAN_RECITER_EDITION = 'ar.hudhaify';
 const QURAN_RECITER_BITRATE = 128;
 const QURAN_RECITER_CDN_BASE = `https://cdn.islamic.network/quran/audio/${QURAN_RECITER_BITRATE}/${QURAN_RECITER_EDITION}/`;
@@ -1137,7 +1195,7 @@ async function buildSpeechPlan(text, q) {
     const ttsOnly = stripForSpeech(raw);
     if (ttsOnly) plan.push({ type: 'tts', text: ttsOnly });
   }
-  return plan.filter((s) => (s.type === 'tts' && s.text?.trim()) || (s.type === 'quran' && s.verseKey));
+  return dedupeTtsPlan(plan.filter((s) => (s.type === 'tts' && s.text?.trim()) || (s.type === 'quran' && s.verseKey)));
 }
 
 function textMayHaveQuranAyah(text, q) {
@@ -1210,7 +1268,7 @@ function stopQuranAudio() {
 }
 
 function buildQuranReciteButtonHtml() {
-  return `<button type="button" class="quran-recite-btn" data-quran-recite aria-label="استمع لتلاوة الآية — علي ${QURAN_RECITER_LABEL}">🎧 استمع للتلاوة — ${QURAN_RECITER_LABEL}</button>`;
+  return `<button type="button" class="quran-recite-btn" data-quran-recite aria-label="${QURAN_RECITE_BTN_ARIA}">${QURAN_RECITE_BTN_LABEL}</button>`;
 }
 
 function bindQuranReciteButton(root, q) {
@@ -1267,12 +1325,12 @@ async function playQuranForQuestion(q, btn) {
       if (typeof showToast === 'function') showToast('لم نتمكن من تحديد الآية في القرآن', 'err');
       return;
     }
-    if (btn) btn.textContent = `🎧 استمع للتلاوة — ${QURAN_RECITER_LABEL}`;
+    if (btn) btn.textContent = QURAN_RECITE_BTN_LABEL;
     await playQuranRecitation(verseKey, btn);
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.textContent = `🎧 استمع للتلاوة — ${QURAN_RECITER_LABEL}`;
+      btn.textContent = QURAN_RECITE_BTN_LABEL;
     }
   }
 }
@@ -1343,20 +1401,25 @@ function stopSpeaking() {
 }
 
 function speakTextBrowser(text, btn) {
-  if (!('speechSynthesis' in window)) return false;
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'ar-SA';
-  const voice = cachedArabicVoice || loadArabicVoice();
-  if (voice) u.voice = voice;
-  u.rate = 0.78;
-  u.pitch = 1;
-  if (btn) {
-    btn.classList.add('speaking');
-    u.onend = () => btn.classList.remove('speaking');
-    u.onerror = () => btn.classList.remove('speaking');
-  }
-  speechSynthesis.speak(u);
-  return true;
+  if (!('speechSynthesis' in window)) return Promise.resolve(false);
+  return new Promise((resolve) => {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ar-SA';
+    const voice = cachedArabicVoice || loadArabicVoice();
+    if (voice) u.voice = voice;
+    u.rate = 0.78;
+    u.pitch = 1;
+    if (btn) btn.classList.add('speaking');
+    u.onend = () => {
+      if (btn) btn.classList.remove('speaking');
+      resolve(true);
+    };
+    u.onerror = () => {
+      if (btn) btn.classList.remove('speaking');
+      resolve(false);
+    };
+    speechSynthesis.speak(u);
+  });
 }
 
 async function speakTextCloud(text, btn, voice = TTS_VOICE) {
@@ -1390,7 +1453,8 @@ async function speakTtsSegment(text, btn, { keepBtnState = true } = {}) {
     } catch (e2) {
       if (e2.name === 'AbortError') throw e2;
       clearTtsAudio(keepBtnState ? null : btn);
-      if (!speakTextBrowser(text, btn)) throw e2;
+      const ok = await speakTextBrowser(text, btn);
+      if (!ok) throw e2;
       return;
     }
   }
@@ -1468,6 +1532,13 @@ function onQuestionSpeakerClick() {
   localStorage.setItem('voiceOn', 'true');
   updateVoiceUI();
   speakQuestion();
+}
+
+function updateFeedbackSpeakBtn(show) {
+  const btn = document.getElementById('btn-speak-feedback');
+  if (!btn) return;
+  btn.style.display = show ? 'inline-flex' : 'none';
+  btn.classList.remove('speaking');
 }
 
 function updateVoiceUI() {
@@ -2875,7 +2946,8 @@ function pick(btn, isOk) {
     mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, true));
     setFeedbackPanelOpen(true);
     setFeedbackContinueVisible(true);
-    if (voiceOn) speakFeedback(q);
+    state.lastFeedbackWrong = '';
+    updateFeedbackSpeakBtn(true);
   } else {
     btn.classList.add('wrong');
     btn.setAttribute('aria-pressed', 'true');
@@ -2917,7 +2989,8 @@ function pick(btn, isOk) {
     document.getElementById('show-answer-btn').style.display = trainingMode ? 'block' : 'none';
     setFeedbackPanelOpen(true);
     setFeedbackContinueVisible(true);
-    if (voiceOn) speakFeedback(q, picked);
+    state.lastFeedbackWrong = picked;
+    updateFeedbackSpeakBtn(true);
   }
   persistGameSession();
 }
@@ -2925,6 +2998,8 @@ function pick(btn, isOk) {
 function nextQ() {
   if (state.gameEnding || state.gameEnded) return;
   stopSpeaking();
+  updateFeedbackSpeakBtn(false);
+  state.lastFeedbackWrong = '';
   state.idx++;
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
   setFeedbackPanelOpen(false);

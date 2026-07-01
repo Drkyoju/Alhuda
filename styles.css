@@ -77,10 +77,14 @@
     html {
       height: 100%;
       overflow: hidden;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
     }
 
     body {
       font-family: 'Tajawal', 'Arial', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       background: var(--grad-hero);
       background-attachment: fixed;
       min-height: 100vh;
@@ -1765,41 +1769,45 @@
       50% { opacity: 0.45; }
     }
     .book-cite-heading {
-      margin: 14px 0 8px;
+      margin: 10px 0 6px;
       font-weight: 800;
-      font-size: 0.95em;
+      font-size: 0.86em;
       color: var(--emerald-dark);
       text-align: right;
     }
     .book-cite-box {
       background: linear-gradient(180deg, #fffdf8, var(--cream));
-      border: 2px solid var(--gold);
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-top: 12px;
+      border: 1.5px solid var(--gold);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 8px;
       text-align: right;
-      line-height: 1.75;
+      line-height: 1.65;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
     }
     .book-cite-box strong {
       display: block;
       color: var(--emerald-dark);
-      margin-bottom: 8px;
-      font-size: 0.95em;
+      margin-bottom: 6px;
+      font-size: 0.86em;
     }
     .book-cite-quote {
-      margin: 0 0 10px;
-      padding: 10px 12px;
-      border-right: 4px solid var(--emerald);
+      margin: 0 0 8px;
+      padding: 8px 10px;
+      border-right: 3px solid var(--emerald);
       background: var(--white);
-      border-radius: 0 10px 10px 0;
-      font-weight: 700;
-      color: var(--text);
-      font-size: 0.92em;
+      border-radius: 0 8px 8px 0;
+      font-weight: 600;
+      color: var(--text-soft);
+      font-size: 0.82em;
+      line-height: 1.7;
     }
     .book-cite-meta {
       margin: 0;
-      font-size: 0.85em;
-      font-weight: 800;
+      font-size: 0.76em;
+      font-weight: 700;
       color: var(--emerald-dark);
     }
     .quran-recite-slot {
@@ -1809,20 +1817,23 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      width: 100%;
-      margin-top: 10px;
-      padding: 12px 14px;
-      border: 2px solid var(--gold);
-      border-radius: 14px;
+      gap: 5px;
+      width: auto;
+      max-width: 100%;
+      margin-top: 8px;
+      padding: 7px 12px;
+      border: 1.5px solid var(--gold);
+      border-radius: 10px;
       background: linear-gradient(180deg, #fff8e8 0%, #f5e6b8 100%);
       color: var(--emerald-dark);
       font-family: inherit;
-      font-size: 0.95em;
+      font-size: 0.8em;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 3px 0 #c9a84c;
+      box-shadow: 0 2px 0 #c9a84c;
       transition: 0.2s;
+      min-height: 38px;
+      touch-action: manipulation;
     }
     .quran-recite-btn:active { transform: translateY(2px); box-shadow: none; }
     .quran-recite-btn.playing {
@@ -2969,6 +2980,22 @@
       font-weight: 900;
       margin: 2px 0 4px;
       line-height: 1.45;
+      flex: 1;
+      min-width: 0;
+    }
+    #game .feedback .fb-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+    }
+    #game .feedback .fb-speak-btn {
+      flex-shrink: 0;
+      margin-top: 0;
+      min-width: 38px;
+      min-height: 38px;
+      padding: 6px 8px;
     }
     #game .feedback .fb-icon-wrap {
       font-size: 1.5em;
@@ -3011,23 +3038,29 @@
       font-size: 0.95em;
     }
     #game .feedback .book-cite-heading {
-      margin: 8px 0 6px;
-      font-size: 1em;
+      margin: 6px 0 4px;
+      font-size: 0.84em;
       font-weight: 800;
     }
     #game .feedback .book-cite-box {
-      padding: 10px 12px;
+      padding: 8px 10px;
       margin-top: 0;
     }
     #game .feedback .book-cite-quote {
-      padding: 8px 10px;
-      margin-bottom: 6px;
-      font-size: 0.98em !important;
-      line-height: 1.75 !important;
-      font-weight: 700;
+      padding: 6px 8px;
+      margin-bottom: 4px;
+      font-size: 0.8em !important;
+      line-height: 1.65 !important;
+      font-weight: 600;
     }
     #game .feedback .book-cite-meta {
-      font-size: 0.92em;
+      font-size: 0.74em;
+    }
+    #game .feedback .quran-recite-btn {
+      margin-top: 6px;
+      font-size: 0.76em;
+      padding: 6px 10px;
+      min-height: 36px;
     }
     #game .feedback .fb-continue-btn {
       flex-shrink: 0;
@@ -3272,6 +3305,33 @@
       #game .feedback .why-correct-box {
         font-size: clamp(13px, calc(var(--base-font-size, 18px) * 0.82), 15px) !important;
       }
+      #game .feedback .book-cite-heading {
+        font-size: clamp(12px, calc(var(--base-font-size, 18px) * 0.82), 14px) !important;
+      }
+      #game .feedback .book-cite-quote {
+        font-size: clamp(12px, calc(var(--base-font-size, 18px) * 0.78), 14px) !important;
+      }
+      #game .feedback .book-cite-meta {
+        font-size: clamp(11px, calc(var(--base-font-size, 18px) * 0.72), 13px) !important;
+      }
+      #game .feedback .book-cite-box {
+        padding: 8px 10px;
+      }
+      #game .feedback .quran-recite-btn {
+        font-size: clamp(11px, calc(var(--base-font-size, 18px) * 0.74), 13px);
+        padding: 6px 10px;
+        min-height: 36px;
+      }
+      #game.feedback-open .q-area {
+        padding-bottom: max(48dvh, 100px);
+      }
+      #game .feedback {
+        max-height: min(55dvh, 55vh);
+      }
+      .demo-intro-card,
+      .login-hero .card {
+        padding: 18px 14px;
+      }
       .q-timer-hourglass {
         width: 52px;
         padding: 4px 3px;
@@ -3371,17 +3431,17 @@
 
     /* ── استشهاد من الكتاب (ثابت بدون طي) ── */
     .answer-feedback .book-cite-heading {
-      font-size: clamp(1.02rem, calc(var(--base-font-size, 18px) * 1.05), 1.12rem);
+      font-size: clamp(0.8rem, calc(var(--base-font-size, 18px) * 0.86), 0.9rem);
     }
     #game .feedback .fb-correct-answer {
-      font-size: 0.95em !important;
+      font-size: 0.9em !important;
     }
     #game .feedback .book-cite-quote {
-      font-size: clamp(0.98rem, var(--base-font-size, 18px), 1.08rem) !important;
-      line-height: 1.75 !important;
+      font-size: clamp(0.76rem, calc(var(--base-font-size, 18px) * 0.8), 0.86rem) !important;
+      line-height: 1.65 !important;
     }
     #game .feedback .book-cite-meta {
-      font-size: clamp(0.9rem, calc(var(--base-font-size, 18px) * 0.95), 1rem) !important;
+      font-size: clamp(0.72rem, calc(var(--base-font-size, 18px) * 0.74), 0.8rem) !important;
     }
 
     /* ── تعليمات اللعب ── */
@@ -3430,7 +3490,6 @@
       min-width: 44px;
       min-height: 44px;
       padding: 8px;
-    }
       color: var(--text-soft);
     }
 
