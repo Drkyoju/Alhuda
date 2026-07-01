@@ -31,7 +31,7 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false };
 let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
@@ -70,6 +70,7 @@ const BADGES = {
 const ENCOURAGE_OK = ['ممتاز! 🌟', 'أحسنت! 🎉', 'رائع! ⭐', 'مبدع/ة! 💫', 'بارك الله فيك! 🤲'];
 const ENCOURAGE_BAD = ['لا بأس! حاول/ي مرة أخرى 💪', 'تعلّمنا من الخطأ 📖', 'واصل/ي! أنت قادر/ة 🌱'];
 const DEFAULT_PLAYER = 'بطل/ة';
+const STAGE_SIZE = 20;
 
 function isRealGameLocked() {
   return LOGIN_LOCKED && !state.demoMode;
@@ -202,7 +203,7 @@ function saveProgress(p) {
   localStorage.setItem('playerProgress', JSON.stringify(p));
 }
 function getDefaultProgress() {
-  return { xp: 0, dailyStreak: 0, lastPlayDate: '', totalGames: 0, totalCorrect: 0, bestStreak: 0, bestScore: 0, completedStages: {}, badges: [], bookProgress: { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } }, wrongQuestionIds: [], gameHistory: [], classId: null, classCode: '', className: '', dailyMissionDate: '', dailyMissionDone: false };
+  return { xp: 0, dailyStreak: 0, lastPlayDate: '', totalGames: 0, totalCorrect: 0, bestStreak: 0, bestScore: 0, completedStages: {}, stageProgress: {}, badges: [], bookProgress: { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } }, wrongQuestionIds: [], gameHistory: [], classId: null, classCode: '', className: '', dailyMissionDate: '', dailyMissionDone: false };
 }
 function ensureProgress() {
   const p = { ...getDefaultProgress(), ...getProgress() };
@@ -234,6 +235,181 @@ function getOrderedPool(book, level) {
     });
   }
   return pool;
+}
+
+function stageProgressKey(book, level) {
+  return `${book}:${level}`;
+}
+
+function ensureStageProgressEntry(key) {
+  const p = ensureProgress();
+  if (!p.stageProgress) p.stageProgress = {};
+  if (!p.stageProgress[key]) {
+    p.stageProgress[key] = { solvedIds: [], completedStages: [], currentStage: 1 };
+  }
+  if (!Array.isArray(p.stageProgress[key].solvedIds)) p.stageProgress[key].solvedIds = [];
+  if (!Array.isArray(p.stageProgress[key].completedStages)) p.stageProgress[key].completedStages = [];
+  if (!p.stageProgress[key].currentStage) p.stageProgress[key].currentStage = 1;
+  saveProgress(p);
+  return p.stageProgress[key];
+}
+
+function splitPoolIntoStages(pool, size = STAGE_SIZE) {
+  const stages = [];
+  for (let i = 0; i < pool.length; i += size) {
+    stages.push({
+      num: stages.length + 1,
+      from: i + 1,
+      to: Math.min(i + size, pool.length),
+      questions: pool.slice(i, i + size),
+    });
+  }
+  return stages;
+}
+
+function getStageMeta(book, level) {
+  const pool = getOrderedPool(book, level);
+  const stages = splitPoolIntoStages(pool);
+  const key = stageProgressKey(book, level);
+  const prog = ensureStageProgressEntry(key);
+  return { pool, stages, prog, key };
+}
+
+function markQuestionSolvedInStage(questionId) {
+  if (!questionId || state.demoMode || trainingMode || state.challengeMode || state.homeworkId || state.stageReviewMode) return;
+  const key = stageProgressKey(state.book, state.level);
+  const prog = ensureStageProgressEntry(key);
+  if (!prog.solvedIds.includes(questionId)) {
+    prog.solvedIds.push(questionId);
+    saveProgress(ensureProgress());
+  }
+}
+
+function syncStageCompletion(stageNum) {
+  const { stages, prog } = getStageMeta(state.book, state.level);
+  const stage = stages[stageNum - 1];
+  if (!stage) return false;
+  const solved = stage.questions.filter((q) => prog.solvedIds.includes(q.id)).length;
+  const allSolved = solved >= stage.questions.length;
+  if (!allSolved) return false;
+  if (!prog.completedStages.includes(stageNum)) {
+    prog.completedStages.push(stageNum);
+    prog.completedStages.sort((a, b) => a - b);
+  }
+  if (prog.currentStage <= stageNum && stageNum < stages.length) {
+    prog.currentStage = stageNum + 1;
+  }
+  saveProgress(ensureProgress());
+  return true;
+}
+
+function getQuestionsForStageGame() {
+  if (state.useManualRange || state.homeworkId || state.challengeMode || trainingMode) return null;
+  const { stages, prog } = getStageMeta(state.book, state.level);
+  if (!stages.length) return [];
+
+  if (state.stageReviewMode) {
+    const stageNum = Math.max(1, Math.min(state.activeStageNum || 1, stages.length));
+    const stage = stages[stageNum - 1];
+    state.activeStageNum = stageNum;
+    state.qFrom = stage.from;
+    return dedupeGameQuestions([...stage.questions]);
+  }
+
+  for (let s = Math.max(1, prog.currentStage || 1); s <= stages.length; s++) {
+    const stage = stages[s - 1];
+    const unsolved = stage.questions.filter((q) => !prog.solvedIds.includes(q.id));
+    if (unsolved.length) {
+      state.activeStageNum = s;
+      state.qFrom = stage.from;
+      return dedupeGameQuestions(unsolved);
+    }
+    syncStageCompletion(s);
+  }
+
+  state.activeStageNum = stages.length;
+  return [];
+}
+
+function updateStagePickerUI() {
+  const el = document.getElementById('stage-picker');
+  const hint = document.getElementById('stage-hint');
+  if (!el) return;
+  const { stages, prog, pool } = getStageMeta(state.book, state.level);
+  if (!stages.length) {
+    el.innerHTML = '<p class="stage-empty">لا توجد أسئلة لهذا الاختيار</p>';
+    if (hint) hint.textContent = '';
+    return;
+  }
+  if (!state.stageReviewMode) state.activeStageNum = prog.currentStage || 1;
+
+  el.innerHTML = stages.map((st) => {
+    const solved = st.questions.filter((q) => prog.solvedIds.includes(q.id)).length;
+    const total = st.questions.length;
+    const done = prog.completedStages.includes(st.num) || solved >= total;
+    const current = st.num === (prog.currentStage || 1) && !done;
+    const locked = !done && !current;
+    const selected = st.num === state.activeStageNum;
+    const cls = ['stage-chip', done ? 'done' : '', current ? 'current' : '', selected ? 'selected' : '', locked ? 'locked' : ''].filter(Boolean).join(' ');
+    return `<button type="button" class="${cls}" data-stage="${st.num}" ${locked ? 'disabled' : ''} onclick="selectStage(${st.num}, ${done ? 'true' : 'false'})">
+      <span class="stage-chip-top">${done ? '✓' : `مرحلة ${arabicNum(st.num)}`}</span>
+      <span class="stage-chip-meta">${arabicNum(solved)}/${arabicNum(total)}</span>
+    </button>`;
+  }).join('');
+
+  const totalSolved = prog.solvedIds.filter((id) => pool.some((q) => q.id === id)).length;
+  const allDone = prog.completedStages.length >= stages.length;
+  if (hint) {
+    let text = allDone
+      ? `🎉 أنهيت كل المراحل (${arabicNum(totalSolved)} سؤالاً)! اضغط/ي أي مرحلة للمراجعة`
+      : `المرحلة الحالية: ${arabicNum(prog.currentStage || 1)} من ${arabicNum(stages.length)} — ${arabicNum(totalSolved)} من ${arabicNum(pool.length)} سؤالاً محلولاً`;
+    if (state.useManualRange) text += ' — وضع النطاق اليدوي مفعّل (المراحل معطّلة)';
+    hint.textContent = text;
+  }
+  updateStartButtonLabel();
+}
+
+function selectStage(num, isDone) {
+  state.activeStageNum = num;
+  state.stageReviewMode = !!isDone;
+  updateStagePickerUI();
+}
+
+function updateStartButtonLabel() {
+  const btn = document.getElementById('btn-start-game');
+  if (!btn) return;
+  const { stages, prog } = getStageMeta(state.book, state.level);
+  if (!stages.length) {
+    btn.textContent = 'ابدأ اللعبة 🎮';
+    return;
+  }
+  const num = state.stageReviewMode ? state.activeStageNum : (prog.currentStage || 1);
+  if (state.stageReviewMode) {
+    btn.textContent = `مراجعة المرحلة ${arabicNum(num)} 🔁`;
+  } else if (prog.completedStages.length >= stages.length) {
+    btn.textContent = 'مراجعة مرحلة 🔄';
+  } else {
+    btn.textContent = `ابدأ المرحلة ${arabicNum(num)} 🎮`;
+  }
+}
+
+function updateStageGameBadge() {
+  const el = document.getElementById('stage-game-badge');
+  if (!el || state.demoMode || state.challengeMode || state.homeworkId || state.useManualRange) {
+    if (el) el.style.display = 'none';
+    return;
+  }
+  const { stages, prog } = getStageMeta(state.book, state.level);
+  const num = state.activeStageNum || prog.currentStage || 1;
+  const stage = stages[num - 1];
+  if (!stage) {
+    el.style.display = 'none';
+    return;
+  }
+  const solved = stage.questions.filter((q) => prog.solvedIds.includes(q.id)).length;
+  const mode = state.stageReviewMode ? 'مراجعة' : 'مرحلة';
+  el.style.display = '';
+  el.textContent = `🏁 ${mode} ${arabicNum(num)} — ${arabicNum(solved)}/${arabicNum(stage.questions.length)} مكتمل`;
 }
 
 function updateLevelCounts() {
@@ -277,9 +453,11 @@ function updateQuestionRangeUI() {
     <span class="pool-chip${state.level==='medium'?' on':''}">متوسط ${counts.medium}</span>
     <span class="pool-chip${state.level==='hard'?' on':''}">صعب ${counts.hard}</span>
     <span class="pool-chip${state.level==='all'?' on':''}">الكل ${counts.all}</span>`;
+  updateStagePickerUI();
 }
 
 function onRangeInputChange() {
+  state.useManualRange = true;
   updateQuestionRangeUI();
 }
 
@@ -678,8 +856,8 @@ function removeQuranicVersesForSpeech(text) {
 
 function isHadithQudsiText(s) {
   const t = (s || '').replace(/[،.؛:!؟«»"[\]]/g, ' ').trim();
-  if (/يؤذيني\s+ابن\s+آدم|إنما\s+الأعمال\s+بالنيات|من\s+لقي\s+الله\s+لا\s+يشرك|إن\s+الله\s+تجاوز\s+عن|أقرب\s+ما\s+يكون\s+العبد/i.test(t)) return true;
-  if (/رواه|حديث|قال\s*النبي|رسول\s*الله|ﷺ|رضي\s*الله/i.test(t)) return true;
+  if (/يؤذيني\s+ابن\s+آدم|إنما\s+الأعمال\s+بالنيات|إنك\s+تأتي\s+قوم|من\s+لقي\s+الله\s+لا\s+يشرك|إن\s+الله\s+تجاوز\s+عن|أقرب\s+ما\s+يكون\s+العبد/i.test(t)) return true;
+  if (/رواه|حديث|قال\s*النبي|رسول\s*الله|ﷺ|رضي\s*الله|البر\s+حسن\s+الخلق|لا\s+يؤمن\s+أحدكم\s+حتى\s+يحب|لا\s+ضرر\s+ولا\s+ضرار|كل\s+بدعة\s+ضلالة|لا\s+تجعلوا\s+بيوتكم\s+قبور|لا\s+تتخذوا\s+قبري|الرقى\s+والتمائم|لا\s+عدوى\s+ولا\s+طيرة|إن\s+الله\s+فرض\s+فرائض/i.test(t)) return true;
   return false;
 }
 
@@ -759,43 +937,24 @@ const SURAH_BY_ARABIC_NAME = {
   'العاديات': 100, 'القارعة': 101, 'التكاثر': 102, 'العصر': 103, 'الهمزة': 104,
   'الفيل': 105, 'قريش': 106, 'الماعون': 107, 'الكوثر': 108, 'الكافرون': 109, 'النصر': 110,
   'المسد': 111, 'الإخلاص': 112, 'الفلق': 113, 'الناس': 114,
+  'المدّثر': 74,
 };
 
-const QUESTION_VERSE_KEY = {
-  '06457497-1ae6-4bec-8658-6013bb90d3d9': '4:48',
-  '9980f48a-b3d0-4514-981c-6f7247604a7d': '6:82',
-  '9c91ebc5-17d3-4598-90dd-2edfe8b65bcc': '6:82',
-  'dd12fb28-2682-48bd-bb75-f0e837d7224b': '6:82',
-  '39a35c94-3034-43c9-bcc0-3032b1b01381': '2:256',
-  '44c0fa04-4e25-40dc-8b0e-9a4ea3ff9291': '3:175',
-  '6dea92e9-ae29-4fda-bbf1-55f3b0f2ac90': '51:56',
-  'cabe3338-0c2a-4919-8fda-3ff1f5683271': '51:56',
-  '6236cc16-0c57-47a5-8555-94c1103562e7': '51:56',
-  'b5ff7eaf-2065-47f3-8037-b81eadc02288': '2:267',
-  '62d5943d-857a-43a9-ba34-ec83ef01e96b': '2:267',
-  '1acbe9c3-b9cb-4bbf-8ff1-dc8006de7f8b': '6:57',
-  '27a75181-bb54-44ef-b6dc-b3a84b8cc079': '39:66',
-  '0f1efff9-1444-4eb2-a109-250d262cb098': '2:165',
-};
-
-const KNOWN_AYAH_SNIPPETS = {
-  'إن الله لا يغفر أن يشرك به': '4:48',
-  'الذين آمنوا ولم يلبسوا إيمانهم بظلم': '6:82',
-  'ولم يلبسوا إيمانهم بظلم': '6:82',
-  'فمن يكفر بالطاغوت ويؤمن بالله': '2:256',
-  'فلا تخافوهم وخافوني': '3:175',
-  'وما خلقت الجن والإنس إلا ليعبدون': '51:56',
-  'فلا تجعلوا لله أندادا': '39:66',
-  'فلا تجعلوا لله أنداداً': '39:66',
-  'ومن الناس من يتخذ من دون الله أنداداً': '2:165',
-  'إن الله طيب لا يقبل إلا': '2:267',
-  'إن الله هو الحكم': '6:57',
-};
+function findSurahByFuzzyName(rawName) {
+  const name = normalizeArabicForMatch(rawName).replace(/^ورة\s*/, '').replace(/^س\s*/, '');
+  const folded = name.replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+  if (SURAH_BY_ARABIC_NAME[name]) return SURAH_BY_ARABIC_NAME[name];
+  for (const [k, v] of Object.entries(SURAH_BY_ARABIC_NAME)) {
+    const nk = k.replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي');
+    if (nk === folded || nk.includes(folded) || folded.includes(nk)) return v;
+  }
+  return null;
+}
 
 function getQuestionVerseKey(questionId) {
   if (!questionId) return null;
   const map = (typeof window !== 'undefined' && window.QUESTION_VERSE_MAP) || {};
-  return map[questionId] || QUESTION_VERSE_KEY[questionId] || null;
+  return map[questionId] || null;
 }
 
 function normalizeArabicForMatch(s) {
@@ -815,18 +974,17 @@ function verseKeyToMinshawiUrl(verseKey) {
 function parseSurahAyahReferences(text) {
   const refs = [];
   const cleaned = (text || '').replace(/\s+/g, ' ');
-  const re = /(?:\[?\s*س\s*ورة\s*|سورة\s*)([^\]:]+?)\s*[:：]\s*(\d+)/gi;
+  const re = /(?:\[?\s*س\s*ورة\s*|سورة\s*)([^\]:]+?)\s*[:：]\s*(\d+)(?:\s*[-–.]\s*(\d+))?/gi;
   let m;
   while ((m = re.exec(cleaned))) {
-    const name = normalizeArabicForMatch(m[1]);
-    const surah = SURAH_BY_ARABIC_NAME[name];
+    const surah = findSurahByFuzzyName(m[1]);
     const ayah = parseInt(m[2], 10);
     if (surah && ayah) refs.push(`${surah}:${ayah}`);
   }
-  const direct = cleaned.match(/(الذاريات|الفاتحة|البقرة|الأنعام|النحل|الأنبياء|محمد)\s*[:：]\s*(\d+)/i);
-  if (direct) {
-    const surah = SURAH_BY_ARABIC_NAME[normalizeArabicForMatch(direct[1])];
-    const ayah = parseInt(direct[2], 10);
+  const re2 = /([^\s\d]{3,18})\s*[:：]\s*(\d{1,3})\s*»/g;
+  while ((m = re2.exec(cleaned))) {
+    const surah = findSurahByFuzzyName(m[1]);
+    const ayah = parseInt(m[2], 10);
     if (surah && ayah) refs.push(`${surah}:${ayah}`);
   }
   return refs;
@@ -835,9 +993,9 @@ function parseSurahAyahReferences(text) {
 function extractAyahSnippets(text) {
   const snippets = [];
   const src = text || '';
-  for (const m of src.matchAll(/\(([^)]{12,})\)/g)) snippets.push(m[1].trim());
-  for (const m of src.matchAll(/"([^"]{12,})"/g)) snippets.push(m[1].trim());
-  for (const m of src.matchAll(/«([^»]{12,})»/g)) {
+  for (const m of src.matchAll(/\(([^)]{8,})\)/g)) snippets.push(m[1].trim());
+  for (const m of src.matchAll(/"([^"]{8,})"/g)) snippets.push(m[1].trim());
+  for (const m of src.matchAll(/«([^»]{8,})»/g)) {
     const inner = m[1].trim();
     if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى/i.test(inner)) continue;
     snippets.push(inner);
@@ -847,11 +1005,11 @@ function extractAyahSnippets(text) {
 
 function lookupKnownVerseKey(snippet) {
   const norm = normalizeArabicForMatch(snippet);
-  const extMap = (typeof window !== 'undefined' && window.AYAH_SNIPPET_MAP) || {};
-  const merged = { ...KNOWN_AYAH_SNIPPETS, ...extMap };
-  if (merged[norm]) return merged[norm];
-  for (const [key, verseKey] of Object.entries(merged)) {
-    if (norm.includes(key) || key.includes(norm)) return verseKey;
+  const map = (typeof window !== 'undefined' && window.AYAH_SNIPPET_MAP) || {};
+  if (map[norm]) return map[norm];
+  for (const [key, verseKey] of Object.entries(map)) {
+    const nk = normalizeArabicForMatch(key);
+    if (norm.includes(nk) || nk.includes(norm)) return verseKey;
   }
   return null;
 }
@@ -2225,6 +2383,9 @@ function parseChallengePayload(raw) {
 }
 
 function getQuestionsForGame() {
+  const stageQs = getQuestionsForStageGame();
+  if (stageQs !== null) return stageQs;
+
   const pool = getOrderedPool(state.book, state.level);
   if (!pool.length) return [];
   const fromEl = document.getElementById('q-from-input');
@@ -2266,6 +2427,7 @@ function refreshQuestions() {
   ensureBooksLoaded(booksForState(state.book)).then(() => {
     state.bankVersion++;
     updateQuestionRangeUI();
+    updateStagePickerUI();
     updateLoginQuestionHint();
     if (btn) {
       btn.textContent = '✅ تم التحديث!';
@@ -2389,6 +2551,7 @@ function goHome() {
   updateBookButtons();
   updateLevelCounts();
   updateQuestionRangeUI();
+  updateStagePickerUI();
   updateWelcomeStats();
   if (window.AlhudaPlatform?.onWelcomeHome) AlhudaPlatform.onWelcomeHome();
   show('welcome');
@@ -2476,6 +2639,8 @@ function selectBook(b) {
   state.book = b;
   state.level = 'easy';
   state.bankVersion = 0;
+  state.useManualRange = false;
+  state.stageReviewMode = false;
   updateBookButtons();
   updateLevelCounts();
   selectLevel('easy');
@@ -2485,6 +2650,8 @@ function selectBook(b) {
 function selectLevel(l) {
   state.level = l;
   state.bankVersion = 0;
+  state.useManualRange = false;
+  state.stageReviewMode = false;
   document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('sel'));
   const el = document.getElementById('btn-' + l);
   if (el) el.classList.add('sel');
@@ -2495,6 +2662,7 @@ function selectLevel(l) {
   if (fromEl) fromEl.value = 1;
   if (toEl) toEl.value = max ? Math.min(20, max) : 1;
   updateQuestionRangeUI();
+  updateStagePickerUI();
 }
 function updateBookButtons() {
   document.querySelectorAll('.book-btn').forEach(b => b.classList.remove('sel'));
@@ -2515,9 +2683,20 @@ async function startCountdown() {
       if (typeof showToast === 'function') showToast('تعذّر تحميل أسئلة هذا الكتاب', 'err');
       return;
     }
+    if (!state.useManualRange && !state.stageReviewMode && !state.challengeMode && !state.homeworkId) {
+      const { stages, prog } = getStageMeta(state.book, state.level);
+      if (stages.length && prog.completedStages.length >= stages.length) {
+        showAlert('أنهيت كل المراحل! اختر/ي مرحلة مكتملة (✓) للمراجعة ثم اضغط/ي الزر.');
+        return;
+      }
+    }
     const qs = getQuestionsForGame();
     if (!qs.length) {
-      showAlert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر.');
+      if (!state.useManualRange && !state.stageReviewMode) {
+        showAlert('لا توجد أسئلة متبقية في المرحلة الحالية. اختر/ي مرحلة للمراجعة أو كتاباً آخر.');
+      } else {
+        showAlert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر.');
+      }
       return;
     }
   }
@@ -2566,8 +2745,12 @@ function startGame() {
     }
   }
   if (state.questions.length === 0) { showAlert('لا توجد أسئلة لهذا الاختيار.'); return; }
-  if (typeof trackEvent === 'function') trackEvent('game_start', { book: state.book, level: state.level, training: trainingMode });
-  state.qFrom = parseInt(document.getElementById('q-from-input')?.value, 10) || 1;
+  if (!state.demoMode && !state.useManualRange && !state.challengeMode && !state.homeworkId) {
+    // qFrom set by getQuestionsForStageGame
+  } else if (!state.demoMode) {
+    state.qFrom = parseInt(document.getElementById('q-from-input')?.value, 10) || 1;
+  }
+  if (typeof trackEvent === 'function') trackEvent('game_start', { book: state.book, level: state.level, training: trainingMode, stage: state.activeStageNum, review: state.stageReviewMode });
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
   state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.wrongLog = []; state.answered = false;
   state.gameEnded = false; state.gameEnding = false;
@@ -2581,6 +2764,7 @@ function startGame() {
   document.getElementById('demo-bar').style.display = state.demoMode ? 'block' : 'none';
   document.getElementById('show-answer-btn').style.display = 'none';
   document.getElementById('res-xp-earned').style.display = 'none';
+  updateStageGameBadge();
   show('game');
   renderQ();
 }
@@ -2591,9 +2775,13 @@ function renderQ() {
   const q = state.questions[state.idx];
   state.answered = false;
   document.getElementById('show-answer-btn').style.display = 'none';
+  const stagePrefix = (!state.demoMode && !state.challengeMode && !state.homeworkId && !state.useManualRange)
+    ? `مرحلة ${arabicNum(state.activeStageNum || 1)} — `
+    : '';
   document.getElementById('q-num').textContent = (state.demoMode || state.challengeMode)
     ? `السؤال ${state.idx + 1} من ${state.total}`
-    : `سؤال ${state.qFrom + state.idx} — ${state.idx + 1}/${state.total}`;
+    : `${stagePrefix}سؤال ${state.qFrom + state.idx} — ${state.idx + 1}/${state.total}`;
+  updateStageGameBadge();
   document.getElementById('q-text').textContent = q.q;
   document.getElementById('q-book-badge').textContent = BOOK_LABELS[q.book] || q.book;
   document.getElementById('q-type-badge').style.display = q.type === 'tf' ? 'inline-block' : 'none';
@@ -2635,6 +2823,7 @@ function pick(btn, isOk) {
     selfBox.style.display = 'none';
     if (!trainingMode && !state.demoMode) {
       state.streak++; state.correct++;
+      markQuestionSolvedInStage(q?.id);
       const pts = 10 + Math.min(state.streak * 2, 20);
       state.score += pts;
       if (state.streak > state.maxStreak) state.maxStreak = state.streak;
@@ -2819,7 +3008,23 @@ async function endGame() {
     const stars = renderStars(pct);
     document.getElementById('res-icon').textContent = isTraining ? '🏋️' : (stars === 3 ? '🏆' : stars >= 2 ? '🎉' : '📚');
     document.getElementById('res-title').textContent = isTraining ? 'انتهى التدريب' : (stars === 3 ? 'مذهلة!' : stars >= 2 ? 'أحسنت!' : 'جيد!');
-    document.getElementById('res-sub').textContent = isTraining ? 'وضع التدريب — لا يُحسب في النقاط أو اللوحة' : (stars === 3 ? 'نتيجة ذهبية! أنت بطل/ة! 🌟' : stars >= 2 ? 'نتيجة رائعة! واصل/ي التعلّم 🌟' : 'واصل/ي المحاولة، أنت قادر/ة! 💪');
+    let resSub = isTraining ? 'وضع التدريب — لا يُحسب في النقاط أو اللوحة' : (stars === 3 ? 'نتيجة ذهبية! أنت بطل/ة! 🌟' : stars >= 2 ? 'نتيجة رائعة! واصل/ي التعلّم 🌟' : 'واصل/ي المحاولة، أنت قادر/ة! 💪');
+    if (!isTraining && !state.useManualRange && !state.challengeMode && !state.homeworkId) {
+      const stageDone = syncStageCompletion(state.activeStageNum);
+      const { stages, prog } = getStageMeta(state.book, state.level);
+      if (stageDone) {
+        if (prog.completedStages.length >= stages.length) {
+          resSub = '🎉 أنهيت كل المراحل! يمكنك مراجعة أي مرحلة من الشاشة الرئيسية';
+          state.stageReviewMode = false;
+        } else {
+          resSub = `✅ أتممت المرحلة ${arabicNum(state.activeStageNum)}! المرحلة التالية: ${arabicNum(prog.currentStage)}`;
+          state.stageReviewMode = false;
+        }
+      } else if (!state.stageReviewMode && state.correct >= state.total) {
+        resSub = `✅ أنهيت أسئلة هذه الجولة — واصل/ي المرحلة ${arabicNum(prog.currentStage || state.activeStageNum)}`;
+      }
+    }
+    document.getElementById('res-sub').textContent = resSub;
     document.getElementById('fin-score').textContent = state.score;
     document.getElementById('fin-correct').textContent = state.correct + '/' + state.total;
     document.getElementById('fin-streak').textContent = state.maxStreak;

@@ -478,6 +478,7 @@
   function onWelcomeHome() {
     renderBookProgress();
     updateDailyMissionUI();
+    if (typeof updateStagePickerUI === 'function') updateStagePickerUI();
     const mistakeBtn = document.getElementById('btn-mistakes');
     const p = ensureProgressExt();
     if (mistakeBtn) mistakeBtn.style.display = p.wrongQuestionIds?.length ? 'inline-flex' : 'none';
