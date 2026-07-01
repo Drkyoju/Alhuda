@@ -912,8 +912,9 @@ function speakFeedback(q, wrongText) {
   if (text) speakHybrid(text, q, null);
 }
 
-/* ── Quran recitation (Minshawi Murattal — verses.quran.com) ── */
-const QURAN_MINSHAWI_AUDIO_BASE = 'https://verses.quran.com/Minshawi/Murattal/mp3/';
+/* ── Quran recitation (علي الحذيفي — everyayah.com) ── */
+const QURAN_RECITER_LABEL = 'الحذيفي';
+const QURAN_RECITER_AUDIO_BASE = 'https://everyayah.com/data/Hudhaify_128kbps/';
 let quranAudio = null;
 const quranVerseKeyCache = new Map();
 
@@ -964,11 +965,11 @@ function normalizeArabicForMatch(s) {
     .trim();
 }
 
-function verseKeyToMinshawiUrl(verseKey) {
+function verseKeyToRecitationUrl(verseKey) {
   const [surah, ayah] = String(verseKey).split(':').map((n) => parseInt(n, 10));
   if (!surah || !ayah) return '';
   const file = `${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
-  return `${QURAN_MINSHAWI_AUDIO_BASE}${file}`;
+  return `${QURAN_RECITER_AUDIO_BASE}${file}`;
 }
 
 function parseSurahAyahReferences(text) {
@@ -1183,7 +1184,7 @@ function stopQuranAudio() {
 }
 
 function buildQuranReciteButtonHtml() {
-  return '<button type="button" class="quran-recite-btn" data-quran-recite aria-label="استمع لتلاوة الآية — محمد صديق المنشاوي">🎧 استمع للتلاوة — المنشاوي</button>';
+  return `<button type="button" class="quran-recite-btn" data-quran-recite aria-label="استمع لتلاوة الآية — علي ${QURAN_RECITER_LABEL}">🎧 استمع للتلاوة — ${QURAN_RECITER_LABEL}</button>`;
 }
 
 function bindQuranReciteButton(root, q) {
@@ -1194,7 +1195,7 @@ function bindQuranReciteButton(root, q) {
 }
 
 async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) {
-  const url = verseKeyToMinshawiUrl(verseKey);
+  const url = verseKeyToRecitationUrl(verseKey);
   if (!url) {
     if (typeof showToast === 'function') showToast('تعذّر تحديد الآية', 'err');
     return;
@@ -1234,12 +1235,12 @@ async function playQuranForQuestion(q, btn) {
       if (typeof showToast === 'function') showToast('لم نتمكن من تحديد الآية في القرآن', 'err');
       return;
     }
-    if (btn) btn.textContent = '🎧 استمع للتلاوة — المنشاوي';
+    if (btn) btn.textContent = `🎧 استمع للتلاوة — ${QURAN_RECITER_LABEL}`;
     await playQuranRecitation(verseKey, btn);
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.textContent = '🎧 استمع للتلاوة — المنشاوي';
+      btn.textContent = `🎧 استمع للتلاوة — ${QURAN_RECITER_LABEL}`;
     }
   }
 }
