@@ -912,9 +912,19 @@ function speakFeedback(q, wrongText) {
   if (text) speakHybrid(text, q, null);
 }
 
-/* ── Quran recitation (علي الحذيفي — everyayah.com) ── */
+/* ── Quran recitation (علي الحذيفي — Islamic Network CDN, 128kbps max) ── */
 const QURAN_RECITER_LABEL = 'الحذيفي';
-const QURAN_RECITER_AUDIO_BASE = 'https://everyayah.com/data/Hudhaify_128kbps/';
+const QURAN_RECITER_EDITION = 'ar.hudhaify';
+const QURAN_RECITER_BITRATE = 128;
+const QURAN_RECITER_CDN_BASE = `https://cdn.islamic.network/quran/audio/${QURAN_RECITER_BITRATE}/${QURAN_RECITER_EDITION}/`;
+const QURAN_RECITER_EVERYAYAH_BASE = 'https://everyayah.com/data/Hudhaify_128kbps/';
+const SURAH_AYAH_COUNTS = [
+  7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52, 99, 128, 111, 110, 98, 135,
+  112, 78, 118, 64, 77, 227, 93, 88, 69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85, 54, 53, 89, 59,
+  37, 35, 38, 29, 18, 45, 60, 49, 62, 55, 78, 96, 29, 22, 24, 13, 14, 11, 11, 18, 12, 12, 30, 52, 52,
+  44, 28, 28, 20, 56, 40, 31, 50, 40, 46, 42, 29, 19, 36, 25, 22, 17, 19, 26, 30, 20, 15, 21, 11, 8,
+  8, 19, 5, 8, 8, 11, 11, 8, 3, 9, 5, 4, 7, 3, 6, 3, 5, 4, 5, 6,
+];
 let quranAudio = null;
 const quranVerseKeyCache = new Map();
 
@@ -965,11 +975,27 @@ function normalizeArabicForMatch(s) {
     .trim();
 }
 
-function verseKeyToRecitationUrl(verseKey) {
+function verseKeyToGlobalAyahNum(verseKey) {
   const [surah, ayah] = String(verseKey).split(':').map((n) => parseInt(n, 10));
-  if (!surah || !ayah) return '';
+  if (!surah || !ayah || surah < 1 || surah > 114) return 0;
+  let offset = 0;
+  for (let i = 0; i < surah - 1; i++) offset += SURAH_AYAH_COUNTS[i] || 0;
+  return offset + ayah;
+}
+
+function getQuranRecitationUrls(verseKey) {
+  const [surah, ayah] = String(verseKey).split(':').map((n) => parseInt(n, 10));
+  if (!surah || !ayah) return [];
+  const urls = [];
+  const globalNum = verseKeyToGlobalAyahNum(verseKey);
+  if (globalNum) urls.push(`${QURAN_RECITER_CDN_BASE}${globalNum}.mp3`);
   const file = `${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
-  return `${QURAN_RECITER_AUDIO_BASE}${file}`;
+  urls.push(`${QURAN_RECITER_EVERYAYAH_BASE}${file}`);
+  return [...new Set(urls)];
+}
+
+function verseKeyToRecitationUrl(verseKey) {
+  return getQuranRecitationUrls(verseKey)[0] || '';
 }
 
 function parseSurahAyahReferences(text) {
@@ -1195,8 +1221,8 @@ function bindQuranReciteButton(root, q) {
 }
 
 async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) {
-  const url = verseKeyToRecitationUrl(verseKey);
-  if (!url) {
+  const urls = getQuranRecitationUrls(verseKey);
+  if (!urls.length) {
     if (typeof showToast === 'function') showToast('تعذّر تحديد الآية', 'err');
     return;
   }
@@ -1206,20 +1232,26 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
   }
   stopQuranAudio();
   if (btn) btn.classList.add('playing');
-  quranAudio = new Audio(url);
-  try {
-    await quranAudio.play();
-    await new Promise((resolve, reject) => {
-      quranAudio.onended = resolve;
-      quranAudio.onerror = () => reject(new Error('quran audio error'));
-    });
-  } catch (e) {
-    console.warn('quran play:', e);
-    if (typeof showToast === 'function') showToast('تعذّر تشغيل التلاوة — تحقق من الاتصال', 'err');
-  } finally {
-    if (btn) btn.classList.remove('playing');
-    stopQuranAudio();
+  let lastErr = null;
+  for (const url of urls) {
+    quranAudio = new Audio(url);
+    quranAudio.preload = 'auto';
+    try {
+      await quranAudio.play();
+      await new Promise((resolve, reject) => {
+        quranAudio.onended = resolve;
+        quranAudio.onerror = () => reject(new Error('quran audio error'));
+      });
+      return;
+    } catch (e) {
+      lastErr = e;
+      console.warn('quran play:', url, e);
+      stopQuranAudio();
+    }
   }
+  if (typeof showToast === 'function') showToast('تعذّر تشغيل التلاوة — تحقق من الاتصال', 'err');
+  console.warn('quran play failed:', lastErr);
+  if (btn) btn.classList.remove('playing');
 }
 
 async function playQuranForQuestion(q, btn) {
