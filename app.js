@@ -702,7 +702,13 @@ function getQuestionContentBlob(q, extra = '') {
 }
 
 function buildQuestionSpeechText(q) {
-  return q?.q || '';
+  const parts = [q?.q].filter(Boolean);
+  if (q && getQuestionVerseKey(q.id)) {
+    const cite = typeof pickCitationText === 'function' ? pickCitationText(q) : (q.quote || '');
+    const cleanCite = String(cite || '').replace(/^«|»$/g, '').trim();
+    if (cleanCite) parts.push(cleanCite);
+  }
+  return parts.join('. ');
 }
 
 function buildFeedbackSpeechText(q) {
@@ -1425,6 +1431,18 @@ function postFixCitationPhrases(s) {
     .replace(/\bإلل لا\b/g, 'إلا الله')
     .replace(/\bإله إلل لا\b/g, 'إله إلا الله')
     .replace(/\bلا إله إلا الله\b/g, 'لا إله إلا الله')
+    .replace(/منحلفبغيرلله/g, 'من حلف بغير الله')
+    .replace(/فقدكفرأوأشرك/g, 'فقد كفر أو أشرك')
+    .replace(/دخلالجنةرجل/g, 'دخل الجنة رجل')
+    .replace(/ودخلالناررجل/g, 'و دخل النار رجل')
+    .replace(/فيذباب/g, 'في ذباب')
+    .replace(/منتعلقتميمة/g, 'من تعلق تميمة')
+    .replace(/فقدأشرك/g, 'فقد أشرك')
+    .replace(/منعلّقتميمة/g, 'من علّق تميمة')
+    .replace(/فلاأتمالله/g, 'فلا أتم الله')
+    .replace(/الشركالأكبر/g, 'الشرك الأكبر')
+    .replace(/والشركالأصغر/g, 'والشرك الأصغر')
+    .replace(/الطيرةشرك/g, 'الطيرة شرك')
     .replace(/\s+/g, ' ')
     .trim();
 }
