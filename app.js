@@ -815,7 +815,7 @@ const TTS_VOICE = 'ar-SA-ZariyahNeural';
 const TTS_VOICE_FALLBACK = 'ar-EG-SalmaNeural';
 let cachedArabicVoice = null;
 
-/** Strip punctuation/symbols the neural voice vocalizes (e.g. ":" → "نقطتان"). */
+/** Strip punctuation/symbols the neural voice vocalizes (e.g. ":" → "نقطتان"). Keeps Arabic harakat. */
 function sanitizeTtsText(text) {
   return (text || '')
     .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
@@ -830,17 +830,125 @@ function sanitizeTtsText(text) {
     .replace(/\s+/g, ' ')
     .trim();
 }
+
+const ARABIC_HARAKAT_RE = /[\u064B-\u065F\u0670\u0610-\u061A]/;
+
+function hasWellFormedTashkeel(s) {
+  if (!s || !ARABIC_HARAKAT_RE.test(s)) return false;
+  const tokens = String(s).split(/\s+/).filter(Boolean);
+  if (!tokens.length) return false;
+  const singles = tokens.filter((t) => t.replace(/[^\u0621-\u064A]/g, '').length <= 1).length;
+  if (singles / tokens.length >= 0.4) return false;
+  const letters = (s.match(/[\u0621-\u064A\u0671]/g) || []).length;
+  const marks = (s.match(/[\u064B-\u065F\u0670]/g) || []).length;
+  return marks >= 3 && marks >= letters * 0.12;
+}
+
+/** Attach detached fatha/damma/kasra/sukun to the nearest Arabic letter. */
+function fixDetachedHarakat(s) {
+  let out = (s || '');
+  for (let i = 0; i < 8; i++) {
+    const next = out
+      .replace(/([\u0621-\u064A\u0671])\s+([\u064B-\u065F\u0670\u0610-\u061A]+)/g, '$1$2')
+      .replace(/([\u064B-\u065F\u0670\u0610-\u061A]+)\s+([\u0621-\u064A\u0671])/g, '$2$1');
+    if (next === out) break;
+    out = next;
+  }
+  return out.replace(/\s+/g, ' ').trim();
+}
+
+/** Keep valid tashkil for TTS; only strip broken OCR marks that confuse pronunciation. */
+function prepareArabicForSpeech(s) {
+  if (!s) return '';
+  let t = String(s).replace(/[\u0640\u200c\u200f]/g, '').replace(/\s+/g, ' ').trim();
+  if (!t) return '';
+  if (hasWellFormedTashkeel(t)) return t;
+  if (hasOcrTashkeelGaps(t) || hasBrokenArabicSpacing(t)) return collapseBrokenArabicSpaces(t);
+  if (ARABIC_HARAKAT_RE.test(t)) return fixDetachedHarakat(t);
+  return t;
+}
+
+function pickCitationTextForSpeech(q) {
+  const raw = String(q?.quote || '').replace(/^«|»$/g, '').trim();
+  if (raw && (hasWellFormedTashkeel(raw) || (ARABIC_HARAKAT_RE.test(raw) && !hasOcrTashkeelGaps(raw) && !hasBrokenArabicSpacing(raw)))) {
+    return prepareArabicForSpeech(raw);
+  }
+  if (q?.id && getCanonicalQuote(q.id)) return getCanonicalQuote(q.id);
+  const cleaned = pickCitationText(q).replace(/^«|»$/g, '').trim();
+  return cleaned ? prepareArabicForSpeech(cleaned) : '';
+}
+
+const MANUAL_SPEECH_DIACRITICS = [
+  ['قال الله تعالى', 'قَالَ اللهُ تَعَالَى'],
+  ['قوله تعالى', 'قَوْلُهُ تَعَالَى'],
+  ['الإجابة الصحيحة', 'الْإِجَابَةُ الصَّحِيحَةُ'],
+  ['التوحيد هو إفراد الله تعالى بالعبادة', 'التَّوْحِيدُ هُوَ إِفْرَادُ اللهِ تَعَالَى بِالْعِبَادَةِ'],
+  ['التوحيد هو إفراد الله بالعبادة', 'التَّوْحِيدُ هُوَ إِفْرَادُ اللهِ بِالْعِبَادَةِ'],
+  ['العبادة هي التوحيد', 'الْعِبَادَةُ هِيَ التَّوْحِيدُ'],
+  ['ما هي الأصول الثلاثة', 'مَا هِيَ الْأُصُولُ الثَّلَاثَةُ'],
+  ['معرفة الرب ومعرفة الدين ومعرفة نبيك', 'مَعْرِفَةُ الرَّبِّ وَمَعْرِفَةُ الدِّينِ وَمَعْرِفَةُ نَبِيِّكَ'],
+  ['إنما الأعمال بالنيات', 'إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ'],
+  ['إنما الأعمال بالنيات وإنما لكل امرئ ما نوى', 'إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى'],
+  ['إنك تأتي قوما من أهل الكتاب فليكن أول ما تدعوهم إليه شهادة أن لا إله إلا الله', 'إِنَّكَ تَأْتِي قَوْمًا مِنْ أَهْلِ الْكِتَابِ، فَلْيَكُنْ أَوَّلَ مَا تَدْعُوهُمْ إِلَيْهِ شَهَادَةُ أَنْ لَا إِلَهَ إِلَّا اللهُ'],
+  ['إن الحلال بين وإن الحرام بين وبينهما أمور مشتبهات', 'إِنَّ الْحَلَالَ بَيِّنٌ، وَإِنَّ الْحَرَامَ بَيِّنٌ، وَبَيْنَهُمَا أُمُورٌ مُشْتَبِهَاتٌ'],
+  ['لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه', 'لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ'],
+  ['البر حسن الخلق والإثم ما حاك في صدرك وكرهت أن يطلع عليه الناس', 'الْبِرُّ حُسْنُ الْخُلُقِ، وَالْإِثْمُ مَا حَاكَ فِي صَدْرِكَ، وَكَرِهْتَ أَنْ يَطَّلِعَ عَلَيْهِ النَّاسُ'],
+  ['إن الله فرض فرائض فلا تضيعوها وحد حدودا فلا تعتدوها وحرم أشياء فلا تنتهكوها', 'إِنَّ اللهَ فَرَضَ فَرَائِضَ فَلَا تُضَيِّعُوهَا، وَحَدَّ حُدُودًا فَلَا تَعْتَدُوهَا، وَحَرَّمَ أَشْيَاءَ فَلَا تَنْتَهِكُوهَا'],
+  ['إن الله تجاوز عن أمتي الخطأ والنسيان وما استكرهوا عليه', 'إِنَّ اللهَ تَجَاوَزَ عَنْ أُمَّتِي الْخَطَأَ وَالنِّسْيَانَ وَمَا اسْتُكْرِهُوا عَلَيْهِ'],
+  ['كل بدعة ضلالة', 'كُلُّ بِدْعَةٍ ضَلَالَةٌ'],
+  ['لعن الله من ذبح لغير الله', 'لَعَنَ اللهُ مَنْ ذَبَحَ لِغَيْرِ اللهِ'],
+  ['إن الرقى والتمائم والتولة شرك', 'إِنَّ الرُّقَى وَالتَّمَائِمَ وَالتِّوَلَةَ شِرْكٌ'],
+  ['دعاء الأموات شرك أكبر', 'دُعَاءُ الْأَمْوَاتِ شِرْكٌ أَكْبَرُ'],
+  ['النذر عبادة لا تصرف إلا لله', 'النَّذْرُ عِبَادَةٌ لَا تُصْرَفُ إِلَّا لِلَّهِ'],
+  ['من حلف بغير الله فقد كفر أو أشرك', 'مَنْ حَلَفَ بِغَيْرِ اللهِ فَقَدْ كَفَرَ أَوْ أَشْرَكَ'],
+  ['دخل الجنة رجل في ذباب ودخل النار رجل في ذباب', 'دَخَلَ الْجَنَّةَ رَجُلٌ فِي ذُبَابٍ، وَدَخَلَ النَّارَ رَجُلٌ فِي ذُبَابٍ'],
+  ['من تعلق تميمة فقد أشرك', 'مَنْ تَعَلَّقَ تَمِيمَةً فَقَدْ أَشْرَكَ'],
+  ['اللهم لا تجعل قبري وثنا يعبد', 'اللَّهُمَّ لَا تَجْعَلْ قَبْرِي وَثَنًا يُعْبَدُ'],
+  ['الطيرة شرك', 'الطِّيَرَةُ شِرْكٌ'],
+  ['الشرك الأكبر يخرج من الملة', 'الشِّرْكُ الْأَكْبَرُ يُخْرِجُ مِنَ الْمِلَّةِ'],
+  ['العبادة اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال', 'الْعِبَادَةُ اسْمٌ جَامِعٌ لِكُلِّ مَا يُحِبُّهُ اللهُ وَيَرْضَاهُ مِنَ الْأَقْوَالِ وَالْأَعْمَالِ'],
+];
+
+function applyManualSpeechDiacritics(text) {
+  let out = String(text || '').trim();
+  if (!out) return '';
+  const phraseMap = (typeof window !== 'undefined' && window.SPEECH_PHRASE_MAP) || {};
+  const phraseList = (typeof window !== 'undefined' && window.SPEECH_PHRASE_LIST) || MANUAL_SPEECH_DIACRITICS;
+  const exact = normalizeArabicForMatch(out);
+  if (phraseMap[exact]) return phraseMap[exact];
+  for (const [plain, diacritized] of phraseList) {
+    if (exact === normalizeArabicForMatch(plain)) return diacritized;
+  }
+  for (const [plain, diacritized] of MANUAL_SPEECH_DIACRITICS) {
+    if (exact === normalizeArabicForMatch(plain)) return diacritized;
+  }
+  const sorted = [...phraseList, ...MANUAL_SPEECH_DIACRITICS].sort((a, b) => b[0].length - a[0].length);
+  for (const [plain, diacritized] of sorted) {
+    if (plain.length >= 5) out = out.split(plain).join(diacritized);
+  }
+  return out;
+}
+
+function speechTextFor(q, field, raw) {
+  const byId = (typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID) || {};
+  const hit = q?.id && byId[q.id]?.[field];
+  return prepareArabicForSpeech(applyManualSpeechDiacritics(hit || raw));
+}
 let ttsAudio = null;
 let ttsAbort = null;
 let ttsObjectUrl = null;
 let hybridSpeechToken = 0;
 
 function stripForSpeech(text) {
-  return removeQuranicVersesForSpeech(
-    (text || '')
-      .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
-      .replace(/\s+/g, ' ')
-      .trim()
+  return prepareArabicForSpeech(
+    removeQuranicVersesForSpeech(
+      applyManualSpeechDiacritics(
+        (text || '')
+          .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
+          .replace(/\s+/g, ' ')
+          .trim()
+      )
+    )
   );
 }
 
@@ -929,23 +1037,29 @@ function dedupeTtsPlan(plan) {
 }
 
 function buildQuestionSpeechText(q) {
-  const parts = [q?.q].filter(Boolean);
-  if (q && getQuestionVerseKey(q.id)) {
-    const cite = typeof pickCitationText === 'function' ? pickCitationText(q) : (q.quote || '');
-    const cleanCite = String(cite || '').replace(/^«|»$/g, '').trim();
-    if (cleanCite) parts.push(cleanCite);
+  const parts = [speechTextFor(q, 'q', q?.q)].filter(Boolean);
+  const cite = speechTextFor(q, 'quote', pickCitationTextForSpeech(q));
+  if (cite && !textIsSubstantiallyContained(cite, parts[0] || '')) parts.push(cite);
+  if (q?.type === 'mc' && Array.isArray(q.a) && q.a.length) {
+    const labels = ['أ', 'ب', 'ج', 'د'];
+    q.a.forEach((opt, i) => {
+      const t = speechTextFor(q, `a${i}`, opt);
+      if (t) parts.push(`${labels[i] || ''} ${t}`.trim());
+    });
   }
-  return parts.join('. ');
+  return parts.join('، ');
 }
 
 function buildFeedbackSpeechText(q, wrongText) {
   const parts = [];
-  if (wrongText) parts.push(`إجابتك: ${wrongText}`);
+  if (wrongText) parts.push(speechTextFor(q, 'wrong', wrongText));
   const correct = getCorrectAnswerText(q);
-  if (correct) parts.push(`الإجابة الصحيحة: ${correct}`);
-  const exp = (q?.exp || '').trim();
-  const quoteRaw = typeof pickCitationText === 'function' ? pickCitationText(q) : (q?.quote || '');
-  const quote = String(quoteRaw || '').replace(/^«|»$/g, '').trim();
+  if (correct) {
+    const correctIdx = q?.type === 'mc' && q.c != null ? `a${q.c}` : 'correct';
+    parts.push(`الْإِجَابَةُ الصَّحِيحَةُ، ${speechTextFor(q, correctIdx, correct)}`);
+  }
+  const exp = speechTextFor(q, 'exp', (q?.exp || '').trim());
+  const quote = speechTextFor(q, 'quote', pickCitationTextForSpeech(q));
   if (exp) {
     parts.push(exp);
     if (quote && !textIsSubstantiallyContained(quote, exp)) parts.push(quote);
@@ -958,7 +1072,7 @@ function buildFeedbackSpeechText(q, wrongText) {
     const pageLabel = q?.page != null ? formatPageLabel(q.page) : '';
     if (pageLabel) parts.push(pageLabel);
   }
-  return parts.filter(Boolean).join('. ');
+  return parts.filter(Boolean).join('، ');
 }
 
 async function speakFeedbackOnce(q, wrongText, btn) {
@@ -1183,7 +1297,7 @@ async function buildSpeechPlan(text, q) {
     const before = raw.slice(lastIndex, match.index);
     const ttsBefore = stripForSpeech(before);
     if (ttsBefore) plan.push({ type: 'tts', text: ttsBefore });
-    const intro = `${match[1]} ${match[2] ? 'الله ' : ''}تعالى`.replace(/\s+/g, ' ').trim();
+    const intro = applyManualSpeechDiacritics(`${match[1]} ${match[2] ? 'الله ' : ''}تعالى`.replace(/\s+/g, ' ').trim());
     if (intro) plan.push({ type: 'tts', text: intro });
     const ayahText = (match[3] || match[4] || match[5] || '').trim();
     let verseKey = null;
@@ -1210,6 +1324,13 @@ async function buildSpeechPlan(text, q) {
   } else if (!plan.length) {
     const ttsOnly = stripForSpeech(raw);
     if (ttsOnly) plan.push({ type: 'tts', text: ttsOnly });
+  }
+  if (q && pool.length) {
+    for (const verseKey of pool) {
+      if (!plan.some((s) => s.type === 'quran' && s.verseKey === verseKey)) {
+        plan.push({ type: 'quran', verseKey });
+      }
+    }
   }
   return dedupeTtsPlan(plan.filter((s) => (s.type === 'tts' && s.text?.trim()) || (s.type === 'quran' && s.verseKey)));
 }
@@ -1460,7 +1581,7 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE) {
 }
 
 async function speakTtsSegment(text, btn, { keepBtnState = true } = {}) {
-  const clean = sanitizeTtsText(text);
+  const clean = sanitizeTtsText(prepareArabicForSpeech(applyManualSpeechDiacritics(text)));
   if (!clean) return;
   try {
     await speakTextCloud(clean, btn, TTS_VOICE);

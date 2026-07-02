@@ -90,10 +90,12 @@ function buildSpeechConfigMessage() {
 }
 
 function buildSsmlMessage(requestId, voice, text) {
+  const hasHarakat = /[\u064B-\u065F\u0670]/.test(text);
+  const rate = hasHarakat ? '-10%' : '-6%';
   const ssml =
     "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='ar-SA'>" +
     `<voice name='${voice}'>` +
-    `<prosody rate="-6%" pitch="+1%">${escapeXml(removeInvalidXmlCharacters(text))}</prosody>` +
+    `<prosody rate="${rate}" pitch="+1%">${escapeXml(removeInvalidXmlCharacters(text))}</prosody>` +
     '</voice></speak>';
   return (
     `X-RequestId:${requestId}\r\n` +

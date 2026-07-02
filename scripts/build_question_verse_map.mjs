@@ -91,7 +91,6 @@ const MANUAL = {
   '1a068bcd-7d1d-47ab-9b13-5d6477da8892': '64:11',
   'bc3195b9-eb79-48dd-b8d5-7f09bf65bc3c': '12:106',
   'f6687348-8da8-4773-bc22-ca1b1bfecd9d': '9:31',
-  '63c2cfd9-1172-45ec-b2af-f28925cc1053': '103:1',
   'cf9d9880-aa01-496c-9b11-28ea8dccbb08': '53:19',
   'd4c2155a-db1c-4adc-aa8a-776f7991c93b': '9:60',
   '119d35bc-1357-43b6-a136-0700351ecf99': '6:162',
@@ -194,6 +193,7 @@ for (const row of db) {
   const primary = [row.question_text || '', row.explanation || '', s.source_quote || '', sqlQuotes[qid] || ''].join(' ');
   const full = `${primary} ${(row.options || []).join(' ')}`;
   if (isHadithText(primary) && !/تعالى|قوله\s+تعالى|سورة|﴿/i.test(primary)) continue;
+  if (isHadithText(row.question_text || '') && !/تعالى|قوله\s+تعالى|سورة|﴿/i.test(row.question_text || '')) continue;
 
   const surahPick = surahFromCorrectOption(row);
   if (surahPick) {
