@@ -10,6 +10,17 @@ const snap = Object.fromEntries(
   JSON.parse(readFileSync(join(root, 'extracted/questions_live_snapshot.json'), 'utf8')).map((r) => [r.id, r])
 );
 
+function readJsonIfExists(rel) {
+  try {
+    return JSON.parse(readFileSync(join(root, rel), 'utf8'));
+  } catch {
+    return null;
+  }
+}
+/** Auto-diacritized per-field text + word map (from scripts/diacritize_questions.py). */
+const autoSpeech = readJsonIfExists('extracted/diacritized_speech.json') || {};
+const autoWords = readJsonIfExists('extracted/diacritized_words.json') || {};
+
 const MANUAL_PHRASES = [
   ['الإجابة الصحيحة', 'الْإِجَابَةُ الصَّحِيحَةُ'],
   ['قال الله تعالى', 'قَالَ اللهُ تَعَالَى'],
@@ -147,16 +158,20 @@ for (const row of db) {
     s.question_text,
   ].filter(Boolean);
 
+  const auto = autoSpeech[row.id] || {};
+  // Prefer curated (manual phrase / well-formed DB), fall back to auto-diacritized.
+  const best = (field, raw) => pickSpeechForm(raw, candidates) || auto[field] || '';
+
   const entry = {};
-  const qSpeech = pickSpeechForm(row.question_text, candidates);
+  const qSpeech = best('q', row.question_text);
   if (qSpeech) entry.q = qSpeech;
-  const expSpeech = pickSpeechForm(row.explanation, candidates);
+  const expSpeech = best('exp', row.explanation);
   if (expSpeech) entry.exp = expSpeech;
-  const quoteSpeech = pickSpeechForm(row.source_quote || s.source_quote, candidates);
+  const quoteSpeech = best('quote', row.source_quote || s.source_quote);
   if (quoteSpeech) entry.quote = quoteSpeech.replace(/^«|»$/g, '').trim();
 
   (row.options || []).forEach((opt, i) => {
-    const t = pickSpeechForm(opt, candidates);
+    const t = best(`a${i}`, opt);
     if (t) entry[`a${i}`] = t;
   });
 
@@ -165,12 +180,30 @@ for (const row of db) {
   for (const field of [row.question_text, row.explanation, row.source_quote, ...(row.options || [])]) {
     const plain = String(field || '').replace(/^«|»$/g, '').trim();
     if (!plain || plain.length < 6) continue;
-    const speech = pickSpeechForm(plain, candidates);
+    const speech = pickSpeechForm(plain, candidates) || '';
     registerPhrase(plain, speech);
   }
 }
 
+// Merge auto-diacritized per-field phrases so any spoken chunk can be matched.
+for (const [id, entry] of Object.entries(autoSpeech)) {
+  const row = db.find((r) => r.id === id) || {};
+  const s = snap[id] || {};
+  const rawByField = {
+    q: row.question_text || s.question_text,
+    exp: row.explanation || s.explanation,
+    quote: row.source_quote || s.source_quote,
+  };
+  (row.options || []).forEach((opt, i) => { rawByField[`a${i}`] = opt; });
+  for (const [field, diac] of Object.entries(entry)) {
+    registerPhrase(rawByField[field], diac);
+  }
+}
+
 phraseList.sort((a, b) => b[0].length - a[0].length);
+
+// Word-level fallback dictionary (bare -> diacritized).
+const wordMap = { ...autoWords };
 
 writeFileSync(
   join(root, 'speech-diacritics-map.js'),
@@ -178,12 +211,15 @@ writeFileSync(
     'window.SPEECH_PHRASE_MAP = ' +
     JSON.stringify(phraseMap, null, 2) +
     ';\n' +
-    'window.SPEECH_PHRASE_LIST = ' +
-    JSON.stringify(phraseList, null, 2) +
+    'window.SPEECH_WORD_MAP = ' +
+    JSON.stringify(wordMap, null, 2) +
     ';\n' +
     'window.SPEECH_BY_QUESTION_ID = ' +
     JSON.stringify(byQuestion, null, 2) +
     ';\n'
 );
 
-console.log(`speech-diacritics-map.js: ${Object.keys(phraseMap).length} phrases, ${Object.keys(byQuestion).length} questions`);
+console.log(
+  `speech-diacritics-map.js: ${Object.keys(phraseMap).length} phrases, ` +
+    `${Object.keys(wordMap).length} words, ${Object.keys(byQuestion).length} questions`
+);

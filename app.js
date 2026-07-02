@@ -909,24 +909,41 @@ const MANUAL_SPEECH_DIACRITICS = [
   ['العبادة اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال', 'الْعِبَادَةُ اسْمٌ جَامِعٌ لِكُلِّ مَا يُحِبُّهُ اللهُ وَيَرْضَاهُ مِنَ الْأَقْوَالِ وَالْأَعْمَالِ'],
 ];
 
+const SPEECH_WORD_RE = /[\u0621-\u064A\u0671\u064B-\u065F\u0670]+/g;
+function stripHarakat(s) {
+  return String(s || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '');
+}
+
+/** Word-level diacritization fallback — covers every word using the generated map. */
+function applyWordDiacritics(text) {
+  const wordMap = (typeof window !== 'undefined' && window.SPEECH_WORD_MAP) || null;
+  if (!wordMap) return text;
+  return String(text).replace(SPEECH_WORD_RE, (tok) => {
+    const bare = stripHarakat(tok);
+    return wordMap[bare] || tok;
+  });
+}
+
+/**
+ * Diacritize text for TTS with priority:
+ *   1. exact verified phrase (whole chunk)
+ *   2. critical multi-word phrase replacement (hadith / ayat intros)
+ *   3. per-word fallback dictionary (full coverage)
+ */
 function applyManualSpeechDiacritics(text) {
   let out = String(text || '').trim();
   if (!out) return '';
   const phraseMap = (typeof window !== 'undefined' && window.SPEECH_PHRASE_MAP) || {};
-  const phraseList = (typeof window !== 'undefined' && window.SPEECH_PHRASE_LIST) || MANUAL_SPEECH_DIACRITICS;
   const exact = normalizeArabicForMatch(out);
   if (phraseMap[exact]) return phraseMap[exact];
-  for (const [plain, diacritized] of phraseList) {
-    if (exact === normalizeArabicForMatch(plain)) return diacritized;
-  }
   for (const [plain, diacritized] of MANUAL_SPEECH_DIACRITICS) {
     if (exact === normalizeArabicForMatch(plain)) return diacritized;
   }
-  const sorted = [...phraseList, ...MANUAL_SPEECH_DIACRITICS].sort((a, b) => b[0].length - a[0].length);
-  for (const [plain, diacritized] of sorted) {
-    if (plain.length >= 5) out = out.split(plain).join(diacritized);
+  const sortedManual = [...MANUAL_SPEECH_DIACRITICS].sort((a, b) => b[0].length - a[0].length);
+  for (const [plain, diacritized] of sortedManual) {
+    if (plain.length >= 5 && out.includes(plain)) out = out.split(plain).join(diacritized);
   }
-  return out;
+  return applyWordDiacritics(out);
 }
 
 function speechTextFor(q, field, raw) {
@@ -1036,14 +1053,28 @@ function dedupeTtsPlan(plan) {
   return out;
 }
 
+/**
+ * Choose speech text for one part. If it carries a Quran ayah, keep the ORIGINAL
+ * text so buildSpeechPlan can split it out for Hudhaify; otherwise use the
+ * per-field diacritized form for best Zariyah pronunciation.
+ */
+function speechPart(q, field, raw) {
+  const original = String(raw || '').trim();
+  if (!original) return '';
+  if (textMayHaveQuranAyah(original, q) || findVerseKeysSync(original).length) return original;
+  return speechTextFor(q, field, original);
+}
+
 function buildQuestionSpeechText(q) {
-  const parts = [speechTextFor(q, 'q', q?.q)].filter(Boolean);
-  const cite = speechTextFor(q, 'quote', pickCitationTextForSpeech(q));
+  const parts = [speechPart(q, 'q', q?.q)].filter(Boolean);
+  const rawCite = String(q?.quote || '').replace(/^«|»$/g, '').trim()
+    || (q?.id && getCanonicalQuote(q.id)) || pickCitationText(q);
+  const cite = speechPart(q, 'quote', rawCite);
   if (cite && !textIsSubstantiallyContained(cite, parts[0] || '')) parts.push(cite);
   if (q?.type === 'mc' && Array.isArray(q.a) && q.a.length) {
     const labels = ['أ', 'ب', 'ج', 'د'];
     q.a.forEach((opt, i) => {
-      const t = speechTextFor(q, `a${i}`, opt);
+      const t = speechPart(q, `a${i}`, opt);
       if (t) parts.push(`${labels[i] || ''} ${t}`.trim());
     });
   }
@@ -1052,14 +1083,16 @@ function buildQuestionSpeechText(q) {
 
 function buildFeedbackSpeechText(q, wrongText) {
   const parts = [];
-  if (wrongText) parts.push(speechTextFor(q, 'wrong', wrongText));
+  if (wrongText) parts.push(speechPart(q, 'wrong', wrongText));
   const correct = getCorrectAnswerText(q);
   if (correct) {
     const correctIdx = q?.type === 'mc' && q.c != null ? `a${q.c}` : 'correct';
-    parts.push(`الْإِجَابَةُ الصَّحِيحَةُ، ${speechTextFor(q, correctIdx, correct)}`);
+    parts.push(`الْإِجَابَةُ الصَّحِيحَةُ، ${speechPart(q, correctIdx, correct)}`);
   }
-  const exp = speechTextFor(q, 'exp', (q?.exp || '').trim());
-  const quote = speechTextFor(q, 'quote', pickCitationTextForSpeech(q));
+  const exp = speechPart(q, 'exp', (q?.exp || '').trim());
+  const rawCite = String(q?.quote || '').replace(/^«|»$/g, '').trim()
+    || (q?.id && getCanonicalQuote(q.id)) || pickCitationText(q);
+  const quote = speechPart(q, 'quote', rawCite);
   if (exp) {
     parts.push(exp);
     if (quote && !textIsSubstantiallyContained(quote, exp)) parts.push(quote);
