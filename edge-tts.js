@@ -1,7 +1,7 @@
 /** Microsoft Edge neural TTS (Worker-native, based on cloudflare-edge-tts). */
 
-export const DEFAULT_ARABIC_VOICE = 'ar-SA-HamedNeural';
-export const FALLBACK_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
+export const DEFAULT_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
+export const FALLBACK_ARABIC_VOICE = 'ar-EG-SalmaNeural';
 
 const READALOUD_BASE = 'speech.platform.bing.com/consumer/speech/synthesize/readaloud';
 const TRUSTED_CLIENT_TOKEN = '6A5AA1D4EAFF4E9FB37E23D68491D6F4';

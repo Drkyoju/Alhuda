@@ -811,9 +811,25 @@ function toggleSound() {
 }
 
 /* ── Voice reading (Edge Neural TTS + browser fallback) ── */
-const TTS_VOICE = 'ar-SA-HamedNeural';
-const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
+const TTS_VOICE = 'ar-SA-ZariyahNeural';
+const TTS_VOICE_FALLBACK = 'ar-EG-SalmaNeural';
 let cachedArabicVoice = null;
+
+/** Strip punctuation/symbols the neural voice vocalizes (e.g. ":" → "نقطتان"). */
+function sanitizeTtsText(text) {
+  return (text || '')
+    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
+    .replace(/[:：]/g, '، ')
+    .replace(/[;؛]/g, '، ')
+    .replace(/[()\[\]{}«»"'“”‘’*_#<>=+~^`]/g, ' ')
+    .replace(/[\/\\|]/g, ' ')
+    .replace(/[–—]/g, ' ')
+    .replace(/(^|\s)[-•·](\s|$)/g, ' ')
+    .replace(/\s+([،.؟!])/g, '$1')
+    .replace(/،(\s*،)+/g, '،')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
 let ttsAudio = null;
 let ttsAbort = null;
 let ttsObjectUrl = null;
@@ -1444,16 +1460,18 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE) {
 }
 
 async function speakTtsSegment(text, btn, { keepBtnState = true } = {}) {
+  const clean = sanitizeTtsText(text);
+  if (!clean) return;
   try {
-    await speakTextCloud(text, btn, TTS_VOICE);
+    await speakTextCloud(clean, btn, TTS_VOICE);
   } catch (e) {
     if (e.name === 'AbortError') throw e;
     try {
-      await speakTextCloud(text, btn, TTS_VOICE_FALLBACK);
+      await speakTextCloud(clean, btn, TTS_VOICE_FALLBACK);
     } catch (e2) {
       if (e2.name === 'AbortError') throw e2;
       clearTtsAudio(keepBtnState ? null : btn);
-      const ok = await speakTextBrowser(text, btn);
+      const ok = await speakTextBrowser(clean, btn);
       if (!ok) throw e2;
       return;
     }
