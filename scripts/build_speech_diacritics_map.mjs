@@ -17,9 +17,8 @@ function readJsonIfExists(rel) {
     return null;
   }
 }
-/** Auto-diacritized per-field text + word map (from scripts/diacritize_questions.py). */
-const autoSpeech = readJsonIfExists('extracted/diacritized_speech.json') || {};
-const autoWords = readJsonIfExists('extracted/diacritized_words.json') || {};
+/** Hand-verified bare-word -> correct fusha diacritization (shadda/damma/etc). */
+const verifiedWords = readJsonIfExists('scripts/verified-words.json') || {};
 
 const MANUAL_PHRASES = [
   ['الإجابة الصحيحة', 'الْإِجَابَةُ الصَّحِيحَةُ'],
@@ -126,8 +125,6 @@ function pickSpeechForm(plain, candidates = []) {
 }
 
 const phraseMap = {};
-const phraseList = [...MANUAL_PHRASES];
-const phraseSeen = new Set(MANUAL_PHRASES.map(([p]) => norm(p)));
 const byQuestion = { ...DEMO_SPEECH };
 
 for (const [plain, diac] of MANUAL_PHRASES) {
@@ -135,16 +132,21 @@ for (const [plain, diac] of MANUAL_PHRASES) {
   if (key && diac) phraseMap[key] = diac;
 }
 
+// Only trust hand-verified words; leave unknown words bare (neural TTS handles them).
+const HARAKAT = '\u064B\u064C\u064D\u064E\u064F\u0650\u0651\u0652\u0670';
+const stripHarakat = (s) => String(s || '').replace(new RegExp(`[${HARAKAT}\u0640]`, 'g'), '');
+const WORD_RE = /[\u0621-\u064A\u0671\u064B-\u065F\u0670]+/g;
+function applyVerifiedWords(text) {
+  return String(text || '').replace(WORD_RE, (tok) => verifiedWords[stripHarakat(tok)] || tok);
+}
+
+/** Register a fully-diacritized whole-chunk phrase for exact runtime matching. */
 function registerPhrase(plain, speech) {
   const p = String(plain || '').replace(/^«|»$/g, '').trim();
   const s = String(speech || '').trim();
   if (!p || !s || p === s || p.length < 6) return;
   const key = norm(p);
   if (!phraseMap[key] || s.length > phraseMap[key].length) phraseMap[key] = s;
-  if (!phraseSeen.has(key)) {
-    phraseSeen.add(key);
-    phraseList.push([p, s]);
-  }
 }
 
 for (const row of db) {
@@ -158,52 +160,36 @@ for (const row of db) {
     s.question_text,
   ].filter(Boolean);
 
-  const auto = autoSpeech[row.id] || {};
-  // Prefer curated (manual phrase / well-formed DB), fall back to auto-diacritized.
-  const best = (field, raw) => pickSpeechForm(raw, candidates) || auto[field] || '';
+  // Use fully-diacritized form only when it comes from a trusted source
+  // (manual phrase, canonical quote, or well-formed DB text). Otherwise omit
+  // and let the runtime verified-word map vowel the known words.
+  const trusted = (raw) => pickSpeechForm(raw, candidates) || '';
 
   const entry = {};
-  const qSpeech = best('q', row.question_text);
-  if (qSpeech) entry.q = qSpeech;
-  const expSpeech = best('exp', row.explanation);
-  if (expSpeech) entry.exp = expSpeech;
-  const quoteSpeech = best('quote', row.source_quote || s.source_quote);
-  if (quoteSpeech) entry.quote = quoteSpeech.replace(/^«|»$/g, '').trim();
+  const qSpeech = trusted(row.question_text);
+  if (qSpeech && hasWellFormedTashkeel(qSpeech)) entry.q = qSpeech;
+  const expSpeech = trusted(row.explanation);
+  if (expSpeech && hasWellFormedTashkeel(expSpeech)) entry.exp = expSpeech;
+  const quoteSpeech = trusted(row.source_quote || s.source_quote);
+  if (quoteSpeech && hasWellFormedTashkeel(quoteSpeech)) entry.quote = quoteSpeech.replace(/^«|»$/g, '').trim();
 
   (row.options || []).forEach((opt, i) => {
-    const t = best(`a${i}`, opt);
-    if (t) entry[`a${i}`] = t;
+    const t = trusted(opt);
+    if (t && hasWellFormedTashkeel(t)) entry[`a${i}`] = t;
   });
 
   if (Object.keys(entry).length) byQuestion[row.id] = entry;
 
+  // Register trusted whole-chunk phrases for exact matching.
   for (const field of [row.question_text, row.explanation, row.source_quote, ...(row.options || [])]) {
     const plain = String(field || '').replace(/^«|»$/g, '').trim();
     if (!plain || plain.length < 6) continue;
     const speech = pickSpeechForm(plain, candidates) || '';
-    registerPhrase(plain, speech);
+    if (speech && hasWellFormedTashkeel(speech)) registerPhrase(plain, speech);
   }
 }
 
-// Merge auto-diacritized per-field phrases so any spoken chunk can be matched.
-for (const [id, entry] of Object.entries(autoSpeech)) {
-  const row = db.find((r) => r.id === id) || {};
-  const s = snap[id] || {};
-  const rawByField = {
-    q: row.question_text || s.question_text,
-    exp: row.explanation || s.explanation,
-    quote: row.source_quote || s.source_quote,
-  };
-  (row.options || []).forEach((opt, i) => { rawByField[`a${i}`] = opt; });
-  for (const [field, diac] of Object.entries(entry)) {
-    registerPhrase(rawByField[field], diac);
-  }
-}
-
-phraseList.sort((a, b) => b[0].length - a[0].length);
-
-// Word-level fallback dictionary (bare -> diacritized).
-const wordMap = { ...autoWords };
+const wordMap = { ...verifiedWords };
 
 writeFileSync(
   join(root, 'speech-diacritics-map.js'),
@@ -221,5 +207,6 @@ writeFileSync(
 
 console.log(
   `speech-diacritics-map.js: ${Object.keys(phraseMap).length} phrases, ` +
-    `${Object.keys(wordMap).length} words, ${Object.keys(byQuestion).length} questions`
+    `${Object.keys(wordMap).length} verified words, ${Object.keys(byQuestion).length} questions`
 );
+void applyVerifiedWords;
