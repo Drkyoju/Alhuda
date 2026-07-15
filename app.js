@@ -3403,50 +3403,61 @@ function sanitizeBookQuote(text, questionId) {
 
 /**
  * الاستشهاد من الكتاب:
- * - كلام من الكتاب أو نص الشرح المنقول → هنا
- * - آية/دليل قرآني → الآية + تلاوة
+ * - نص يمين تحت العنوان + مصدر في نهاية نفس السطر
+ * - تلاوة فوق يسار إن وجدت آية
  * Never show an empty box with only the book title.
  */
-function buildBookCitationHtml(q) {
+function buildCitationMetaInline(q, { verseKey = '', showedAyah = false } = {}) {
   const book = BOOK_LABELS[q.book] || q.book || '';
-  const chapter = q.cat || '';
   const pageLabel = formatPageLabel(q.page);
+  const parts = [];
+  if (book) parts.push(escapeHtml(book));
+  if (pageLabel) parts.push(pageLabel);
+  else if (showedAyah && verseKey) parts.push(escapeHtml(String(verseKey).replace(':', '∶')));
+  if (!parts.length) return '';
+  return `<span class="book-cite-meta"> · ${parts.join(' · ')}</span>`;
+}
+
+function buildBookCitationHtml(q) {
   const bookQuote = getBookQuoteOnly(q);
   const citeBody = getCitationBodyText(q);
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   const quoteIsAyah = citationLooksLikeAyah(citeBody || bookQuote, verseKey);
 
-  // Nothing useful (no text, no ayah) — hide entirely.
   if (!citeBody && !verseKey) return '';
 
-  let inner = '';
   let showedAyah = false;
+  let bodyHtml = '';
+  let actionsHtml = '';
 
   if (citeBody && !quoteIsAyah) {
-    inner += `<p class="book-cite-quote">${escapeHtml(citeBody)}</p>`;
+    bodyHtml = `<span class="book-cite-quote">${escapeHtml(citeBody)}</span>${buildCitationMetaInline(q)}`;
   } else if (verseKey && (quoteIsAyah || !citeBody)) {
-    // Compact snippet only — never dump a full long Uthmani ayah into feedback.
-    inner += buildQuranAyahBlockHtml(verseKey, { withButton: true, compact: true });
+    const local = getLocalAyahSnippet(verseKey);
+    bodyHtml =
+      `<span class="q-ayah-text book-cite-ayah" data-ayah-text>${escapeHtml(formatAyahDisplay(local) || '…')}</span>` +
+      buildCitationMetaInline(q, { verseKey, showedAyah: true });
+    actionsHtml = `<div class="book-cite-actions">${buildQuranReciteButtonHtml()}</div>`;
     showedAyah = true;
   } else if (citeBody) {
-    inner += `<p class="book-cite-quote">${escapeHtml(citeBody)}</p>`;
+    bodyHtml = `<span class="book-cite-quote">${escapeHtml(citeBody)}</span>${buildCitationMetaInline(q)}`;
   }
 
-  if (!inner) return '';
-
-  const meta = [];
-  if (book) meta.push(escapeHtml(book));
-  if (chapter) meta.push(escapeHtml(chapter));
-  if (pageLabel) meta.push(pageLabel);
-  if (showedAyah && verseKey) meta.push(escapeHtml(verseKey.replace(':', '∶')));
-  if (meta.length) {
-    inner += `<p class="book-cite-meta">${meta.join(' · ')}</p>`;
-  }
+  if (!bodyHtml) return '';
 
   const heading = showedAyah && !citeBody
     ? '📖 الدليل من القرآن'
     : '📖 الاستشهاد من الكتاب';
-  return `<p class="book-cite-heading">${heading}</p><div class="book-cite-box">${inner}</div>`;
+
+  return (
+    `<p class="book-cite-heading">${heading}</p>` +
+    `<div class="book-cite-box">` +
+      `<div class="book-cite-row">` +
+        `<div class="book-cite-body">${bodyHtml}</div>` +
+        actionsHtml +
+      `</div>` +
+    `</div>`
+  );
 }
 
 function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
@@ -3478,8 +3489,8 @@ function mountAnswerFeedback(q, html) {
   expEl.innerHTML = html;
   bindQuranReciteButton(expEl, q);
   const verseKey = getPrimaryVerseKeyForQuestion(q);
-  // Keep feedback ayah compact — full verse fetch was blowing up the layout.
-  if (verseKey) void fillAyahTextElements(expEl, verseKey, { preferSnippet: true, compact: true });
+  // Readable ayah in citation (snippet if mapped; not over-truncated).
+  if (verseKey) void fillAyahTextElements(expEl, verseKey, { preferSnippet: true, compact: false });
 }
 
 function clearQuestionTimer() {
@@ -5014,7 +5025,7 @@ function renderReviewItem() {
   reviewExp.innerHTML = buildAnswerFeedbackHtml(q, false, item.picked || '');
   bindQuranReciteButton(reviewExp, q);
   const verseKey = getPrimaryVerseKeyForQuestion(q);
-  if (verseKey) void fillAyahTextElements(reviewExp, verseKey, { preferSnippet: true, compact: true });
+  if (verseKey) void fillAyahTextElements(reviewExp, verseKey, { preferSnippet: true, compact: false });
   const actions = document.getElementById('review-voice-actions');
   if (actions) {
     actions.innerHTML = `

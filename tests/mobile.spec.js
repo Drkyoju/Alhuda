@@ -72,12 +72,13 @@ test('mobile demo: readable question and compact citation UI', async ({ page }) 
     expect(btnBox?.width || 0).toBeLessThan(220);
     expect(btnBox?.height || 0).toBeLessThanOrEqual(34);
     await expect(reciteBtn).toHaveText(/تلاوة/);
-  const ayah = page.locator('#game .feedback .q-ayah-text, #game .feedback .book-cite-ayah').first();
-  if (await ayah.count()) {
-    const reciteY = (await reciteBtn.boundingBox())?.y ?? 0;
-    const ayahY = (await ayah.boundingBox())?.y ?? 0;
-    expect(reciteY).toBeLessThan(ayahY);
-  }
+    // تلاوة sits top-left beside the ayah (same row), not stacked below.
+    const ayah = page.locator('#game .feedback .book-cite-ayah, #game .feedback .book-cite-box .q-ayah-text').first();
+    if (await ayah.count()) {
+      const reciteBox = await reciteBtn.boundingBox();
+      const ayahBox = await ayah.boundingBox();
+      expect(Math.abs((reciteBox?.y || 0) - (ayahBox?.y || 0))).toBeLessThan(40);
+    }
   }
 
   await expect(page.locator('#game .feedback .fb-continue-btn')).toBeVisible();
