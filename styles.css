@@ -3810,16 +3810,21 @@
     body.game-mode .float-deco,
     body.game-mode .glow-orb { display: none; }
 
-    /* ── نموذج التقييم — هيدر صغير واضح (ما يتغطى بالـ topbar) ── */
+    /* ── نموذج التقييم — هيدر صغير + ملخص نتيجة مضغوط ── */
     #feedback-screen.page-screen {
-      padding-top: calc(var(--app-header-h) + 18px);
+      padding-top: calc(var(--app-header-h) + 14px);
+      padding-inline: 12px;
+      gap: 0;
+    }
+    #feedback-screen .page-shell {
+      gap: 8px;
     }
     #feedback-screen .page-hero {
       max-width: 420px;
-      padding: 10px 14px 9px;
-      margin: 0 auto 6px;
-      border-radius: 12px;
-      box-shadow: 0 4px 14px rgba(22, 56, 40, 0.14);
+      padding: 8px 12px 7px;
+      margin: 0 auto 4px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(22, 56, 40, 0.12);
       border: 1px solid rgba(255, 255, 255, 0.18);
       overflow: visible;
     }
@@ -3828,29 +3833,158 @@
       background: radial-gradient(circle at 90% 0%, rgba(201, 169, 98, 0.18), transparent 60%);
     }
     #feedback-screen .page-hero h2 {
-      font-size: 1.05rem !important;
+      font-size: 0.98rem !important;
       font-weight: 800;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
       text-shadow: none;
-      line-height: 1.35;
+      line-height: 1.3;
       color: #fff;
     }
     #feedback-screen .page-hero p {
-      font-size: 0.78rem !important;
+      font-size: 0.72rem !important;
       font-weight: 600;
       color: rgba(255, 255, 255, 0.92);
-      line-height: 1.35;
+      line-height: 1.3;
       margin: 0;
     }
-    #feedback-screen .demo-badge { font-size: 0.85em; padding: 6px 12px; }
-    #feedback-screen .feedback-screen-inner h3 { font-size: 1.2em; margin-bottom: 12px; }
-    #feedback-screen .btn-xl { font-size: 1.05em; min-height: 48px; }
-    #feedback-screen .btn-sm { font-size: 0.92em; min-height: 42px; }
+    #feedback-screen .feedback-screen-inner {
+      padding: 10px 12px 12px !important;
+      border-radius: 14px !important;
+      box-shadow: 0 6px 18px rgba(22, 56, 40, 0.08) !important;
+    }
+    #feedback-screen .demo-badge {
+      font-size: 0.72em;
+      padding: 3px 8px;
+      margin-bottom: 6px;
+      border-width: 1px;
+      border-radius: 12px;
+    }
+    #feedback-screen .demo-result-summary {
+      margin: 4px 0 6px;
+      padding: 8px 10px;
+      border-radius: 10px;
+    }
+    #feedback-screen .demo-result-stars {
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+      line-height: 1;
+    }
+    #feedback-screen .demo-result-score {
+      font-size: 1.05rem !important;
+      margin: 0 0 2px;
+      line-height: 1.2;
+    }
+    #feedback-screen .demo-result-meta {
+      font-size: 0.72rem !important;
+      line-height: 1.35;
+    }
+    #feedback-screen .demo-result-nudge {
+      margin: 6px 0 0;
+      padding: 5px 8px;
+      border-radius: 8px;
+      font-size: 0.75rem !important;
+      line-height: 1.35;
+    }
+    #feedback-screen #btn-share-demo {
+      margin-top: 6px !important;
+      margin-bottom: 0 !important;
+      min-height: 34px !important;
+      padding: 6px 10px !important;
+      font-size: 0.78rem !important;
+      border-radius: 10px !important;
+    }
+    #feedback-screen .demo-analytics-summary {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+    }
+    #feedback-screen .demo-analytics-title {
+      font-size: 0.82rem !important;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    #feedback-screen .demo-analytics-summary ul {
+      font-size: 0.75rem !important;
+      line-height: 1.4 !important;
+      padding-inline-start: 1em;
+    }
+    #feedback-screen .demo-analytics-summary li {
+      margin-bottom: 2px;
+    }
+    #feedback-screen .feedback-screen-inner h3 {
+      font-size: 0.95rem !important;
+      margin: 10px 0 6px !important;
+      line-height: 1.3;
+    }
+    #feedback-screen .feedback-label {
+      font-size: 0.8rem !important;
+      margin: 8px 0 5px !important;
+    }
+    #feedback-screen .feedback-info-row {
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    #feedback-screen .input {
+      padding: 8px 10px !important;
+      font-size: 0.85rem !important;
+      min-height: 38px;
+    }
+    #feedback-screen .rating-row {
+      gap: 6px;
+      margin: 6px 0 4px;
+    }
+    #feedback-screen .rating-btn {
+      min-width: 72px;
+      padding: 8px 8px;
+      border-width: 2px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      gap: 2px;
+    }
+    #feedback-screen .rating-btn .r-emoji {
+      font-size: 1.25em;
+    }
+    #feedback-screen .feedback-more-fold {
+      margin: 6px 0 8px;
+    }
+    #feedback-screen .feedback-more-fold summary {
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+    #feedback-screen .feedback-textarea {
+      font-size: 0.82rem !important;
+      padding: 8px 10px !important;
+      min-height: 48px;
+    }
+    #feedback-screen .btn-xl {
+      font-size: 0.92rem !important;
+      min-height: 42px !important;
+      padding: 8px 12px !important;
+      margin-top: 6px;
+    }
+    #feedback-screen .btn-sm {
+      font-size: 0.78rem !important;
+      min-height: 34px !important;
+      padding: 6px 10px !important;
+    }
+    #feedback-screen .real-game-locked-cta {
+      margin-top: 8px;
+    }
+    #feedback-screen .real-game-locked-note {
+      font-size: 0.75rem;
+      margin-bottom: 4px;
+    }
+    #feedback-screen .real-game-locked-btn {
+      font-size: 0.82rem !important;
+      min-height: 40px !important;
+      padding: 8px 10px !important;
+    }
     .feedback-status-msg {
-      margin-top: 10px;
+      margin-top: 6px;
       font-weight: 800;
-      font-size: 1.08em;
-      min-height: 20px;
+      font-size: 0.85em;
+      min-height: 16px;
     }
 
     /* ── وضوح القراءة على الجوال / آيفون ── */
