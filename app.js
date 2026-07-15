@@ -3200,6 +3200,26 @@ function shouldShowExplanation(exp, q) {
   return true;
 }
 
+/** True when the stored book citation is itself a Quran ayah (not prose from the book). */
+function citationLooksLikeAyah(bookQuote, verseKey) {
+  const raw = String(bookQuote || '').replace(/^«|»$/g, '').trim();
+  if (!raw) return false;
+  if (/[﴿﴾]/.test(raw)) return true;
+  const bare = normalizeArabicForMatch(raw);
+  // Short «قال تعالى …» lines are almost always ayah citations.
+  if (/^(قال|قوله)\s*تعالى/.test(bare) && bare.length <= 180) return true;
+  if (!verseKey) return false;
+  const ayahLocal = getLocalAyahSnippet(verseKey);
+  if (!ayahLocal) return false;
+  const ayahBare = normalizeArabicForMatch(ayahLocal);
+  if (!ayahBare) return false;
+  if (bare === ayahBare) return true;
+  // Require a strong containment match — loose word overlap must NOT hide book prose.
+  if (bare.length >= 18 && ayahBare.includes(bare)) return true;
+  if (ayahBare.length >= 18 && bare.includes(ayahBare)) return true;
+  return false;
+}
+
 /** Book quote only — do not promote explanation into الاستشهاد. */
 function getBookQuoteOnly(q) {
   const fromQuote = cleanArabicCitation(q?.quote, q?.id);
@@ -3223,34 +3243,50 @@ function sanitizeBookQuote(text, questionId) {
   return cleanArabicCitation(text, questionId);
 }
 
+/**
+ * الاستشهاد من الكتاب:
+ * - كلام من الكتاب → اعرض الكلام
+ * - آية/دليل قرآني → اعرض الآية + تلاوة
+ * Never replace real book prose with a mapped ayah.
+ */
 function buildBookCitationHtml(q) {
   const book = BOOK_LABELS[q.book] || q.book || '';
   const chapter = q.cat || '';
   const pageLabel = formatPageLabel(q.page);
   const bookQuote = getBookQuoteOnly(q);
   const verseKey = getPrimaryVerseKeyForQuestion(q);
+  const quoteIsAyah = citationLooksLikeAyah(bookQuote, verseKey);
+
   if (!book && !chapter && !pageLabel && !bookQuote && !verseKey) return '';
+
   let inner = '';
-  if (verseKey) {
-    // Ayah text (ornate) + تلاوة — never substitute explanation here.
+  let showedAyah = false;
+
+  if (bookQuote && !quoteIsAyah) {
+    // Real book prose — primary citation. Do not inject ayah here.
+    inner += `<p class="book-cite-quote">${escapeHtml(bookQuote)}</p>`;
+  } else if (verseKey && (quoteIsAyah || !bookQuote)) {
+    // Citation is the ayah (or no prose quote, only a verse mapping).
     inner += buildQuranAyahBlockHtml(verseKey, { withButton: true });
+    showedAyah = true;
+  } else if (bookQuote) {
+    inner += `<p class="book-cite-quote">${escapeHtml(bookQuote)}</p>`;
   }
-  if (bookQuote) {
-    const ayahLocal = verseKey ? getLocalAyahSnippet(verseKey) : '';
-    const sameAsAyah = ayahLocal && (
-      textIsSubstantiallyContained(bookQuote, ayahLocal) || textIsSubstantiallyContained(ayahLocal, bookQuote)
-    );
-    if (!sameAsAyah) {
-      inner += `<p class="book-cite-quote">${escapeHtml(bookQuote)}</p>`;
-    }
-  }
+
+  // If we only had meta (book/page) and nothing else, still show the box.
+  if (!inner && !book && !chapter && !pageLabel) return '';
+
   const meta = [];
   if (book) meta.push(escapeHtml(book));
   if (chapter) meta.push(escapeHtml(chapter));
   if (pageLabel) meta.push(pageLabel);
-  if (verseKey) meta.push(escapeHtml(verseKey.replace(':', '∶')));
+  if (showedAyah && verseKey) meta.push(escapeHtml(verseKey.replace(':', '∶')));
   inner += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
-  return `<p class="book-cite-heading">📖 الاستشهاد من الكتاب</p><div class="book-cite-box">${inner}</div>`;
+
+  const heading = showedAyah && !bookQuote
+    ? '📖 الدليل من القرآن'
+    : '📖 الاستشهاد من الكتاب';
+  return `<p class="book-cite-heading">${heading}</p><div class="book-cite-box">${inner}</div>`;
 }
 
 function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
