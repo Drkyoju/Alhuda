@@ -3248,12 +3248,28 @@ function looksLikeBookCitationText(text) {
 }
 
 function getCleanExplanationText(q) {
-  const raw = String(q?.exp || '').trim();
+  let raw = String(q?.exp || '').trim();
   if (!raw || raw.length < 8 || isWorksheetCitation(raw)) return '';
+  // Drop answer-label lead-ins so the remaining prose can sit under الاستشهاد.
+  raw = raw
+    .replace(/^الإجابة\s*الصحيحة\s*[:：]?\s*[^.!؟\n]{0,80}[.!؟]\s*/i, '')
+    .replace(/^العبارة\s*(غير\s*)?صحيحة\s*[.!؟]?\s*/i, '')
+    .replace(/^الصحيح\s*(هو|أن|ان)?\s*[:：]?\s*/i, '')
+    .trim();
+  if (!raw || raw.length < 8) return '';
   // null id — do not swap explanation for canonical while cleaning.
   const cleaned = cleanArabicCitation(raw, null) || collapseBrokenArabicSpaces(raw);
   if (!cleaned || cleaned.length < 8 || isGarbageCitation(cleaned)) return '';
-  if (explanationDuplicatesCorrectAnswer(cleaned, q)) return '';
+  // Only drop if the whole text is literally the answer option (not a longer book sentence that contains it).
+  const bare = normalizeArabicForMatch(cleaned.replace(/^«|»$/g, ''));
+  const cor = normalizeArabicForMatch(getCorrectAnswerText(q));
+  if (cor && bare === cor) return '';
+  if (q?.type === 'mc' && Array.isArray(q.a)) {
+    for (const opt of q.a) {
+      const ob = normalizeArabicForMatch(String(opt || ''));
+      if (ob && bare === ob) return '';
+    }
+  }
   return cleaned;
 }
 
@@ -3311,30 +3327,15 @@ function getBookQuoteOnly(q) {
 }
 
 /**
- * What appears under «الاستشهاد من الكتاب»:
- * - If شرح == استشهاد → put that text under الاستشهاد (prefer book wording).
- * - If different → book citation only (شرح is dropped; no separate شرح block).
- * - If no book citation found → only promote شرح when it itself is citation-shaped.
+ * Text under «الاستشهاد من الكتاب» — no separate «شرح» UI:
+ * 1) Real book/canonical quote when available
+ * 2) Otherwise move the full explanation text here (never leave an empty book-title-only box)
  */
 function getCitationBodyText(q) {
   const book = findBookCitation(q);
-  const exp = getCleanExplanationText(q);
-
-  if (book && exp) {
-    if (citationTextsEquivalent(book, exp)) {
-      // Same content — show once under الاستشهاد; prefer the book/canonical wording.
-      return book;
-    }
-    // Different — keep الاستشهاد, drop شرح.
-    return book;
-  }
   if (book) return book;
-
-  // No separate book citation found.
-  if (exp && looksLikeBookCitationText(exp)) {
-    // Explanation itself is citation-shaped (حديث / قال تعالى / «…») → move under الاستشهاد.
-    return formatCitationQuote(exp);
-  }
+  const exp = getCleanExplanationText(q);
+  if (exp) return formatCitationQuote(exp);
   return '';
 }
 
@@ -3348,44 +3349,44 @@ function sanitizeBookQuote(text, questionId) {
 
 /**
  * الاستشهاد من الكتاب:
- * - كلام من الكتاب → اعرض الكلام
- * - آية/دليل قرآني → اعرض الآية + تلاوة
- * Never replace real book prose with a mapped ayah.
+ * - كلام من الكتاب أو نص الشرح المنقول → هنا
+ * - آية/دليل قرآني → الآية + تلاوة
+ * Never show an empty box with only the book title.
  */
 function buildBookCitationHtml(q) {
   const book = BOOK_LABELS[q.book] || q.book || '';
   const chapter = q.cat || '';
   const pageLabel = formatPageLabel(q.page);
-  const bookQuote = getBookQuoteOnly(q); // kept for ayah-heading heuristics
+  const bookQuote = getBookQuoteOnly(q);
   const citeBody = getCitationBodyText(q);
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   const quoteIsAyah = citationLooksLikeAyah(citeBody || bookQuote, verseKey);
 
-  if (!book && !chapter && !pageLabel && !citeBody && !verseKey) return '';
+  // Nothing useful (no text, no ayah) — hide entirely.
+  if (!citeBody && !verseKey) return '';
 
   let inner = '';
   let showedAyah = false;
 
   if (citeBody && !quoteIsAyah) {
-    // Book prose or full explanation moved under الاستشهاد (no separate «الشرح»).
     inner += `<p class="book-cite-quote">${escapeHtml(citeBody)}</p>`;
   } else if (verseKey && (quoteIsAyah || !citeBody)) {
-    // Citation is the ayah (or no prose quote, only a verse mapping).
     inner += buildQuranAyahBlockHtml(verseKey, { withButton: true });
     showedAyah = true;
   } else if (citeBody) {
     inner += `<p class="book-cite-quote">${escapeHtml(citeBody)}</p>`;
   }
 
-  // If we only had meta (book/page) and nothing else, still show the box.
-  if (!inner && !book && !chapter && !pageLabel) return '';
+  if (!inner) return '';
 
   const meta = [];
   if (book) meta.push(escapeHtml(book));
   if (chapter) meta.push(escapeHtml(chapter));
   if (pageLabel) meta.push(pageLabel);
   if (showedAyah && verseKey) meta.push(escapeHtml(verseKey.replace(':', '∶')));
-  inner += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
+  if (meta.length) {
+    inner += `<p class="book-cite-meta">${meta.join(' · ')}</p>`;
+  }
 
   const heading = showedAyah && !citeBody
     ? '📖 الدليل من القرآن'
@@ -3410,7 +3411,7 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
     html += `<p class="fb-correct-answer">${escapeHtml(correctText)}</p>`;
     html += '</div>';
   }
-  // No separate «الشرح» — explanation (if any) lives under الاستشهاد من الكتاب.
+  // Never render «الشرح» — any explanation text lives under الاستشهاد من الكتاب.
   html += buildBookCitationHtml(q);
   html += '</div>';
   return html;
