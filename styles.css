@@ -1855,11 +1855,11 @@
     }
     /* Ayah gets vertical reading space; speaker sits a bit above it. */
     .book-cite-ayah {
-      padding: 14px 12px 16px;
-      min-height: 4.2em;
-      font-size: 1.28em;
+      padding: 8px 10px;
+      min-height: 0;
+      font-size: 1rem;
       font-weight: 700;
-      line-height: 1.95;
+      line-height: 1.7;
       color: var(--text);
       letter-spacing: 0.01em;
     }
@@ -1891,17 +1891,23 @@
     .book-cite-box .q-ayah-text,
     .book-cite-ayah {
       font-family: 'Amiri', 'Traditional Arabic', serif;
-      font-size: clamp(1.15rem, 4.2vw, 1.45rem);
+      font-size: clamp(0.95rem, 3.2vw, 1.08rem);
       font-weight: 700;
-      line-height: 2.05;
+      line-height: 1.75;
       text-align: center;
       color: #163828;
       margin: 0;
       padding: 4px 2px;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
       white-space: normal;
       word-break: normal;
-      overflow-wrap: anywhere;
+      overflow-wrap: break-word;
+    }
+    /* آية السؤال فوق الخيارات — أوضح قليلاً من آية الاستشهاد */
+    #game .quran-recite-slot .q-ayah-text,
+    #game .q-main .q-ayah-text {
+      font-size: clamp(1.02rem, 3.6vw, 1.18rem);
+      line-height: 1.85;
     }
     .book-cite-box .q-ayah-block {
       margin: 0 0 8px;
@@ -3384,12 +3390,14 @@
       font-weight: 700;
       color: var(--text) !important;
     }
+    /* آية الاستشهاد داخل التغذية — حجم معتدل (ليس ضخماً) */
     #game .feedback .book-cite-ayah,
+    #game .feedback .book-cite-box .q-ayah-text,
     #game .feedback .q-ayah-text {
-      padding: 12px 10px 14px !important;
-      min-height: 3.2em;
-      font-size: 1.12em !important;
-      line-height: 1.9 !important;
+      padding: 6px 8px !important;
+      min-height: 0 !important;
+      font-size: 1rem !important;
+      line-height: 1.7 !important;
       font-weight: 700 !important;
       color: var(--text) !important;
     }
@@ -3587,8 +3595,12 @@
         line-height: 1.8 !important;
       }
       #game .feedback .book-cite-ayah,
+      #game .feedback .book-cite-box .q-ayah-text,
       #game .feedback .q-ayah-text {
-        font-size: 1.26em !important;
+        font-size: 0.95rem !important;
+        line-height: 1.65 !important;
+        padding: 6px 8px !important;
+        min-height: 0 !important;
       }
     }
     @media (max-width: 768px) {
@@ -3767,11 +3779,12 @@
         font-weight: 700 !important;
       }
       #game .feedback .book-cite-ayah,
+      #game .feedback .book-cite-box .q-ayah-text,
       #game .feedback .q-ayah-text {
-        font-size: 1.26em !important;
-        line-height: 1.95 !important;
-        padding: 14px 12px 16px !important;
-        min-height: 3.6em;
+        font-size: 0.95rem !important;
+        line-height: 1.65 !important;
+        padding: 6px 8px !important;
+        min-height: 0 !important;
         margin-bottom: 4px !important;
         border-radius: 0 8px 8px 0;
       }
@@ -3972,11 +3985,12 @@
         font-weight: 700 !important;
       }
       #game .feedback .book-cite-ayah,
+      #game .feedback .book-cite-box .q-ayah-text,
       #game .feedback .q-ayah-text {
-        font-size: clamp(1.22rem, calc(var(--base-font-size, 18px) * 1.28), 1.52rem) !important;
-        line-height: 1.95 !important;
-        padding: 14px 12px 16px !important;
-        min-height: 3.6em;
+        font-size: 1.05rem !important;
+        line-height: 1.75 !important;
+        padding: 8px 10px !important;
+        min-height: 0 !important;
       }
       #game .feedback .book-cite-meta {
         font-size: clamp(0.8rem, calc(var(--base-font-size, 18px) * 0.85), 0.95rem) !important;
@@ -4013,8 +4027,10 @@
     }
     #review-screen .book-cite-ayah,
     #review-screen .q-ayah-text {
-      font-size: 1.32em !important;
-      line-height: 1.95 !important;
+      font-size: 1rem !important;
+      line-height: 1.7 !important;
+      padding: 6px 8px !important;
+      min-height: 0 !important;
     }
 
     /* ── تعليمات اللعب ── */
@@ -4429,11 +4445,12 @@
         font-weight: 700 !important;
       }
       #game .feedback .book-cite-ayah,
+      #game .feedback .book-cite-box .q-ayah-text,
       #game .feedback .q-ayah-text {
-        font-size: 1.05rem !important;
-        line-height: 1.85 !important;
-        padding: 10px 8px 12px !important;
-        min-height: 0;
+        font-size: 0.92rem !important;
+        line-height: 1.65 !important;
+        padding: 6px 8px !important;
+        min-height: 0 !important;
       }
       #game .feedback .book-cite-meta {
         font-size: 0.75rem !important;
@@ -4613,3 +4630,24 @@
     .tts-provider-badge.is-azure { background: rgba(14, 88, 140, 0.9); }
     .tts-provider-badge.is-warn { background: rgba(160, 70, 20, 0.92); }
     .login-analytics { margin-top: 12px; text-align: right; }
+
+    /* ── آية الاستشهاد: حجم ثابت معتدل (يفوز على القواعد السابقة) ── */
+    #game .feedback .answer-feedback .q-ayah-text,
+    #game .feedback .book-cite-box .q-ayah-text,
+    #game .feedback .book-cite-ayah,
+    #review-screen .q-ayah-text,
+    #review-screen .book-cite-ayah {
+      font-size: 0.95rem !important;
+      line-height: 1.65 !important;
+      padding: 6px 8px !important;
+      min-height: 0 !important;
+      font-weight: 700 !important;
+    }
+    @media (min-width: 481px) {
+      #game .feedback .answer-feedback .q-ayah-text,
+      #game .feedback .book-cite-box .q-ayah-text,
+      #game .feedback .book-cite-ayah {
+        font-size: 1.02rem !important;
+        line-height: 1.7 !important;
+      }
+    }
