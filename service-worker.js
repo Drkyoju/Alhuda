@@ -7,7 +7,7 @@
 // which previously could throw on renamed functions. enhancements.js triggers
 // the message on next page load so users get the update on the NEXT visit.
 
-const CACHE = 'alhuda-v86';
+const CACHE = 'alhuda-v87';
 const ASSETS = [
   './',
   './index.html',
@@ -69,10 +69,18 @@ function isStaticAppFile(url) {
 
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE);
-  const cached = await cache.match(request);
+  const cached = await cache.match(request, { ignoreSearch: true });
   const networkPromise = fetch(request)
     .then((res) => {
-      if (res.ok) cache.put(request, res.clone());
+      if (res.ok) {
+        cache.put(request, res.clone());
+        // Also store without query so install precache paths hit.
+        try {
+          const bare = new URL(request.url);
+          bare.search = '';
+          cache.put(bare.toString(), res.clone());
+        } catch (e) {}
+      }
       return res;
     })
     .catch(() => null);
@@ -115,7 +123,7 @@ self.addEventListener('fetch', (e) => {
 
   if (isStaticAppFile(url)) {
     e.respondWith(
-      caches.match(e.request).then((cached) => {
+      caches.match(e.request, { ignoreSearch: true }).then((cached) => {
         if (cached) return cached;
         return fetch(e.request).then((res) => {
           if (res.ok) {

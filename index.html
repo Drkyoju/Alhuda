@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
-  <link rel="stylesheet" href="styles.css?v=40">
+  <link rel="stylesheet" href="styles.css?v=41">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -192,7 +192,7 @@
         <p>اختار/ي كتاباً — ٨ أسئلة لكل كتاب</p>
       </div>
       <div class="card demo-intro-card">
-      <div class="demo-badge">٣ كتب × ٨ أسئلة</div>
+      <div class="demo-badge" id="demo-books-progress">٣ كتب × ٨ أسئلة</div>
       <p class="demo-pick-lead">جرّب/ي أي كتاب بدون تسجيل — بعدها عبّي نموذج التقييم 💬</p>
       <div class="demo-book-pick-list">
         <button type="button" class="demo-book-pick" onclick="beginDemo('tawheed')">
@@ -602,7 +602,7 @@
 <script src="demo-questions-bundle.js"></script>
 <script src="version.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="app.js?v=76" defer></script>
+<script src="app.js?v=77" defer></script>
 <script src="auth.js?v=11" defer></script>
 <script src="enhancements.js?v=9" defer></script>
 <script src="platform.js?v=13" defer></script>
@@ -632,6 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
     show('login-screen');
     updateTopbarStats();
     updateLoginQuestionHint();
+    void syncPendingFeedback?.();
   })();
 });
 </script>

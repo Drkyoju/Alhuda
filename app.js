@@ -272,6 +272,33 @@ function formatAvgAnswerTime(ms) {
   return arabicNum(sec) + ' ث';
 }
 
+const DEMO_BOOKS_TRIED_KEY = 'demoBooksTriedV1';
+
+function getDemoBooksTried() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(DEMO_BOOKS_TRIED_KEY) || '{}');
+    return {
+      tawheed: !!raw.tawheed,
+      usool: !!raw.usool,
+      nawawi: !!raw.nawawi,
+    };
+  } catch {
+    return { tawheed: false, usool: false, nawawi: false };
+  }
+}
+
+function markDemoBookTried(book) {
+  if (!QUESTION_BOOKS.includes(book)) return;
+  const tried = getDemoBooksTried();
+  tried[book] = true;
+  try { localStorage.setItem(DEMO_BOOKS_TRIED_KEY, JSON.stringify(tried)); } catch (e) {}
+}
+
+function countDemoBooksTried() {
+  const tried = getDemoBooksTried();
+  return QUESTION_BOOKS.filter((b) => tried[b]).length;
+}
+
 function renderDemoResultSummary() {
   const el = document.getElementById('demo-result-summary');
   if (!el) return;
@@ -279,13 +306,27 @@ function renderDemoResultSummary() {
   lastDemoSessionStats = stats;
   const book = BOOK_LABELS[stats.book] || stats.book || '';
   const avg = formatAvgAnswerTime(stats.avgMs);
+  const pct = stats.total ? stats.correct / stats.total : 0;
+  const stars = pct >= 0.9 ? 3 : pct >= 0.7 ? 2 : pct >= 0.5 ? 1 : 0;
+  let starsHtml = '';
+  for (let i = 0; i < 3; i++) {
+    starsHtml += i < stars ? '⭐' : '<span class="star-empty">⭐</span>';
+  }
   el.hidden = false;
+  el.classList.remove('demo-result-pop');
+  void el.offsetWidth;
+  el.classList.add('demo-result-pop');
   el.innerHTML =
+    `<div class="demo-result-stars" aria-hidden="true">${starsHtml}</div>` +
     `<p class="demo-result-score">${arabicNum(stats.correct)} / ${arabicNum(stats.total)} صحيحة</p>` +
     `<p class="demo-result-meta">${book ? escapeHtml(book) + ' · ' : ''}` +
     `${arabicNum(stats.wrong)} خطأ` +
     (avg ? ` · متوسط الوقت ${avg}` : '') +
     `</p>`;
+  if (pct >= 0.625) {
+    try { launchConfetti(); } catch (e) {}
+    playSound('achievement');
+  }
 }
 
 function getDemoHardQuestionsSummary(limit = 3) {
@@ -312,6 +353,11 @@ function renderDemoAnalyticsSummary(targetId = 'demo-analytics-summary') {
   if (!el) return;
   const hard = getDemoHardQuestionsSummary(3);
   if (!hard.length) {
+    if (targetId === 'demo-analytics-summary' && lastDemoSessionStats) {
+      el.hidden = false;
+      el.innerHTML = '<p class="demo-analytics-title">🌟 أحسنت — لا أخطاء متكررة في تجربتك</p>';
+      return;
+    }
     el.hidden = true;
     el.innerHTML = '';
     return;
@@ -787,10 +833,24 @@ function arabicNum(n) {
 
 function updateDemoBookPicker() {
   const counts = { tawheed: 0, usool: 0, nawawi: 0 };
+  const tried = getDemoBooksTried();
+  const triedN = countDemoBooksTried();
+  const progress = document.getElementById('demo-books-progress');
+  if (progress) {
+    progress.textContent = triedN
+      ? `جرّبتَ/ِ ${arabicNum(triedN)}/٣ كتب`
+      : '٣ كتب × ٨ أسئلة';
+  }
   for (const book of Object.keys(counts)) {
     counts[book] = buildDemoQuestions(book).length;
     const el = document.getElementById('demo-pick-count-' + book);
-    if (el) el.textContent = arabicNum(counts[book]) + ' أسئلة';
+    if (el) {
+      el.textContent = tried[book]
+        ? '✓ جرّبتَ · ' + arabicNum(counts[book]) + ' أسئلة'
+        : arabicNum(counts[book]) + ' أسئلة';
+    }
+    const btn = document.querySelector(`.demo-book-pick[onclick*="'${book}'"]`);
+    if (btn) btn.classList.toggle('is-tried', !!tried[book]);
   }
 }
 
@@ -1236,20 +1296,39 @@ function prefetchTtsText(text, voice = TTS_VOICE) {
   });
 }
 
+async function prefetchHybridSpeechForQuestion(q) {
+  if (!q || navigator.onLine === false) return;
+  try {
+    await ensureSpeechMapsLoaded();
+    const text = buildQuestionSpeechText(q);
+    const plan = await buildSpeechPlan(text, q);
+    for (const seg of plan) {
+      if (seg.type === 'tts' && seg.text) prefetchTtsText(seg.text);
+      if (seg.type === 'quran' && seg.verseKey) {
+        void fetchQuranAudioObjectUrl(seg.verseKey).catch(() => {});
+      }
+    }
+    // Also warm short feedback speech for snappier post-answer voice.
+    if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
+  } catch (e) {
+    console.warn('hybrid prefetch:', e);
+    prefetchTtsText(q.q);
+  }
+}
+
 function prefetchUpcomingTts(fromIdx = state.idx) {
   const slice = (state.questions || []).slice(Math.max(0, fromIdx | 0), (fromIdx | 0) + 5);
   for (const q of slice) {
     if (!q) continue;
-    prefetchTtsText(q.q);
-    if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
-    const cite = pickCitationTextForSpeech?.(q) || '';
-    if (cite) prefetchTtsText(String(cite).slice(0, 220));
+    void prefetchHybridSpeechForQuestion(q);
   }
 }
 
 /** Warm edge-cached Quran audio for popular mapped verses (faster first recite). */
 function warmPopularQuranAyahs() {
   if (navigator.onLine === false) return;
+  if (sessionStorage.getItem('quranWarmDone') === '1') return;
+  sessionStorage.setItem('quranWarmDone', '1');
   const map = (typeof window !== 'undefined' && window.QUESTION_VERSE_MAP) || {};
   const keys = [...new Set(Object.values(map))].slice(0, 12);
   for (const verseKey of keys) {
@@ -1258,15 +1337,19 @@ function warmPopularQuranAyahs() {
   void fetch('/api/quran-warm', { cache: 'no-store' }).catch(() => {});
 }
 
-function warmDemoSessionAudio() {
-  prefetchUpcomingTts(0);
+let demoAudioWarmStarted = false;
+function warmDemoSessionAudio({ force = false } = {}) {
+  if (demoAudioWarmStarted && !force) return;
+  demoAudioWarmStarted = true;
+  void ensureSpeechMapsLoaded();
+  const slice = (state.questions || []).slice(0, 2);
+  for (const q of slice) void prefetchHybridSpeechForQuestion(q);
   prefetchUpcomingQuran(0);
-  const slice = (state.questions || []).slice(0, 5);
-  for (const q of slice) {
-    const key = getQuestionVerseKey(q?.id);
-    if (key) void fetchQuranAudioObjectUrl(key).catch(() => {});
-  }
-  warmPopularQuranAyahs();
+  // Popular ayah warm runs once per session, idle — don't compete with Q0 TTS.
+  const idle = typeof requestIdleCallback === 'function'
+    ? requestIdleCallback
+    : (fn) => setTimeout(fn, 1200);
+  idle(() => warmPopularQuranAyahs());
 }
 
 function azureUsageMonthKey() {
@@ -1445,8 +1528,9 @@ function ensureSpeechMapsLoaded() {
       existing.addEventListener('error', () => resolve());
       return;
     }
+    const ver = (typeof window !== 'undefined' && window.ALHUDA_ASSETS?.sw) || 87;
     const s = document.createElement('script');
-    s.src = 'speech-diacritics-map.js';
+    s.src = `speech-diacritics-map.js?v=${ver}`;
     s.async = true;
     s.dataset.speechMaps = '1';
     s.onload = () => resolve();
@@ -2935,12 +3019,14 @@ function startDemoFromLogin() {
   state.userName = '';
   state.demoMode = false;
   pendingLoginAfterDemo = true;
+  void ensureSpeechMapsLoaded();
   updateDemoBookPicker();
   show('demo-intro');
 }
 function showDemoIntro(name) {
   const demoName = document.getElementById('demo-name');
   if (demoName) demoName.textContent = name || DEFAULT_PLAYER;
+  void ensureSpeechMapsLoaded();
   updateDemoBookPicker();
   show('demo-intro');
 }
@@ -2974,8 +3060,9 @@ async function beginDemo(book) {
   document.getElementById('training-bar').style.display = 'none';
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
   document.getElementById('fb-self-correct').style.display = 'none';
-  // Prefetch audio during countdown for snappier first question.
-  warmDemoSessionAudio();
+  // Prefetch hybrid speech for Q0/Q1 during countdown (once).
+  demoAudioWarmStarted = false;
+  warmDemoSessionAudio({ force: true });
   startDemoCountdown();
 }
 
@@ -2997,7 +3084,11 @@ function startDemoCountdown() {
   warmDemoSessionAudio();
   const iv = setInterval(() => {
     n--;
-    if (n >= 1) warmDemoSessionAudio();
+    // Only nudge Q0 hybrid again — do not re-fire popular ayah warm.
+    if (n >= 1) {
+      const q0 = state.questions?.[0];
+      if (q0) void prefetchHybridSpeechForQuestion(q0);
+    }
     if (n <= 0) {
       clearInterval(iv);
       countdownTimer = null;
@@ -3042,6 +3133,8 @@ async function skipDemo() {
 function endDemo() {
   clearGameSession();
   lastDemoSessionStats = buildLastDemoSessionStats();
+  const finishedBook = state.demoBook || lastDemoSessionStats?.book || '';
+  if (finishedBook) markDemoBookTried(finishedBook);
   state.demoMode = false;
   document.getElementById('demo-bar').style.display = 'none';
   feedbackRating = 0;
@@ -3064,7 +3157,13 @@ function endDemo() {
   const shareDemo = document.getElementById('btn-share-demo');
   if (shareDemo) shareDemo.style.display = 'block';
   const finishBtn = document.getElementById('btn-finish-demo');
-  if (finishBtn) finishBtn.style.display = '';
+  if (finishBtn) {
+    finishBtn.style.display = '';
+    const n = countDemoBooksTried();
+    finishBtn.textContent = n < 3
+      ? `📚 جرّب/ي كتاباً آخر (${arabicNum(n)}/٣)`
+      : '📚 جرّب/ي كتاباً آخر';
+  }
   show('feedback-screen');
 }
 function setRating(r, el) {
@@ -3470,6 +3569,7 @@ function updateLoginQuestionHint() {
 }
 
 function refreshBookFromNetwork(book) {
+  if (LOGIN_LOCKED) return; // Demo-only mode: stay on local bundle.
   if (!QUESTION_BOOKS.includes(book) || navigator.onLine === false) return;
   if (!getDb()) return;
   void (async () => {
@@ -3576,7 +3676,8 @@ async function loadQuestions() {
     updateLoginQuestionHint();
     updateLevelCounts();
     updateDemoBookPicker();
-    if (navigator.onLine !== false) {
+    // While login is locked, demo uses the local bundle — skip heavy Supabase pulls.
+    if (!LOGIN_LOCKED && navigator.onLine !== false) {
       void (async () => {
         try {
           if (window.AlhudaPlatform?.loadQuestionsCached) {
@@ -4200,7 +4301,9 @@ function pick(btn, isOk) {
     }
     fb.className = 'feedback show bad';
     document.getElementById('fb-icon').textContent = '🤔';
-    document.getElementById('fb-title').textContent = `${n}، إجابة خاطئة — راجع/يها لاحقاً في «مراجعة الأخطاء»`;
+    document.getElementById('fb-title').textContent = state.demoMode
+      ? `${n}، إجابة خاطئة — راجع/ي الشرح أدناه 💡`
+      : `${n}، إجابة خاطئة — راجع/يها لاحقاً في «مراجعة الأخطاء»`;
     if (trainingMode) {
       selfBox.style.display = 'block';
       selfBox.innerHTML = '<p style="font-size:0.85em;margin-bottom:8px;color:var(--text-soft);">وضع التدريب — لا يُحسب ضدك</p><button type="button" class="btn btn-blue btn-sm" style="width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة والشرح</button>';

@@ -3310,7 +3310,7 @@
       flex: 1;
       min-width: 0;
     }
-    @media (max-width: 480px) {
+    @media (max-width: 768px) {
       #game .q-box-row {
         position: relative;
         display: block;
@@ -3342,6 +3342,8 @@
         box-shadow: 0 2px 0 var(--emerald-dark);
         z-index: 2;
       }
+    }
+    @media (max-width: 480px) {
       #game .ans-btn {
         font-size: clamp(13px, calc(var(--base-font-size, 18px) * 0.8), 15px) !important;
         padding: 7px 10px !important;
@@ -3778,6 +3780,19 @@
       border-radius: var(--radius-md);
       padding: 14px 16px;
     }
+    .demo-result-summary.demo-result-pop {
+      animation: demoResultPop 0.45s ease-out;
+    }
+    @keyframes demoResultPop {
+      from { transform: scale(0.92); opacity: 0.4; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .demo-result-stars {
+      font-size: 1.45em;
+      letter-spacing: 0.12em;
+      margin-bottom: 4px;
+    }
+    .demo-result-stars .star-empty { opacity: 0.28; filter: grayscale(1); }
     .demo-result-score {
       font-family: var(--font-display);
       font-size: 1.55em;
@@ -3785,6 +3800,14 @@
       color: var(--emerald-dark);
       margin: 0 0 4px;
       line-height: 1.2;
+    }
+    .demo-book-pick.is-tried {
+      border-color: var(--emerald);
+      box-shadow: inset 0 0 0 1px rgba(42, 92, 69, 0.25);
+    }
+    .demo-book-pick.is-tried .demo-book-pick-count {
+      color: var(--emerald-dark);
+      font-weight: 800;
     }
     .demo-result-meta {
       margin: 0;
