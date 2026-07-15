@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="fonts.css?v=1">
   <link rel="stylesheet" href="enhancements.css?v=9">
   <link rel="stylesheet" href="kids-ui.css?v=6">
-  <link rel="stylesheet" href="styles.css?v=47">
+  <link rel="stylesheet" href="styles.css?v=48">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -414,13 +414,15 @@
     </div>
     <div class="top-bar">
       <button class="close-btn" onclick="requestLeaveGame()" aria-label="رجوع">✕</button>
-      <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
-      <div id="hearts" role="status" aria-live="polite" aria-label="٥ محاولات متبقية" style="display:flex;gap:2px;"></div>
-      <button type="button" class="game-settings-btn" onclick="toggleSettings()" aria-label="الإعدادات — لتغيير الخط اضغط هنا">
-        <span class="game-settings-icon" aria-hidden="true">⚙️</span>
-        <span class="game-settings-hint">لتغيير الخط اضغط هنا</span>
-      </button>
-      <span class="score-badge">⭐ <span id="score-display">0</span></span>
+      <div class="top-bar-cluster">
+        <span class="score-badge">⭐ <span id="score-display">0</span></span>
+        <button type="button" class="game-settings-btn" onclick="toggleSettings()" aria-label="الإعدادات — لتغيير الخط اضغط هنا">
+          <span class="game-settings-icon" aria-hidden="true">⚙️</span>
+          <span class="game-settings-hint">لتغيير الخط اضغط هنا</span>
+        </button>
+        <div id="hearts" role="status" aria-live="polite" aria-label="٥ محاولات متبقية"></div>
+        <div class="progress-wrap" title="التقدّم" aria-hidden="true"><div class="progress-bar" id="progress-bar"></div></div>
+      </div>
     </div>
     <div class="q-area">
       <div id="training-bar" class="training-bar" style="display:none;">🎯 وضع التدريب — لا تُخصم المحاولات</div>
