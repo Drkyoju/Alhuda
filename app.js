@@ -1131,14 +1131,19 @@ function onFeedbackSpeakerClick() {
   void speakFeedbackOnce(q, state.lastFeedbackWrong || '', document.getElementById('btn-speak-feedback'));
 }
 
-/* ── Quran recitation (علي الحذيفي — Islamic Network CDN, 128kbps max) ── */
+/* ── Quran recitation (علي الحذيفي — 64kbps + prefetch for faster start) ── */
 const QURAN_RECITER_LABEL = 'الحذيفي';
 const QURAN_RECITE_BTN_LABEL = `🎧 تلاوة`;
 const QURAN_RECITE_BTN_ARIA = `استمع لتلاوة الآية — علي ${QURAN_RECITER_LABEL}`;
 const QURAN_RECITER_EDITION = 'ar.hudhaify';
-const QURAN_RECITER_BITRATE = 128;
+const QURAN_RECITER_BITRATE = 64;
 const QURAN_RECITER_CDN_BASE = `https://cdn.islamic.network/quran/audio/${QURAN_RECITER_BITRATE}/${QURAN_RECITER_EDITION}/`;
-const QURAN_RECITER_EVERYAYAH_BASE = 'https://everyayah.com/data/Hudhaify_128kbps/';
+const QURAN_RECITER_EVERYAYAH_BASE = 'https://everyayah.com/data/Hudhaify_64kbps/';
+const QURAN_BLOB_CACHE_MAX = 24;
+const quranAudioBlobCache = new Map(); // verseKey -> objectUrl
+const quranPrefetchInFlight = new Map(); // verseKey -> Promise
+let quranAudio = null;
+const quranVerseKeyCache = new Map();
 const SURAH_AYAH_COUNTS = [
   7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52, 99, 128, 111, 110, 98, 135,
   112, 78, 118, 64, 77, 227, 93, 88, 69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85, 54, 53, 89, 59,
@@ -1146,8 +1151,6 @@ const SURAH_AYAH_COUNTS = [
   44, 28, 28, 20, 56, 40, 31, 50, 40, 46, 42, 29, 19, 36, 25, 22, 17, 19, 26, 30, 20, 15, 21, 11, 8,
   8, 19, 5, 8, 8, 11, 11, 8, 3, 9, 5, 4, 7, 3, 6, 3, 5, 4, 5, 6,
 ];
-let quranAudio = null;
-const quranVerseKeyCache = new Map();
 
 const SURAH_BY_ARABIC_NAME = {
   'الفاتحة': 1, 'البقرة': 2, 'آل عمران': 3, 'النساء': 4, 'المائدة': 5, 'الأنعام': 6,
@@ -1217,6 +1220,66 @@ function getQuranRecitationUrls(verseKey) {
 
 function verseKeyToRecitationUrl(verseKey) {
   return getQuranRecitationUrls(verseKey)[0] || '';
+}
+
+function rememberQuranBlob(verseKey, objectUrl) {
+  if (!verseKey || !objectUrl) return;
+  if (quranAudioBlobCache.has(verseKey)) {
+    const prev = quranAudioBlobCache.get(verseKey);
+    if (prev && prev !== objectUrl) URL.revokeObjectURL(prev);
+    quranAudioBlobCache.delete(verseKey);
+  }
+  quranAudioBlobCache.set(verseKey, objectUrl);
+  while (quranAudioBlobCache.size > QURAN_BLOB_CACHE_MAX) {
+    const oldest = quranAudioBlobCache.keys().next().value;
+    const oldUrl = quranAudioBlobCache.get(oldest);
+    if (oldUrl) URL.revokeObjectURL(oldUrl);
+    quranAudioBlobCache.delete(oldest);
+  }
+}
+
+async function fetchQuranAudioObjectUrl(verseKey) {
+  if (!verseKey) return null;
+  if (quranAudioBlobCache.has(verseKey)) return quranAudioBlobCache.get(verseKey);
+  if (quranPrefetchInFlight.has(verseKey)) {
+    await quranPrefetchInFlight.get(verseKey);
+    return quranAudioBlobCache.get(verseKey) || null;
+  }
+  const work = (async () => {
+    const urls = getQuranRecitationUrls(verseKey);
+    for (const url of urls) {
+      try {
+        const res = await fetch(url, { mode: 'cors', credentials: 'omit', cache: 'force-cache' });
+        if (!res.ok) continue;
+        const blob = await res.blob();
+        if (!blob || !blob.size) continue;
+        const objectUrl = URL.createObjectURL(blob);
+        rememberQuranBlob(verseKey, objectUrl);
+        return objectUrl;
+      } catch (e) {
+        console.warn('quran prefetch:', url, e);
+      }
+    }
+    return null;
+  })();
+  quranPrefetchInFlight.set(verseKey, work);
+  try {
+    return await work;
+  } finally {
+    quranPrefetchInFlight.delete(verseKey);
+  }
+}
+
+function prefetchQuranForQuestion(q) {
+  if (!q || !hasQuranAyahContent(q)) return;
+  void (async () => {
+    try {
+      const verseKey = await resolveVerseKeyForQuestion(q);
+      if (verseKey) await fetchQuranAudioObjectUrl(verseKey);
+    } catch (e) {
+      console.warn('quran prefetch question:', e);
+    }
+  })();
 }
 
 function parseSurahAyahReferences(text) {
@@ -1446,6 +1509,7 @@ function bindQuranReciteButton(root, q) {
   root.querySelectorAll('[data-quran-recite]').forEach((btn) => {
     btn.onclick = () => playQuranForQuestion(q, btn);
   });
+  prefetchQuranForQuestion(q);
 }
 
 async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) {
@@ -1460,16 +1524,43 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
   }
   stopQuranAudio();
   if (btn) btn.classList.add('playing');
+
+  // Prefer prefetched blob for near-instant start.
+  let objectUrl = quranAudioBlobCache.get(verseKey) || null;
+  if (!objectUrl) {
+    try {
+      objectUrl = await fetchQuranAudioObjectUrl(verseKey);
+    } catch (e) {
+      console.warn('quran cache fetch:', e);
+    }
+  }
+
+  const tryPlay = async (src) => {
+    quranAudio = new Audio(src);
+    quranAudio.preload = 'auto';
+    await quranAudio.play();
+    await new Promise((resolve, reject) => {
+      quranAudio.onended = resolve;
+      quranAudio.onerror = () => reject(new Error('quran audio error'));
+    });
+  };
+
+  try {
+    if (objectUrl) {
+      await tryPlay(objectUrl);
+      return;
+    }
+  } catch (e) {
+    console.warn('quran cached play failed:', e);
+    stopQuranAudio();
+  }
+
   let lastErr = null;
   for (const url of urls) {
-    quranAudio = new Audio(url);
-    quranAudio.preload = 'auto';
     try {
-      await quranAudio.play();
-      await new Promise((resolve, reject) => {
-        quranAudio.onended = resolve;
-        quranAudio.onerror = () => reject(new Error('quran audio error'));
-      });
+      await tryPlay(url);
+      // Warm cache in background for next time.
+      void fetchQuranAudioObjectUrl(verseKey);
       return;
     } catch (e) {
       lastErr = e;
@@ -1485,16 +1576,15 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
 async function playQuranForQuestion(q, btn) {
   if (!q) return;
   stopSpeaking();
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = '⏳ جاري التحميل...';
-  }
+  if (btn) btn.disabled = true;
   try {
     const verseKey = await resolveVerseKeyForQuestion(q);
     if (!verseKey) {
       if (typeof showToast === 'function') showToast('لم نتمكن من تحديد الآية في القرآن', 'err');
       return;
     }
+    const ready = quranAudioBlobCache.has(verseKey);
+    if (btn && !ready) btn.textContent = '⏳...';
     if (btn) btn.textContent = QURAN_RECITE_BTN_LABEL;
     await playQuranRecitation(verseKey, btn);
   } finally {
@@ -1521,6 +1611,7 @@ function updateQuranReciteSlot(q) {
   slot.style.display = '';
   slot.innerHTML = buildQuranReciteButtonHtml();
   bindQuranReciteButton(slot, q);
+  prefetchQuranForQuestion(q);
 }
 
 function scoreArabicVoice(v) {
