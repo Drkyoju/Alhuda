@@ -1,10 +1,15 @@
 /** Azure Cognitive Services Speech — Neural TTS (Free F0: 0.5M chars/month). */
 
-export const DEFAULT_AZURE_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
-export const FALLBACK_AZURE_ARABIC_VOICE = 'ar-SA-HamedNeural';
+/**
+ * HamedNeural: Microsoft’s Arabic pronunciation/diacritic improvements
+ * land best on this voice for MSA educational text.
+ * @see https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/azure-ai-voices-in-arabic-improved-pronunciation/4360306
+ */
+export const DEFAULT_AZURE_ARABIC_VOICE = 'ar-SA-HamedNeural';
+export const FALLBACK_AZURE_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
 
-/** Higher bitrate than 16kHz — clearer Arabic consonants and harakat. */
-const OUTPUT_FORMAT = 'audio-24khz-160kbitrate-mono-mp3';
+/** Near-fullband MP3 — clearer consonants for Arabic. */
+const OUTPUT_FORMAT = 'audio-48khz-192kbitrate-mono-mp3';
 
 function escapeXml(text) {
   return String(text || '')
@@ -15,15 +20,18 @@ function escapeXml(text) {
     .replace(/'/g, '&apos;');
 }
 
-/** Insert short pauses after Arabic punctuation so phrases don't rush. */
+/**
+ * Soft sentence pauses only — neural voices already prosody-handle commas.
+ * Over-breaking after every ، makes Arabic sound choppy/robotic.
+ */
 function textToSsmlBody(text) {
-  const parts = String(text || '').split(/([،.؟!؛\n]+)/);
+  const parts = String(text || '').split(/([.؟!]+)/);
   let out = '';
   for (const part of parts) {
     if (!part) continue;
-    if (/^[،.؟!؛\n]+$/.test(part)) {
+    if (/^[.؟!]+$/.test(part)) {
       out += escapeXml(part);
-      out += '<break time="260ms"/>';
+      out += '<break time="180ms"/>';
     } else {
       out += escapeXml(part);
     }
@@ -31,16 +39,24 @@ function textToSsmlBody(text) {
   return out || escapeXml(text);
 }
 
+function normalizeForAzure(text) {
+  return String(text || '')
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, ' ')
+    .replace(/ﷺ/g, ' صلى الله عليه وسلم ')
+    .replace(/ﷻ/g, ' جل جلاله ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function buildSsml(text, voice) {
   const lang = String(voice).startsWith('ar-EG') ? 'ar-EG' : 'ar-SA';
-  const hasHarakat = /[\u064B-\u065F\u0670]/.test(text);
-  // Slower with tashkil — neural voices need time to land diacritics.
-  const rate = hasHarakat ? '-12%' : '-8%';
-  const body = textToSsmlBody(String(text || '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, ' '));
+  // Mild slowdown only — heavy negative rate sounds unnatural.
+  const rate = '-3%';
+  const body = textToSsmlBody(normalizeForAzure(text));
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +
     `<voice name="${escapeXml(voice)}">` +
-    `<prosody rate="${rate}" pitch="+0%">${body}</prosody>` +
+    `<prosody rate="${rate}">${body}</prosody>` +
     `</voice></speak>`
   );
 }
@@ -69,6 +85,22 @@ export async function synthesizeAzureArabicSpeech(text, voiceShortName, env) {
     body: buildSsml(text, voice),
   });
   if (!res.ok) {
+    // Some F0 regions reject 48kHz — fall back to 24kHz once.
+    if (res.status === 400) {
+      const retry = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Ocp-Apim-Subscription-Key': key,
+          'Content-Type': 'application/ssml+xml',
+          'X-Microsoft-OutputFormat': 'audio-24khz-160kbitrate-mono-mp3',
+          'User-Agent': 'AlhudaApp',
+        },
+        body: buildSsml(text, voice),
+      });
+      if (retry.ok) return retry.body;
+      const d2 = await retry.text().catch(() => '');
+      throw new Error(`Azure TTS ${retry.status}: ${d2.slice(0, 180)}`);
+    }
     const detail = await res.text().catch(() => '');
     throw new Error(`Azure TTS ${res.status}: ${detail.slice(0, 180)}`);
   }

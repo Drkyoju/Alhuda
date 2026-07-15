@@ -78,7 +78,7 @@ if (wantFetch && base) {
       const res = await fetch(`${base.replace(/\/$/, '')}/api/tts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, voice: 'ar-SA-ZariyahNeural' }),
+        body: JSON.stringify({ text, voice: 'ar-SA-HamedNeural' }),
       });
       const provider = res.headers.get('X-TTS-Provider') || '?';
       if (!res.ok) {

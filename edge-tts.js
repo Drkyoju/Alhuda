@@ -1,7 +1,7 @@
 /** Microsoft Edge neural TTS (Worker-native fallback when Azure key is absent). */
 
-export const DEFAULT_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
-export const FALLBACK_ARABIC_VOICE = 'ar-SA-HamedNeural';
+export const DEFAULT_ARABIC_VOICE = 'ar-SA-HamedNeural';
+export const FALLBACK_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
 
 const READALOUD_BASE = 'speech.platform.bing.com/consumer/speech/synthesize/readaloud';
 const TRUSTED_CLIENT_TOKEN = '6A5AA1D4EAFF4E9FB37E23D68491D6F4';
@@ -90,14 +90,14 @@ function buildSpeechConfigMessage() {
 }
 
 function buildSsmlMessage(requestId, voice, text) {
-  const hasHarakat = /[\u064B-\u065F\u0670]/.test(text);
-  const rate = hasHarakat ? '-12%' : '-8%';
-  const parts = String(text || '').split(/([،.؟!؛\n]+)/);
+  // Mild rate — match Azure naturalness; let neural handle comma prosody.
+  const rate = '-3%';
+  const parts = String(text || '').split(/([.؟!]+)/);
   let body = '';
   for (const part of parts) {
     if (!part) continue;
-    if (/^[،.؟!؛\n]+$/.test(part)) {
-      body += escapeXml(part) + "<break time='260ms'/>";
+    if (/^[.؟!]+$/.test(part)) {
+      body += escapeXml(part) + "<break time='180ms'/>";
     } else {
       body += escapeXml(removeInvalidXmlCharacters(part));
     }
@@ -105,7 +105,7 @@ function buildSsmlMessage(requestId, voice, text) {
   const ssml =
     "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='ar-SA'>" +
     `<voice name='${voice}'>` +
-    `<prosody rate="${rate}" pitch="+0%">${body}</prosody>` +
+    `<prosody rate="${rate}">${body}</prosody>` +
     '</voice></speak>';
   return (
     `X-RequestId:${requestId}\r\n` +
