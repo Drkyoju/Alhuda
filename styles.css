@@ -1041,13 +1041,13 @@
     .why-correct-box {
       background: var(--emerald-light);
       border: 1px solid var(--emerald);
-      border-radius: var(--radius-md);
-      padding: 12px 14px;
-      margin-top: 8px;
-      font-size: 0.88em;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-top: 6px;
+      font-size: 0.86em;
       font-weight: 700;
       color: var(--emerald-dark);
-      line-height: 1.65;
+      line-height: 1.55;
       text-align: right;
     }
     .why-correct-box.is-wrong {
@@ -1056,24 +1056,24 @@
       color: var(--coral-dark);
     }
     .why-correct-box.is-correct-reveal {
-      margin-top: 8px;
+      margin-top: 6px;
     }
-    .fb-wrong-label { margin: 0 0 4px; }
+    .fb-wrong-label { margin: 0 0 2px; }
     .fb-wrong-answer {
       margin: 0;
-      font-size: 1.05em;
+      font-size: 1em;
       font-weight: 800;
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.5;
     }
-    .why-correct-box strong { display: block; margin-bottom: 4px; font-size: 0.95em; }
-    .fb-correct-label { margin: 0 0 4px; }
+    .why-correct-box strong { display: block; margin-bottom: 2px; font-size: 0.92em; }
+    .fb-correct-label { margin: 0 0 2px; }
     .fb-correct-answer {
       margin: 0;
-      font-size: 1.05em;
+      font-size: 1em;
       font-weight: 800;
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.5;
     }
     .answer-feedback .book-cite-box { margin-top: 0; }
     .review-picked {
@@ -1769,32 +1769,38 @@
       50% { opacity: 0.45; }
     }
     .book-cite-heading {
-      margin: 10px 0 6px;
+      margin: 8px 0 4px;
       font-weight: 800;
-      font-size: 0.86em;
+      font-size: 0.82em;
       color: var(--emerald-dark);
       text-align: right;
     }
     .book-cite-box {
       background: linear-gradient(180deg, #fffdf8, var(--cream));
       border: 1.5px solid var(--gold);
-      border-radius: 12px;
-      padding: 10px 12px;
-      margin-top: 8px;
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-top: 6px;
       text-align: right;
       line-height: 1.65;
       display: flex;
       flex-direction: column;
       align-items: stretch;
+      gap: 0;
     }
     .book-cite-box strong {
       display: block;
       color: var(--emerald-dark);
-      margin-bottom: 6px;
-      font-size: 0.86em;
+      margin-bottom: 4px;
+      font-size: 0.82em;
+    }
+    .quran-recite-above {
+      display: flex;
+      justify-content: flex-start;
+      margin: 0 0 6px;
     }
     .book-cite-quote {
-      margin: 0 0 8px;
+      margin: 0 0 6px;
       padding: 8px 10px;
       border-right: 3px solid var(--emerald);
       background: var(--white);
@@ -1804,35 +1810,45 @@
       font-size: 0.82em;
       line-height: 1.7;
     }
+    /* Ayah gets vertical reading space; speaker sits a bit above it. */
+    .book-cite-ayah {
+      padding: 14px 12px 16px;
+      min-height: 4.2em;
+      font-size: 0.92em;
+      font-weight: 700;
+      line-height: 1.95;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
     .book-cite-meta {
       margin: 0;
-      font-size: 0.76em;
+      font-size: 0.72em;
       font-weight: 700;
       color: var(--emerald-dark);
     }
     .quran-recite-slot {
-      margin: 10px 0 4px;
+      margin: 6px 0 2px;
     }
     .quran-recite-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      gap: 4px;
       width: auto;
       max-width: 100%;
-      margin-top: 8px;
-      padding: 7px 12px;
+      margin-top: 0;
+      padding: 6px 10px;
       border: 1.5px solid var(--gold);
-      border-radius: 10px;
+      border-radius: 9px;
       background: linear-gradient(180deg, #fff8e8 0%, #f5e6b8 100%);
       color: var(--emerald-dark);
       font-family: inherit;
-      font-size: 0.8em;
+      font-size: 0.76em;
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 2px 0 #c9a84c;
       transition: 0.2s;
-      min-height: 38px;
+      min-height: 34px;
       touch-action: manipulation;
     }
     .quran-recite-btn:active { transform: translateY(2px); box-shadow: none; }
@@ -1841,7 +1857,7 @@
       border-color: var(--emerald);
       animation: voicePulse 1s ease-in-out infinite;
     }
-    .book-cite-box .quran-recite-btn { margin-top: 12px; }
+    .book-cite-box .quran-recite-btn { margin-top: 0; }
     .ans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     @media (max-width: 500px) { .ans-grid { grid-template-columns: 1fr; } }
     .ans-btn {
@@ -3029,38 +3045,52 @@
       border-radius: 4px;
     }
     #game .feedback .why-correct-box {
-      font-size: 0.88em !important;
-      line-height: 1.55 !important;
-      padding: 8px 10px;
+      font-size: 0.84em !important;
+      line-height: 1.45 !important;
+      padding: 6px 8px;
       margin-top: 4px;
+      border-radius: 8px;
     }
     #game .feedback .why-correct-box strong {
-      font-size: 0.95em;
+      font-size: 0.9em;
     }
     #game .feedback .book-cite-heading {
-      margin: 6px 0 4px;
-      font-size: 0.84em;
+      margin: 4px 0 3px;
+      font-size: 0.78em;
       font-weight: 800;
     }
     #game .feedback .book-cite-box {
-      padding: 8px 10px;
+      padding: 6px 8px;
       margin-top: 0;
+      border-radius: 8px;
+    }
+    #game .feedback .quran-recite-above {
+      margin: 0 0 4px;
     }
     #game .feedback .book-cite-quote {
       padding: 6px 8px;
       margin-bottom: 4px;
-      font-size: 0.8em !important;
-      line-height: 1.65 !important;
+      font-size: 0.78em !important;
+      line-height: 1.55 !important;
       font-weight: 600;
     }
+    #game .feedback .book-cite-ayah {
+      padding: 12px 10px 14px !important;
+      min-height: 4.5em;
+      font-size: 0.88em !important;
+      line-height: 1.95 !important;
+      font-weight: 700 !important;
+      color: var(--text) !important;
+    }
     #game .feedback .book-cite-meta {
-      font-size: 0.74em;
+      font-size: 0.7em;
     }
     #game .feedback .quran-recite-btn {
-      margin-top: 6px;
-      font-size: 0.76em;
-      padding: 6px 10px;
-      min-height: 36px;
+      margin-top: 0;
+      font-size: 0.72em;
+      padding: 5px 9px;
+      min-height: 32px;
+      border-radius: 8px;
     }
     #game .feedback .fb-continue-btn {
       flex-shrink: 0;
@@ -3200,26 +3230,26 @@
     }
     @media (max-width: 480px) {
       .login-hero { width: 100%; padding: 0 4px; }
-      .card { padding: 20px 16px; border-radius: var(--radius-lg); }
-      .logo-img { max-width: 178px; max-height: 140px; }
-      .brand-title { font-size: 1.45em; }
-      .book-select-row { gap: 8px; }
-      .book-btn { min-height: 88px; padding: 12px 8px; font-size: 0.75em; }
-      .nav-dock { padding: 10px 6px; }
-      .nav-dock .icon-action-circle { width: 46px; height: 46px; }
-      .q-with-timer { gap: 6px; align-items: flex-start; }
-      .top-bar { gap: 6px; padding-left: 10px; padding-right: 10px; }
-      .score-badge { font-size: 0.7em; padding: 3px 8px; }
-      #game .q-area { padding: 14px 12px 24px; }
-      #game.feedback-open .q-area { padding: 14px 12px max(52dvh, 110px); }
+      .card { padding: 16px 12px; border-radius: 12px; }
+      .logo-img { max-width: 160px; max-height: 124px; }
+      .brand-title { font-size: 1.35em; }
+      .book-select-row { gap: 6px; }
+      .book-btn { min-height: 78px; padding: 10px 6px; font-size: 0.72em; border-radius: 12px; }
+      .nav-dock { padding: 8px 6px; }
+      .nav-dock .icon-action-circle { width: 42px; height: 42px; }
+      .q-with-timer { gap: 5px; align-items: flex-start; }
+      .top-bar { gap: 5px; padding-left: 8px; padding-right: 8px; }
+      .score-badge { font-size: 0.68em; padding: 2px 7px; border-radius: 10px; }
+      #game .q-area { padding: 10px 10px 20px; }
+      #game.feedback-open .q-area { padding: 10px 10px max(50dvh, 100px); }
       #game .feedback #fb-title {
-        font-size: 0.9em !important;
-      }
-      #game .feedback .why-correct-box {
         font-size: 0.86em !important;
       }
+      #game .feedback .why-correct-box {
+        font-size: 0.82em !important;
+      }
       #game .feedback .fb-correct-answer {
-        font-size: 0.95em !important;
+        font-size: 0.92em !important;
       }
     }
     @media (max-width: 768px) {
@@ -3247,24 +3277,27 @@
 
     /* ── وضوح القراءة على الجوال ── */
     #game .q-box {
-      font-size: clamp(1.15rem, calc(var(--base-font-size, 18px) * 1.2), 1.5rem) !important;
-      line-height: 1.85 !important;
+      font-size: clamp(1.05rem, calc(var(--base-font-size, 18px) * 1.1), 1.35rem) !important;
+      line-height: 1.75 !important;
       font-weight: 800;
       word-break: break-word;
       overflow-wrap: anywhere;
       white-space: normal;
+      padding: 14px 14px;
+      border-radius: 14px;
     }
     #game .ans-btn {
-      font-size: clamp(0.84rem, calc(var(--base-font-size, 18px) * 0.86), 0.98rem) !important;
-      line-height: 1.5;
+      font-size: clamp(0.8rem, calc(var(--base-font-size, 18px) * 0.82), 0.94rem) !important;
+      line-height: 1.45;
       word-break: break-word;
       overflow-wrap: anywhere;
       white-space: normal;
       overflow: visible;
       height: auto;
       text-align: center;
-      min-height: 46px;
-      padding: 10px 14px !important;
+      min-height: 42px;
+      padding: 8px 12px !important;
+      border-radius: 11px;
     }
     #game .ans-row {
       display: flex;
@@ -3278,66 +3311,111 @@
     }
     @media (max-width: 480px) {
       #game .q-box {
-        font-size: clamp(21px, calc(var(--base-font-size, 18px) * 1.18), 26px) !important;
-        line-height: 1.8 !important;
-        padding: 18px 16px !important;
+        font-size: clamp(18px, calc(var(--base-font-size, 18px) * 1.08), 22px) !important;
+        line-height: 1.7 !important;
+        padding: 12px 12px !important;
+        border-radius: 12px !important;
+        border-width: 2px;
+      }
+      #game .voice-btn {
+        width: 42px;
+        height: 42px;
+        min-height: 42px;
+        font-size: 1.1em;
       }
       #game .ans-btn {
-        font-size: clamp(14px, calc(var(--base-font-size, 18px) * 0.84), 16px) !important;
-        padding: 10px 14px !important;
-        min-height: 44px;
+        font-size: clamp(13px, calc(var(--base-font-size, 18px) * 0.8), 15px) !important;
+        padding: 8px 10px !important;
+        min-height: 40px;
+        border-radius: 10px;
+        border-width: 2px;
       }
       #game .ans-grid {
         grid-template-columns: 1fr !important;
-        gap: 10px;
+        gap: 7px;
       }
       #game .q-meta {
-        gap: 8px;
-        line-height: 1.4;
+        gap: 6px;
+        line-height: 1.3;
+        margin-bottom: 6px;
       }
       #game .q-num,
       #game .q-meta .badge {
-        font-size: clamp(12px, calc(var(--base-font-size, 18px) * 0.78), 14px) !important;
-      }
-      #game .feedback #fb-title {
-        font-size: clamp(14px, calc(var(--base-font-size, 18px) * 0.85), 16px) !important;
-      }
-      #game .feedback .why-correct-box {
-        font-size: clamp(13px, calc(var(--base-font-size, 18px) * 0.82), 15px) !important;
-      }
-      #game .feedback .book-cite-heading {
-        font-size: clamp(12px, calc(var(--base-font-size, 18px) * 0.82), 14px) !important;
-      }
-      #game .feedback .book-cite-quote {
-        font-size: clamp(12px, calc(var(--base-font-size, 18px) * 0.78), 14px) !important;
-      }
-      #game .feedback .book-cite-meta {
         font-size: clamp(11px, calc(var(--base-font-size, 18px) * 0.72), 13px) !important;
       }
+      #game .feedback {
+        padding: 8px 10px max(8px, env(safe-area-inset-bottom));
+        max-height: min(52dvh, 52vh);
+      }
+      #game .feedback #fb-title {
+        font-size: clamp(13px, calc(var(--base-font-size, 18px) * 0.8), 15px) !important;
+      }
+      #game .feedback .fb-icon-wrap {
+        font-size: 1.2em;
+      }
+      #game .feedback .why-correct-box {
+        font-size: clamp(12px, calc(var(--base-font-size, 18px) * 0.78), 14px) !important;
+        padding: 5px 7px !important;
+        border-radius: 7px;
+      }
+      #game .feedback .book-cite-heading {
+        font-size: clamp(11px, calc(var(--base-font-size, 18px) * 0.74), 13px) !important;
+        margin: 3px 0 2px;
+      }
+      #game .feedback .book-cite-quote:not(.book-cite-ayah) {
+        font-size: clamp(11px, calc(var(--base-font-size, 18px) * 0.72), 13px) !important;
+        padding: 5px 7px !important;
+        line-height: 1.5 !important;
+      }
+      #game .feedback .book-cite-ayah {
+        font-size: clamp(14px, calc(var(--base-font-size, 18px) * 0.88), 16px) !important;
+        line-height: 2 !important;
+        padding: 14px 10px 16px !important;
+        min-height: 5em;
+        margin-bottom: 4px !important;
+        border-radius: 0 8px 8px 0;
+      }
+      #game .feedback .book-cite-meta {
+        font-size: clamp(10px, calc(var(--base-font-size, 18px) * 0.68), 12px) !important;
+      }
       #game .feedback .book-cite-box {
-        padding: 8px 10px;
+        padding: 5px 7px;
+        border-radius: 7px;
+      }
+      #game .feedback .quran-recite-above {
+        margin-bottom: 6px;
       }
       #game .feedback .quran-recite-btn {
-        font-size: clamp(11px, calc(var(--base-font-size, 18px) * 0.74), 13px);
-        padding: 6px 10px;
-        min-height: 36px;
+        font-size: clamp(10px, calc(var(--base-font-size, 18px) * 0.7), 12px);
+        padding: 4px 8px;
+        min-height: 30px;
+        border-radius: 7px;
+      }
+      #game .quran-recite-slot {
+        margin: 4px 0 2px;
+      }
+      #game .quran-recite-slot .quran-recite-btn {
+        font-size: clamp(10px, calc(var(--base-font-size, 18px) * 0.7), 12px);
+        padding: 4px 8px;
+        min-height: 30px;
       }
       #game.feedback-open .q-area {
         padding-bottom: max(48dvh, 100px);
       }
-      #game .feedback {
-        max-height: min(55dvh, 55vh);
-      }
       .demo-intro-card,
       .login-hero .card {
-        padding: 18px 14px;
+        padding: 14px 12px;
+        border-radius: 12px;
       }
       .q-timer-hourglass {
-        width: 52px;
-        padding: 4px 3px;
+        width: 46px;
+        padding: 3px 2px;
+        border-radius: 10px;
       }
-      .q-timer-hourglass .q-timer-svg { width: 40px; height: 50px; }
-      .q-timer-hourglass .q-timer-num { font-size: 1em; }
+      .q-timer-hourglass .q-timer-svg { width: 36px; height: 44px; }
+      .q-timer-hourglass .q-timer-num { font-size: 0.9em; }
+      #game .q-area { padding: 10px 10px 20px; }
+      #game.feedback-open .q-area { padding: 10px 10px max(50dvh, 100px); }
     }
     @media (max-width: 360px) {
       .q-with-timer {
@@ -3436,9 +3514,15 @@
     #game .feedback .fb-correct-answer {
       font-size: 0.9em !important;
     }
-    #game .feedback .book-cite-quote {
+    #game .feedback .book-cite-quote:not(.book-cite-ayah) {
       font-size: clamp(0.76rem, calc(var(--base-font-size, 18px) * 0.8), 0.86rem) !important;
       line-height: 1.65 !important;
+    }
+    #game .feedback .book-cite-ayah {
+      font-size: clamp(0.88rem, calc(var(--base-font-size, 18px) * 0.92), 1rem) !important;
+      line-height: 1.95 !important;
+      padding: 12px 10px 14px !important;
+      min-height: 4.5em;
     }
     #game .feedback .book-cite-meta {
       font-size: clamp(0.72rem, calc(var(--base-font-size, 18px) * 0.74), 0.8rem) !important;

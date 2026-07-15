@@ -1959,15 +1959,19 @@ function buildBookCitationHtml(q) {
   const quote = pickCitationText(q);
   if (!book && !chapter && !pageLabel && !quote) return '';
   let inner = '';
+  // Recitation control sits above the ayah so mobile layout reads top→bottom: listen, then read.
+  if (hasQuranAyahContent(q)) {
+    inner += `<div class="quran-recite-above">${buildQuranReciteButtonHtml()}</div>`;
+  }
   if (quote) {
-    inner += `<p class="book-cite-quote">${escapeHtml(quote)}</p>`;
+    const ayahClass = hasQuranAyahContent(q) ? 'book-cite-quote book-cite-ayah' : 'book-cite-quote';
+    inner += `<p class="${ayahClass}">${escapeHtml(quote)}</p>`;
   }
   const meta = [];
   if (book) meta.push(escapeHtml(book));
   if (chapter) meta.push(escapeHtml(chapter));
   if (pageLabel) meta.push(pageLabel);
   inner += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
-  if (hasQuranAyahContent(q)) inner += buildQuranReciteButtonHtml();
   return `<p class="book-cite-heading">📖 الاستشهاد من الكتاب</p><div class="book-cite-box">${inner}</div>`;
 }
 

@@ -41,7 +41,7 @@ test('mobile demo: readable question and compact citation UI', async ({ page }) 
   if (await citeQuote.count()) {
     const citeFont = await citeQuote.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
     expect(citeFont).toBeLessThan(qFont);
-    expect(citeFont).toBeLessThanOrEqual(15);
+    expect(citeFont).toBeLessThanOrEqual(17);
   }
 
   const reciteBtn = page.locator('#game .feedback .quran-recite-btn').first();
@@ -49,6 +49,15 @@ test('mobile demo: readable question and compact citation UI', async ({ page }) 
     const btnBox = await reciteBtn.boundingBox();
     expect(btnBox?.width || 0).toBeLessThan(390);
     await expect(reciteBtn).toHaveText(/تلاوة — الحذيفي/);
+    // Speaker sits above the ayah quote
+    const ayah = page.locator('#game .feedback .book-cite-ayah').first();
+    if (await ayah.count()) {
+      const reciteY = (await reciteBtn.boundingBox())?.y ?? 0;
+      const ayahY = (await ayah.boundingBox())?.y ?? 0;
+      expect(reciteY).toBeLessThan(ayahY);
+      const ayahH = (await ayah.boundingBox())?.height ?? 0;
+      expect(ayahH).toBeGreaterThanOrEqual(48);
+    }
   }
 
   await expect(page.locator('#game .feedback .fb-continue-btn')).toBeVisible();
