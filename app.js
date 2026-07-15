@@ -3384,7 +3384,8 @@ function buildBookCitationHtml(q) {
   if (citeBody && !quoteIsAyah) {
     inner += `<p class="book-cite-quote">${escapeHtml(citeBody)}</p>`;
   } else if (verseKey && (quoteIsAyah || !citeBody)) {
-    inner += buildQuranAyahBlockHtml(verseKey, { withButton: true });
+    // Compact snippet only — never dump a full long Uthmani ayah into feedback.
+    inner += buildQuranAyahBlockHtml(verseKey, { withButton: true, compact: true });
     showedAyah = true;
   } else if (citeBody) {
     inner += `<p class="book-cite-quote">${escapeHtml(citeBody)}</p>`;
@@ -3436,7 +3437,8 @@ function mountAnswerFeedback(q, html) {
   expEl.innerHTML = html;
   bindQuranReciteButton(expEl, q);
   const verseKey = getPrimaryVerseKeyForQuestion(q);
-  if (verseKey) void fillAyahTextElements(expEl, verseKey);
+  // Keep feedback ayah compact — full verse fetch was blowing up the layout.
+  if (verseKey) void fillAyahTextElements(expEl, verseKey, { preferSnippet: true, compact: true });
 }
 
 function clearQuestionTimer() {
@@ -4971,7 +4973,7 @@ function renderReviewItem() {
   reviewExp.innerHTML = buildAnswerFeedbackHtml(q, false, item.picked || '');
   bindQuranReciteButton(reviewExp, q);
   const verseKey = getPrimaryVerseKeyForQuestion(q);
-  if (verseKey) void fillAyahTextElements(reviewExp, verseKey);
+  if (verseKey) void fillAyahTextElements(reviewExp, verseKey, { preferSnippet: true, compact: true });
   const actions = document.getElementById('review-voice-actions');
   if (actions) {
     actions.innerHTML = `
