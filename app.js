@@ -3093,7 +3093,7 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
   let html = '<div class="answer-feedback">';
   if (!isCorrect && wrong) {
     html += '<div class="why-correct-box is-wrong">';
-    html += '<p class="fb-wrong-label"><strong>❌ الإجابة الخاطئة:</strong></p>';
+    html += '<p class="fb-wrong-label"><strong>❌ إجابتك خاطئة:</strong></p>';
     html += `<p class="fb-wrong-answer">${escapeHtml(wrong)}</p>`;
     html += '</div>';
   }

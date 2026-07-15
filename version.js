@@ -1,11 +1,11 @@
 /** Bump these when deploying — keep service-worker CACHE in sync. */
 window.ALHUDA_ASSETS = {
-  cache: 'alhuda-v93',
+  cache: 'alhuda-v94',
   styles: 43,
   kidsUi: 5,
   enhancements: 9,
-  app: 83,
+  app: 84,
   platform: 13,
   auth: 11,
-  sw: 93,
+  sw: 94,
 };
