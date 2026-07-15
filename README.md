@@ -103,8 +103,17 @@ deploy workflow injects them into Wrangler.
 4. Redeploy. Check `GET /api/tts-status` → `"provider":"azure"`, or look for
    response header `X-TTS-Provider: azure` on `/api/tts`.
 
+**Rotate a leaked key:** Azure Portal → Speech resource → Keys → Regenerate, then:
+
+```bash
+printf '%s' 'NEW_KEY' | gh secret set AZURE_SPEECH_KEY
+# re-run Deploy to Cloudflare Workers workflow
+```
+
+**Diagnostics:** open the app with `?diag=1` to show a small TTS provider badge (Azure/Edge).
+
 Quran recitation is proxied via `GET /api/quran-audio?surah=&ayah=&reciter=`
-(edge-cached) — not Azure.
+(edge-cached) — not Azure. Popular verses can be warmed with `GET /api/quran-warm`.
 
 ---
 

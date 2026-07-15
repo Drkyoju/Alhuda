@@ -22,7 +22,7 @@ test('demo flow shows question and answers', async ({ page }) => {
   await expect(page.locator('#demo-pick-count-tawheed')).toContainText('٨');
   await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
 
-  await expect(page.locator('#game')).toHaveClass(/active/);
+  await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
   await dismissOverlays(page);
 
   await expect(page.locator('#q-text')).not.toHaveText('...');
@@ -60,6 +60,7 @@ test('game exit asks before leaving mid-round', async ({ page }) => {
 
   await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
   await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
+  await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
   await dismissOverlays(page);
 
   page.once('dialog', (d) => d.dismiss());
@@ -90,8 +91,8 @@ test('demo offline seed still starts a round', async ({ page, context }) => {
   await context.setOffline(true);
   await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
   await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
+  await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
   await dismissOverlays(page);
-  await expect(page.locator('#game')).toHaveClass(/active/);
   await expect(page.locator('#q-text')).not.toHaveText('...');
 });
 

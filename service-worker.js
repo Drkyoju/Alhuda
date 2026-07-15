@@ -7,7 +7,7 @@
 // which previously could throw on renamed functions. enhancements.js triggers
 // the message on next page load so users get the update on the NEXT visit.
 
-const CACHE = 'alhuda-v83';
+const CACHE = 'alhuda-v84';
 const ASSETS = [
   './',
   './index.html',
@@ -28,7 +28,7 @@ const ASSETS = [
 
 // Single shared version string. enhancements.js must keep its registration
 // query `?v=` in sync with this constant.
-const VERSION = 'v12';
+const VERSION = 'v13';
 
 self.addEventListener('message', (e) => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();

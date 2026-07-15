@@ -3904,3 +3904,20 @@
     }
     body.dark-mode .page-hero h2 { color: #e8efe9; }
     body.dark-mode .quran-recite-status { color: var(--gold-shine); }
+
+    .tts-provider-badge {
+      position: fixed;
+      bottom: max(10px, env(safe-area-inset-bottom));
+      inset-inline-start: 10px;
+      z-index: 2500;
+      font-size: 0.68em;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(22, 56, 40, 0.85);
+      color: #fff;
+      opacity: 0.75;
+      pointer-events: none;
+    }
+    .tts-provider-badge.is-azure { background: rgba(14, 88, 140, 0.9); }
+    .login-analytics { margin-top: 12px; text-align: right; }

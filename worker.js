@@ -7,6 +7,25 @@ import {
   synthesizeAzureArabicSpeech,
 } from './azure-tts.js';
 
+/** Lightweight in-isolate error counters (reset when isolate recycles). */
+const apiErrorCounters = {
+  tts: { total: 0, byCode: {} },
+  quran: { total: 0, byCode: {} },
+};
+
+function bumpApiError(kind, code) {
+  const bucket = apiErrorCounters[kind];
+  if (!bucket) return;
+  bucket.total += 1;
+  const key = String(code || 'unknown');
+  bucket.byCode[key] = (bucket.byCode[key] || 0) + 1;
+}
+
+/** Popular mapped verses to warm into edge cache. */
+const POPULAR_QURAN_VERSES = [
+  '51:56', '4:48', '6:82', '2:256', '3:175', '47:19', '74:1', '16:125', '27:62', '9:31', '6:162', '1:2',
+];
+
 function corsHeaders(request, methods = 'GET, POST, OPTIONS') {
   const origin = request.headers.get('Origin') || '*';
   return {
@@ -45,7 +64,56 @@ async function handleTtsStatus(request, env) {
     azureConfigured: azure,
     provider: azure ? 'azure' : 'edge',
     voice: azure ? DEFAULT_AZURE_ARABIC_VOICE : DEFAULT_ARABIC_VOICE,
+    errors: apiErrorCounters,
   }), { status: 200, headers: { ...cors, ...JSON_HEADERS } });
+}
+
+async function handleQuranWarm(request, env) {
+  const cors = corsHeaders(request, 'GET, OPTIONS');
+  if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
+  if (!rateLimit(request, 'quran-warm', 10, 60000)) {
+    return rateLimitedResponse(cors);
+  }
+  const cache = caches.default;
+  let warmed = 0;
+  let hits = 0;
+  for (const verseKey of POPULAR_QURAN_VERSES) {
+    const [surah, ayah] = verseKey.split(':').map((n) => parseInt(n, 10));
+    const cacheKey = new Request(`https://quran-audio.cache/hudhaify/${surah}/${ayah}`, { method: 'GET' });
+    const cached = await cache.match(cacheKey);
+    if (cached) {
+      hits += 1;
+      continue;
+    }
+    const globalNum = verseKeyToGlobalAyahNumW(surah, ayah);
+    const file = `${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
+    const upstreams = [
+      `https://cdn.islamic.network/quran/audio/64/ar.hudhaify/${globalNum}.mp3`,
+      `https://everyayah.com/data/Hudhaify_64kbps/${file}`,
+    ];
+    for (const upstream of upstreams) {
+      try {
+        const res = await fetch(upstream, { cf: { cacheTtl: 86400 * 30, cacheEverything: true } });
+        if (!res.ok || !res.body) continue;
+        const response = new Response(res.body, {
+          status: 200,
+          headers: {
+            'Content-Type': 'audio/mpeg',
+            'Cache-Control': 'public, max-age=2592000, immutable',
+          },
+        });
+        void cache.put(cacheKey, response.clone());
+        warmed += 1;
+        break;
+      } catch {
+        bumpApiError('quran', 'warm-fail');
+      }
+    }
+  }
+  return new Response(JSON.stringify({ ok: true, warmed, hits, total: POPULAR_QURAN_VERSES.length }), {
+    status: 200,
+    headers: { ...cors, ...JSON_HEADERS },
+  });
 }
 
 async function handleQuranAudio(request, env) {
@@ -67,6 +135,7 @@ async function handleQuranAudio(request, env) {
   const reciterKey = (url.searchParams.get('reciter') || 'hudhaify').toLowerCase();
   const reciter = QURAN_RECITER_CDN[reciterKey] || QURAN_RECITER_CDN.hudhaify;
   if (!surah || !ayah || ayah > (SURAH_AYAH_COUNTS_W[surah - 1] || 0)) {
+    bumpApiError('quran', 400);
     return new Response(JSON.stringify({ ok: false, error: 'Invalid surah/ayah' }), {
       status: 400,
       headers: { ...cors, ...JSON_HEADERS },
@@ -115,6 +184,7 @@ async function handleQuranAudio(request, env) {
     }
   }
 
+  bumpApiError('quran', 502);
   return new Response(JSON.stringify({ ok: false, error: 'Audio fetch failed', detail: String(lastErr || '') }), {
     status: 502,
     headers: { ...cors, ...JSON_HEADERS },
@@ -310,6 +380,7 @@ async function handleTts(request, env) {
     });
   } catch (err) {
     console.warn('[tts]', err);
+    bumpApiError('tts', 502);
     return new Response(JSON.stringify({ ok: false, error: 'TTS failed' }), {
       status: 502,
       headers: { ...cors, ...JSON_HEADERS },
@@ -328,6 +399,9 @@ export default {
     }
     if (url.pathname === '/api/tts-status') {
       return handleTtsStatus(request, env);
+    }
+    if (url.pathname === '/api/quran-warm') {
+      return handleQuranWarm(request, env);
     }
     if (url.pathname === '/api/quran-audio') {
       return handleQuranAudio(request, env);

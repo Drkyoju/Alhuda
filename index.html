@@ -17,7 +17,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=37">
+  <link rel="stylesheet" href="styles.css?v=38">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -29,6 +29,7 @@
   </div>
 
   <div id="offline-banner" class="offline-banner" hidden role="status" aria-live="polite">📡 لا يوجد اتصال — بعض الميزات قد لا تعمل</div>
+  <div id="tts-provider-badge" class="tts-provider-badge" hidden title="مزوّد الصوت (تشخيص)" aria-hidden="true"></div>
 
   <!-- Floating decorations -->
   <div class="float-deco float-deco-kids" style="top:15%;right:8%;animation-delay:0s;" aria-hidden="true">📖</div>
@@ -169,6 +170,7 @@
       <div class="card login-card">
         <button type="button" class="btn btn-gold btn-xl btn-demo-login" onclick="startDemoFromLogin()">📝 نموذج أسئلة تجريبي</button>
         <p class="login-demo-hint">اختار/ي كتاباً — ٨ أسئلة لكل كتاب</p>
+        <div id="login-analytics-summary" class="demo-analytics-summary login-analytics" hidden></div>
         <p class="login-demo-only-notice" id="login-demo-only-notice" hidden>🔒 الأسئلة الكاملة مغلقة — النموذج التجريبي فقط</p>
         <p class="login-or-divider" id="login-or-divider">أو</p>
         <div class="login-locked-block" id="login-locked-block">
@@ -240,17 +242,16 @@
         <button type="button" class="rating-btn" onclick="setRating(1,this)" data-r="1" aria-label="ما أعجبني"><span class="r-emoji" aria-hidden="true">😞</span>ما أعجبني</button>
       </div>
 
-      <p class="feedback-label">هل تريد/ين استخدام البرنامج؟ *</p>
-      <div class="want-program-row" id="want-program-row">
-        <button type="button" class="want-program-btn" onclick="setWantProgram(true,this)" data-w="yes">✅ نعم</button>
-        <button type="button" class="want-program-btn" onclick="setWantProgram(false,this)" data-w="no">❌ لا</button>
-      </div>
-
-      <p class="feedback-label">اقتراحات أو ملاحظات <span class="feedback-optional">(اختياري)</span></p>
-      <textarea class="feedback-textarea" id="feedback-improve" placeholder="اكتب/ي اقتراحاتك باختصار..." rows="2"></textarea>
-      <details class="feedback-more-fold">
-        <summary>ملاحظات إضافية (اختياري)</summary>
-        <textarea class="feedback-textarea" id="feedback-like" placeholder="أي تعليق آخر عن تجربتك..." rows="2"></textarea>
+      <details class="feedback-more-fold" open>
+        <summary>اختياري: هل تريد/ين استخدام البرنامج؟ واقتراحات</summary>
+        <p class="feedback-label">هل تريد/ين استخدام البرنامج؟</p>
+        <div class="want-program-row" id="want-program-row">
+          <button type="button" class="want-program-btn" onclick="setWantProgram(true,this)" data-w="yes">✅ نعم</button>
+          <button type="button" class="want-program-btn" onclick="setWantProgram(false,this)" data-w="no">❌ لا</button>
+        </div>
+        <p class="feedback-label">اقتراحات أو ملاحظات</p>
+        <textarea class="feedback-textarea" id="feedback-improve" placeholder="اكتب/ي اقتراحاتك باختصار..." rows="2"></textarea>
+        <textarea class="feedback-textarea" id="feedback-like" placeholder="أي تعليق آخر (اختياري)..." rows="2" style="margin-top:8px;"></textarea>
       </details>
 
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
@@ -601,7 +602,7 @@
 <script src="speech-diacritics-map.js"></script>
 <script src="demo-questions-bundle.js"></script>
 <script src="version.js"></script>
-<script src="app.js?v=73"></script>
+<script src="app.js?v=74"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=9"></script>
 <script src="platform.js?v=13"></script>

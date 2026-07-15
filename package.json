@@ -6,6 +6,7 @@
     "test:smoke": "playwright test tests/smoke.spec.js",
     "test:a11y": "playwright test tests/a11y.spec.js",
     "test:e2e": "playwright test tests/e2e-login.spec.js",
+    "test:api": "LIVE_API_BASE=https://alhuda.ryodan71.workers.dev playwright test tests/api-live.spec.js",
     "serve": "python3 -m http.server 8765",
     "icons": "node scripts/generate-icons.mjs",
     "lighthouse": "npx lighthouse https://alhuda.ryodan71.workers.dev --only-categories=performance,accessibility,best-practices --chrome-flags='--headless' --output=json --output-path=./lighthouse-report.json"
