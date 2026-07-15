@@ -973,11 +973,114 @@ async function syncPendingScores() {
 
 function setFeedbackPanelOpen(open) {
   document.getElementById('game')?.classList.toggle('feedback-open', !!open);
+  if (open) {
+    // Restore last dragged height (or default mid size)
+    applyFeedbackSheetHeight(feedbackSheetHeightPx || null);
+    ensureFeedbackSheetDragBound();
+  } else {
+    const qArea = document.querySelector('#game .q-area');
+    if (qArea) qArea.style.paddingBottom = '';
+  }
 }
 
 function setFeedbackContinueVisible(visible) {
   const btn = document.querySelector('#feedback .fb-continue-btn');
   if (btn) btn.style.display = visible ? '' : 'none';
+}
+
+let feedbackSheetHeightPx = 0;
+let feedbackSheetDragBound = false;
+
+function feedbackSheetHeightBounds() {
+  const vh = window.innerHeight || 640;
+  return {
+    min: Math.round(vh * 0.28),
+    max: Math.round(vh * 0.88),
+    def: Math.round(vh * 0.48),
+  };
+}
+
+function applyFeedbackSheetHeight(px) {
+  const fb = document.getElementById('feedback');
+  if (!fb) return;
+  const { min, max, def } = feedbackSheetHeightBounds();
+  const h = Math.max(min, Math.min(max, Math.round(px || def)));
+  feedbackSheetHeightPx = h;
+  fb.style.maxHeight = h + 'px';
+  fb.style.height = h + 'px';
+  // Keep question area clear of the sheet
+  const qArea = document.querySelector('#game .q-area');
+  if (qArea && document.getElementById('game')?.classList.contains('feedback-open')) {
+    qArea.style.paddingBottom = Math.max(h + 16, 80) + 'px';
+  }
+}
+
+function ensureFeedbackSheetDragBound() {
+  if (feedbackSheetDragBound) return;
+  const handle = document.getElementById('fb-sheet-handle');
+  const fb = document.getElementById('feedback');
+  if (!handle || !fb) return;
+  feedbackSheetDragBound = true;
+
+  let dragging = false;
+  let startY = 0;
+  let startH = 0;
+
+  const onMove = (clientY) => {
+    if (!dragging) return;
+    // Drag up → taller sheet; drag down → shorter
+    const dy = startY - clientY;
+    applyFeedbackSheetHeight(startH + dy);
+  };
+
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false;
+    fb.classList.remove('is-dragging');
+    try { handle.releasePointerCapture?.(handle._fbPointerId); } catch (e) {}
+  };
+
+  handle.addEventListener('pointerdown', (e) => {
+    if (e.button != null && e.button !== 0) return;
+    dragging = true;
+    startY = e.clientY;
+    startH = fb.getBoundingClientRect().height || feedbackSheetHeightPx || feedbackSheetHeightBounds().def;
+    fb.classList.add('is-dragging');
+    handle._fbPointerId = e.pointerId;
+    try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+    e.preventDefault();
+  });
+  handle.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    onMove(e.clientY);
+  });
+  handle.addEventListener('pointerup', endDrag);
+  handle.addEventListener('pointercancel', endDrag);
+
+  // Keyboard: expand / collapse
+  handle.addEventListener('keydown', (e) => {
+    const { min, max, def } = feedbackSheetHeightBounds();
+    const cur = feedbackSheetHeightPx || def;
+    if (e.key === 'ArrowUp') {
+      applyFeedbackSheetHeight(cur + 40);
+      e.preventDefault();
+    } else if (e.key === 'ArrowDown') {
+      applyFeedbackSheetHeight(cur - 40);
+      e.preventDefault();
+    } else if (e.key === 'Home') {
+      applyFeedbackSheetHeight(max);
+      e.preventDefault();
+    } else if (e.key === 'End') {
+      applyFeedbackSheetHeight(min);
+      e.preventDefault();
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (document.getElementById('game')?.classList.contains('feedback-open')) {
+      applyFeedbackSheetHeight(feedbackSheetHeightPx || null);
+    }
+  }, { passive: true });
 }
 
 function scheduleEndGame(delay = 1800) {
@@ -4580,12 +4683,12 @@ function updateInRoundReviewBtn(forceShow) {
   const btn = document.getElementById('btn-review-in-round');
   if (!btn) return;
   const show = forceShow && state.wrongLog.length > 0 && !state.gameEnded;
-  btn.style.display = show ? 'block' : 'none';
+  btn.style.display = show ? '' : 'none';
   if (show) {
     const n = state.wrongLog.length;
     btn.textContent = n === 1
-      ? '📋 راجع/ي هذا الخطأ'
-      : `📋 راجع/ي أخطاءك (${arabicNum(n)})`;
+      ? '📋 راجع الخطأ'
+      : `📋 راجع الأخطاء (${arabicNum(n)})`;
   }
 }
 
