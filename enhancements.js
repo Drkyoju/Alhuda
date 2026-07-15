@@ -101,6 +101,7 @@
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
     const swVer = window.ALHUDA_ASSETS?.sw || 39;
+    const isAutomation = !!navigator.webdriver;
     let pendingReg = null;
     let refreshing = false;
     let userRequestedUpdate = false;
@@ -109,26 +110,18 @@
     };
     const promptUpdate = () => {
       if (!pendingReg?.waiting) return;
-      // Auto-apply waiting worker (skipWaiting already on install); ask user to reload.
-      activateWaiting();
-      showToast('تحديث جديد جاهز — اضغط لإعادة التحميل', 'info', {
+      showToast('تحديث متاح — اضغط للتطبيق الآن', 'info', {
         duration: 15000,
         onClick: () => {
           userRequestedUpdate = true;
-          window.location.reload();
+          activateWaiting();
+          showToast('جاري تطبيق التحديث...', 'ok', { duration: 4000 });
         },
       });
     };
+    // Only reload when the user tapped the update toast (never auto-reload — breaks smoke).
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshing) return;
-      // One automatic reload when a new SW takes control (fixes stuck old «شرح» UI).
-      if (!sessionStorage.getItem('alhudaSwReloaded')) {
-        sessionStorage.setItem('alhudaSwReloaded', '1');
-        refreshing = true;
-        window.location.reload();
-        return;
-      }
-      if (!userRequestedUpdate) return;
+      if (!userRequestedUpdate || refreshing) return;
       refreshing = true;
       window.location.reload();
     });
@@ -150,31 +143,34 @@
       console.warn('[SW] registration failed:', err);
     });
 
-    // If this tab booted with a stale cache, force one hard refresh from network version.js.
-    void (async () => {
-      try {
-        const res = await fetch(`./version.js?_=${Date.now()}`, { cache: 'no-store' });
-        const text = await res.text();
-        const m = text.match(/cache:\s*'([^']+)'/);
-        const live = m?.[1];
-        const local = window.ALHUDA_ASSETS?.cache;
-        if (!live || !local || live === local) {
-          sessionStorage.removeItem('alhudaVerReload');
-          return;
-        }
-        if (sessionStorage.getItem('alhudaVerReload') === live) return;
-        sessionStorage.setItem('alhudaVerReload', live);
-        const regs = await navigator.serviceWorker.getRegistrations();
-        for (const r of regs) {
-          if (r.waiting) r.waiting.postMessage('SKIP_WAITING');
-        }
-        if (window.caches) {
-          const keys = await caches.keys();
-          await Promise.all(keys.map((k) => caches.delete(k)));
-        }
-        window.location.reload();
-      } catch (e) {}
-    })();
+    // Stale-cache detector: if network version.js is newer, prompt (don't auto-reload in tests).
+    if (!isAutomation) {
+      void (async () => {
+        try {
+          const res = await fetch(`./version.js?_=${Date.now()}`, { cache: 'no-store' });
+          const text = await res.text();
+          const m = text.match(/cache:\s*'([^']+)'/);
+          const live = m?.[1];
+          const local = window.ALHUDA_ASSETS?.cache;
+          if (!live || !local || live === local) return;
+          showToast('نسخة أحدث متاحة — اضغط للتحديث', 'info', {
+            duration: 20000,
+            onClick: async () => {
+              userRequestedUpdate = true;
+              const regs = await navigator.serviceWorker.getRegistrations();
+              for (const r of regs) {
+                if (r.waiting) r.waiting.postMessage('SKIP_WAITING');
+              }
+              if (window.caches) {
+                const keys = await caches.keys();
+                await Promise.all(keys.map((k) => caches.delete(k)));
+              }
+              window.location.reload();
+            },
+          });
+        } catch (e) {}
+      })();
+    }
   }
 
   function initKidsUI() {
