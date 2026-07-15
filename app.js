@@ -3462,8 +3462,8 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
   if (correctText) {
     const boxClass = isCorrect ? 'why-correct-box is-correct' : 'why-correct-box is-correct-reveal';
     html += `<div class="${boxClass}">`;
-    // Label + answer on one line to save vertical space (esp. صح/خطأ).
-    html += `<p class="fb-correct-line"><strong class="fb-correct-label">✅ الإجابة الصحيحة:</strong> <span class="fb-correct-answer">${escapeHtml(correctText)}</span></p>`;
+    // Label + answer on one line, same size as الاستشهاد.
+    html += `<p class="fb-correct-line">✅ <span class="fb-correct-label">الإجابة الصحيحة:</span> <span class="fb-correct-answer">${escapeHtml(correctText)}</span></p>`;
     html += '</div>';
   }
   // Never render «الشرح» — any explanation text lives under الاستشهاد من الكتاب.

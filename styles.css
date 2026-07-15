@@ -1068,22 +1068,23 @@
       line-height: 1.55;
     }
     .why-correct-box strong { display: inline; margin-bottom: 0; font-size: inherit; }
-    .fb-correct-label { margin: 0; font-size: 0.82em; font-weight: 800; }
+    .fb-correct-label { margin: 0; font-size: inherit; font-weight: 700; display: inline; }
     .fb-correct-line {
       margin: 0;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 4px 6px;
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
       line-height: 1.4;
       text-align: right;
+      color: var(--text);
     }
     .fb-correct-answer {
       margin: 0;
-      font-size: 0.88em;
-      font-weight: 800;
+      font-size: inherit;
+      font-weight: 700;
       color: var(--text);
-      line-height: 1.4;
+      line-height: inherit;
+      display: inline;
     }
     .answer-feedback .book-cite-box { margin-top: 0; }
     .review-picked {
@@ -3455,32 +3456,37 @@
       border-radius: 4px;
     }
     #game .feedback .why-correct-box {
-      font-size: 0.9em !important;
+      font-size: 0.85em !important;
       line-height: 1.4 !important;
-      padding: 8px 10px;
-      margin-top: 6px;
-      border-radius: 10px;
+      padding: 6px 8px;
+      margin-top: 4px;
+      border-radius: 8px;
     }
     #game .feedback .why-correct-box strong,
     #game .feedback .fb-correct-label {
-      font-size: 0.82em !important;
+      font-size: inherit !important;
       margin: 0 !important;
       display: inline !important;
+      font-weight: 700 !important;
     }
     #game .feedback .fb-wrong-label {
       font-size: 0.82em !important;
     }
     #game .feedback .fb-correct-line {
-      margin: 0;
-      gap: 4px 6px;
+      margin: 0 !important;
+      display: block !important;
+      font-size: 0.82rem !important;
+      line-height: 1.4 !important;
+      font-weight: 700 !important;
     }
     #game .feedback .fb-correct-answer {
-      font-size: 0.88em !important;
-      font-weight: 800 !important;
-      line-height: 1.4 !important;
+      font-size: inherit !important;
+      font-weight: 700 !important;
+      line-height: inherit !important;
+      display: inline !important;
     }
     #game .feedback .fb-wrong-answer {
-      font-size: 0.85em !important;
+      font-size: 0.82em !important;
       font-weight: 700 !important;
       line-height: 1.4 !important;
     }
@@ -4823,34 +4829,39 @@
       font-weight: 600 !important;
       max-height: none;
     }
-    /* الإجابة الصحيحة + الجواب في سطر واحد بحجم صغير */
+    /* الإجابة الصحيحة = نفس حجم الاستشهاد تقريبًا، سطر واحد */
     #game .feedback .fb-correct-line,
     #review-screen .fb-correct-line {
-      display: flex !important;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 4px 6px;
+      display: block !important;
+      font-size: 0.82rem !important;
+      line-height: 1.4 !important;
+      font-weight: 700 !important;
       margin: 0 !important;
-      line-height: 1.35 !important;
+      padding: 0 !important;
     }
     #game .feedback .fb-correct-label,
     #game .feedback .fb-correct-line strong,
+    #game .feedback .fb-correct-answer,
     #review-screen .fb-correct-label,
-    #review-screen .fb-correct-line strong {
-      font-size: 0.8rem !important;
-      font-weight: 800 !important;
+    #review-screen .fb-correct-line strong,
+    #review-screen .fb-correct-answer {
+      font-size: inherit !important;
+      font-weight: 700 !important;
+      line-height: inherit !important;
       margin: 0 !important;
       display: inline !important;
     }
-    #game .feedback .fb-correct-answer,
-    #review-screen .fb-correct-answer {
-      font-size: 0.86rem !important;
-      font-weight: 800 !important;
-      line-height: 1.35 !important;
-    }
     #game .feedback .why-correct-box.is-correct,
-    #game .feedback .why-correct-box.is-correct-reveal {
-      padding: 7px 9px !important;
+    #game .feedback .why-correct-box.is-correct-reveal,
+    #review-screen .why-correct-box.is-correct,
+    #review-screen .why-correct-box.is-correct-reveal {
+      padding: 5px 8px !important;
+      font-size: 0.82rem !important;
+    }
+    #game .feedback .book-cite-quote,
+    #review-screen .book-cite-quote {
+      font-size: 0.82rem !important;
+      line-height: 1.45 !important;
     }
     #game .feedback .book-cite-box,
     #review-screen .book-cite-box {
