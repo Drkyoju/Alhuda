@@ -43,11 +43,153 @@ const FEEDBACK_RATING_LABELS = {
 };
 const DEMO_FALLBACK = [
   { id:'demo1', book:'tawheed', type:'tf', q:'التوحيد هو إفراد الله تعالى بالعبادة.', tf:true, exp:'نعم! التوحيد هو إفراد الله في الربوبية والألوهية والأسماء والصفات.', quote:'«العبادة هي التوحيد»', page:12, cat:'🕌 حق الله' },
-  { id:'demo2', book:'usool', type:'mc', q:'ما هي الأصول الثلاثة؟', a:['معرفة الرب ومعرفة الدين ومعرفة نبيك','الصلاة والزكاة والصوم','الإيمان والإحسان والإخلاص','القرآن والسنة والإجماع'], c:0, exp:'الأصول الثلاثة: معرفة الرب، ومعرفة الدين بمعرفة دينك، ومعرفة نبيك محمد ﷺ.', quote:'«تَعَلَّمْ أَنَّهُ لَا يَجِبُ عَلَى أَحَدٍ مِنَ الْخَلْقِ أَنْ يُعَبَّدَ إِلَّا اللَّهُ»', page:8, cat:'📚 المسائل الأربع' },
-  { id:'demo3', book:'nawawi', type:'tf', q:'أول حديث في الأربعون النووية: «إنما الأعمال بالنيات».', tf:true, exp:'صحيح! وهو أول حديث في الأربعون النووية للإمام النووي رحمه الله.', quote:'«إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ»', page:1, cat:'الأربعون النووية' },
   { id:'demo4', book:'tawheed', type:'tf', q:'الشرك الأكبر يُخرج من الملة.', tf:true, exp:'الشرك الأكبر من أعظم الكبائر ويُبقي صاحبه في النار إن مات عليه.' },
+  { id:'demo6', book:'tawheed', type:'tf', q:'الدعاء عبادة لا تُصرف إلا لله.', tf:true, exp:'الدعاء من أعظم العبادات، وصرفه لغير الله شرك.' },
+  { id:'demo7', book:'tawheed', type:'tf', q:'التوكل على الله واجب.', tf:true, exp:'التوكل عبادة القلب، وهو الاعتماد على الله مع فعل الأسباب.' },
+  { id:'demo2', book:'usool', type:'mc', q:'ما هي الأصول الثلاثة؟', a:['معرفة الرب ومعرفة الدين ومعرفة نبيك','الصلاة والزكاة والصوم','الإيمان والإحسان والإخلاص','القرآن والسنة والإجماع'], c:0, exp:'الأصول الثلاثة: معرفة الرب، ومعرفة الدين بمعرفة دينك، ومعرفة نبيك محمد ﷺ.', quote:'«تَعَلَّمْ أَنَّهُ لَا يَجِبُ عَلَى أَحَدٍ مِنَ الْخَلْقِ أَنْ يُعَبَّدَ إِلَّا اللَّهُ»', page:8, cat:'📚 المسائل الأربع' },
   { id:'demo5', book:'usool', type:'tf', q:'العبادة هي الطاعة والخضوع لله.', tf:true, exp:'العبادة اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال.' },
+  { id:'demo8', book:'usool', type:'tf', q:'الإخلاص شرط لقبول العمل.', tf:true, exp:'لا يُقبل عمل بغير إخلاص لله ومتابعة للرسول ﷺ.' },
+  { id:'demo9', book:'usool', type:'tf', q:'معرفة الرب أول الأصول الثلاثة.', tf:true, exp:'أول ما يجب معرفة الرب ثم معرفة الدين ثم معرفة النبي ﷺ.' },
+  { id:'demo3', book:'nawawi', type:'tf', q:'أول حديث في الأربعون النووية: «إنما الأعمال بالنيات».', tf:true, exp:'صحيح! وهو أول حديث في الأربعون النووية للإمام النووي رحمه الله.', quote:'«إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ»', page:1, cat:'الأربعون النووية' },
+  { id:'demo10', book:'nawawi', type:'tf', q:'بُني الإسلام على خمس.', tf:true, exp:'الشهادتان والصلاة والزكاة والصوم والحج.' },
+  { id:'demo11', book:'nawawi', type:'tf', q:'الدين النصيحة.', tf:true, exp:'حديث عظيم يدل على أن النصيحة أصل في الدين لله ولكتابه ولرسوله وللأئمة وعامة المسلمين.' },
+  { id:'demo12', book:'nawawi', type:'tf', q:'لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه.', tf:true, exp:'من علامات كمال الإيمان محبة الخير للمسلمين كما تحبه لنفسك.' },
 ];
+
+const OFFLINE_QUESTIONS_DB = 'alhudaQuestionsOffline';
+const OFFLINE_QUESTIONS_STORE = 'books';
+const OFFLINE_QUESTIONS_KEY = 'questionsOfflineV1';
+const DEMO_ANALYTICS_KEY = 'demoAnalyticsV1';
+const DEMO_ANALYTICS_MAX = 500;
+
+function openOfflineQuestionsDb() {
+  return new Promise((resolve, reject) => {
+    if (!('indexedDB' in window)) {
+      reject(new Error('IndexedDB unavailable'));
+      return;
+    }
+    const req = indexedDB.open(OFFLINE_QUESTIONS_DB, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(OFFLINE_QUESTIONS_STORE)) {
+        db.createObjectStore(OFFLINE_QUESTIONS_STORE);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error || new Error('IndexedDB open failed'));
+  });
+}
+
+async function saveQuestionsOffline(payload) {
+  try {
+    const db = await openOfflineQuestionsDb();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(OFFLINE_QUESTIONS_STORE, 'readwrite');
+      tx.objectStore(OFFLINE_QUESTIONS_STORE).put(payload, OFFLINE_QUESTIONS_KEY);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  } catch (e) {
+    try {
+      localStorage.setItem(OFFLINE_QUESTIONS_KEY, JSON.stringify({
+        ts: payload.ts,
+        slim: true,
+        books: Object.fromEntries(
+          Object.entries(payload.books || {}).map(([book, rows]) => [
+            book,
+            (rows || []).slice(0, 40).map((q) => ({
+              id: q.id, book: q.book, type: q.type, q: q.q, a: q.a, c: q.c, tf: q.tf, exp: q.exp, quote: q.quote, page: q.page, cat: q.cat, level: q.level,
+            })),
+          ])
+        ),
+      }));
+    } catch (e2) {
+      console.warn('offline questions save:', e2);
+    }
+  }
+}
+
+async function loadQuestionsOffline() {
+  try {
+    const db = await openOfflineQuestionsDb();
+    const data = await new Promise((resolve, reject) => {
+      const tx = db.transaction(OFFLINE_QUESTIONS_STORE, 'readonly');
+      const req = tx.objectStore(OFFLINE_QUESTIONS_STORE).get(OFFLINE_QUESTIONS_KEY);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+    db.close();
+    if (data?.books) return data;
+  } catch (e) { /* fall through */ }
+  try {
+    const raw = localStorage.getItem(OFFLINE_QUESTIONS_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function persistLoadedQuestionsOffline() {
+  const books = {};
+  for (const book of QUESTION_BOOKS) {
+    if (QUESTIONS[book]?.length) books[book] = QUESTIONS[book];
+  }
+  if (!Object.keys(books).length) return;
+  void saveQuestionsOffline({ ts: Date.now(), books });
+}
+
+function recordDemoAnalytics(q, isOk, picked) {
+  if (!state.demoMode || !q) return;
+  let rows = [];
+  try { rows = JSON.parse(localStorage.getItem(DEMO_ANALYTICS_KEY) || '[]'); } catch { rows = []; }
+  if (!Array.isArray(rows)) rows = [];
+  rows.push({
+    questionId: q.id || '',
+    book: q.book || state.demoBook || '',
+    correct: !!isOk,
+    picked: String(picked || '').slice(0, 120),
+    q: String(q.q || '').slice(0, 100),
+    t: Date.now(),
+  });
+  if (rows.length > DEMO_ANALYTICS_MAX) rows = rows.slice(-DEMO_ANALYTICS_MAX);
+  try { localStorage.setItem(DEMO_ANALYTICS_KEY, JSON.stringify(rows)); } catch (e) {}
+}
+
+function getDemoHardQuestionsSummary(limit = 3) {
+  let rows = [];
+  try { rows = JSON.parse(localStorage.getItem(DEMO_ANALYTICS_KEY) || '[]'); } catch { return []; }
+  const recent = rows.filter((r) => r && r.t && Date.now() - r.t < 1000 * 60 * 60 * 24 * 14);
+  const byId = new Map();
+  for (const r of recent) {
+    if (!r.questionId) continue;
+    const cur = byId.get(r.questionId) || { id: r.questionId, q: r.q, wrong: 0, total: 0 };
+    cur.total++;
+    if (!r.correct) cur.wrong++;
+    if (r.q) cur.q = r.q;
+    byId.set(r.questionId, cur);
+  }
+  return [...byId.values()]
+    .filter((x) => x.wrong > 0)
+    .sort((a, b) => (b.wrong / b.total) - (a.wrong / a.total) || b.wrong - a.wrong)
+    .slice(0, limit);
+}
+
+function renderDemoAnalyticsSummary() {
+  const el = document.getElementById('demo-analytics-summary');
+  if (!el) return;
+  const hard = getDemoHardQuestionsSummary(3);
+  if (!hard.length) {
+    el.hidden = true;
+    el.innerHTML = '';
+    return;
+  }
+  el.hidden = false;
+  el.innerHTML = '<p class="demo-analytics-title">أصعب الأسئلة في تجربتك</p><ul>' +
+    hard.map((h) => `<li>${escapeHtml(h.q || 'سؤال')} <span>(خطأ ${arabicNum(h.wrong)}/${arabicNum(h.total)})</span></li>`).join('') +
+    '</ul>';
+}
 
 const LEVELS = [
   { min: 0, title: 'مبتدئ/ة 🌱' },
@@ -1131,19 +1273,68 @@ function onFeedbackSpeakerClick() {
   void speakFeedbackOnce(q, state.lastFeedbackWrong || '', document.getElementById('btn-speak-feedback'));
 }
 
-/* ── Quran recitation (علي الحذيفي — 64kbps + prefetch for faster start) ── */
-const QURAN_RECITER_LABEL = 'الحذيفي';
+/* ── Quran recitation (حذيفي / عفاسي — عبر بروكسي Cloudflare + prefetch) ── */
+const QURAN_RECITERS = {
+  hudhaify: {
+    key: 'hudhaify',
+    label: 'الحذيفي',
+    edition: 'ar.hudhaify',
+    everyayah: 'Hudhaify_64kbps',
+  },
+  alafasy: {
+    key: 'alafasy',
+    label: 'العفاسي',
+    edition: 'ar.alafasy',
+    everyayah: 'Alafasy_64kbps',
+  },
+};
+let quranReciterKey = localStorage.getItem('quranReciter') || 'hudhaify';
+if (!QURAN_RECITERS[quranReciterKey]) quranReciterKey = 'hudhaify';
+
+function getActiveQuranReciter() {
+  return QURAN_RECITERS[quranReciterKey] || QURAN_RECITERS.hudhaify;
+}
+
+function setQuranReciter(key) {
+  if (!QURAN_RECITERS[key]) return;
+  quranReciterKey = key;
+  localStorage.setItem('quranReciter', key);
+  // Clear blob cache when switching reciter (different audio files).
+  for (const url of quranAudioBlobCache.values()) {
+    try { URL.revokeObjectURL(url); } catch (e) {}
+  }
+  quranAudioBlobCache.clear();
+  updateReciterSettingsUI();
+  const q = state.questions?.[state.idx];
+  if (q) {
+    updateQuranReciteSlot(q);
+    prefetchUpcomingQuran(state.idx);
+  }
+}
+
+function updateReciterSettingsUI() {
+  const label = getActiveQuranReciter().label;
+  document.querySelectorAll('[data-reciter]').forEach((btn) => {
+    btn.classList.toggle('active', btn.getAttribute('data-reciter') === quranReciterKey);
+  });
+  const el = document.getElementById('reciter-label');
+  if (el) el.textContent = label;
+}
+
 const QURAN_RECITE_BTN_LABEL = `🎧 تلاوة`;
-const QURAN_RECITE_BTN_ARIA = `استمع لتلاوة الآية — علي ${QURAN_RECITER_LABEL}`;
-const QURAN_RECITER_EDITION = 'ar.hudhaify';
+function getQuranReciteAria() {
+  return `استمع لتلاوة الآية — ${getActiveQuranReciter().label}`;
+}
 const QURAN_RECITER_BITRATE = 64;
-const QURAN_RECITER_CDN_BASE = `https://cdn.islamic.network/quran/audio/${QURAN_RECITER_BITRATE}/${QURAN_RECITER_EDITION}/`;
-const QURAN_RECITER_EVERYAYAH_BASE = 'https://everyayah.com/data/Hudhaify_64kbps/';
-const QURAN_BLOB_CACHE_MAX = 24;
-const quranAudioBlobCache = new Map(); // verseKey -> objectUrl
-const quranPrefetchInFlight = new Map(); // verseKey -> Promise
+const QURAN_BLOB_CACHE_MAX = 32;
+const quranAudioBlobCache = new Map(); // cacheKey -> objectUrl
+const quranPrefetchInFlight = new Map();
 let quranAudio = null;
 const quranVerseKeyCache = new Map();
+
+function quranBlobCacheKey(verseKey) {
+  return `${quranReciterKey}:${verseKey}`;
+}
 const SURAH_AYAH_COUNTS = [
   7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52, 99, 128, 111, 110, 98, 135,
   112, 78, 118, 64, 77, 227, 93, 88, 69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85, 54, 53, 89, 59,
@@ -1210,11 +1401,16 @@ function verseKeyToGlobalAyahNum(verseKey) {
 function getQuranRecitationUrls(verseKey) {
   const [surah, ayah] = String(verseKey).split(':').map((n) => parseInt(n, 10));
   if (!surah || !ayah) return [];
+  const reciter = getActiveQuranReciter();
   const urls = [];
+  // Prefer Cloudflare Worker edge cache proxy.
+  urls.push(`/api/quran-audio?surah=${surah}&ayah=${ayah}&reciter=${encodeURIComponent(reciter.key)}`);
   const globalNum = verseKeyToGlobalAyahNum(verseKey);
-  if (globalNum) urls.push(`${QURAN_RECITER_CDN_BASE}${globalNum}.mp3`);
+  if (globalNum) {
+    urls.push(`https://cdn.islamic.network/quran/audio/${QURAN_RECITER_BITRATE}/${reciter.edition}/${globalNum}.mp3`);
+  }
   const file = `${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
-  urls.push(`${QURAN_RECITER_EVERYAYAH_BASE}${file}`);
+  urls.push(`https://everyayah.com/data/${reciter.everyayah}/${file}`);
   return [...new Set(urls)];
 }
 
@@ -1223,13 +1419,14 @@ function verseKeyToRecitationUrl(verseKey) {
 }
 
 function rememberQuranBlob(verseKey, objectUrl) {
+  const cacheKey = quranBlobCacheKey(verseKey);
   if (!verseKey || !objectUrl) return;
-  if (quranAudioBlobCache.has(verseKey)) {
-    const prev = quranAudioBlobCache.get(verseKey);
+  if (quranAudioBlobCache.has(cacheKey)) {
+    const prev = quranAudioBlobCache.get(cacheKey);
     if (prev && prev !== objectUrl) URL.revokeObjectURL(prev);
-    quranAudioBlobCache.delete(verseKey);
+    quranAudioBlobCache.delete(cacheKey);
   }
-  quranAudioBlobCache.set(verseKey, objectUrl);
+  quranAudioBlobCache.set(cacheKey, objectUrl);
   while (quranAudioBlobCache.size > QURAN_BLOB_CACHE_MAX) {
     const oldest = quranAudioBlobCache.keys().next().value;
     const oldUrl = quranAudioBlobCache.get(oldest);
@@ -1240,10 +1437,11 @@ function rememberQuranBlob(verseKey, objectUrl) {
 
 async function fetchQuranAudioObjectUrl(verseKey) {
   if (!verseKey) return null;
-  if (quranAudioBlobCache.has(verseKey)) return quranAudioBlobCache.get(verseKey);
-  if (quranPrefetchInFlight.has(verseKey)) {
-    await quranPrefetchInFlight.get(verseKey);
-    return quranAudioBlobCache.get(verseKey) || null;
+  const cacheKey = quranBlobCacheKey(verseKey);
+  if (quranAudioBlobCache.has(cacheKey)) return quranAudioBlobCache.get(cacheKey);
+  if (quranPrefetchInFlight.has(cacheKey)) {
+    await quranPrefetchInFlight.get(cacheKey);
+    return quranAudioBlobCache.get(cacheKey) || null;
   }
   const work = (async () => {
     const urls = getQuranRecitationUrls(verseKey);
@@ -1262,11 +1460,11 @@ async function fetchQuranAudioObjectUrl(verseKey) {
     }
     return null;
   })();
-  quranPrefetchInFlight.set(verseKey, work);
+  quranPrefetchInFlight.set(cacheKey, work);
   try {
     return await work;
   } finally {
-    quranPrefetchInFlight.delete(verseKey);
+    quranPrefetchInFlight.delete(cacheKey);
   }
 }
 
@@ -1275,11 +1473,45 @@ function prefetchQuranForQuestion(q) {
   void (async () => {
     try {
       const verseKey = await resolveVerseKeyForQuestion(q);
-      if (verseKey) await fetchQuranAudioObjectUrl(verseKey);
+      if (verseKey) {
+        setQuranReciteStatus(q, 'loading');
+        await fetchQuranAudioObjectUrl(verseKey);
+        setQuranReciteStatus(q, 'ready');
+      }
     } catch (e) {
       console.warn('quran prefetch question:', e);
+      setQuranReciteStatus(q, '');
     }
   })();
+}
+
+function prefetchUpcomingQuran(fromIdx = state.idx) {
+  const start = Math.max(0, fromIdx | 0);
+  const slice = (state.questions || []).slice(start, start + 3);
+  for (const q of slice) prefetchQuranForQuestion(q);
+}
+
+function setQuranReciteStatus(q, status) {
+  const roots = [
+    document.getElementById('quran-recite-slot'),
+    document.getElementById('feedback'),
+    document.getElementById('review-exp'),
+  ];
+  for (const root of roots) {
+    if (!root) continue;
+    root.querySelectorAll('.quran-recite-status').forEach((el) => {
+      if (status === 'loading') {
+        el.textContent = 'جاري تحميل التلاوة…';
+        el.hidden = false;
+      } else if (status === 'ready') {
+        el.textContent = 'جاهزة';
+        el.hidden = false;
+      } else {
+        el.textContent = '';
+        el.hidden = true;
+      }
+    });
+  }
 }
 
 function parseSurahAyahReferences(text) {
@@ -1501,7 +1733,7 @@ function stopQuranAudio() {
 }
 
 function buildQuranReciteButtonHtml() {
-  return `<button type="button" class="quran-recite-btn" data-quran-recite aria-label="${QURAN_RECITE_BTN_ARIA}">${QURAN_RECITE_BTN_LABEL}</button>`;
+  return `<span class="quran-recite-wrap"><button type="button" class="quran-recite-btn" data-quran-recite aria-label="${getQuranReciteAria()}">${QURAN_RECITE_BTN_LABEL}</button><span class="quran-recite-status" hidden></span></span>`;
 }
 
 function bindQuranReciteButton(root, q) {
@@ -1526,13 +1758,17 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
   if (btn) btn.classList.add('playing');
 
   // Prefer prefetched blob for near-instant start.
-  let objectUrl = quranAudioBlobCache.get(verseKey) || null;
+  let objectUrl = quranAudioBlobCache.get(quranBlobCacheKey(verseKey)) || null;
   if (!objectUrl) {
     try {
+      setQuranReciteStatus(null, 'loading');
       objectUrl = await fetchQuranAudioObjectUrl(verseKey);
+      if (objectUrl) setQuranReciteStatus(null, 'ready');
     } catch (e) {
       console.warn('quran cache fetch:', e);
     }
+  } else {
+    setQuranReciteStatus(null, 'ready');
   }
 
   const tryPlay = async (src) => {
@@ -1583,10 +1819,14 @@ async function playQuranForQuestion(q, btn) {
       if (typeof showToast === 'function') showToast('لم نتمكن من تحديد الآية في القرآن', 'err');
       return;
     }
-    const ready = quranAudioBlobCache.has(verseKey);
-    if (btn && !ready) btn.textContent = '⏳...';
+    const ready = quranAudioBlobCache.has(quranBlobCacheKey(verseKey));
+    if (btn && !ready) {
+      btn.textContent = '⏳...';
+      setQuranReciteStatus(q, 'loading');
+    }
     if (btn) btn.textContent = QURAN_RECITE_BTN_LABEL;
     await playQuranRecitation(verseKey, btn);
+    setQuranReciteStatus(q, 'ready');
   } finally {
     if (btn) {
       btn.disabled = false;
@@ -1872,15 +2112,25 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q) {
 }
 
 async function shareScore() {
-  const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجرّب/ي أنت أيضاً!';
+  const text = state.demoMode || document.getElementById('feedback-screen')?.classList.contains('active')
+    ? `📝 أنهيتُ نموذجاً تجريبياً في المكتبة الثلاثية — صحيح: ${arabicNum(state.correct)} / ${arabicNum(state.total)}\nجمعية الهدى والحكمة\nhttps://alhuda.ryodan71.workers.dev/`
+    : '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجرّب/ي أنت أيضاً!\nhttps://alhuda.ryodan71.workers.dev/';
+  const shareBtn = document.getElementById('share-btn') || document.getElementById('btn-share-demo');
   if (navigator.share) {
     try { await navigator.share({ title: 'المكتبة الثلاثية', text }); return; } catch (e) {}
   }
   try {
     await navigator.clipboard.writeText(text);
-    document.getElementById('share-btn').textContent = '✅ تم النسخ!';
-    setTimeout(() => { document.getElementById('share-btn').textContent = '📤 شارك/ي نتيجتك'; }, 2000);
+    if (shareBtn) {
+      const prev = shareBtn.textContent;
+      shareBtn.textContent = '✅ تم النسخ!';
+      setTimeout(() => { shareBtn.textContent = prev; }, 2000);
+    }
   } catch (e) { showAlert(text); }
+}
+
+async function shareDemoResult() {
+  await shareScore();
 }
 
 /* ── Demo & Feedback ── */
@@ -2216,9 +2466,8 @@ async function beginDemo(book) {
   try {
     await loadBookQuestions(book);
   } catch (e) {
-    showAlert('تعذّر تحميل أسئلة هذا الكتاب — تحقق/ي من الاتصال');
-    show('demo-intro');
-    return;
+    // Offline fallback still allows demo via DEMO_FALLBACK.
+    console.warn('demo load:', e);
   } finally {
     demoBtns.forEach((b) => { b.disabled = false; });
   }
@@ -2243,6 +2492,7 @@ async function beginDemo(book) {
   renderHearts(); updateScore(); updateProgress();
   show('game');
   renderQ();
+  prefetchUpcomingQuran(0);
 }
 async function skipDemo() {
   localStorage.setItem('demoDone', '1');
@@ -2282,6 +2532,9 @@ function endDemo() {
   document.getElementById('feedback-msg').textContent = '';
   const rd = document.getElementById('btn-review-demo');
   if (rd) rd.style.display = state.wrongLog.length ? 'block' : 'none';
+  renderDemoAnalyticsSummary();
+  const shareDemo = document.getElementById('btn-share-demo');
+  if (shareDemo) shareDemo.style.display = 'block';
   show('feedback-screen');
 }
 function setRating(r, el) {
@@ -2539,13 +2792,29 @@ function toggleSettings() {
   }
 }
 function adjustFontSize(size) {
-  document.documentElement.style.setProperty('--base-font-size', size + 'px');
+  const n = Number(size) || 18;
+  document.documentElement.style.setProperty('--base-font-size', n + 'px');
+  const names = { 16: 'صغير', 18: 'متوسط', 20: 'كبير', 22: 'كبير جداً' };
   const label = document.getElementById('fs-label');
-  if (label) label.textContent = size;
-  localStorage.setItem('fontSize', size);
+  if (label) label.textContent = names[n] || String(n);
+  localStorage.setItem('fontSize', n);
   document.querySelectorAll('.font-preset-btn').forEach((b) => {
-    b.classList.toggle('active', Number(b.dataset.size) === Number(size));
+    b.classList.toggle('active', Number(b.dataset.size) === n);
   });
+}
+
+function applyTheme(theme) {
+  const dark = theme === 'dark';
+  document.body.classList.toggle('dark-mode', dark);
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', dark ? '#0f1f18' : '#163828');
+  const btn = document.getElementById('theme-btn');
+  if (btn) btn.textContent = dark ? '🌙 الوضع الليلي (مفعل)' : '☀️ الوضع الليلي';
+}
+
+function toggleDarkMode() {
+  applyTheme(document.body.classList.contains('dark-mode') ? 'light' : 'dark');
 }
 
 /* ── Data ── */
@@ -2620,6 +2889,7 @@ function ingestBookQuestions(book, rows) {
   QUESTIONS[book] = dedupeQuestionList(mapped);
   const removed = before - QUESTIONS[book].length;
   if (removed > 0) console.info(`[questions] removed ${removed} near-duplicate(s) in ${book}`);
+  persistLoadedQuestionsOffline();
 }
 
 async function fetchBookQuestions(book) {
@@ -2657,10 +2927,22 @@ async function loadBookQuestions(book) {
   if (bookLoadState[book] && QUESTIONS[book]?.length) return QUESTIONS[book];
   if (bookLoadPromises[book]) return bookLoadPromises[book];
   bookLoadPromises[book] = (async () => {
-    const { data, error } = await fetchBookQuestions(book);
-    if (error) throw error;
-    ingestBookQuestions(book, data || []);
-    bookLoadState[book] = true;
+    try {
+      const { data, error } = await fetchBookQuestions(book);
+      if (error) throw error;
+      ingestBookQuestions(book, data || []);
+      bookLoadState[book] = true;
+    } catch (netErr) {
+      const offline = await loadQuestionsOffline();
+      const cached = offline?.books?.[book];
+      if (cached?.length) {
+        QUESTIONS[book] = dedupeQuestionList(cached);
+        bookLoadState[book] = true;
+        console.info(`[questions] loaded ${book} from offline cache`);
+      } else {
+        throw netErr;
+      }
+    }
     updateLevelCounts();
     updateDemoBookPicker();
     updateLoginQuestionHint();
@@ -2701,17 +2983,50 @@ async function loadQuestions() {
         }
         updateLoginQuestionHint();
         return;
-      } catch (e) { /* cache miss — lazy load */ }
+      } catch (e) { /* cache miss — try offline then lazy load */ }
+    }
+    const offline = await loadQuestionsOffline();
+    if (offline?.books) {
+      let any = false;
+      for (const book of QUESTION_BOOKS) {
+        const rows = offline.books[book];
+        if (rows?.length) {
+          QUESTIONS[book] = dedupeQuestionList(rows);
+          bookLoadState[book] = true;
+          any = true;
+        }
+      }
+      if (any) {
+        updateLoginQuestionHint();
+        updateLevelCounts();
+        updateDemoBookPicker();
+        if (navigator.onLine !== false) loadRemainingBooksInBackground();
+        return;
+      }
     }
     await loadBookQuestions('tawheed');
     updateLoginQuestionHint();
     loadRemainingBooksInBackground();
   } catch (e) {
     console.error(e);
+    const offline = await loadQuestionsOffline();
+    if (offline?.books) {
+      for (const book of QUESTION_BOOKS) {
+        const rows = offline.books[book];
+        if (rows?.length) {
+          QUESTIONS[book] = dedupeQuestionList(rows);
+          bookLoadState[book] = true;
+        }
+      }
+      updateLoginQuestionHint();
+      updateDemoBookPicker();
+      if (typeof showToast === 'function') showToast('وضع دون اتصال — أسئلة محفوظة محلياً', 'ok');
+      return;
+    }
     const hint = document.getElementById('login-hint');
     if (hint) {
       hint.textContent = navigator.onLine === false
-        ? '⚠️ لا يوجد اتصال — تحقق/ي من الشبكة'
+        ? '⚠️ لا يوجد اتصال — يمكن تجربة النموذج بالأسئلة المحفوظة'
         : '⚠️ تعذّر تحميل الأسئلة — تحقق من الاتصال';
     }
     if (typeof showToast === 'function') {
@@ -3187,6 +3502,7 @@ function pick(btn, isOk) {
   const expEl = document.getElementById('fb-exp');
   const selfBox = document.getElementById('fb-self-correct');
   if (q?.id && typeof recordQuestionAttempt === 'function') recordQuestionAttempt(q.id, isOk);
+  if (state.demoMode) recordDemoAnalytics(q, isOk, isOk ? '' : (btn?.textContent || ''));
 
   if (isOk) {
     btn.classList.add('correct');
@@ -3275,7 +3591,10 @@ function nextQ() {
   if (state.idx >= state.questions.length) {
     if (state.demoMode) endDemo();
     else void endGame();
-  } else renderQ();
+  } else {
+    renderQ();
+    prefetchUpcomingQuran(state.idx);
+  }
 }
 
 function updateReviewButtons() {
@@ -3304,6 +3623,19 @@ function renderReviewItem() {
   const reviewExp = document.getElementById('review-exp');
   reviewExp.innerHTML = buildAnswerFeedbackHtml(q, false, item.picked || '');
   bindQuranReciteButton(reviewExp, q);
+  const actions = document.getElementById('review-voice-actions');
+  if (actions) {
+    actions.innerHTML = `
+      <button type="button" class="btn btn-white btn-sm" id="btn-review-speak">🔊 اقرأ الشرح</button>
+      ${hasQuranAyahContent(q) ? `<button type="button" class="btn btn-white btn-sm" id="btn-review-recite">${QURAN_RECITE_BTN_LABEL}</button>` : ''}
+    `;
+    document.getElementById('btn-review-speak')?.addEventListener('click', (e) => {
+      void speakFeedbackOnce(q, item.picked || '', e.currentTarget);
+    });
+    document.getElementById('btn-review-recite')?.addEventListener('click', (e) => {
+      void playQuranForQuestion(q, e.currentTarget);
+    });
+  }
   const btn = document.getElementById('btn-review-next');
   btn.textContent = state.reviewIdx >= total - 1 ? 'إنهاء المراجعة ✓' : 'التالي ←';
 }
@@ -3464,20 +3796,21 @@ function showCombo(s) {
 function launchCorrectBurst() {
   const w = document.getElementById('confetti-wrap');
   if (!w) return;
-  const cols = ['#34D399', '#FCD34D', '#7DD3FC', '#FB7185'];
-  for (let i = 0; i < 12; i++) {
+  const cols = ['#34D399', '#FCD34D', '#7DD3FC'];
+  for (let i = 0; i < 5; i++) {
     setTimeout(() => {
       const p = document.createElement('div');
-      p.className = 'cp';
-      p.style.left = (20 + Math.random() * 60) + 'vw';
-      p.style.top = '40vh';
+      p.className = 'cp cp-soft';
+      p.style.left = (30 + Math.random() * 40) + 'vw';
+      p.style.top = '42vh';
       p.style.background = cols[Math.floor(Math.random() * cols.length)];
-      p.style.animationDuration = (0.8 + Math.random() * 0.6) + 's';
-      p.style.width = (6 + Math.random() * 6) + 'px';
-      p.style.height = (6 + Math.random() * 6) + 'px';
+      p.style.animationDuration = (0.7 + Math.random() * 0.4) + 's';
+      p.style.width = (4 + Math.random() * 4) + 'px';
+      p.style.height = (4 + Math.random() * 4) + 'px';
+      p.style.opacity = '0.75';
       w.appendChild(p);
-      setTimeout(() => p.remove(), 1500);
-    }, i * 25);
+      setTimeout(() => p.remove(), 1100);
+    }, i * 40);
   }
 }
 
@@ -3806,6 +4139,8 @@ async function restoreSession() {
 (async function init() {
   const s = localStorage.getItem('fontSize') || 18;
   setFontPreset(s);
+  applyTheme(localStorage.getItem('theme') === 'dark' ? 'dark' : 'light');
+  updateReciterSettingsUI();
   soundOn = localStorage.getItem('soundOn') !== 'false';
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   voiceOn = localStorage.getItem('voiceOn') !== 'false';

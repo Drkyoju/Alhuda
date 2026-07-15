@@ -7,13 +7,118 @@ import {
   synthesizeAzureArabicSpeech,
 } from './azure-tts.js';
 
-function corsHeaders(request) {
+function corsHeaders(request, methods = 'GET, POST, OPTIONS') {
   const origin = request.headers.get('Origin') || '*';
   return {
     'Access-Control-Allow-Origin': origin,
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Methods': methods,
     'Access-Control-Allow-Headers': 'Content-Type',
   };
+}
+
+const QURAN_RECITER_CDN = {
+  hudhaify: { edition: 'ar.hudhaify', everyayah: 'Hudhaify_64kbps' },
+  alafasy: { edition: 'ar.alafasy', everyayah: 'Alafasy_64kbps' },
+};
+
+const SURAH_AYAH_COUNTS_W = [
+  7, 286, 200, 176, 120, 165, 206, 75, 129, 109, 123, 111, 43, 52, 99, 128, 111, 110, 98, 135,
+  112, 78, 118, 64, 77, 227, 93, 88, 69, 60, 34, 30, 73, 54, 45, 83, 182, 88, 75, 85, 54, 53, 89, 59,
+  37, 35, 38, 29, 18, 45, 60, 49, 62, 55, 78, 96, 29, 22, 24, 13, 14, 11, 11, 18, 12, 12, 30, 52, 52,
+  44, 28, 28, 20, 56, 40, 31, 50, 40, 46, 42, 29, 19, 36, 25, 22, 17, 19, 26, 30, 20, 15, 21, 11, 8,
+  8, 19, 5, 8, 8, 11, 11, 8, 3, 9, 5, 4, 7, 3, 6, 3, 5, 4, 5, 6,
+];
+
+function verseKeyToGlobalAyahNumW(surah, ayah) {
+  if (!surah || !ayah || surah < 1 || surah > 114) return 0;
+  let offset = 0;
+  for (let i = 0; i < surah - 1; i++) offset += SURAH_AYAH_COUNTS_W[i] || 0;
+  return offset + ayah;
+}
+
+async function handleTtsStatus(request, env) {
+  const cors = corsHeaders(request);
+  if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
+  const azure = azureSpeechConfigured(env);
+  return new Response(JSON.stringify({
+    ok: true,
+    azureConfigured: azure,
+    provider: azure ? 'azure' : 'edge',
+    voice: azure ? DEFAULT_AZURE_ARABIC_VOICE : DEFAULT_ARABIC_VOICE,
+  }), { status: 200, headers: { ...cors, ...JSON_HEADERS } });
+}
+
+async function handleQuranAudio(request, env) {
+  const cors = corsHeaders(request, 'GET, OPTIONS');
+  if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
+  if (request.method !== 'GET') {
+    return new Response(JSON.stringify({ ok: false, error: 'Method not allowed' }), {
+      status: 405,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+  if (!rateLimit(request, 'quran-audio', 60, 60000)) {
+    return rateLimitedResponse(cors);
+  }
+
+  const url = new URL(request.url);
+  const surah = parseInt(url.searchParams.get('surah') || '0', 10);
+  const ayah = parseInt(url.searchParams.get('ayah') || '0', 10);
+  const reciterKey = (url.searchParams.get('reciter') || 'hudhaify').toLowerCase();
+  const reciter = QURAN_RECITER_CDN[reciterKey] || QURAN_RECITER_CDN.hudhaify;
+  if (!surah || !ayah || ayah > (SURAH_AYAH_COUNTS_W[surah - 1] || 0)) {
+    return new Response(JSON.stringify({ ok: false, error: 'Invalid surah/ayah' }), {
+      status: 400,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+
+  const cache = caches.default;
+  const cacheKey = new Request(`https://quran-audio.cache/${reciterKey}/${surah}/${ayah}`, { method: 'GET' });
+  const cached = await cache.match(cacheKey);
+  if (cached) {
+    const headers = new Headers(cached.headers);
+    headers.set('Access-Control-Allow-Origin', cors['Access-Control-Allow-Origin']);
+    headers.set('X-Quran-Cache', 'HIT');
+    return new Response(cached.body, { status: cached.status, headers });
+  }
+
+  const globalNum = verseKeyToGlobalAyahNumW(surah, ayah);
+  const file = `${String(surah).padStart(3, '0')}${String(ayah).padStart(3, '0')}.mp3`;
+  const upstreams = [
+    `https://cdn.islamic.network/quran/audio/64/${reciter.edition}/${globalNum}.mp3`,
+    `https://everyayah.com/data/${reciter.everyayah}/${file}`,
+  ];
+
+  let lastErr = null;
+  for (const upstream of upstreams) {
+    try {
+      const res = await fetch(upstream, {
+        cf: { cacheTtl: 86400 * 30, cacheEverything: true },
+      });
+      if (!res.ok || !res.body) {
+        lastErr = `upstream ${res.status}`;
+        continue;
+      }
+      const outHeaders = {
+        ...cors,
+        'Content-Type': 'audio/mpeg',
+        'Cache-Control': 'public, max-age=2592000, immutable',
+        'X-Quran-Cache': 'MISS',
+        'X-Quran-Reciter': reciterKey,
+      };
+      const response = new Response(res.body, { status: 200, headers: outHeaders });
+      void cache.put(cacheKey, response.clone());
+      return response;
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+
+  return new Response(JSON.stringify({ ok: false, error: 'Audio fetch failed', detail: String(lastErr || '') }), {
+    status: 502,
+    headers: { ...cors, ...JSON_HEADERS },
+  });
 }
 
 async function sendViaWeb3Forms(data, env) {
@@ -220,6 +325,12 @@ export default {
     }
     if (url.pathname === '/api/tts') {
       return handleTts(request, env);
+    }
+    if (url.pathname === '/api/tts-status') {
+      return handleTtsStatus(request, env);
+    }
+    if (url.pathname === '/api/quran-audio') {
+      return handleQuranAudio(request, env);
     }
     return env.ASSETS.fetch(request);
   },

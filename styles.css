@@ -3719,3 +3719,149 @@
         transition: none !important;
       }
     }
+
+    /* ── Brand welcome ── */
+    .login-brand-hero .logo-img {
+      width: min(220px, 52vw);
+      height: auto;
+      filter: drop-shadow(0 12px 28px rgba(22, 56, 40, 0.18));
+    }
+    .org-name-hero {
+      font-family: var(--font-display);
+      font-size: clamp(1.55em, 5.2vw, 2.15em);
+      font-weight: 700;
+      color: var(--emerald-dark);
+      line-height: 1.25;
+      margin: 6px 0 2px;
+      letter-spacing: 0.01em;
+    }
+    #login-screen .login-brand-hero .brand-title {
+      font-size: clamp(1.15em, 3.8vw, 1.45em);
+      color: var(--gold-dark);
+      margin-top: 4px;
+    }
+
+    /* ── Quran status + review voice ── */
+    .quran-recite-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .quran-recite-status {
+      font-size: 0.72em;
+      font-weight: 700;
+      color: var(--text-soft);
+      opacity: 0.9;
+    }
+    .review-voice-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 0 0 10px;
+    }
+    .review-voice-actions .btn { flex: 1; min-width: 120px; }
+
+    .demo-analytics-summary {
+      margin-top: 14px;
+      text-align: right;
+      background: rgba(42, 92, 69, 0.06);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+    }
+    .demo-analytics-title {
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--emerald-dark);
+    }
+    .demo-analytics-summary ul {
+      margin: 0;
+      padding-inline-start: 1.1em;
+      color: var(--text-soft);
+      font-size: 0.88em;
+      line-height: 1.65;
+      font-weight: 700;
+    }
+    .demo-analytics-summary li span { opacity: 0.75; font-size: 0.92em; }
+
+    .font-preset-btn.active {
+      background: var(--grad-emerald);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(22, 56, 40, 0.2);
+    }
+    .font-current-label {
+      font-weight: 800;
+      min-width: 4.5em;
+      text-align: center;
+    }
+
+    .cp-soft {
+      opacity: 0.7 !important;
+      border-radius: 50%;
+    }
+
+    /* ── Gentle dark mode ── */
+    body.dark-mode {
+      --cream: #121a16;
+      --ivory: #162019;
+      --white: #1a2620;
+      --text: #e8efe9;
+      --text-soft: #b7c4bc;
+      --border: #2a3a32;
+      --border-gold: rgba(201, 169, 98, 0.22);
+      --bg: #121a16;
+      --glass: rgba(26, 38, 32, 0.88);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --emerald-light: #1e3329;
+      --teal-soft: #1a2e33;
+      --gold-glow: #243028;
+      --red-light: #3a2222;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.25);
+      --shadow-lux: 0 24px 64px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(201, 169, 98, 0.1);
+      --grad-hero: linear-gradient(168deg, #0f1a15 0%, #152820 40%, #1a2418 75%, #121a16 100%);
+      color-scheme: dark;
+    }
+    body.dark-mode .org-name-hero { color: #d8e6db; }
+    body.dark-mode #login-screen .login-brand-hero .brand-title { color: var(--gold-shine); }
+    body.dark-mode .card,
+    body.dark-mode .demo-intro-card,
+    body.dark-mode .feedback-screen-inner,
+    body.dark-mode .settings-sheet {
+      background: rgba(26, 38, 32, 0.94);
+      color: var(--text);
+    }
+    body.dark-mode .input,
+    body.dark-mode .feedback-textarea,
+    body.dark-mode .q-range-input {
+      background: #152019;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    body.dark-mode .demo-analytics-summary {
+      background: rgba(201, 169, 98, 0.08);
+    }
+    body.dark-mode .demo-analytics-title { color: var(--gold-shine); }
+    body.dark-mode .float-deco-kids { opacity: 0.35; }
+
+    /* ── iPad / tablet layout ── */
+    @media (min-width: 768px) and (max-width: 1180px) {
+      .login-hero { max-width: 560px; }
+      #game .q-box { max-width: 720px; margin-inline: auto; font-size: 1.12em; }
+      #game .ans-grid {
+        max-width: 720px;
+        margin-inline: auto;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .page-shell { max-width: 720px; }
+      .welcome-inner { max-width: 760px; margin-inline: auto; }
+      .book-select-row { grid-template-columns: 1fr 1fr; }
+      .demo-book-pick-list { max-width: 520px; margin-inline: auto; }
+    }
+    @media (min-width: 1024px) {
+      #login-screen .login-hero { max-width: 640px; }
+      .login-brand-hero .logo-img { width: 240px; }
+    }

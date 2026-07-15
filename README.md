@@ -83,6 +83,31 @@ order and per-file reference. Summary:
 
 ---
 
+## Azure Speech TTS (real neural voice)
+
+The Worker (`POST /api/tts`) prefers **Azure Cognitive Services Speech** when
+secrets are set; otherwise it falls back to Edge TTS.
+
+1. Create a free **Speech** resource in [Azure Portal](https://portal.azure.com) (F0).
+2. Copy **Key 1** and **Region** (e.g. `eastus`, `westeurope`).
+3. Set Cloudflare Worker secrets (do **not** commit keys):
+
+```bash
+npx wrangler secret put AZURE_SPEECH_KEY
+npx wrangler secret put AZURE_SPEECH_REGION
+```
+
+Or add GitHub Actions secrets `AZURE_SPEECH_KEY` / `AZURE_SPEECH_REGION` if your
+deploy workflow injects them into Wrangler.
+
+4. Redeploy. Check `GET /api/tts-status` → `"provider":"azure"`, or look for
+   response header `X-TTS-Provider: azure` on `/api/tts`.
+
+Quran recitation is proxied via `GET /api/quran-audio?surah=&ayah=&reciter=`
+(edge-cached) — not Azure.
+
+---
+
 ## Authentication model
 
 Students log in with **name + 4–6 digit PIN**. Credentials are derived

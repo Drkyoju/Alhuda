@@ -17,7 +17,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=35">
+  <link rel="stylesheet" href="styles.css?v=36">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -65,14 +65,24 @@
       <div class="setting-row setting-font-presets">
         <span>🔤</span>
         <span>حجم الخط</span>
-        <div class="font-preset-row">
+        <div class="font-preset-row" role="group" aria-label="حجم الخط">
           <button type="button" class="font-preset-btn" data-size="16" onclick="setFontPreset(16)">صغير</button>
           <button type="button" class="font-preset-btn" data-size="18" onclick="setFontPreset(18)">متوسط</button>
           <button type="button" class="font-preset-btn" data-size="20" onclick="setFontPreset(20)">كبير</button>
           <button type="button" class="font-preset-btn" data-size="22" onclick="setFontPreset(22)">كبير جداً</button>
         </div>
-        <span class="val" id="fs-label">18</span>
+        <span class="val font-current-label" id="fs-label">متوسط</span>
       </div>
+      <div class="setting-row setting-reciter">
+        <span>🎧</span>
+        <span>قارئ التلاوة</span>
+        <div class="font-preset-row" role="group" aria-label="قارئ التلاوة">
+          <button type="button" class="font-preset-btn" data-reciter="hudhaify" onclick="setQuranReciter('hudhaify')">الحذيفي</button>
+          <button type="button" class="font-preset-btn" data-reciter="alafasy" onclick="setQuranReciter('alafasy')">العفاسي</button>
+        </div>
+        <span class="val" id="reciter-label">الحذيفي</span>
+      </div>
+      <button class="btn btn-white" onclick="toggleDarkMode()" id="theme-btn" style="width:100%;margin-bottom:10px;">☀️ الوضع الليلي</button>
       <button class="btn btn-white" onclick="toggleTrainingMode()" id="training-btn" style="width:100%;margin-bottom:10px;">🏋️ وضع التدريب</button>
       <button class="btn btn-white" onclick="toggleSound()" id="sound-btn" style="width:100%;margin-bottom:10px;">🔊 الأصوات</button>
       <button class="btn btn-white" onclick="toggleVoice()" id="voice-btn" style="width:100%;margin-bottom:10px;">🗣️ القراءة الصوتية</button>
@@ -145,11 +155,11 @@
   <!-- ═══════════ LOGIN ═══════════ -->
   <div id="login-screen" class="screen active">
     <div class="login-hero">
-      <div class="logo-wrap">
-        <img src="icons/org-logo.png" alt="جمعية الهدى والحكمة" class="logo-img" width="200" height="158">
+      <div class="logo-wrap login-brand-hero">
+        <img src="icons/org-logo.png" alt="جمعية الهدى والحكمة" class="logo-img" width="220" height="174">
+        <div class="org-name org-name-hero">جمعية الهدى والحكمة</div>
         <div class="brand-title">المكتبة الثلاثية</div>
-        <div class="org-name">جمعية الهدى والحكمة</div>
-        <div class="brand-sub">أسئلة تعليمية تفاعلية</div>
+        <div class="brand-sub">أسئلة تعليمية تفاعلية من برامج الجمعية</div>
         <p class="login-hint" id="login-hint">🎮 انضم/ي وابدأ/ي رحلة التعلّم!</p>
         <div class="login-features" id="login-features">
           <button type="button" class="login-feature" id="btn-levels-preview"><strong>🏅</strong>مستويات وشارات</button>
@@ -243,6 +253,8 @@
       <textarea class="feedback-textarea" id="feedback-like" placeholder="أي تعليق آخر عن تجربتك..."></textarea>
 
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
+      <div id="demo-analytics-summary" class="demo-analytics-summary" hidden></div>
+      <button type="button" class="btn btn-sm btn-white" id="btn-share-demo" onclick="shareDemoResult()" style="display:none;width:100%;margin-top:10px;">📤 شارك/ي نتيجة النموذج</button>
       <div class="real-game-locked-cta" id="real-game-locked-cta">
         <p class="real-game-locked-note">🔒 الأسئلة الكاملة مغلقة حالياً — شكراً لمشاركتك!</p>
         <button type="button" class="btn btn-xl real-game-locked-btn" disabled aria-disabled="true">📚 الدخول للأسئلة الحقيقية — مغلق 🔒</button>
@@ -495,6 +507,7 @@
       <div class="card">
       <div class="q-box" id="review-q" style="margin-bottom:12px;"></div>
       <div class="self-correct-box" id="review-answer"></div>
+      <div class="review-voice-actions" id="review-voice-actions"></div>
       <div class="review-exp" id="review-exp"></div>
       <button class="btn btn-green btn-xl" onclick="nextReview()" id="btn-review-next" style="width:100%;margin-top:8px;">التالي →</button>
       <button class="btn btn-sm btn-white" onclick="exitReview()" style="width:100%;margin-top:8px;">إنهاء المراجعة</button>
@@ -586,7 +599,7 @@
 <script src="ayah-snippet-map.js"></script>
 <script src="speech-diacritics-map.js"></script>
 <script src="version.js"></script>
-<script src="app.js?v=71"></script>
+<script src="app.js?v=72"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=9"></script>
 <script src="platform.js?v=13"></script>
