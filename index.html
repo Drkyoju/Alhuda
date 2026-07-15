@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="fonts.css?v=1">
   <link rel="stylesheet" href="enhancements.css?v=9">
   <link rel="stylesheet" href="kids-ui.css?v=11">
-  <link rel="stylesheet" href="styles.css?v=59">
+  <link rel="stylesheet" href="styles.css?v=60">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -438,10 +438,14 @@
       <div class="q-with-timer">
         <div class="q-main">
           <div class="q-box-row">
-            <div class="q-box" id="q-text">...</div>
-            <button type="button" class="voice-btn" id="btn-speak-question" onclick="onQuestionSpeakerClick()" aria-label="القراءة الصوتية">🔊</button>
+            <div class="q-text-flow" id="q-text-flow">
+              <span class="q-box" id="q-text">...</span><span class="q-ayah-inline q-ayah-text" id="q-ayah-inline" data-ayah-text hidden></span>
+            </div>
+            <div class="q-controls-cluster" id="q-controls-cluster">
+              <div id="quran-recite-slot" class="quran-recite-slot" style="display:none;"></div>
+              <button type="button" class="voice-btn voice-btn-sm" id="btn-speak-question" onclick="onQuestionSpeakerClick()" aria-label="القراءة الصوتية">🔊</button>
+            </div>
           </div>
-          <div id="quran-recite-slot" class="quran-recite-slot" style="display:none;"></div>
         </div>
         <div class="q-timer q-timer-hourglass" id="q-timer" aria-label="الوقت المتبقي">
           <svg class="q-timer-svg" viewBox="0 0 56 72" aria-hidden="true">
@@ -630,7 +634,7 @@
 <script src="demo-questions-bundle.js"></script>
 <script src="version.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="app.js?v=100" defer></script>
+<script src="app.js?v=101" defer></script>
 <script src="auth.js?v=11" defer></script>
 <script src="enhancements.js?v=13" defer></script>
 <script src="platform.js?v=13" defer></script>

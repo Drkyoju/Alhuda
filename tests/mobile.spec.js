@@ -51,11 +51,11 @@ test('mobile demo: readable question and compact citation UI', async ({ page }) 
     expect(Math.abs(voiceBox.y - qBox2.y)).toBeLessThan(80);
   }
 
-  // When a Quran verse is linked, its text must appear with the تلاوة control
-  const qAyah = page.locator('#quran-recite-slot .q-ayah-text');
+  // When a Quran verse is linked, its text must appear inline with the question
+  const qAyah = page.locator('#q-ayah-inline, #quran-recite-slot .q-ayah-text');
   if (await page.locator('#quran-recite-slot .quran-recite-btn').count()) {
-    await expect(qAyah).toBeVisible();
-    const ayahText = (await qAyah.textContent()) || '';
+    await expect(qAyah.first()).toBeVisible();
+    const ayahText = (await qAyah.first().textContent()) || '';
     expect(ayahText.replace(/\s/g, '').length).toBeGreaterThan(5);
   }
 

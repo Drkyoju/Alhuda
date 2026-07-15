@@ -1651,13 +1651,20 @@
     .q-box-row {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
       min-width: 0;
       margin-bottom: 0;
     }
-    .q-box-row .q-box {
+    .q-text-flow {
       flex: 1 1 auto;
+      min-width: 0;
+      text-align: right;
+      line-height: 1.55;
+    }
+    .q-box-row .q-box {
+      display: inline;
+      flex: none;
       min-width: 0;
       width: auto;
       margin-bottom: 0;
@@ -1666,7 +1673,39 @@
       box-shadow: none;
       padding: 0;
       border-radius: 0;
+      font-size: 0.95em;
+      font-weight: 800;
+      line-height: 1.5;
     }
+    .q-ayah-inline {
+      display: inline;
+      font-family: 'Amiri', 'Traditional Arabic', serif;
+      font-size: 0.98em;
+      font-weight: 700;
+      line-height: 1.65;
+      color: #163828;
+      margin: 0;
+      margin-inline-start: 0.3em;
+      padding: 0;
+      letter-spacing: 0;
+      white-space: normal;
+      word-break: normal;
+      overflow-wrap: break-word;
+      text-align: right;
+    }
+    .q-ayah-inline[hidden] { display: none !important; }
+    .q-controls-cluster {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 4px;
+      flex-shrink: 0;
+      order: 0;
+    }
+    /* In RTL flex row: text-flow first = right; cluster last = left (يسار) */
+    .q-box-row .q-text-flow { order: 1; }
+    .q-box-row .q-controls-cluster { order: 2; }
     .voice-btn.voice-on {
       background: var(--emerald-light);
       border-color: var(--emerald);
@@ -1879,11 +1918,15 @@
       color: var(--emerald-dark);
     }
     .quran-recite-slot {
-      margin: 6px 0 0;
-      padding-top: 6px;
-      border-top: 1px dashed rgba(201, 169, 98, 0.28);
-      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: none;
+      width: auto;
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
     }
     .q-ayah-block {
       display: flex;
@@ -1912,9 +1955,17 @@
       word-break: normal;
       overflow-wrap: break-word;
     }
-    /* آية داخل مربع السؤال — صغيرة ومدمجة، لا صندوق ثاني */
-    #game .quran-recite-slot .q-ayah-text,
-    #game .q-main .q-ayah-text,
+    /* آية مدمجة بعد السؤال — مقروءة وليست صندوق منفصل */
+    #game .q-ayah-inline.q-ayah-text,
+    #game .q-text-flow .q-ayah-text {
+      font-size: 0.95rem !important;
+      line-height: 1.6 !important;
+      font-weight: 700 !important;
+      padding: 0 !important;
+      margin: 0 0 0 0.3em !important;
+      text-align: right !important;
+      display: inline !important;
+    }
     #game .q-ayah-block--compact .q-ayah-text {
       font-size: clamp(0.68rem, 2.5vw, 0.78rem) !important;
       line-height: 1.5 !important;
@@ -1924,17 +1975,37 @@
       min-height: 0 !important;
     }
     #game .quran-recite-slot {
-      margin: 4px 0 0;
-      padding-top: 5px;
+      margin: 0;
+      padding: 0;
+      border: none;
     }
     #game .q-ayah-block--compact {
       gap: 3px;
     }
-    #game .quran-recite-slot .quran-recite-btn {
-      font-size: 0.68em;
-      padding: 3px 8px;
-      min-height: 28px;
+    #game .q-controls-cluster .quran-recite-btn {
+      font-size: 0.65em;
+      padding: 2px 7px;
+      min-height: 26px;
       box-shadow: 0 1px 0 #c9a84c;
+    }
+    #game .q-controls-cluster .voice-btn,
+    #game .q-controls-cluster #btn-speak-question {
+      width: 30px !important;
+      height: 30px !important;
+      min-height: 30px !important;
+      min-width: 30px !important;
+      font-size: 0.85em !important;
+      box-shadow: 0 2px 0 var(--emerald-dark);
+      position: static !important;
+    }
+    #game .q-controls-cluster .quran-recite-status {
+      font-size: 0.62em;
+      line-height: 1;
+    }
+    #game .q-box {
+      font-size: 0.92rem !important;
+      line-height: 1.5 !important;
+      font-weight: 800;
     }
     .book-cite-box .q-ayah-block {
       margin: 0 0 8px;
@@ -3186,12 +3257,13 @@
       padding: 0;
       margin-bottom: 0;
       font-family: 'Tajawal', sans-serif;
-      font-size: clamp(1.05rem, 2.8vw, 1.22rem);
-      line-height: 1.75;
+      font-size: 0.92rem;
+      line-height: 1.5;
       font-weight: 800;
       white-space: normal;
       word-break: normal;
       overflow-wrap: break-word;
+      display: inline;
     }
     #game .q-with-timer {
       margin-bottom: 8px;
@@ -3682,8 +3754,8 @@
 
     /* ── وضوح القراءة على الجوال / آيفون ── */
     #game .q-box {
-      font-size: clamp(1.05rem, calc(var(--base-font-size, 18px) * 1.1), 1.35rem) !important;
-      line-height: 1.75 !important;
+      font-size: 0.9rem !important;
+      line-height: 1.5 !important;
       font-weight: 800;
       font-family: 'Tajawal', sans-serif !important;
       word-break: normal;
@@ -3695,6 +3767,7 @@
       max-width: none;
       width: auto;
       min-width: 0;
+      display: inline;
     }
     #game .ans-btn {
       font-size: clamp(0.8rem, calc(var(--base-font-size, 18px) * 0.82), 0.94rem) !important;
@@ -3727,34 +3800,57 @@
       #game .q-box-row {
         position: relative;
         display: flex;
+        align-items: flex-start;
         width: 100%;
+        min-width: 0;
+        gap: 6px;
+      }
+      #game .q-text-flow {
+        flex: 1 1 auto;
         min-width: 0;
       }
       #game .q-box-row .q-box {
+        display: inline !important;
         width: auto;
-        flex: 1 1 auto;
+        flex: none;
         min-width: 0;
         padding: 0 !important;
-        padding-inline-end: 42px !important;
-        font-size: clamp(17px, calc(var(--base-font-size, 18px) * 1.05), 20px) !important;
-        line-height: 1.75 !important;
+        padding-inline-end: 0 !important;
+        font-size: 0.9rem !important;
+        line-height: 1.5 !important;
         word-break: normal;
         overflow-wrap: break-word;
         white-space: normal;
         text-align: right;
       }
+      #game .q-ayah-inline,
+      #game .q-ayah-inline.q-ayah-text {
+        font-size: 0.92rem !important;
+        line-height: 1.55 !important;
+      }
+      #game .q-controls-cluster {
+        flex-direction: column;
+        gap: 3px;
+        align-items: center;
+      }
       #game .q-box-row .voice-btn,
-      #game #btn-speak-question {
-        position: absolute;
-        top: 0;
-        inset-inline-end: 0;
-        width: 34px !important;
-        height: 34px !important;
-        min-height: 34px !important;
-        min-width: 34px;
-        font-size: 0.95em !important;
-        box-shadow: 0 2px 0 var(--emerald-dark);
+      #game #btn-speak-question,
+      #game .q-controls-cluster .voice-btn {
+        position: static !important;
+        top: auto;
+        inset-inline-end: auto;
+        width: 28px !important;
+        height: 28px !important;
+        min-height: 28px !important;
+        min-width: 28px !important;
+        font-size: 0.8em !important;
+        box-shadow: 0 1px 0 var(--emerald-dark);
         z-index: 2;
+      }
+      #game .q-controls-cluster .quran-recite-btn {
+        font-size: 0.62em !important;
+        padding: 2px 6px !important;
+        min-height: 24px !important;
       }
     }
     @media (max-width: 480px) {
@@ -3864,11 +3960,15 @@
         gap: 2px;
       }
       #game .quran-recite-slot {
-        margin: 2px 0 0;
-        padding-top: 4px;
+        margin: 0;
+        padding: 0;
+        border: none;
       }
-      #game .quran-recite-slot .q-ayah-text,
-      #game .q-main .q-ayah-text,
+      #game .q-ayah-inline.q-ayah-text,
+      #game .q-text-flow .q-ayah-text {
+        font-size: 0.9rem !important;
+        line-height: 1.5 !important;
+      }
       #game .q-ayah-block--compact .q-ayah-text {
         font-size: 0.7rem !important;
         line-height: 1.45 !important;
@@ -4427,10 +4527,12 @@
     }
     @media (max-width: 480px) {
       #game .q-box {
-        font-size: clamp(1.02rem, 3.9vw, 1.15rem);
-        line-height: 1.55;
+        font-size: 0.88rem !important;
+        line-height: 1.45;
         overflow-wrap: break-word;
         word-break: normal;
+        display: inline !important;
+        padding: 0 !important;
       }
       #game .ans-btn {
         min-height: 46px;
@@ -4762,13 +4864,18 @@
       line-height: 1.5 !important;
       margin: 0 !important;
     }
-    /* ── آية السؤال: صغيرة جداً داخل نفس مربع السؤال ── */
-    #game .q-main .quran-recite-slot .q-ayah-text,
-    #game .q-main .q-ayah-block--compact .q-ayah-text {
-      font-size: 0.72rem !important;
-      line-height: 1.45 !important;
-      font-weight: 600 !important;
+    /* ── آية السؤال: مدمجة بعد النص، حجم مقروء ── */
+    #game .q-main .q-ayah-inline.q-ayah-text,
+    #game .q-text-flow .q-ayah-inline {
+      font-size: 0.95rem !important;
+      line-height: 1.55 !important;
+      font-weight: 700 !important;
       padding: 0 !important;
-      max-height: 4.4em;
-      overflow: hidden;
+      max-height: none;
+      overflow: visible;
+      display: inline !important;
+    }
+    #game .q-main .q-box {
+      font-size: 0.9rem !important;
+      line-height: 1.5 !important;
     }

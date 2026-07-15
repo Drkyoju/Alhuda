@@ -2178,7 +2178,10 @@ async function fillAyahTextElements(root, verseKey, { preferSnippet = false, com
   }
   if (!text) return;
   const display = compact ? compactAyahForQuestion(text) : formatAyahDisplay(text);
-  root.querySelectorAll('[data-ayah-text]').forEach((el) => {
+  const targets = [];
+  if (root.matches?.('[data-ayah-text]')) targets.push(root);
+  root.querySelectorAll?.('[data-ayah-text]')?.forEach((el) => targets.push(el));
+  targets.forEach((el) => {
     el.textContent = display;
   });
 }
@@ -2650,26 +2653,48 @@ function updateQuranReciteSlot(q) {
     slot = document.createElement('div');
     slot.id = 'quran-recite-slot';
     slot.className = 'quran-recite-slot';
-    const host = document.querySelector('#game .q-main') || document.querySelector('.q-box-row')?.parentElement;
-    if (host) host.appendChild(slot);
-    else document.querySelector('.q-box-row')?.insertAdjacentElement('afterend', slot);
+    const cluster = document.getElementById('q-controls-cluster')
+      || document.querySelector('#game .q-box-row');
+    if (cluster) cluster.insertBefore(slot, cluster.firstChild);
+    else document.querySelector('.q-box-row')?.appendChild(slot);
   }
-  slot.innerHTML = '';
+
+  let inline = document.getElementById('q-ayah-inline');
+  const qText = document.getElementById('q-text');
+  if (!inline && qText) {
+    inline = document.createElement('span');
+    inline.id = 'q-ayah-inline';
+    inline.className = 'q-ayah-inline q-ayah-text';
+    inline.setAttribute('data-ayah-text', '');
+    inline.hidden = true;
+    qText.insertAdjacentElement('afterend', inline);
+  }
+
   const verseKey = getPrimaryVerseKeyForQuestion(q);
+  const main = document.querySelector('#game .q-main');
   if (!verseKey) {
     slot.style.display = 'none';
+    slot.innerHTML = '';
+    if (inline) {
+      inline.hidden = true;
+      inline.textContent = '';
+    }
+    main?.classList.remove('has-ayah');
     return;
   }
+
+  main?.classList.add('has-ayah');
+  // Full ayah Hudhaify will recite — inline after the question mark (not a separate box).
+  if (inline) {
+    inline.hidden = false;
+    const local = getLocalAyahSnippet(verseKey);
+    inline.textContent = formatAyahDisplay(local) || '…';
+  }
   slot.style.display = '';
-  // Compact snippet + ornament inside the same question card (never full long ayah).
-  slot.innerHTML = buildQuranAyahBlockHtml(verseKey, {
-    withButton: true,
-    id: 'q-ayah-text',
-    compact: true,
-  });
+  slot.innerHTML = buildQuranReciteButtonHtml();
   bindQuranReciteButton(slot, q);
   prefetchQuranForQuestion(q);
-  void fillAyahTextElements(slot, verseKey, { preferSnippet: true, compact: true });
+  void fillAyahTextElements(inline || slot, verseKey, { preferSnippet: false, compact: false });
 }
 
 function scoreArabicVoice(v) {
