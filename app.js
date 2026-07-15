@@ -3455,14 +3455,14 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
   let html = '<div class="answer-feedback">';
   if (!isCorrect && wrong) {
     html += '<div class="why-correct-box is-wrong">';
-    html += '<p class="fb-wrong-label"><strong>❌ إجابتك خاطئة:</strong></p>';
-    html += `<p class="fb-wrong-answer">${escapeHtml(wrong)}</p>`;
+    // Label + picked answer on ONE line after the colon.
+    html += `<p class="fb-wrong-line">❌ <span class="fb-wrong-label">إجابتك خاطئة:</span> <span class="fb-wrong-answer">${escapeHtml(wrong)}</span></p>`;
     html += '</div>';
   }
   if (correctText) {
     const boxClass = isCorrect ? 'why-correct-box is-correct' : 'why-correct-box is-correct-reveal';
     html += `<div class="${boxClass}">`;
-    // Label + answer on one line, same size as الاستشهاد.
+    // Label + correct answer on ONE line after the colon.
     html += `<p class="fb-correct-line">✅ <span class="fb-correct-label">الإجابة الصحيحة:</span> <span class="fb-correct-answer">${escapeHtml(correctText)}</span></p>`;
     html += '</div>';
   }
