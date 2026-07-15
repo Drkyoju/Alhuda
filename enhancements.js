@@ -103,6 +103,7 @@
     const swVer = window.ALHUDA_ASSETS?.sw || 39;
     let pendingReg = null;
     let refreshing = false;
+    let userRequestedUpdate = false;
     const activateWaiting = () => {
       if (pendingReg?.waiting) pendingReg.waiting.postMessage('SKIP_WAITING');
     };
@@ -111,13 +112,16 @@
       showToast('تحديث متاح — اضغط للتطبيق الآن', 'info', {
         duration: 12000,
         onClick: () => {
+          userRequestedUpdate = true;
           activateWaiting();
           showToast('جاري تطبيق التحديث...', 'ok', { duration: 4000 });
         },
       });
     };
+    // Only reload when the user explicitly tapped the update toast.
+    // Auto-reload on every controllerchange broke smoke tests and mid-session UX.
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (refreshing) return;
+      if (!userRequestedUpdate || refreshing) return;
       refreshing = true;
       window.location.reload();
     });
@@ -134,7 +138,6 @@
           }
         });
       });
-      // Check for a newer SW shortly after load.
       try { reg.update(); } catch (e) {}
     }).catch((err) => {
       console.warn('[SW] registration failed:', err);
