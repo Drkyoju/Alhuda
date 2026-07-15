@@ -3437,8 +3437,8 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
   if (correctText) {
     const boxClass = isCorrect ? 'why-correct-box is-correct' : 'why-correct-box is-correct-reveal';
     html += `<div class="${boxClass}">`;
-    html += '<p class="fb-correct-label"><strong>✅ الإجابة الصحيحة:</strong></p>';
-    html += `<p class="fb-correct-answer">${escapeHtml(correctText)}</p>`;
+    // Label + answer on one line to save vertical space (esp. صح/خطأ).
+    html += `<p class="fb-correct-line"><strong class="fb-correct-label">✅ الإجابة الصحيحة:</strong> <span class="fb-correct-answer">${escapeHtml(correctText)}</span></p>`;
     html += '</div>';
   }
   // Never render «الشرح» — any explanation text lives under الاستشهاد من الكتاب.
