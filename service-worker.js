@@ -7,7 +7,7 @@
 // which previously could throw on renamed functions. enhancements.js triggers
 // the message on next page load so users get the update on the NEXT visit.
 
-const CACHE = 'alhuda-v92';
+const CACHE = 'alhuda-v93';
 const ASSETS = [
   './',
   './index.html',

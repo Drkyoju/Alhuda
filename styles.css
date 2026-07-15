@@ -1827,7 +1827,35 @@
       color: var(--emerald-dark);
     }
     .quran-recite-slot {
-      margin: 6px 0 2px;
+      margin: 8px 0 6px;
+    }
+    .q-ayah-block {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      margin: 4px 0 8px;
+      padding: 10px 12px 12px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(255, 248, 232, 0.95), rgba(245, 230, 184, 0.35));
+      border: 1px solid rgba(201, 169, 98, 0.45);
+    }
+    .q-ayah-text,
+    .book-cite-box .q-ayah-text,
+    .book-cite-ayah {
+      font-family: 'Amiri', 'Traditional Arabic', serif;
+      font-size: clamp(1.15rem, 4.2vw, 1.45rem);
+      font-weight: 700;
+      line-height: 2.05;
+      text-align: center;
+      color: #163828;
+      margin: 0;
+      padding: 4px 2px;
+      letter-spacing: 0.02em;
+    }
+    .book-cite-box .q-ayah-block {
+      margin: 0 0 8px;
+      background: rgba(255, 255, 255, 0.55);
     }
     .quran-recite-btn {
       display: inline-flex;

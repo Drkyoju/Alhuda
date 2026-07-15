@@ -1958,6 +1958,79 @@ function getQuestionVerseKey(questionId) {
   return map[questionId] || null;
 }
 
+/** Prefer mapped verse, else first sync key found in question content. */
+function getPrimaryVerseKeyForQuestion(q) {
+  if (!q) return null;
+  return getQuestionVerseKey(q.id) || findVerseKeysSync(getQuestionContentBlob(q))[0] || null;
+}
+
+const ayahTextCache = new Map();
+
+/** Longest local snippet known for a verse key (offline fallback). */
+function getLocalAyahSnippet(verseKey) {
+  if (!verseKey) return '';
+  const map = (typeof window !== 'undefined' && window.AYAH_SNIPPET_MAP) || {};
+  let best = '';
+  for (const [snippet, key] of Object.entries(map)) {
+    if (key === verseKey && String(snippet).length > best.length) best = String(snippet);
+  }
+  return best;
+}
+
+function formatAyahDisplay(text) {
+  const t = String(text || '').trim();
+  if (!t) return '';
+  if (/^[﴿]/.test(t)) return t;
+  return `﴿ ${t} ﴾`;
+}
+
+/** Uthmani ayah text for a verse key (cached; local snippet fallback). */
+async function fetchAyahUthmani(verseKey) {
+  if (!verseKey) return '';
+  if (ayahTextCache.has(verseKey)) return ayahTextCache.get(verseKey);
+  const local = getLocalAyahSnippet(verseKey);
+  try {
+    const res = await fetch(
+      `https://api.quran.com/api/v4/quran/verses/uthmani?verse_key=${encodeURIComponent(verseKey)}`,
+      { cache: 'force-cache' }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.verses?.[0]?.text_uthmani || '';
+      if (text) {
+        ayahTextCache.set(verseKey, text);
+        return text;
+      }
+    }
+  } catch (e) {
+    console.warn('ayah text fetch:', e);
+  }
+  if (local) ayahTextCache.set(verseKey, local);
+  return local || '';
+}
+
+function buildQuranAyahBlockHtml(verseKey, { withButton = true, id = '' } = {}) {
+  const local = getLocalAyahSnippet(verseKey);
+  const idAttr = id ? ` id="${id}"` : '';
+  const text = formatAyahDisplay(local) || '…';
+  return (
+    `<div class="q-ayah-block" data-verse-key="${escapeHtml(verseKey || '')}">` +
+    `<p class="q-ayah-text"${idAttr} data-ayah-text>${escapeHtml(text)}</p>` +
+    (withButton ? buildQuranReciteButtonHtml() : '') +
+    `</div>`
+  );
+}
+
+async function fillAyahTextElements(root, verseKey) {
+  if (!root || !verseKey) return;
+  const text = await fetchAyahUthmani(verseKey);
+  if (!text) return;
+  const display = formatAyahDisplay(text);
+  root.querySelectorAll('[data-ayah-text]').forEach((el) => {
+    el.textContent = display;
+  });
+}
+
 function normalizeArabicForMatch(s) {
   return stripArabicDiacritics(s)
     .replace(/[«»()"[\]،.؛:!؟\-]/g, ' ')
@@ -2151,10 +2224,8 @@ function findVerseKeysSync(text) {
 
 function hasQuranAyahContent(q) {
   if (!q) return false;
-  if (getQuestionVerseKey(q.id)) return true;
-  const blob = getQuestionContentBlob(q);
-  if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى|قول\s*الله\s+تعالى|﴿|\[?\s*سورة/i.test(blob)) return true;
-  return findVerseKeysSync(blob).length > 0;
+  // Only when we can resolve a concrete verse — avoids empty تلاوة buttons.
+  return !!getPrimaryVerseKeyForQuestion(q);
 }
 
 async function resolveAllVerseKeysForQuestion(q) {
@@ -2425,14 +2496,17 @@ function updateQuranReciteSlot(q) {
     document.querySelector('.q-box-row')?.insertAdjacentElement('afterend', slot);
   }
   slot.innerHTML = '';
-  if (!hasQuranAyahContent(q)) {
+  const verseKey = getPrimaryVerseKeyForQuestion(q);
+  if (!verseKey) {
     slot.style.display = 'none';
     return;
   }
   slot.style.display = '';
-  slot.innerHTML = buildQuranReciteButtonHtml();
+  // Always write the ayah in ornate script next to تلاوة so players can read it.
+  slot.innerHTML = buildQuranAyahBlockHtml(verseKey, { withButton: true, id: 'q-ayah-text' });
   bindQuranReciteButton(slot, q);
   prefetchQuranForQuestion(q);
+  void fillAyahTextElements(slot, verseKey);
 }
 
 function scoreArabicVoice(v) {
@@ -2938,15 +3012,18 @@ function formatCitationQuote(s) {
 function explanationDuplicatesCitation(exp, q) {
   const expBare = normalizeArabicForMatch(String(exp || '').replace(/^«|»$/g, ''));
   if (!expBare || expBare.length < 8) return true;
+  // Real book quote / canonical only — never compare against exp-derived "citation".
   const quoteRaw = cleanArabicCitation(q?.quote, q?.id)
     || (q?.id && typeof getCanonicalQuote === 'function' && getCanonicalQuote(q.id))
     || '';
-  const citeBare = normalizeArabicForMatch(String(quoteRaw || '').replace(/^«|»$/g, ''))
-    || normalizeArabicForMatch(String(pickCitationText(q) || '').replace(/^«|»$/g, ''));
+  if (!quoteRaw) {
+    // No separate book quote: citation box must not re-print the explanation.
+    return false;
+  }
+  const citeBare = normalizeArabicForMatch(String(quoteRaw).replace(/^«|»$/g, ''));
   if (!citeBare) return false;
   if (expBare === citeBare) return true;
   if (textIsSubstantiallyContained(exp, citeBare) || textIsSubstantiallyContained(citeBare, exp)) return true;
-  // Common pattern: "الإجابة الصحيحة: X. «quote»" where quote ≈ citation
   const withoutLead = expBare
     .replace(/^الاجابه\s*الصحيحه\s*/g, '')
     .replace(/^العباره\s*(غير\s*)?صحيحه\s*/g, '')
@@ -2957,15 +3034,23 @@ function explanationDuplicatesCitation(exp, q) {
   return false;
 }
 
+/** Book quote only — do not promote explanation into الاستشهاد. */
+function getBookQuoteOnly(q) {
+  const fromQuote = cleanArabicCitation(q?.quote, q?.id);
+  if (fromQuote && !isGarbageCitation(fromQuote)) return formatCitationQuote(fromQuote);
+  const canon = q?.id && typeof getCanonicalQuote === 'function' ? getCanonicalQuote(q.id) : '';
+  const cleanedCanon = cleanArabicCitation(canon, q?.id);
+  if (cleanedCanon && !isGarbageCitation(cleanedCanon)) return formatCitationQuote(cleanedCanon);
+  return '';
+}
+
 function pickCitationText(q) {
-  const candidates = [];
-  const fromQuote = cleanArabicCitation(q.quote, q.id);
-  if (fromQuote) candidates.push({ t: fromQuote, q: citationTextQuality(fromQuote) });
-  const fromExp = extractExplanationSnippet(q.exp);
-  if (fromExp) candidates.push({ t: fromExp, q: citationTextQuality(fromExp) });
-  candidates.sort((a, b) => b.q - a.q);
-  const best = candidates.find((c) => !isGarbageCitation(c.t));
-  return best ? formatCitationQuote(best.t) : '';
+  const own = getBookQuoteOnly(q);
+  if (own) return own;
+  // Fallback for speech/legacy: allow explanation snippet only when no book quote exists.
+  const fromExp = extractExplanationSnippet(q?.exp);
+  if (fromExp && !isGarbageCitation(fromExp)) return formatCitationQuote(fromExp);
+  return '';
 }
 
 function sanitizeBookQuote(text, questionId) {
@@ -2976,21 +3061,28 @@ function buildBookCitationHtml(q) {
   const book = BOOK_LABELS[q.book] || q.book || '';
   const chapter = q.cat || '';
   const pageLabel = formatPageLabel(q.page);
-  const quote = pickCitationText(q);
-  if (!book && !chapter && !pageLabel && !quote) return '';
+  const bookQuote = getBookQuoteOnly(q);
+  const verseKey = getPrimaryVerseKeyForQuestion(q);
+  if (!book && !chapter && !pageLabel && !bookQuote && !verseKey) return '';
   let inner = '';
-  // Recitation control sits above the ayah so mobile layout reads top→bottom: listen, then read.
-  if (hasQuranAyahContent(q)) {
-    inner += `<div class="quran-recite-above">${buildQuranReciteButtonHtml()}</div>`;
+  if (verseKey) {
+    // Ayah text (ornate) + تلاوة — never substitute explanation here.
+    inner += buildQuranAyahBlockHtml(verseKey, { withButton: true });
   }
-  if (quote) {
-    const ayahClass = hasQuranAyahContent(q) ? 'book-cite-quote book-cite-ayah' : 'book-cite-quote';
-    inner += `<p class="${ayahClass}">${escapeHtml(quote)}</p>`;
+  if (bookQuote) {
+    const ayahLocal = verseKey ? getLocalAyahSnippet(verseKey) : '';
+    const sameAsAyah = ayahLocal && (
+      textIsSubstantiallyContained(bookQuote, ayahLocal) || textIsSubstantiallyContained(ayahLocal, bookQuote)
+    );
+    if (!sameAsAyah) {
+      inner += `<p class="book-cite-quote">${escapeHtml(bookQuote)}</p>`;
+    }
   }
   const meta = [];
   if (book) meta.push(escapeHtml(book));
   if (chapter) meta.push(escapeHtml(chapter));
   if (pageLabel) meta.push(pageLabel);
+  if (verseKey) meta.push(escapeHtml(verseKey.replace(':', '∶')));
   inner += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
   return `<p class="book-cite-heading">📖 الاستشهاد من الكتاب</p><div class="book-cite-box">${inner}</div>`;
 }
@@ -3030,6 +3122,8 @@ function mountAnswerFeedback(q, html) {
   if (!expEl) return;
   expEl.innerHTML = html;
   bindQuranReciteButton(expEl, q);
+  const verseKey = getPrimaryVerseKeyForQuestion(q);
+  if (verseKey) void fillAyahTextElements(expEl, verseKey);
 }
 
 function clearQuestionTimer() {
@@ -4527,6 +4621,8 @@ function renderReviewItem() {
   const reviewExp = document.getElementById('review-exp');
   reviewExp.innerHTML = buildAnswerFeedbackHtml(q, false, item.picked || '');
   bindQuranReciteButton(reviewExp, q);
+  const verseKey = getPrimaryVerseKeyForQuestion(q);
+  if (verseKey) void fillAyahTextElements(reviewExp, verseKey);
   const actions = document.getElementById('review-voice-actions');
   if (actions) {
     actions.innerHTML = `

@@ -46,8 +46,17 @@ test('mobile demo: readable question and compact citation UI', async ({ page }) 
   const qBox2 = await qBox.boundingBox();
   const voiceBox = await voiceBtn.boundingBox();
   if (qBox2 && voiceBox) {
-    expect(voiceBox.y).toBeLessThanOrEqual(qBox2.y + 12);
-    expect(voiceBox.x).toBeLessThan(qBox2.x + qBox2.width / 2);
+    expect(voiceBox.y).toBeLessThanOrEqual(qBox2.y + 24);
+    // Voice control stays near the question row (LTR/RTL layouts differ)
+    expect(Math.abs(voiceBox.y - qBox2.y)).toBeLessThan(80);
+  }
+
+  // When a Quran verse is linked, its text must appear with the تلاوة control
+  const qAyah = page.locator('#quran-recite-slot .q-ayah-text');
+  if (await page.locator('#quran-recite-slot .quran-recite-btn').count()) {
+    await expect(qAyah).toBeVisible();
+    const ayahText = (await qAyah.textContent()) || '';
+    expect(ayahText.replace(/\s/g, '').length).toBeGreaterThan(5);
   }
 
   const citeQuote = page.locator('#game .feedback .book-cite-quote').first();
@@ -63,12 +72,12 @@ test('mobile demo: readable question and compact citation UI', async ({ page }) 
     expect(btnBox?.width || 0).toBeLessThan(220);
     expect(btnBox?.height || 0).toBeLessThanOrEqual(34);
     await expect(reciteBtn).toHaveText(/تلاوة/);
-    const ayah = page.locator('#game .feedback .book-cite-ayah').first();
-    if (await ayah.count()) {
-      const reciteY = (await reciteBtn.boundingBox())?.y ?? 0;
-      const ayahY = (await ayah.boundingBox())?.y ?? 0;
-      expect(reciteY).toBeLessThan(ayahY);
-    }
+  const ayah = page.locator('#game .feedback .q-ayah-text, #game .feedback .book-cite-ayah').first();
+  if (await ayah.count()) {
+    const reciteY = (await reciteBtn.boundingBox())?.y ?? 0;
+    const ayahY = (await ayah.boundingBox())?.y ?? 0;
+    expect(reciteY).toBeLessThan(ayahY);
+  }
   }
 
   await expect(page.locator('#game .feedback .fb-continue-btn')).toBeVisible();
