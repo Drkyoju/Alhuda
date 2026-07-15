@@ -3384,41 +3384,10 @@ async function beginDemo(book) {
 }
 
 function startDemoCountdown() {
-  if (countdownTimer) return;
-  const ov = document.getElementById('countdown-overlay');
-  const num = document.getElementById('countdown-num');
-  if (!ov || !num) {
-    finishDemoCountdownEnter();
-    return;
-  }
-  ov.style.display = 'flex';
-  // Demo: shorter countdown (2) for faster start.
-  let n = state.demoMode ? 2 : 3;
-  num.textContent = n;
-  num.style.animation = 'none';
-  void num.offsetWidth;
-  num.style.animation = '';
+  // Skip 3-2-1 overlay — enter the demo immediately.
+  clearCountdown();
   warmDemoSessionAudio();
-  const iv = setInterval(() => {
-    n--;
-    // Only nudge Q0 hybrid again — do not re-fire popular ayah warm.
-    if (n >= 1) {
-      const q0 = state.questions?.[0];
-      if (q0) void prefetchHybridSpeechForQuestion(q0);
-    }
-    if (n <= 0) {
-      clearInterval(iv);
-      countdownTimer = null;
-      ov.style.display = 'none';
-      finishDemoCountdownEnter();
-      return;
-    }
-    num.textContent = n;
-    num.style.animation = 'none';
-    void num.offsetWidth;
-    num.style.animation = '';
-  }, state.demoMode ? 550 : 700);
-  countdownTimer = iv;
+  finishDemoCountdownEnter();
 }
 
 function finishDemoCountdownEnter() {
@@ -4449,30 +4418,9 @@ async function startCountdown() {
       return;
     }
   }
-  const ov = document.getElementById('countdown-overlay');
-  const num = document.getElementById('countdown-num');
-  ov.style.display = 'flex';
-  let n = 3;
-  num.textContent = n;
-  num.style.animation = 'none';
-  void num.offsetWidth;
-  num.style.animation = '';
-  const iv = setInterval(() => {
-    n--;
-    if (n <= 0) {
-      clearInterval(iv);
-      countdownTimer = null;
-      ov.style.display = 'none';
-      startGame();
-    } else {
-      num.textContent = n;
-      num.style.animation = 'none';
-      void num.offsetWidth;
-      num.style.animation = '';
-      playSound('start');
-    }
-  }, 700);
-  countdownTimer = iv;
+  // Skip 3-2-1 overlay — start questions immediately.
+  clearCountdown();
+  startGame();
 }
 
 function startGame() {
