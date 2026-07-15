@@ -409,5 +409,126 @@
   .kids-theme .progress-bar,
   .kids-theme .q-box::before,
   .kids-theme #game .q-main::before,
-  .kids-theme .confirm-answer-btn { animation: none !important; }
+  .kids-theme .confirm-answer-btn,
+  .alhuda-cat-bounce,
+  .alhuda-cat .cat-tail,
+  .alhuda-cat.mood-jump .alhuda-cat-bounce { animation: none !important; }
 }
+
+/* ═══ قطة برتقالية — رفيقة اللعب ═══ */
+.alhuda-cat {
+  position: fixed;
+  z-index: 85;
+  width: 76px;
+  height: 76px;
+  pointer-events: none;
+  transition: left 0.85s cubic-bezier(0.34, 1.2, 0.64, 1),
+              right 0.85s cubic-bezier(0.34, 1.2, 0.64, 1),
+              bottom 0.85s cubic-bezier(0.34, 1.2, 0.64, 1),
+              transform 0.45s ease;
+  filter: drop-shadow(0 6px 10px rgba(234, 88, 12, 0.28));
+}
+.alhuda-cat[hidden] { display: none !important; }
+.alhuda-cat.pos-br { right: max(10px, env(safe-area-inset-right)); left: auto; bottom: max(18px, env(safe-area-inset-bottom)); }
+.alhuda-cat.pos-bl { left: max(10px, env(safe-area-inset-left)); right: auto; bottom: max(18px, env(safe-area-inset-bottom)); }
+.alhuda-cat.pos-mr { right: max(10px, env(safe-area-inset-right)); left: auto; bottom: 38%; }
+.alhuda-cat.pos-ml { left: max(10px, env(safe-area-inset-left)); right: auto; bottom: 38%; }
+.alhuda-cat.on-game.pos-br,
+.alhuda-cat.on-game.pos-bl { bottom: max(88px, calc(env(safe-area-inset-bottom) + 72px)); }
+.alhuda-cat.on-game.feedback-up.pos-br,
+.alhuda-cat.on-game.feedback-up.pos-bl { bottom: max(52%, calc(env(safe-area-inset-bottom) + 46vh)); }
+
+.alhuda-cat-bounce {
+  width: 100%;
+  height: 100%;
+  animation: catIdleBob 2.4s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+@keyframes catIdleBob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-7px) rotate(2deg); }
+}
+.alhuda-cat.mood-jump .alhuda-cat-bounce {
+  animation: catJump 0.75s cubic-bezier(0.34, 1.45, 0.64, 1) 1;
+}
+@keyframes catJump {
+  0% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-28px) scale(1.06, 0.94); }
+  55% { transform: translateY(-22px) scale(0.96, 1.06); }
+  100% { transform: translateY(0) scale(1); }
+}
+.alhuda-cat.mood-happy .alhuda-cat-bounce {
+  animation: catHappyBounce 0.55s ease-in-out infinite;
+}
+@keyframes catHappyBounce {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-12px) rotate(4deg); }
+}
+.alhuda-cat.mood-sad .alhuda-cat-bounce {
+  animation: catSadDroop 1.8s ease-in-out infinite;
+}
+@keyframes catSadDroop {
+  0%, 100% { transform: translateY(4px) rotate(0deg) scale(0.96); }
+  50% { transform: translateY(7px) rotate(-3deg) scale(0.94); }
+}
+
+.alhuda-cat-face,
+.alhuda-cat-svg { width: 100%; height: 100%; display: block; }
+.alhuda-cat .cat-tail {
+  transform-origin: 78px 104px;
+  animation: catTailWag 1.6s ease-in-out infinite;
+}
+@keyframes catTailWag {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(14deg); }
+}
+.alhuda-cat.mood-sad .cat-tail { animation-duration: 3.2s; opacity: 0.85; }
+
+/* Mouth / eyes by mood */
+.alhuda-cat .cat-mouth-smile,
+.alhuda-cat .cat-mouth-sad,
+.alhuda-cat .cat-eye-happy,
+.alhuda-cat .cat-eye-sad { display: none; }
+.alhuda-cat .cat-mouth-neutral,
+.alhuda-cat .cat-eye { display: block; }
+
+.alhuda-cat.mood-happy .cat-mouth-neutral,
+.alhuda-cat.mood-happy .cat-eye { display: none; }
+.alhuda-cat.mood-happy .cat-mouth-smile,
+.alhuda-cat.mood-happy .cat-eye-happy { display: block; }
+.alhuda-cat.mood-happy .cat-cheek { opacity: 0.7; }
+
+.alhuda-cat.mood-sad .cat-mouth-neutral,
+.alhuda-cat.mood-sad .cat-eye { display: none; }
+.alhuda-cat.mood-sad .cat-mouth-sad,
+.alhuda-cat.mood-sad .cat-eye-sad { display: block; }
+.alhuda-cat.mood-sad .cat-cheek { opacity: 0.2; }
+
+.alhuda-cat .cat-eyes {
+  transition: transform 0.35s ease;
+}
+.alhuda-cat.look-left .cat-eyes { transform: translate(-4px, 1px); }
+.alhuda-cat.look-right .cat-eyes { transform: translate(4px, 1px); }
+.alhuda-cat.mood-look .alhuda-cat-bounce {
+  animation: catLookPeek 1.8s ease-in-out infinite;
+}
+@keyframes catLookPeek {
+  0%, 100% { transform: translateY(-2px) rotate(-3deg); }
+  50% { transform: translateY(-8px) rotate(3deg); }
+}
+
+@media (max-width: 480px) {
+  .alhuda-cat {
+    width: 58px;
+    height: 58px;
+  }
+  .alhuda-cat.on-game.pos-br,
+  .alhuda-cat.on-game.pos-bl {
+    bottom: max(76px, calc(env(safe-area-inset-bottom) + 64px));
+  }
+  .alhuda-cat.on-game.feedback-up.pos-br,
+  .alhuda-cat.on-game.feedback-up.pos-bl {
+    bottom: max(48%, calc(env(safe-area-inset-bottom) + 42vh));
+  }
+}
+
