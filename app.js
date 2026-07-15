@@ -3001,7 +3001,11 @@ function getCanonicalQuote(questionId) {
 }
 
 function hasOcrTashkeelGaps(s) {
-  return /[\u064B-\u065F]\s+[\u0621-\u064A]/.test(s || '') || /\s[\u064B-\u065F]/.test(s || '');
+  // OCR artifacts only: diacritic torn away from its letter (e.g. "ا ً" / " ً ل"),
+  // NOT normal Arabic like «شيئاً دخل» where tanween sits on the last letter before a space.
+  return /[\u0621-\u064A]\s+[\u064B-\u065F]/.test(s || '')
+    || /[\u064B-\u065F]\s+[\u064B-\u065F]/.test(s || '')
+    || /(^|\s)[\u064B-\u065F]/.test(s || '');
 }
 
 function stripArabicDiacritics(s) {
@@ -3047,6 +3051,8 @@ function isGarbageCitation(s) {
   if (hasOcrTashkeelGaps(s)) return true;
   if (hasGluedWords(s)) return true;
   if ((s.match(/[a-zA-Z]/g) || []).length > 2) return true;
+  // Leftovers after stripping «الإجابة الصحيحة:» are usually the answer option, not a book quote.
+  if (/^(صح|خطأ|شرك\s*أكبر|شرك\s*أصغر|الأسماء\s*والصفات)\s*$/i.test(String(s).trim())) return true;
   return citationTextQuality(s) < 0.45;
 }
 
@@ -3184,13 +3190,20 @@ function explanationDuplicatesCorrectAnswer(exp, q) {
     if (leftover.length <= 22) return true;
     if (leftover.length / Math.max(1, expBare.length) < 0.38) return true;
   }
+  // MC options: «الإجابة الصحيحة: الأسماء والصفات» after strip → option text.
+  if (q?.type === 'mc' && Array.isArray(q.a)) {
+    for (const opt of q.a) {
+      const ob = normalizeArabicForMatch(String(opt || ''));
+      if (ob && (expBare === ob || stripped === ob)) return true;
+    }
+  }
   return false;
 }
 
 function shouldShowExplanation(exp, q) {
+  // Legacy helper — UI no longer shows a separate «الشرح» block.
   const raw = String(exp || '').trim();
   if (!raw || raw.length < 8 || isWorksheetCitation(raw)) return false;
-  // Do not pass questionId — cleanArabicCitation would swap in the book quote.
   const cleaned = cleanArabicCitation(raw, null) || collapseBrokenArabicSpaces(raw);
   if (!cleaned || cleaned.length < 8) return false;
   if (isGarbageCitation(cleaned)) return false;
@@ -3219,32 +3232,113 @@ function citationLooksLikeAyah(bookQuote, verseKey) {
   return false;
 }
 
-/** Book quote only — real source_quote / canonical, not explanation. */
-function getBookQuoteOnly(q) {
-  const fromQuote = cleanArabicCitation(q?.quote, q?.id);
-  if (fromQuote && !isGarbageCitation(fromQuote)) return formatCitationQuote(fromQuote);
-  const canon = q?.id && typeof getCanonicalQuote === 'function' ? getCanonicalQuote(q.id) : '';
-  const cleanedCanon = cleanArabicCitation(canon, q?.id);
-  if (cleanedCanon && !isGarbageCitation(cleanedCanon)) return formatCitationQuote(cleanedCanon);
-  return '';
+function citationTextsEquivalent(a, b) {
+  const aBare = normalizeArabicForMatch(String(a || '').replace(/^«|»$/g, ''));
+  const bBare = normalizeArabicForMatch(String(b || '').replace(/^«|»$/g, ''));
+  if (!aBare || !bBare || aBare.length < 6 || bBare.length < 6) return false;
+  if (aBare === bBare) return true;
+  if (textIsSubstantiallyContained(aBare, bBare) || textIsSubstantiallyContained(bBare, aBare)) return true;
+  return false;
 }
 
-/**
- * Full explanation as citation body when there is no separate book quote.
- * (We no longer show a separate «الشرح» block — text lives under الاستشهاد.)
- */
-function getExplanationAsCitation(q) {
+function looksLikeBookCitationText(text) {
+  const t = String(text || '').trim();
+  if (!t || t.length < 8) return false;
+  if (/[«»﴿﴾]/.test(t)) return true;
+  if (/(قال|قوله)\s+(الله\s+)?تعالى|صلى الله|ﷺ|رواه\s|الحديث|وفي الحديث|عن\s+النبي|رضي الله/i.test(t)) return true;
+  if (/^من\s+(حلف|تعلق|علّق|مات)|دخل\s+الجنة|الطيرة\s+شرك|إنما\s+الأعمال/i.test(t)) return true;
+  return false;
+}
+
+function getCleanExplanationText(q) {
   const raw = String(q?.exp || '').trim();
   if (!raw || raw.length < 8 || isWorksheetCitation(raw)) return '';
+  // null id — do not swap explanation for canonical while cleaning.
   const cleaned = cleanArabicCitation(raw, null) || collapseBrokenArabicSpaces(raw);
   if (!cleaned || cleaned.length < 8 || isGarbageCitation(cleaned)) return '';
   if (explanationDuplicatesCorrectAnswer(cleaned, q)) return '';
-  return formatCitationQuote(cleaned);
+  return cleaned;
 }
 
-/** Display / speech citation: book quote first, else full explanation under الاستشهاد. */
+/**
+ * Search for the real book citation (canonical map → source_quote → quote-like snippet in exp).
+ * Never returns pedagogical «شرح» that merely restates the answer.
+ */
+function findBookCitation(q) {
+  const rejectAsAnswerOnly = (text) => {
+    // Strict: only drop if the "citation" is literally the answer option / label — not if the answer appears inside a longer quote.
+    const bare = normalizeArabicForMatch(String(text || '').replace(/^«|»$/g, ''));
+    if (!bare || bare.length < 3) return true;
+    const cor = normalizeArabicForMatch(getCorrectAnswerText(q));
+    if (cor && bare === cor) return true;
+    const stripped = bare.replace(/^الاجابه\s*الصحيحه\s*/g, '').trim();
+    if (cor && stripped === cor) return true;
+    if (q?.type === 'mc' && Array.isArray(q.a)) {
+      for (const opt of q.a) {
+        const ob = normalizeArabicForMatch(String(opt || ''));
+        if (ob && (bare === ob || stripped === ob)) return true;
+      }
+    }
+    return false;
+  };
+
+  const canonRaw = q?.id ? getCanonicalQuote(q.id) : '';
+  if (canonRaw) {
+    const canon = cleanArabicCitation(canonRaw, null) || collapseBrokenArabicSpaces(canonRaw);
+    if (canon && !isGarbageCitation(canon) && !rejectAsAnswerOnly(canon)) {
+      return formatCitationQuote(canon);
+    }
+  }
+
+  const quoteRaw = String(q?.quote || '').trim();
+  if (quoteRaw) {
+    const cleaned = cleanArabicCitation(quoteRaw, null);
+    if (cleaned && !isGarbageCitation(cleaned) && !rejectAsAnswerOnly(cleaned)) {
+      return formatCitationQuote(cleaned);
+    }
+  }
+
+  // Extract a citation-shaped piece from explanation ( «…» / قال تعالى / حديث ) — not the whole شرح.
+  const snippet = extractExplanationSnippet(q?.exp);
+  if (snippet && !isGarbageCitation(snippet) && !rejectAsAnswerOnly(snippet)) {
+    if (looksLikeBookCitationText(snippet) || snippet.length >= 24) {
+      return formatCitationQuote(snippet);
+    }
+  }
+  return '';
+}
+
+/** Book quote only — real source_quote / canonical, not explanation. */
+function getBookQuoteOnly(q) {
+  return findBookCitation(q);
+}
+
+/**
+ * What appears under «الاستشهاد من الكتاب»:
+ * - If شرح == استشهاد → put that text under الاستشهاد (prefer book wording).
+ * - If different → book citation only (شرح is dropped; no separate شرح block).
+ * - If no book citation found → only promote شرح when it itself is citation-shaped.
+ */
 function getCitationBodyText(q) {
-  return getBookQuoteOnly(q) || getExplanationAsCitation(q);
+  const book = findBookCitation(q);
+  const exp = getCleanExplanationText(q);
+
+  if (book && exp) {
+    if (citationTextsEquivalent(book, exp)) {
+      // Same content — show once under الاستشهاد; prefer the book/canonical wording.
+      return book;
+    }
+    // Different — keep الاستشهاد, drop شرح.
+    return book;
+  }
+  if (book) return book;
+
+  // No separate book citation found.
+  if (exp && looksLikeBookCitationText(exp)) {
+    // Explanation itself is citation-shaped (حديث / قال تعالى / «…») → move under الاستشهاد.
+    return formatCitationQuote(exp);
+  }
+  return '';
 }
 
 function pickCitationText(q) {
