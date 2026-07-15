@@ -7,27 +7,65 @@ const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول ا�
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
 const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
 const DEMO_COUNT = 8;
-/** Curated featured question IDs mixed into each demo (then filled randomly). */
-const DEMO_FEATURED_IDS = {
+/** Weekly featured pools (ISO week % 2) mixed into each demo, then filled randomly. */
+const DEMO_FEATURED_POOLS = {
   tawheed: [
-    '6dea92e9-ae29-4fda-bbf1-55f3b0f2ac90',
-    '8230d37a-f5c5-4dea-b8d2-ee499eec99e6',
-    '39a35c94-3034-43c9-bcc0-3032b1b01381',
-    '67831742-cfc3-4c12-a11c-4be748e40bda',
+    [
+      '6dea92e9-ae29-4fda-bbf1-55f3b0f2ac90',
+      '8230d37a-f5c5-4dea-b8d2-ee499eec99e6',
+      '39a35c94-3034-43c9-bcc0-3032b1b01381',
+      '67831742-cfc3-4c12-a11c-4be748e40bda',
+    ],
+    [
+      '40fd1b0a-b12e-4b92-9958-5241f6df5912',
+      '5aeee9f3-c1a0-44e9-a85e-f26691ac1502',
+      '213fc1f9-d919-4153-b28a-6e53cb13acce',
+      '51990c98-78e7-45db-ac60-ae2b4110517f',
+    ],
   ],
   usool: [
-    '45b11c1a-6569-4653-85ee-fc3397d5dce7',
-    '07d01f29-b988-4574-8ca1-9cedad8ca864',
-    'c68b2f57-38b0-4671-ad6d-c546eeea2945',
-    '44c0fa04-4e25-40dc-8b0e-9a4ea3ff9291',
+    [
+      '45b11c1a-6569-4653-85ee-fc3397d5dce7',
+      '07d01f29-b988-4574-8ca1-9cedad8ca864',
+      'c68b2f57-38b0-4671-ad6d-c546eeea2945',
+      '44c0fa04-4e25-40dc-8b0e-9a4ea3ff9291',
+    ],
+    [
+      '3c6a55b5-9c87-4cbe-8963-9ea596edf789',
+      '51b3515c-278d-4df5-a4fb-a7b71c920153',
+      'cae566ed-4e67-442d-a8bd-df8c76928ebd',
+      '4116d4b3-fd57-4fc9-a4de-0b12024fef7e',
+    ],
   ],
   nawawi: [
-    'da89ed81-0fb5-4f49-a689-880a89271aed',
-    'c222d45d-12aa-489b-b6d5-8c71d179b249',
-    '45777616-94a2-45a0-81c4-1dbcc82a606b',
-    '371c3a70-cb31-4f62-a927-3576432f673e',
+    [
+      'da89ed81-0fb5-4f49-a689-880a89271aed',
+      'c222d45d-12aa-489b-b6d5-8c71d179b249',
+      '45777616-94a2-45a0-81c4-1dbcc82a606b',
+      '371c3a70-cb31-4f62-a927-3576432f673e',
+    ],
+    [
+      '5d714abc-747b-4e95-8ab4-e31e6f985a3d',
+      'ff19a316-58a1-4278-bee4-b6f49b4fc435',
+      '41b189f4-a2e6-43a3-ba4f-e27fb4f6627b',
+      'e3b8d209-b4b7-45cc-bfb0-78ac6d7ed91b',
+    ],
   ],
 };
+function getDemoWeekIndex() {
+  const now = new Date();
+  const utc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const dayNum = new Date(utc).getUTCDay() || 7;
+  const thursday = new Date(utc);
+  thursday.setUTCDate(new Date(utc).getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(thursday.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((thursday - yearStart) / 86400000) + 1) / 7);
+  return weekNo % 2;
+}
+function getDemoFeaturedIds(book) {
+  const pools = DEMO_FEATURED_POOLS[book] || [];
+  return pools[getDemoWeekIndex()] || pools[0] || [];
+}
 const GAME_RESUME_KEY = 'alhudaGameResumeV1';
 const PENDING_SCORES_KEY = 'pendingScores';
 const QUESTION_TIME_SEC = 45;
@@ -56,6 +94,10 @@ let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed',
 let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
+let questionShownAt = 0;
+let lastDemoSessionStats = null;
+const AZURE_TTS_USAGE_KEY = 'azureTtsCharsMonthV1';
+const AZURE_F0_SOFT_LIMIT = 450000; // warn before free 500k/month
 
 const FEEDBACK_RATING_LABELS = {
   3: { emoji: '😍', label: 'أعجبني' },
@@ -161,21 +203,68 @@ function persistLoadedQuestionsOffline() {
   void saveQuestionsOffline({ ts: Date.now(), books });
 }
 
-function recordDemoAnalytics(q, isOk, picked) {
+function recordDemoAnalytics(q, isOk, picked, elapsedMs) {
   if (!state.demoMode || !q) return;
   let rows = [];
   try { rows = JSON.parse(localStorage.getItem(DEMO_ANALYTICS_KEY) || '[]'); } catch { rows = []; }
   if (!Array.isArray(rows)) rows = [];
+  const ms = Number.isFinite(elapsedMs) ? Math.max(0, Math.round(elapsedMs)) : null;
   rows.push({
     questionId: q.id || '',
     book: q.book || state.demoBook || '',
     correct: !!isOk,
     picked: String(picked || '').slice(0, 120),
     q: String(q.q || '').slice(0, 100),
+    ms,
     t: Date.now(),
   });
   if (rows.length > DEMO_ANALYTICS_MAX) rows = rows.slice(-DEMO_ANALYTICS_MAX);
   try { localStorage.setItem(DEMO_ANALYTICS_KEY, JSON.stringify(rows)); } catch (e) {}
+}
+
+function getQuestionElapsedMs() {
+  if (!questionShownAt) return null;
+  return Date.now() - questionShownAt;
+}
+
+function buildLastDemoSessionStats() {
+  const total = state.total || (state.questions || []).length || DEMO_COUNT;
+  const correct = state.correct || 0;
+  const wrong = state.wrong || 0;
+  let avgMs = null;
+  try {
+    const rows = JSON.parse(localStorage.getItem(DEMO_ANALYTICS_KEY) || '[]');
+    const session = (Array.isArray(rows) ? rows : [])
+      .filter((r) => r && r.book === (state.demoBook || r.book))
+      .slice(-total)
+      .filter((r) => Number.isFinite(r.ms));
+    if (session.length) {
+      avgMs = Math.round(session.reduce((s, r) => s + r.ms, 0) / session.length);
+    }
+  } catch (e) {}
+  return { total, correct, wrong, avgMs, book: state.demoBook || '' };
+}
+
+function formatAvgAnswerTime(ms) {
+  if (!Number.isFinite(ms) || ms < 0) return '';
+  const sec = Math.round(ms / 1000);
+  return arabicNum(sec) + ' ث';
+}
+
+function renderDemoResultSummary() {
+  const el = document.getElementById('demo-result-summary');
+  if (!el) return;
+  const stats = lastDemoSessionStats || buildLastDemoSessionStats();
+  lastDemoSessionStats = stats;
+  const book = BOOK_LABELS[stats.book] || stats.book || '';
+  const avg = formatAvgAnswerTime(stats.avgMs);
+  el.hidden = false;
+  el.innerHTML =
+    `<p class="demo-result-score">${arabicNum(stats.correct)} / ${arabicNum(stats.total)} صحيحة</p>` +
+    `<p class="demo-result-meta">${book ? escapeHtml(book) + ' · ' : ''}` +
+    `${arabicNum(stats.wrong)} خطأ` +
+    (avg ? ` · متوسط الوقت ${avg}` : '') +
+    `</p>`;
 }
 
 function getDemoHardQuestionsSummary(limit = 3) {
@@ -644,7 +733,7 @@ function buildDemoQuestions(book) {
 
   const pool = dedupeQuestionList(getOrderedPool(book, 'all'));
   const byId = new Map(pool.map((q) => [q.id, q]));
-  const featuredIds = DEMO_FEATURED_IDS[book] || [];
+  const featuredIds = getDemoFeaturedIds(book);
   const featured = featuredIds.map((id) => byId.get(id)).filter(Boolean);
 
   // Mix: up to 4 curated featured + fill with random from pool/bundle/fallback.
@@ -1003,7 +1092,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-EG-SalmaNeural';
 let cachedArabicVoice = null;
-const TTS_BLOB_CACHE_MAX = 40;
+const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
 const TTS_IDB_NAME = 'alhudaTtsCache';
@@ -1103,6 +1192,7 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
     if (!blob.size) throw new Error('empty audio');
     rememberTtsObjectUrl(key, URL.createObjectURL(blob));
     void putTtsBlobInIdb(key, blob);
+    recordAzureTtsUsage(text.length, res.headers.get('X-TTS-Provider'));
     return blob;
   })();
 
@@ -1144,6 +1234,39 @@ function warmPopularQuranAyahs() {
   }
 }
 
+function azureUsageMonthKey() {
+  const d = new Date();
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+}
+
+function getAzureTtsUsage() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(AZURE_TTS_USAGE_KEY) || '{}');
+    if (raw && raw.month === azureUsageMonthKey()) return { month: raw.month, chars: Number(raw.chars) || 0 };
+  } catch (e) {}
+  return { month: azureUsageMonthKey(), chars: 0 };
+}
+
+function recordAzureTtsUsage(charCount, provider) {
+  if (!provider || !String(provider).startsWith('azure')) return;
+  const n = Math.max(0, Number(charCount) || 0);
+  if (!n) return;
+  const cur = getAzureTtsUsage();
+  const next = { month: azureUsageMonthKey(), chars: cur.chars + n };
+  try { localStorage.setItem(AZURE_TTS_USAGE_KEY, JSON.stringify(next)); } catch (e) {}
+  maybeWarnAzureQuota(next.chars);
+}
+
+function maybeWarnAzureQuota(chars) {
+  if (chars < AZURE_F0_SOFT_LIMIT) return;
+  const flagKey = `azureQuotaWarned:${azureUsageMonthKey()}`;
+  if (sessionStorage.getItem(flagKey) === '1') return;
+  sessionStorage.setItem(flagKey, '1');
+  if (typeof showToast === 'function') {
+    showToast('تنبيه: اقتربت من حد أحرف Azure المجاني هذا الشهر', 'err');
+  }
+}
+
 async function refreshTtsProviderBadge() {
   const badge = document.getElementById('tts-provider-badge');
   if (!badge) return;
@@ -1156,10 +1279,16 @@ async function refreshTtsProviderBadge() {
   try {
     const res = await fetch('/api/tts-status', { cache: 'no-store' });
     const data = await res.json();
+    const usage = getAzureTtsUsage();
+    const pct = Math.min(100, Math.round((usage.chars / 500000) * 100));
     badge.hidden = false;
-    badge.textContent = data.azureConfigured ? 'TTS: Azure' : 'TTS: Edge';
+    badge.textContent = (data.azureConfigured ? 'TTS: Azure' : 'TTS: Edge') +
+      ` · ${usage.chars}/${500000} (~${pct}%)` +
+      (data.isolateAzureChars != null ? ` · isolate ${data.isolateAzureChars}` : '');
     badge.classList.toggle('is-azure', !!data.azureConfigured);
+    badge.classList.toggle('is-warn', usage.chars >= AZURE_F0_SOFT_LIMIT);
     badge.setAttribute('aria-hidden', 'false');
+    if (data.keyRotationHint) badge.title = data.keyRotationHint;
   } catch {
     badge.hidden = false;
     badge.textContent = 'TTS: ?';
@@ -1539,6 +1668,7 @@ const QURAN_BLOB_CACHE_MAX = 32;
 const quranAudioBlobCache = new Map(); // cacheKey -> objectUrl
 const quranPrefetchInFlight = new Map();
 let quranAudio = null;
+let quranPlayToken = 0;
 const quranVerseKeyCache = new Map();
 
 function quranBlobCacheKey(verseKey) {
@@ -1940,7 +2070,11 @@ async function resolveVerseKeyForQuestion(q) {
 }
 
 function stopQuranAudio() {
-  if (!quranAudio) return;
+  quranPlayToken += 1;
+  if (!quranAudio) {
+    document.querySelectorAll('.quran-recite-btn.playing').forEach((b) => b.classList.remove('playing'));
+    return;
+  }
   quranAudio.onended = null;
   quranAudio.onerror = null;
   quranAudio.pause();
@@ -1971,6 +2105,7 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
     if ('speechSynthesis' in window) speechSynthesis.cancel();
   }
   stopQuranAudio();
+  const playToken = quranPlayToken;
   if (btn) btn.classList.add('playing');
 
   // Prefer prefetched blob for near-instant start.
@@ -1979,6 +2114,7 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
     try {
       setQuranReciteStatus(null, 'loading');
       objectUrl = await fetchQuranAudioObjectUrl(verseKey);
+      if (playToken !== quranPlayToken) return;
       setQuranReciteStatus(null, objectUrl ? 'ready' : '');
     } catch (e) {
       console.warn('quran cache fetch:', e);
@@ -1987,8 +2123,10 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
   } else {
     setQuranReciteStatus(null, 'ready');
   }
+  if (playToken !== quranPlayToken) return;
 
   const tryPlay = async (src) => {
+    if (playToken !== quranPlayToken) return;
     quranAudio = new Audio(src);
     quranAudio.preload = 'auto';
     await quranAudio.play();
@@ -2010,6 +2148,7 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
 
   let lastErr = null;
   for (const url of urls) {
+    if (playToken !== quranPlayToken) return;
     try {
       await tryPlay(url);
       // Warm cache in background for next time.
@@ -2021,6 +2160,7 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
       stopQuranAudio();
     }
   }
+  if (playToken !== quranPlayToken) return;
   if (typeof showToast === 'function') showToast('تعذّر تشغيل التلاوة — تحقق من الاتصال', 'err');
   console.warn('quran play failed:', lastErr);
   if (btn) btn.classList.remove('playing');
@@ -2342,7 +2482,26 @@ async function shareScore() {
 }
 
 async function shareDemoResult() {
-  await shareScore();
+  const stats = lastDemoSessionStats || buildLastDemoSessionStats();
+  const book = BOOK_LABELS[stats.book] || stats.book || '';
+  const avg = stats.avgMs ? ` · متوسط ${Math.round(stats.avgMs / 1000)} ث` : '';
+  const text =
+    `📝 أنهيتُ نموذجاً تجريبياً في المكتبة الثلاثية` +
+    (book ? ` (${book})` : '') +
+    `\nصحيح: ${arabicNum(stats.correct)} / ${arabicNum(stats.total)}${avg}` +
+    `\nجمعية الهدى والحكمة\nhttps://alhuda.ryodan71.workers.dev/`;
+  const shareBtn = document.getElementById('btn-share-demo');
+  if (navigator.share) {
+    try { await navigator.share({ title: 'المكتبة الثلاثية', text }); return; } catch (e) {}
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    if (shareBtn) {
+      const prev = shareBtn.textContent;
+      shareBtn.textContent = '✅ تم النسخ!';
+      setTimeout(() => { shareBtn.textContent = prev; }, 2000);
+    }
+  } catch (e) { showAlert(text); }
 }
 
 /* ── Demo & Feedback ── */
@@ -2451,13 +2610,16 @@ function cleanArabicCitation(raw, questionId) {
   if (!raw || isWorksheetCitation(raw)) return '';
   let s = raw.trim();
   // Strip PDF/OCR private-use glyphs and presentation forms leftovers.
-  s = s.replace(/[\uE000-\uF8FF\uF000-\uFFFF]/g, '');
+  s = s.replace(/[\uE000-\uF8FF]/g, '');
   s = s.replace(/[\uFD3E\uFD3F]/g, ''); // ornate Quran paren ornaments often OCR'd empty
+  s = s.replace(/[\uFE00-\uFE0F]/g, ''); // variation selectors
   s = s.replace(/^كتاب التوحيد[^.«]{0,120}?\d+\s*/u, '');
   s = s.replace(/لشيخ الإسلام محمد بن عبدالوهاب[^\n«]*/gi, '');
   s = s.replace(/[]/g, '');
   s = s.replace(/أجل\s*واب|واب\s*جلا|اجلا واب|اجل واب/gi, '');
   s = s.replace(/الإجابة\s*الصحيحة\s*:?\s*/gi, '');
+  s = s.replace(/\bص\s*\.?\s*\d{1,4}\b/gi, '');
+  s = s.replace(/[|]{2,}|_{3,}|\.{4,}/g, ' ');
   s = s.replace(/\s+/g, ' ').trim();
   if (!s || isWorksheetCitation(s)) return '';
   s = postFixCitationPhrases(collapseBrokenArabicSpaces(s));
@@ -2654,6 +2816,7 @@ function onQuestionTimeUp() {
   } else if (state.demoMode) {
     state.wrong++;
     playSound('wrong');
+    recordDemoAnalytics(q, false, '—', getQuestionElapsedMs());
   }
   fb.className = 'feedback show bad';
   document.getElementById('fb-icon').textContent = '⏱️';
@@ -2786,6 +2949,7 @@ async function skipDemo() {
 }
 function endDemo() {
   clearGameSession();
+  lastDemoSessionStats = buildLastDemoSessionStats();
   state.demoMode = false;
   document.getElementById('demo-bar').style.display = 'none';
   feedbackRating = 0;
@@ -2803,6 +2967,7 @@ function endDemo() {
   document.getElementById('feedback-msg').textContent = '';
   const rd = document.getElementById('btn-review-demo');
   if (rd) rd.style.display = state.wrongLog.length ? 'block' : 'none';
+  renderDemoResultSummary();
   renderDemoAnalyticsSummary();
   const shareDemo = document.getElementById('btn-share-demo');
   if (shareDemo) shareDemo.style.display = 'block';
@@ -2841,6 +3006,8 @@ async function submitFeedback() {
   if (improveText) parts.push(`اقتراحات وتحسينات:\n${improveText}`);
   if (likeText) parts.push(`ملاحظات إضافية:\n${likeText}`);
   if (state.total) parts.push(`نتيجة النموذج: ${state.correct}/${state.total} صحيحة`);
+  const stats = lastDemoSessionStats || buildLastDemoSessionStats();
+  if (stats?.avgMs) parts.push(`متوسط زمن الإجابة: ${Math.round(stats.avgMs / 1000)} ث`);
   const hard = getDemoHardQuestionsSummary(5);
   if (hard.length) {
     parts.push(
@@ -3799,6 +3966,7 @@ function renderQ() {
     });
   }
   startQuestionTimer();
+  questionShownAt = Date.now();
   updateQuranReciteSlot(q);
   if (voiceOn) speakQuestion();
   persistGameSession();
@@ -3816,7 +3984,7 @@ function pick(btn, isOk) {
   const expEl = document.getElementById('fb-exp');
   const selfBox = document.getElementById('fb-self-correct');
   if (q?.id && typeof recordQuestionAttempt === 'function') recordQuestionAttempt(q.id, isOk);
-  if (state.demoMode) recordDemoAnalytics(q, isOk, isOk ? '' : (btn?.textContent || ''));
+  if (state.demoMode) recordDemoAnalytics(q, isOk, isOk ? '' : (btn?.textContent || ''), getQuestionElapsedMs());
 
   if (isOk) {
     btn.classList.add('correct');

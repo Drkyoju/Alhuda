@@ -17,7 +17,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=38">
+  <link rel="stylesheet" href="styles.css?v=39">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -226,6 +226,9 @@
       </div>
       <div class="card feedback-screen-inner">
       <div class="demo-badge">بعد النموذج التجريبي</div>
+      <div id="demo-result-summary" class="demo-result-summary" hidden></div>
+      <button type="button" class="btn btn-sm btn-white" id="btn-share-demo" onclick="shareDemoResult()" style="display:none;width:100%;margin-top:10px;">📤 شارك/ي نتيجة النموذج</button>
+      <div id="demo-analytics-summary" class="demo-analytics-summary" hidden></div>
       <h3>نموذج التقييم</h3>
       <p class="feedback-label">معلوماتك:</p>
       <div class="feedback-info-row">
@@ -242,7 +245,7 @@
         <button type="button" class="rating-btn" onclick="setRating(1,this)" data-r="1" aria-label="ما أعجبني"><span class="r-emoji" aria-hidden="true">😞</span>ما أعجبني</button>
       </div>
 
-      <details class="feedback-more-fold" open>
+      <details class="feedback-more-fold">
         <summary>اختياري: هل تريد/ين استخدام البرنامج؟ واقتراحات</summary>
         <p class="feedback-label">هل تريد/ين استخدام البرنامج؟</p>
         <div class="want-program-row" id="want-program-row">
@@ -255,8 +258,6 @@
       </details>
 
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
-      <div id="demo-analytics-summary" class="demo-analytics-summary" hidden></div>
-      <button type="button" class="btn btn-sm btn-white" id="btn-share-demo" onclick="shareDemoResult()" style="display:none;width:100%;margin-top:10px;">📤 شارك/ي نتيجة النموذج</button>
       <div class="real-game-locked-cta" id="real-game-locked-cta">
         <p class="real-game-locked-note">🔒 الأسئلة الكاملة مغلقة حالياً — شكراً لمشاركتك!</p>
         <button type="button" class="btn btn-xl real-game-locked-btn" disabled aria-disabled="true">📚 الدخول للأسئلة الحقيقية — مغلق 🔒</button>
@@ -602,7 +603,7 @@
 <script src="speech-diacritics-map.js"></script>
 <script src="demo-questions-bundle.js"></script>
 <script src="version.js"></script>
-<script src="app.js?v=74"></script>
+<script src="app.js?v=75"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=9"></script>
 <script src="platform.js?v=13"></script>

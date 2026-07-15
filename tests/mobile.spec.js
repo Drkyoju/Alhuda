@@ -15,9 +15,13 @@ test.beforeEach(async ({ page }) => {
 
 async function dismissOverlays(page) {
   const tutorial = page.locator('#game-tutorial-overlay.open');
-  if (await tutorial.isVisible().catch(() => false)) {
-    await page.getByRole('button', { name: /فهمت/ }).click();
+  try {
+    await tutorial.waitFor({ state: 'visible', timeout: 2500 });
+  } catch {
+    return;
   }
+  await page.getByRole('button', { name: /فهمت/ }).click();
+  await expect(tutorial).toBeHidden({ timeout: 3000 });
 }
 
 test('mobile demo: readable question and compact citation UI', async ({ page }) => {

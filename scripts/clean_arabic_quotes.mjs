@@ -142,9 +142,15 @@ function postFixPhrases(s) {
 
 function preprocessRaw(raw) {
   let s = (raw || '').trim();
+  s = s.replace(/[\uE000-\uF8FF]/g, '');
+  s = s.replace(/[\uFE00-\uFE0F]/g, '');
   s = s.replace(/^كتاب التوحيد[^.«]{0,120}?\d+\s*/u, '');
   s = s.replace(/لشيخ الإسلام محمد بن عبدالوهاب[^\n«]*/gi, '');
   s = s.replace(/[]/g, '');
+  s = s.replace(/أجل\s*واب|واب\s*جلا|اجلا واب|اجل واب/gi, '');
+  s = s.replace(/الإجابة\s*الصحيحة\s*:?\s*/gi, '');
+  s = s.replace(/\bص\s*\.?\s*\d{1,4}\b/gi, '');
+  s = s.replace(/[|]{2,}|_{3,}|\.{4,}/g, ' ');
   s = s.replace(/\s+/g, ' ').trim();
   return s;
 }

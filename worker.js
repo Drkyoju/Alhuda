@@ -13,6 +13,9 @@ const apiErrorCounters = {
   quran: { total: 0, byCode: {} },
 };
 
+/** Approximate Azure TTS chars billed in this isolate (not durable across deploys). */
+let isolateAzureChars = 0;
+
 function bumpApiError(kind, code) {
   const bucket = apiErrorCounters[kind];
   if (!bucket) return;
@@ -23,7 +26,8 @@ function bumpApiError(kind, code) {
 
 /** Popular mapped verses to warm into edge cache. */
 const POPULAR_QURAN_VERSES = [
-  '51:56', '4:48', '6:82', '2:256', '3:175', '47:19', '74:1', '16:125', '27:62', '9:31', '6:162', '1:2',
+  '51:56', '4:48', '6:82', '2:256', '3:175', '47:19', '74:1', '16:125', '27:62', '9:31',
+  '6:162', '1:2', '108:2', '96:1', '53:19', '6:57', '7:138', '41:53', '2:102', '4:142',
 ];
 
 function corsHeaders(request, methods = 'GET, POST, OPTIONS') {
@@ -65,6 +69,12 @@ async function handleTtsStatus(request, env) {
     provider: azure ? 'azure' : 'edge',
     voice: azure ? DEFAULT_AZURE_ARABIC_VOICE : DEFAULT_ARABIC_VOICE,
     errors: apiErrorCounters,
+    isolateAzureChars,
+    azureF0SoftLimit: 450000,
+    azureF0HardLimit: 500000,
+    keyRotationHint: azure
+      ? 'إذا ظهر المفتاح في شات سابقاً: رجّع المفتاح من Azure Portal وحدّث GitHub Secret AZURE_SPEECH_KEY'
+      : '',
   }), { status: 200, headers: { ...cors, ...JSON_HEADERS } });
 }
 
@@ -361,6 +371,7 @@ async function handleTts(request, env) {
       try {
         stream = await synthesizeAzureArabicSpeech(text, voice, env);
         provider = 'azure';
+        isolateAzureChars += text.length;
       } catch (azureErr) {
         console.warn('[tts] azure failed, falling back to edge:', azureErr);
         stream = await synthesizeArabicSpeech(text, voice);
@@ -374,8 +385,9 @@ async function handleTts(request, env) {
       headers: {
         ...cors,
         'Content-Type': 'audio/mpeg',
-        'Cache-Control': 'public, max-age=86400',
+        'Cache-Control': 'public, max-age=604800',
         'X-TTS-Provider': provider,
+        'X-TTS-Chars': String(text.length),
       },
     });
   } catch (err) {
