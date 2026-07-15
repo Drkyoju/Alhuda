@@ -111,7 +111,7 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null };
 let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
@@ -3370,6 +3370,7 @@ async function beginDemo(book) {
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
   state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.answered = false;
   state.total = state.questions.length;
+  state.answerLog = [];
   const bookLabel = BOOK_LABELS[book] || book;
   document.getElementById('demo-bar').textContent = `📝 نموذج تجريبي — ${bookLabel} — ${arabicNum(state.total)} أسئلة`;
   document.getElementById('demo-bar').style.display = 'block';
@@ -4501,6 +4502,7 @@ function startGame() {
   if (typeof trackEvent === 'function') trackEvent('game_start', { book: state.book, level: state.level, training: trainingMode, stage: state.activeStageNum, review: state.stageReviewMode });
   state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
   state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.wrongLog = []; state.answered = false;
+  state.answerLog = [];
   state.gameEnded = false; state.gameEnding = false;
   clearTimeout(gameEndTimer);
   state.total = state.questions.length;
@@ -4521,7 +4523,8 @@ function renderQ() {
   if (state.idx >= state.questions.length) { void endGame(); return; }
   stopSpeaking();
   const q = state.questions[state.idx];
-  state.answered = false;
+  const prior = state.answerLog?.[state.idx] || null;
+  state.answered = !!prior;
   document.getElementById('show-answer-btn').style.display = 'none';
   const stagePrefix = (!state.demoMode && !state.challengeMode && !state.homeworkId && !state.useManualRange)
     ? `مرحلة ${arabicNum(state.activeStageNum || 1)} — `
@@ -4543,19 +4546,120 @@ function renderQ() {
       appendAnswerOption(grid, txt, (i === 0) === q.tf, i === 0 ? 0 : 3, q);
     });
   } else {
-    const order = shuffleArr([0, 1, 2, 3].slice(0, (q.a || []).length));
+    const order = (prior?.displayAnswerOrder?.length
+      ? prior.displayAnswerOrder.slice()
+      : shuffleArr([0, 1, 2, 3].slice(0, (q.a || []).length)));
     state.displayAnswerOrder = order.slice();
     order.forEach((i, orderIdx) => {
       appendAnswerOption(grid, q.a[i], i === q.c, orderIdx, q);
     });
   }
-  startQuestionTimer();
-  questionShownAt = Date.now();
   updateQuranReciteSlot(q);
-  // Prefetch AFTER display order is known so cache matches what we speak.
   void prefetchHybridSpeechForQuestion(q);
-  if (voiceOn) speakQuestion();
+  if (prior) {
+    clearQuestionTimer();
+    setTimerVisible(false);
+    applyAnsweredStateToGrid(prior);
+    reopenFeedbackForPrior(q, prior);
+  } else {
+    document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
+    setFeedbackPanelOpen(false);
+    document.getElementById('fb-self-correct').style.display = 'none';
+    startQuestionTimer();
+    questionShownAt = Date.now();
+    if (voiceOn) speakQuestion();
+  }
+  updatePrevQBtn();
   persistGameSession();
+}
+
+function rememberAnswer(isOk, picked) {
+  if (!Array.isArray(state.answerLog)) state.answerLog = [];
+  state.answerLog[state.idx] = {
+    isOk: !!isOk,
+    picked: String(picked || ''),
+    displayAnswerOrder: state.displayAnswerOrder ? state.displayAnswerOrder.slice() : null,
+  };
+}
+
+function applyAnsweredStateToGrid(prior) {
+  document.querySelectorAll('#ans-grid .ans-btn').forEach((b) => {
+    b.disabled = true;
+    const isCorrectBtn = b.dataset.correct === '1';
+    if (isCorrectBtn) b.classList.add('correct');
+    if (prior.isOk && isCorrectBtn) b.setAttribute('aria-pressed', 'true');
+    if (!prior.isOk && prior.picked && b.textContent === prior.picked) {
+      b.classList.add('wrong');
+      b.setAttribute('aria-pressed', 'true');
+    }
+  });
+}
+
+function reopenFeedbackForPrior(q, prior) {
+  const fb = document.getElementById('feedback');
+  const n = state.userName || DEFAULT_PLAYER;
+  const selfBox = document.getElementById('fb-self-correct');
+  if (selfBox) selfBox.style.display = 'none';
+  if (prior.isOk) {
+    fb.className = 'feedback show ok';
+    document.getElementById('fb-icon').textContent = '✅';
+    document.getElementById('fb-title').textContent = `مراجعة السؤال ${arabicNum(state.idx + 1)} — إجابة صحيحة`;
+    mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, true));
+    state.lastFeedbackWrong = '';
+    updateInRoundReviewBtn(false);
+  } else {
+    fb.className = 'feedback show bad';
+    document.getElementById('fb-icon').textContent = '🤔';
+    document.getElementById('fb-title').textContent = `مراجعة السؤال ${arabicNum(state.idx + 1)} — إجابة خاطئة`;
+    mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, false, prior.picked));
+    state.lastFeedbackWrong = prior.picked || '';
+    updateInRoundReviewBtn(true);
+  }
+  setFeedbackPanelOpen(true);
+  setFeedbackContinueVisible(true);
+  updateFeedbackSpeakBtn(true);
+  updatePrevQBtn();
+}
+
+function updatePrevQBtn() {
+  const show = state.idx > 0 && !state.gameEnded && !state.gameEnding;
+  ['btn-prev-q', 'btn-prev-q-top'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = show ? '' : 'none';
+  });
+}
+
+function prevQ() {
+  if (state.gameEnding || state.gameEnded) return;
+  if (state.idx <= 0) return;
+  stopSpeaking();
+  updateFeedbackSpeakBtn(false);
+  state.lastFeedbackWrong = '';
+  state.idx--;
+  renderQ();
+  prefetchUpcomingQuran(state.idx);
+  prefetchUpcomingTts(state.idx);
+}
+
+function nextQ() {
+  if (state.gameEnding || state.gameEnded) return;
+  stopSpeaking();
+  updateFeedbackSpeakBtn(false);
+  updateInRoundReviewBtn(false);
+  state.lastFeedbackWrong = '';
+  state.idx++;
+  document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
+  setFeedbackPanelOpen(false);
+  document.getElementById('fb-self-correct').style.display = 'none';
+  document.getElementById('fb-exp').textContent = '';
+  if (state.idx >= state.questions.length) {
+    if (state.demoMode) endDemo();
+    else void endGame();
+  } else {
+    renderQ();
+    prefetchUpcomingQuran(state.idx);
+    prefetchUpcomingTts(state.idx);
+  }
 }
 
 function pick(btn, isOk) {
@@ -4569,8 +4673,10 @@ function pick(btn, isOk) {
   const n = state.userName || DEFAULT_PLAYER;
   const expEl = document.getElementById('fb-exp');
   const selfBox = document.getElementById('fb-self-correct');
+  const pickedText = btn?.textContent || '';
+  rememberAnswer(isOk, isOk ? pickedText : pickedText);
   if (q?.id && typeof recordQuestionAttempt === 'function') recordQuestionAttempt(q.id, isOk);
-  if (state.demoMode) recordDemoAnalytics(q, isOk, isOk ? '' : (btn?.textContent || ''), getQuestionElapsedMs());
+  if (state.demoMode) recordDemoAnalytics(q, isOk, isOk ? '' : pickedText, getQuestionElapsedMs());
 
   if (isOk) {
     btn.classList.add('correct');
@@ -4600,10 +4706,11 @@ function pick(btn, isOk) {
     state.lastFeedbackWrong = '';
     updateFeedbackSpeakBtn(true);
     updateInRoundReviewBtn(false);
+    updatePrevQBtn();
   } else {
     btn.classList.add('wrong');
     btn.setAttribute('aria-pressed', 'true');
-    const picked = btn.textContent;
+    const picked = pickedText;
     if (!trainingMode) {
       state.wrongLog.push({ q, index: state.idx, picked });
     }
@@ -4619,6 +4726,7 @@ function pick(btn, isOk) {
         expEl.textContent = '';
         setFeedbackPanelOpen(true);
         scheduleEndGame(1800);
+        updatePrevQBtn();
         return;
       }
     } else if (state.demoMode) {
@@ -4646,29 +4754,9 @@ function pick(btn, isOk) {
     state.lastFeedbackWrong = picked;
     updateFeedbackSpeakBtn(true);
     updateInRoundReviewBtn(true);
+    updatePrevQBtn();
   }
   persistGameSession();
-}
-
-function nextQ() {
-  if (state.gameEnding || state.gameEnded) return;
-  stopSpeaking();
-  updateFeedbackSpeakBtn(false);
-  updateInRoundReviewBtn(false);
-  state.lastFeedbackWrong = '';
-  state.idx++;
-  document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
-  setFeedbackPanelOpen(false);
-  document.getElementById('fb-self-correct').style.display = 'none';
-  document.getElementById('fb-exp').textContent = '';
-  if (state.idx >= state.questions.length) {
-    if (state.demoMode) endDemo();
-    else void endGame();
-  } else {
-    renderQ();
-    prefetchUpcomingQuran(state.idx);
-    prefetchUpcomingTts(state.idx);
-  }
 }
 
 function updateReviewButtons() {

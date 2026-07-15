@@ -3061,7 +3061,8 @@
     }
     #game .feedback .fb-actions .btn,
     #game .feedback .fb-continue-btn,
-    #game .feedback #btn-review-in-round {
+    #game .feedback #btn-review-in-round,
+    #game .feedback #btn-prev-q {
       width: auto !important;
       min-width: 0 !important;
       max-width: none !important;
@@ -3074,6 +3075,28 @@
       height: auto !important;
       border-radius: 10px !important;
       line-height: 1.2 !important;
+    }
+    #game .q-prev-link {
+      border: 1px solid rgba(42, 92, 69, 0.28);
+      background: rgba(232, 241, 236, 0.9);
+      color: var(--emerald-dark);
+      font-family: var(--font-display);
+      font-size: 0.72em;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      min-height: 28px;
+      line-height: 1.2;
+    }
+    #game .q-prev-link:active {
+      transform: translateY(1px);
+    }
+    #game .feedback #btn-prev-q {
+      background: #fff;
+      color: var(--emerald-dark);
+      border: 1.5px solid rgba(42, 92, 69, 0.3);
+      box-shadow: none;
     }
     #game .feedback #btn-review-in-round {
       background: #e8f1ec;

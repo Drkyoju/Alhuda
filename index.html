@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="fonts.css?v=1">
   <link rel="stylesheet" href="enhancements.css?v=9">
   <link rel="stylesheet" href="kids-ui.css?v=6">
-  <link rel="stylesheet" href="styles.css?v=44">
+  <link rel="stylesheet" href="styles.css?v=45">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -424,6 +424,7 @@
       <div id="demo-bar" class="training-bar" style="display:none;background:var(--teal-soft);border-color:var(--sky);">📝 نموذج تجريبي — ٨ أسئلة</div>
       <div class="q-meta">
         <span class="q-num" id="q-num"></span>
+        <button type="button" class="q-prev-link" id="btn-prev-q-top" onclick="prevQ()" style="display:none;" aria-label="السؤال السابق">→ السابق</button>
         <span class="stage-game-badge" id="stage-game-badge" style="display:none;"></span>
         <span class="badge badge-blue" id="q-book-badge"></span>
         <span class="badge-tf" id="q-type-badge" style="display:none;">✅ صح أو خطأ</span>
@@ -473,6 +474,7 @@
         <div class="fb-exp" id="fb-exp"></div>
         <div class="self-correct-box" id="fb-self-correct" style="display:none;"></div>
         <div class="fb-actions">
+          <button type="button" class="btn btn-white btn-xs" id="btn-prev-q" onclick="prevQ()" style="display:none;">→ السابق</button>
           <button type="button" class="btn btn-blue btn-xs" id="btn-review-in-round" onclick="startInRoundReview()" style="display:none;">📋 راجع أخطاءك</button>
           <button type="button" class="btn btn-green btn-xs fb-continue-btn" onclick="nextQ()">متابعة ←</button>
         </div>
@@ -620,7 +622,7 @@
 <script src="demo-questions-bundle.js"></script>
 <script src="version.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="app.js?v=85" defer></script>
+<script src="app.js?v=86" defer></script>
 <script src="auth.js?v=11" defer></script>
 <script src="enhancements.js?v=9" defer></script>
 <script src="platform.js?v=13" defer></script>
