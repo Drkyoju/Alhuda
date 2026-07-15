@@ -141,7 +141,13 @@
 
 /* ── شريط اللعب ── */
 .kids-theme #game .top-bar {
+  background: transparent;
+}
+.kids-theme #game .top-bar-cluster {
   background: linear-gradient(135deg, #163828 0%, #2A8A6B 55%, #1A6B7A 100%);
+}
+.kids-theme #game .top-bar .close-btn {
+  background: linear-gradient(135deg, #163828 0%, #2A8A6B 100%);
 }
 .kids-theme .progress-bar {
   background: linear-gradient(90deg, #FCD34D, #6EE7B7, #7DD3FC, #FCD34D) !important;
