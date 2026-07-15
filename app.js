@@ -1133,7 +1133,7 @@ function onFeedbackSpeakerClick() {
 
 /* ── Quran recitation (علي الحذيفي — Islamic Network CDN, 128kbps max) ── */
 const QURAN_RECITER_LABEL = 'الحذيفي';
-const QURAN_RECITE_BTN_LABEL = `🎧 تلاوة — ${QURAN_RECITER_LABEL}`;
+const QURAN_RECITE_BTN_LABEL = `🎧 تلاوة`;
 const QURAN_RECITE_BTN_ARIA = `استمع لتلاوة الآية — علي ${QURAN_RECITER_LABEL}`;
 const QURAN_RECITER_EDITION = 'ar.hudhaify';
 const QURAN_RECITER_BITRATE = 128;

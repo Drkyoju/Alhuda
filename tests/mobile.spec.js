@@ -31,32 +31,39 @@ test('mobile demo: readable question and compact citation UI', async ({ page }) 
   const qBox = page.locator('#game .q-box');
   await expect(qBox).toBeVisible();
   const qFont = await qBox.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
-  expect(qFont).toBeGreaterThanOrEqual(18);
+  expect(qFont).toBeGreaterThanOrEqual(16);
 
   await page.locator('.ans-btn').first().click();
   await expect(page.locator('#game .feedback.show')).toBeVisible({ timeout: 5000 });
   await expect(page.locator('#btn-speak-feedback')).toBeVisible();
 
+  // Voice button sits upper-left of the question on iPhone layout
+  const voiceBtn = page.locator('#btn-speak-question');
+  const qBox2 = await qBox.boundingBox();
+  const voiceBox = await voiceBtn.boundingBox();
+  if (qBox2 && voiceBox) {
+    expect(voiceBox.y).toBeLessThanOrEqual(qBox2.y + 12);
+    expect(voiceBox.x).toBeLessThan(qBox2.x + qBox2.width / 2);
+  }
+
   const citeQuote = page.locator('#game .feedback .book-cite-quote').first();
   if (await citeQuote.count()) {
     const citeFont = await citeQuote.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
     expect(citeFont).toBeLessThan(qFont);
-    expect(citeFont).toBeLessThanOrEqual(17);
+    expect(citeFont).toBeLessThanOrEqual(16);
   }
 
   const reciteBtn = page.locator('#game .feedback .quran-recite-btn').first();
   if (await reciteBtn.count()) {
     const btnBox = await reciteBtn.boundingBox();
-    expect(btnBox?.width || 0).toBeLessThan(390);
-    await expect(reciteBtn).toHaveText(/تلاوة — الحذيفي/);
-    // Speaker sits above the ayah quote
+    expect(btnBox?.width || 0).toBeLessThan(220);
+    expect(btnBox?.height || 0).toBeLessThanOrEqual(34);
+    await expect(reciteBtn).toHaveText(/تلاوة/);
     const ayah = page.locator('#game .feedback .book-cite-ayah').first();
     if (await ayah.count()) {
       const reciteY = (await reciteBtn.boundingBox())?.y ?? 0;
       const ayahY = (await ayah.boundingBox())?.y ?? 0;
       expect(reciteY).toBeLessThan(ayahY);
-      const ayahH = (await ayah.boundingBox())?.height ?? 0;
-      expect(ayahH).toBeGreaterThanOrEqual(48);
     }
   }
 
