@@ -1560,11 +1560,14 @@
       font-family: 'Tajawal', sans-serif;
     }
     .progress-wrap {
-      flex: 1;
-      height: 14px;
+      flex: 0 0 88px;
+      width: 88px;
+      max-width: 88px;
+      height: 8px;
       background: var(--border);
       border-radius: 8px;
       overflow: hidden;
+      margin-inline-start: auto;
     }
     .progress-bar {
       height: 100%;
@@ -1583,8 +1586,8 @@
       color: var(--emerald-dark);
       white-space: nowrap;
     }
-    .q-area { padding: 20px 16px; width: 100%; flex: 1 1 auto; min-height: 0; padding-bottom: 160px; }
-    .q-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 10px; }
+    .q-area { padding: 8px 14px 24px; width: 100%; flex: 1 1 auto; min-height: 0; padding-bottom: 160px; }
+    .q-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; }
     .q-num { font-size: 0.75em; color: var(--text-soft); font-weight: 700; }
     .q-box {
       background: var(--cream);
@@ -1601,7 +1604,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 8px;
     }
     .q-box-row {
       display: flex;
@@ -2149,13 +2152,13 @@
     .training-bar {
       background: var(--gold-glow);
       border: 2px solid var(--gold);
-      padding: 8px 14px;
+      padding: 6px 12px;
       border-radius: 12px;
       text-align: center;
       font-weight: 800;
-      font-size: 0.85em;
+      font-size: 0.8em;
       color: var(--emerald-dark);
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
     .badge {
       display: inline-block;
@@ -2594,7 +2597,10 @@
       background: var(--grad-emerald);
       border-bottom: none;
       box-shadow: 0 8px 24px rgba(15, 36, 25, 0.2);
-      padding-top: max(10px, env(safe-area-inset-top));
+      padding-top: max(6px, env(safe-area-inset-top));
+      padding-bottom: 6px;
+      padding-inline: 10px;
+      gap: 6px;
       top: 0;
     }
     .top-bar .close-btn {
@@ -2602,13 +2608,24 @@
       border: 1px solid rgba(255,255,255,0.25);
       color: white;
       border-radius: var(--radius-sm);
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
     }
     .top-bar .score-badge {
       background: rgba(255,255,255,0.95);
       border: 1px solid var(--gold);
       color: var(--emerald-dark);
     }
-    .top-bar .progress-wrap { background: rgba(0,0,0,0.18); border-radius: 6px; }
+    .top-bar .progress-wrap {
+      flex: 0 0 72px;
+      width: 72px;
+      max-width: 72px;
+      height: 7px;
+      background: rgba(0,0,0,0.18);
+      border-radius: 6px;
+      margin-inline-start: auto;
+    }
     .top-bar .progress-bar { background: var(--grad-gold); border-radius: 6px; }
 
     .q-box {
@@ -2981,7 +2998,7 @@
     #game .q-area {
       max-width: 640px;
       margin: 0 auto;
-      padding-bottom: 24px;
+      padding: 4px 12px 20px;
       transition: padding-bottom 0.25s ease;
     }
     #game.feedback-open .q-area {
@@ -2995,11 +3012,28 @@
     }
     #game .training-bar {
       border-radius: var(--radius-md);
-      font-size: 0.82em;
+      font-size: 0.76em;
       font-weight: 800;
-      margin-bottom: 12px;
-      padding: 10px 14px;
+      margin-bottom: 6px;
+      padding: 6px 10px;
       border: 1px solid var(--border-gold);
+    }
+    #game .q-box {
+      padding: 14px 14px;
+      margin-bottom: 8px;
+      font-size: 1.05em;
+      line-height: 1.7;
+    }
+    #game .ans-grid {
+      gap: 8px;
+    }
+    #game .ans-btn {
+      min-height: 48px;
+      padding: 10px 12px;
+    }
+    #game .q-progress-strip {
+      margin-bottom: 6px;
+      height: 5px;
     }
     #game .feedback {
       max-width: 640px;
@@ -3362,8 +3396,8 @@
       .q-with-timer { gap: 5px; align-items: flex-start; }
       .top-bar { gap: 5px; padding-left: 8px; padding-right: 8px; }
       .score-badge { font-size: 0.68em; padding: 2px 7px; border-radius: 10px; }
-      #game .q-area { padding: 10px 10px 20px; }
-      #game.feedback-open .q-area { padding: 10px 10px max(50dvh, 100px); }
+      #game .q-area { padding: 4px 10px 16px; }
+      #game.feedback-open .q-area { padding: 4px 10px max(50dvh, 100px); }
       #game .feedback #fb-title {
         font-size: 0.86em !important;
       }
@@ -3572,8 +3606,43 @@
       }
       .q-timer-hourglass .q-timer-svg { width: 32px; height: 40px; }
       .q-timer-hourglass .q-timer-num { font-size: 0.85em; }
-      #game .q-area { padding: 8px 8px 18px; }
-      #game.feedback-open .q-area { padding: 8px 8px max(48dvh, 90px); }
+      #game .q-area { padding: 4px 8px 16px; }
+      #game.feedback-open .q-area { padding: 4px 8px max(48dvh, 90px); }
+    }
+    @media (orientation: landscape) and (max-height: 500px) {
+      #game .top-bar {
+        padding-top: max(4px, env(safe-area-inset-top));
+        padding-bottom: 4px;
+        gap: 5px;
+      }
+      #game .top-bar .progress-wrap {
+        flex-basis: 64px;
+        width: 64px;
+        max-width: 64px;
+        height: 6px;
+      }
+      #game .q-area {
+        padding: 2px 10px 12px;
+      }
+      #game .training-bar,
+      #game #demo-bar {
+        margin-bottom: 4px;
+        padding: 4px 8px;
+        font-size: 0.72em;
+      }
+      #game .q-meta { margin-bottom: 4px; }
+      #game .q-progress-strip { margin-bottom: 4px; height: 4px; }
+      #game .q-with-timer { margin-bottom: 4px; }
+      #game .q-box {
+        padding: 8px 10px;
+        font-size: 0.95em;
+        line-height: 1.55;
+      }
+      #game .ans-btn {
+        min-height: 40px;
+        padding: 6px 10px;
+      }
+      #game .ans-grid { gap: 6px; }
     }
     @media (max-width: 360px) {
       .q-with-timer {
@@ -3651,11 +3720,11 @@
 
     /* ── شريط تقدّم السؤال ── */
     .q-progress-strip {
-      height: 8px;
+      height: 5px;
       background: var(--border);
       border-radius: 8px;
       overflow: hidden;
-      margin-bottom: 12px;
+      margin-bottom: 6px;
     }
     .q-progress-fill {
       height: 100%;
