@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="fonts.css?v=1">
   <link rel="stylesheet" href="enhancements.css?v=9">
   <link rel="stylesheet" href="kids-ui.css?v=11">
-  <link rel="stylesheet" href="styles.css?v=57">
+  <link rel="stylesheet" href="styles.css?v=58">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -474,14 +474,14 @@
     <div class="feedback" id="feedback" aria-live="polite" aria-atomic="true">
       <div class="fb-inner">
         <div class="fb-sheet-handle" id="fb-sheet-handle" role="separator" aria-orientation="horizontal" aria-label="اسحب لتوسيع أو تصغير اللوحة" tabindex="0"></div>
-        <div class="fb-icon-wrap" id="fb-icon"></div>
         <div class="fb-title-row">
+          <span class="fb-icon-wrap" id="fb-icon" aria-hidden="true"></span>
           <div class="fb-title" id="fb-title"></div>
-          <button type="button" class="voice-btn voice-btn-sm fb-speak-btn" id="btn-speak-feedback" onclick="onFeedbackSpeakerClick()" aria-label="اقرأ الإجابة والاستشهاد" style="display:none">🔊</button>
         </div>
         <div class="fb-exp" id="fb-exp"></div>
         <div class="self-correct-box" id="fb-self-correct" style="display:none;"></div>
         <div class="fb-actions">
+          <button type="button" class="btn btn-white btn-xs fb-speak-btn" id="btn-speak-feedback" onclick="onFeedbackSpeakerClick()" aria-label="اقرأ ما يظهر في الإجابة" style="display:none">🔊 اقرأ</button>
           <button type="button" class="btn btn-white btn-xs" id="btn-prev-q" onclick="prevQ()" style="display:none;">→ السابق</button>
           <button type="button" class="btn btn-blue btn-xs" id="btn-review-in-round" onclick="startInRoundReview()" style="display:none;">📋 راجع أخطاءك</button>
           <button type="button" class="btn btn-green btn-xs fb-continue-btn" onclick="nextQ()">متابعة ←</button>
@@ -630,7 +630,7 @@
 <script src="demo-questions-bundle.js"></script>
 <script src="version.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="app.js?v=98" defer></script>
+<script src="app.js?v=99" defer></script>
 <script src="auth.js?v=11" defer></script>
 <script src="enhancements.js?v=13" defer></script>
 <script src="platform.js?v=13" defer></script>

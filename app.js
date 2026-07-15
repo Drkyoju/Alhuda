@@ -1942,10 +1942,26 @@ function buildFeedbackSpeechText(q, wrongText) {
   return parts.filter(Boolean).join('، ');
 }
 
+/** Speak ONLY what is on screen in the feedback panel — never invent extra شرح/آية. */
+function buildFeedbackSpeechTextFromDom(root = document.getElementById('fb-exp')) {
+  if (!root) return '';
+  const clone = root.cloneNode(true);
+  clone.querySelectorAll(
+    'button, .quran-recite-btn, .quran-recite-wrap, .quran-recite-status, .quran-recite-above'
+  ).forEach((el) => el.remove());
+  const text = (clone.innerText || clone.textContent || '')
+    .replace(/[📖✅❌💡🎧]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return text;
+}
+
 async function speakFeedbackOnce(q, wrongText, btn) {
   if (!q) return;
   await ensureSpeechMapsLoaded();
-  const text = buildFeedbackSpeechText(q, wrongText);
+  // Prefer visible panel text so mic never reads content that isn't shown.
+  const fromDom = buildFeedbackSpeechTextFromDom();
+  const text = fromDom || buildFeedbackSpeechText(q, wrongText);
   const clean = stripForSpeech(text);
   if (!clean) return;
   stopSpeaking();
@@ -4898,7 +4914,7 @@ function pick(btn, isOk) {
     fb.className = 'feedback show bad';
     document.getElementById('fb-icon').textContent = '🤔';
     document.getElementById('fb-title').textContent = state.demoMode
-      ? `${n}، إجابة خاطئة — راجع/ي الاستشهاد أدناه 📖`
+      ? `${n}، إجابة خاطئة — راجع/ي الاستشهاد أدناه 💡`
       : `${n}، إجابة خاطئة — راجع/يها لاحقاً في «مراجعة الأخطاء»`;
     if (trainingMode) {
       selfBox.style.display = 'block';
