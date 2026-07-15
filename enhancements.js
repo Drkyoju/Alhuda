@@ -109,19 +109,26 @@
     };
     const promptUpdate = () => {
       if (!pendingReg?.waiting) return;
-      showToast('تحديث متاح — اضغط للتطبيق الآن', 'info', {
-        duration: 12000,
+      // Auto-apply waiting worker (skipWaiting already on install); ask user to reload.
+      activateWaiting();
+      showToast('تحديث جديد جاهز — اضغط لإعادة التحميل', 'info', {
+        duration: 15000,
         onClick: () => {
           userRequestedUpdate = true;
-          activateWaiting();
-          showToast('جاري تطبيق التحديث...', 'ok', { duration: 4000 });
+          window.location.reload();
         },
       });
     };
-    // Only reload when the user explicitly tapped the update toast.
-    // Auto-reload on every controllerchange broke smoke tests and mid-session UX.
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!userRequestedUpdate || refreshing) return;
+      if (refreshing) return;
+      // One automatic reload when a new SW takes control (fixes stuck old «شرح» UI).
+      if (!sessionStorage.getItem('alhudaSwReloaded')) {
+        sessionStorage.setItem('alhudaSwReloaded', '1');
+        refreshing = true;
+        window.location.reload();
+        return;
+      }
+      if (!userRequestedUpdate) return;
       refreshing = true;
       window.location.reload();
     });
@@ -142,6 +149,32 @@
     }).catch((err) => {
       console.warn('[SW] registration failed:', err);
     });
+
+    // If this tab booted with a stale cache, force one hard refresh from network version.js.
+    void (async () => {
+      try {
+        const res = await fetch(`./version.js?_=${Date.now()}`, { cache: 'no-store' });
+        const text = await res.text();
+        const m = text.match(/cache:\s*'([^']+)'/);
+        const live = m?.[1];
+        const local = window.ALHUDA_ASSETS?.cache;
+        if (!live || !local || live === local) {
+          sessionStorage.removeItem('alhudaVerReload');
+          return;
+        }
+        if (sessionStorage.getItem('alhudaVerReload') === live) return;
+        sessionStorage.setItem('alhudaVerReload', live);
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (const r of regs) {
+          if (r.waiting) r.waiting.postMessage('SKIP_WAITING');
+        }
+        if (window.caches) {
+          const keys = await caches.keys();
+          await Promise.all(keys.map((k) => caches.delete(k)));
+        }
+        window.location.reload();
+      } catch (e) {}
+    })();
   }
 
   function initKidsUI() {

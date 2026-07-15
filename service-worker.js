@@ -1,13 +1,10 @@
 // Alhuda service worker — version-pinned cache, SWR for JS,
 // cache-first static assets, navigation fallback, atomic-addAll-safe install.
 //
-// VERSION HANDSHAKE: a new SW installs in the background but does NOT call
-// skipWaiting() until the page sends `postMessage('SKIP_WAITING')`. This
-// prevents the new JS from activating while an old HTML tab is still running,
-// which previously could throw on renamed functions. enhancements.js triggers
-// the message on next page load so users get the update on the NEXT visit.
+// On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
+// without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v114';
+const CACHE = 'alhuda-v115';
 const ASSETS = [
   './',
   './index.html',
@@ -39,9 +36,7 @@ const ASSETS = [
   './fonts/amiri-arabic-700-normal.woff2',
 ];
 
-// Single shared version string. enhancements.js must keep its registration
-// query `?v=` in sync with this constant.
-const VERSION = 'v13';
+const VERSION = 'v15';
 
 self.addEventListener('message', (e) => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
@@ -58,6 +53,7 @@ self.addEventListener('install', (e) => {
       if (failed.length) {
         console.warn('[SW] Some precache assets failed:', failed);
       }
+      await self.skipWaiting();
     })()
   );
 });
@@ -66,9 +62,8 @@ self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 function isStaticAppFile(url) {
@@ -77,12 +72,12 @@ function isStaticAppFile(url) {
 
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(CACHE);
-  const cached = await cache.match(request, { ignoreSearch: true });
+  // Prefer exact URL (respects ?v= cache-bust).
+  const cachedExact = await cache.match(request);
   const networkPromise = fetch(request)
     .then((res) => {
       if (res.ok) {
         cache.put(request, res.clone());
-        // Also store without query so install precache paths hit.
         try {
           const bare = new URL(request.url);
           bare.search = '';
@@ -92,12 +87,15 @@ async function staleWhileRevalidate(request) {
       return res;
     })
     .catch(() => null);
-  if (cached) {
+  if (cachedExact) {
     void networkPromise;
-    return cached;
+    return cachedExact;
   }
+  // No exact pin — prefer network so ?v= bumps are not stuck on old ignoreSearch hits.
   const net = await networkPromise;
   if (net) return net;
+  const cachedLoose = await cache.match(request, { ignoreSearch: true });
+  if (cachedLoose) return cachedLoose;
   throw new Error('offline and uncached');
 }
 
@@ -105,6 +103,22 @@ self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin.includes('supabase.co')) return;
+
+  // version.js must be network-first so clients detect updates.
+  if (url.origin === self.origin && /\/version\.js$/i.test(url.pathname)) {
+    e.respondWith(
+      fetch(e.request)
+        .then((res) => {
+          if (res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE).then((c) => c.put(e.request, clone));
+          }
+          return res;
+        })
+        .catch(() => caches.match(e.request).then((r) => r || caches.match('./version.js')))
+    );
+    return;
+  }
 
   if (e.request.mode === 'navigate') {
     e.respondWith(
@@ -121,7 +135,6 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // JS: stale-while-revalidate — fast repeat visits, still update in background.
   if (url.origin === self.origin && /\.js$/i.test(url.pathname)) {
     e.respondWith(
       staleWhileRevalidate(e.request).catch(() => caches.match(e.request).then((r) => r || fetch(e.request)))
@@ -131,8 +144,10 @@ self.addEventListener('fetch', (e) => {
 
   if (isStaticAppFile(url)) {
     e.respondWith(
-      caches.match(e.request, { ignoreSearch: true }).then((cached) => {
-        if (cached) return cached;
+      caches.match(e.request).then(async (exact) => {
+        if (exact) return exact;
+        const loose = await caches.match(e.request, { ignoreSearch: true });
+        if (loose) return loose;
         return fetch(e.request).then((res) => {
           if (res.ok) {
             const clone = res.clone();

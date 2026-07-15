@@ -3274,12 +3274,11 @@ function getCleanExplanationText(q) {
 }
 
 /**
- * Search for the real book citation (canonical map → source_quote → quote-like snippet in exp).
- * Never returns pedagogical «شرح» that merely restates the answer.
+ * Search for the real book citation only (canonical map → source_quote).
+ * Do NOT pull explanation snippets here — full explanation is handled in getCitationBodyText.
  */
 function findBookCitation(q) {
   const rejectAsAnswerOnly = (text) => {
-    // Strict: only drop if the "citation" is literally the answer option / label — not if the answer appears inside a longer quote.
     const bare = normalizeArabicForMatch(String(text || '').replace(/^«|»$/g, ''));
     if (!bare || bare.length < 3) return true;
     const cor = normalizeArabicForMatch(getCorrectAnswerText(q));
@@ -3310,14 +3309,6 @@ function findBookCitation(q) {
       return formatCitationQuote(cleaned);
     }
   }
-
-  // Extract a citation-shaped piece from explanation ( «…» / قال تعالى / حديث ) — not the whole شرح.
-  const snippet = extractExplanationSnippet(q?.exp);
-  if (snippet && !isGarbageCitation(snippet) && !rejectAsAnswerOnly(snippet)) {
-    if (looksLikeBookCitationText(snippet) || snippet.length >= 24) {
-      return formatCitationQuote(snippet);
-    }
-  }
   return '';
 }
 
@@ -3329,7 +3320,7 @@ function getBookQuoteOnly(q) {
 /**
  * Text under «الاستشهاد من الكتاب» — no separate «شرح» UI:
  * 1) Real book/canonical quote when available
- * 2) Otherwise move the full explanation text here (never leave an empty book-title-only box)
+ * 2) Otherwise the FULL explanation text (never leave empty book-title-only)
  */
 function getCitationBodyText(q) {
   const book = findBookCitation(q);
