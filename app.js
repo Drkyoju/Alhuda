@@ -1804,7 +1804,10 @@ function buildFeedbackSpeechText(q, wrongText) {
     const correctIdx = q?.type === 'mc' && q.c != null ? `a${q.c}` : 'correct';
     parts.push(`الْإِجَابَةُ الصَّحِيحَةُ، ${speechPart(q, correctIdx, correct)}`);
   }
-  const exp = speechPart(q, 'exp', (q?.exp || '').trim());
+  const rawExp = (q?.exp || '').trim();
+  const exp = rawExp && !explanationDuplicatesCitation(rawExp, q)
+    ? speechPart(q, 'exp', rawExp)
+    : '';
   const rawCite = String(q?.quote || '').replace(/^«|»$/g, '').trim()
     || (q?.id && getCanonicalQuote(q.id)) || pickCitationText(q);
   const quote = speechPart(q, 'quote', rawCite);
@@ -2931,6 +2934,29 @@ function formatCitationQuote(s) {
   return `«${t}»`;
 }
 
+/** True when explanation is the same (or nearly the same) as the book citation — don't show both. */
+function explanationDuplicatesCitation(exp, q) {
+  const expBare = normalizeArabicForMatch(String(exp || '').replace(/^«|»$/g, ''));
+  if (!expBare || expBare.length < 8) return true;
+  const quoteRaw = cleanArabicCitation(q?.quote, q?.id)
+    || (q?.id && typeof getCanonicalQuote === 'function' && getCanonicalQuote(q.id))
+    || '';
+  const citeBare = normalizeArabicForMatch(String(quoteRaw || '').replace(/^«|»$/g, ''))
+    || normalizeArabicForMatch(String(pickCitationText(q) || '').replace(/^«|»$/g, ''));
+  if (!citeBare) return false;
+  if (expBare === citeBare) return true;
+  if (textIsSubstantiallyContained(exp, citeBare) || textIsSubstantiallyContained(citeBare, exp)) return true;
+  // Common pattern: "الإجابة الصحيحة: X. «quote»" where quote ≈ citation
+  const withoutLead = expBare
+    .replace(/^الاجابه\s*الصحيحه\s*/g, '')
+    .replace(/^العباره\s*(غير\s*)?صحيحه\s*/g, '')
+    .trim();
+  if (withoutLead && (withoutLead === citeBare || textIsSubstantiallyContained(withoutLead, citeBare) || textIsSubstantiallyContained(citeBare, withoutLead))) {
+    return true;
+  }
+  return false;
+}
+
 function pickCitationText(q) {
   const candidates = [];
   const fromQuote = cleanArabicCitation(q.quote, q.id);
@@ -2987,18 +3013,11 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
     html += '</div>';
   }
   const rawExp = String(q.exp || '').trim();
-  let showedExp = false;
   if (rawExp && !isWorksheetCitation(rawExp) && rawExp.length >= 8) {
     const cleanedExp = cleanArabicCitation(rawExp, q.id) || collapseBrokenArabicSpaces(rawExp);
-    if (cleanedExp && !isGarbageCitation(cleanedExp)) {
+    // Prefer book citation alone when "الشرح" is just a copy of the quote.
+    if (cleanedExp && !isGarbageCitation(cleanedExp) && !explanationDuplicatesCitation(cleanedExp, q)) {
       html += `<div class="fb-explanation"><p class="fb-exp-label"><strong>💡 الشرح:</strong></p><p class="fb-exp-text">${escapeHtml(cleanedExp)}</p></div>`;
-      showedExp = true;
-    }
-  }
-  if (!showedExp) {
-    const cite = pickCitationText(q);
-    if (cite) {
-      html += `<div class="fb-explanation"><p class="fb-exp-label"><strong>💡 الشرح:</strong></p><p class="fb-exp-text">${escapeHtml(cite)}</p></div>`;
     }
   }
   html += buildBookCitationHtml(q);
