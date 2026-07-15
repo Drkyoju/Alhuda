@@ -177,7 +177,7 @@
       const off = !navigator.onLine;
       el.hidden = !off;
       if (off && !toasted && typeof showToast === 'function') {
-        showToast('لا يوجد اتصال — بعض الميزات قد لا تعمل', 'err');
+        showToast('لا يوجد اتصال — الصوت والتلاوة تحتاج نت', 'err');
         toasted = true;
       }
       if (!off) toasted = false;

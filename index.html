@@ -16,8 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=39">
+  <link rel="stylesheet" href="styles.css?v=40">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -28,7 +27,7 @@
     </div>
   </div>
 
-  <div id="offline-banner" class="offline-banner" hidden role="status" aria-live="polite">📡 لا يوجد اتصال — بعض الميزات قد لا تعمل</div>
+  <div id="offline-banner" class="offline-banner" hidden role="status" aria-live="polite">📡 لا يوجد اتصال — الصوت والتلاوة تحتاج نت، والأسئلة المحفوظة تعمل</div>
   <div id="tts-provider-badge" class="tts-provider-badge" hidden title="مزوّد الصوت (تشخيص)" aria-hidden="true"></div>
 
   <!-- Floating decorations -->
@@ -600,38 +599,41 @@
 <script src="citation-canonical.js"></script>
 <script src="question-verse-map.js"></script>
 <script src="ayah-snippet-map.js"></script>
-<script src="speech-diacritics-map.js"></script>
 <script src="demo-questions-bundle.js"></script>
 <script src="version.js"></script>
-<script src="app.js?v=75"></script>
-<script src="auth.js?v=11"></script>
-<script src="enhancements.js?v=9"></script>
-<script src="platform.js?v=13"></script>
-<script>
-(async function boot() {
-  updateBismillahPadding();
-  window.addEventListener('resize', updateBismillahPadding, { passive: true });
-  try {
-    await loadQuestions();
-  } catch (e) {
-    console.error(e);
-    if (typeof showToast === 'function') showToast('تعذّر تحميل التطبيق', 'err');
-  }
-  updateLevelCounts();
-  selectLevel('easy');
-  document.getElementById('btn-levels-preview')?.addEventListener('click', () => showLevelsPreview());
-  document.getElementById('btn-leaderboard-preview')?.addEventListener('click', () => showLeaderboard());
-  try {
-    if (await tryRestoreGameSession()) return;
-    if (await restoreSession()) return;
-  } catch (e) {
-    console.error(e);
-    if (typeof showToast === 'function') showToast('تعذّر استعادة الجلسة', 'err');
-  }
-  show('login-screen');
-  updateTopbarStats();
-  updateLoginQuestionHint();
-})();
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="app.js?v=76" defer></script>
+<script src="auth.js?v=11" defer></script>
+<script src="enhancements.js?v=9" defer></script>
+<script src="platform.js?v=13" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', () => {
+  (async function boot() {
+    updateBismillahPadding();
+    window.addEventListener('resize', updateBismillahPadding, { passive: true });
+    // Show login ASAP from local bundle; network refresh is background.
+    try {
+      await loadQuestions();
+    } catch (e) {
+      console.error(e);
+      if (typeof showToast === 'function') showToast('تعذّر تحميل التطبيق', 'err');
+    }
+    updateLevelCounts();
+    selectLevel('easy');
+    document.getElementById('btn-levels-preview')?.addEventListener('click', () => showLevelsPreview());
+    document.getElementById('btn-leaderboard-preview')?.addEventListener('click', () => showLeaderboard());
+    try {
+      if (await tryRestoreGameSession()) return;
+      if (await restoreSession()) return;
+    } catch (e) {
+      console.error(e);
+      if (typeof showToast === 'function') showToast('تعذّر استعادة الجلسة', 'err');
+    }
+    show('login-screen');
+    updateTopbarStats();
+    updateLoginQuestionHint();
+  })();
+});
 </script>
 </body>
 </html>

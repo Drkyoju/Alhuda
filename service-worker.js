@@ -1,4 +1,4 @@
-// Alhuda service worker — version-pinned cache, network-first JS,
+// Alhuda service worker — version-pinned cache, SWR for JS,
 // cache-first static assets, navigation fallback, atomic-addAll-safe install.
 //
 // VERSION HANDSHAKE: a new SW installs in the background but does NOT call
@@ -7,7 +7,7 @@
 // which previously could throw on renamed functions. enhancements.js triggers
 // the message on next page load so users get the update on the NEXT visit.
 
-const CACHE = 'alhuda-v85';
+const CACHE = 'alhuda-v86';
 const ASSETS = [
   './',
   './index.html',
@@ -18,8 +18,13 @@ const ASSETS = [
   './speech-diacritics-map.js',
   './demo-questions-bundle.js',
   './version.js',
+  './app.js',
+  './auth.js',
+  './platform.js',
+  './enhancements.js',
   './styles.css',
   './kids-ui.css',
+  './enhancements.css',
   './icons/icon.svg',
   './icons/org-logo.png',
   './icons/icon-192.png',
@@ -35,10 +40,6 @@ self.addEventListener('message', (e) => {
 });
 
 self.addEventListener('install', (e) => {
-  // Cache each asset individually with Promise.allSettled so that one missing
-  // asset (e.g., a renamed image) doesn't reject the whole addAll and leave
-  // the cache empty. The previous `c.addAll(...).catch(() => {})` swallowed
-  // the failure silently and broke ALL offline support.
   e.waitUntil(
     (async () => {
       const cache = await caches.open(CACHE);
@@ -47,13 +48,10 @@ self.addEventListener('install', (e) => {
         .map((r, i) => (r.status === 'rejected' ? ASSETS[i] : null))
         .filter(Boolean);
       if (failed.length) {
-        // Don't throw — partial precache is still useful. Just log so it's
-        // debuggable in DevTools → Application → Service Workers.
         console.warn('[SW] Some precache assets failed:', failed);
       }
     })()
   );
-  // Do NOT skipWaiting() here — wait for the page's handshake (see top comment).
 });
 
 self.addEventListener('activate', (e) => {
@@ -69,15 +67,29 @@ function isStaticAppFile(url) {
   return url.origin === self.origin && /\.(html|json|jpeg|jpg|svg|png|webp|css)$/i.test(url.pathname);
 }
 
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE);
+  const cached = await cache.match(request);
+  const networkPromise = fetch(request)
+    .then((res) => {
+      if (res.ok) cache.put(request, res.clone());
+      return res;
+    })
+    .catch(() => null);
+  if (cached) {
+    void networkPromise;
+    return cached;
+  }
+  const net = await networkPromise;
+  if (net) return net;
+  throw new Error('offline and uncached');
+}
+
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
-  // Never intercept Supabase API calls — they need real-time network.
   if (url.origin.includes('supabase.co')) return;
 
-  // Navigation requests: try network, fall back to cached index.html so a
-  // stale URL while offline shows the app shell instead of the browser's
-  // raw "no internet" page.
   if (e.request.mode === 'navigate') {
     e.respondWith(
       fetch(e.request)
@@ -93,35 +105,26 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // JS: network-first so deploys apply immediately.
+  // JS: stale-while-revalidate — fast repeat visits, still update in background.
   if (url.origin === self.origin && /\.js$/i.test(url.pathname)) {
     e.respondWith(
-      fetch(e.request)
-        .then((res) => {
+      staleWhileRevalidate(e.request).catch(() => caches.match(e.request).then((r) => r || fetch(e.request)))
+    );
+    return;
+  }
+
+  if (isStaticAppFile(url)) {
+    e.respondWith(
+      caches.match(e.request).then((cached) => {
+        if (cached) return cached;
+        return fetch(e.request).then((res) => {
           if (res.ok) {
             const clone = res.clone();
             caches.open(CACHE).then((c) => c.put(e.request, clone));
           }
           return res;
-        })
-        .catch(() => caches.match(e.request))
+        });
+      })
     );
-    return;
   }
-
-  if (!isStaticAppFile(url)) return;
-
-  // Static assets: cache-first with background revalidation.
-  e.respondWith(
-    caches.match(e.request).then((cached) => {
-      const net = fetch(e.request).then((res) => {
-        if (res.ok) {
-          const clone = res.clone();
-          caches.open(CACHE).then((c) => c.put(e.request, clone));
-        }
-        return res;
-      }).catch(() => cached);
-      return cached || net;
-    })
-  );
 });

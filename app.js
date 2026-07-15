@@ -1,7 +1,28 @@
 
 const SUPABASE_URL = 'https://smcyaqwxbmhshhhhdece.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_4OhSsWwIfV4QxGRf1fujLA_TjE111eU';
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+/** Lazy client — Supabase CDN may load after first paint. */
+let db = null;
+function getDb() {
+  if (db) return db;
+  if (typeof window !== 'undefined' && window.supabase?.createClient) {
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+  return db;
+}
+Object.defineProperty(window, '__alhudaDb', { get: getDb });
+// Compat: most code uses `db.` — bind via Proxy after first access pattern.
+db = new Proxy({}, {
+  get(_t, prop) {
+    const client = getDb();
+    if (!client) {
+      if (prop === 'then') return undefined;
+      throw new Error('Supabase not loaded yet');
+    }
+    const val = client[prop];
+    return typeof val === 'function' ? val.bind(client) : val;
+  },
+});
 
 const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول الثلاثة', nawawi:'الأربعون النووية', merge3:'الكتب الثلاثة' };
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
@@ -354,6 +375,7 @@ function setFontPreset(size) {
 }
 
 function showGameTutorialIfNeeded() {
+  if (state.demoMode) return; // demo: skip tutorial for faster first answer
   if (localStorage.getItem('gameTutorialDone')) return;
   if (sessionStorage.getItem('skipGameTutorial')) return;
   const ov = document.getElementById('game-tutorial-overlay');
@@ -1205,33 +1227,46 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
 }
 
 function prefetchTtsText(text, voice = TTS_VOICE) {
-  const clean = sanitizeTtsText(prepareArabicForSpeech(applyManualSpeechDiacritics(text || '')));
-  if (!clean || clean.length < 2) return;
-  const key = ttsCacheKey(clean, voice);
-  if (ttsBlobMemoryCache.has(key) || ttsPrefetchInFlight.has(key)) return;
-  void fetchTtsBlob(clean, voice).catch(() => {});
+  void ensureSpeechMapsLoaded().then(() => {
+    const clean = sanitizeTtsText(prepareArabicForSpeech(applyManualSpeechDiacritics(text || '')));
+    if (!clean || clean.length < 2) return;
+    const key = ttsCacheKey(clean, voice);
+    if (ttsBlobMemoryCache.has(key) || ttsPrefetchInFlight.has(key)) return;
+    void fetchTtsBlob(clean, voice).catch(() => {});
+  });
 }
 
 function prefetchUpcomingTts(fromIdx = state.idx) {
-  const slice = (state.questions || []).slice(Math.max(0, fromIdx | 0), (fromIdx | 0) + 2);
+  const slice = (state.questions || []).slice(Math.max(0, fromIdx | 0), (fromIdx | 0) + 5);
   for (const q of slice) {
     if (!q) continue;
     prefetchTtsText(q.q);
     if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
+    const cite = pickCitationTextForSpeech?.(q) || '';
+    if (cite) prefetchTtsText(String(cite).slice(0, 220));
   }
 }
 
 /** Warm edge-cached Quran audio for popular mapped verses (faster first recite). */
 function warmPopularQuranAyahs() {
+  if (navigator.onLine === false) return;
   const map = (typeof window !== 'undefined' && window.QUESTION_VERSE_MAP) || {};
   const keys = [...new Set(Object.values(map))].slice(0, 12);
   for (const verseKey of keys) {
     void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
   }
-  // Warm Cloudflare edge cache for popular verses (best-effort).
-  if (navigator.onLine !== false) {
-    void fetch('/api/quran-warm', { cache: 'no-store' }).catch(() => {});
+  void fetch('/api/quran-warm', { cache: 'no-store' }).catch(() => {});
+}
+
+function warmDemoSessionAudio() {
+  prefetchUpcomingTts(0);
+  prefetchUpcomingQuran(0);
+  const slice = (state.questions || []).slice(0, 5);
+  for (const q of slice) {
+    const key = getQuestionVerseKey(q?.id);
+    if (key) void fetchQuranAudioObjectUrl(key).catch(() => {});
   }
+  warmPopularQuranAyahs();
 }
 
 function azureUsageMonthKey() {
@@ -1390,6 +1425,37 @@ const MANUAL_SPEECH_DIACRITICS = [
 ];
 
 const SPEECH_WORD_RE = /[\u0621-\u064A\u0671\u064B-\u065F\u0670]+/g;
+let _sortedManualSpeech = null;
+let _speechMapsPromise = null;
+
+function getSortedManualSpeech() {
+  if (!_sortedManualSpeech) {
+    _sortedManualSpeech = [...MANUAL_SPEECH_DIACRITICS].sort((a, b) => b[0].length - a[0].length);
+  }
+  return _sortedManualSpeech;
+}
+
+function ensureSpeechMapsLoaded() {
+  if (typeof window !== 'undefined' && window.SPEECH_PHRASE_MAP) return Promise.resolve();
+  if (_speechMapsPromise) return _speechMapsPromise;
+  _speechMapsPromise = new Promise((resolve) => {
+    const existing = document.querySelector('script[data-speech-maps]');
+    if (existing) {
+      existing.addEventListener('load', () => resolve());
+      existing.addEventListener('error', () => resolve());
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = 'speech-diacritics-map.js';
+    s.async = true;
+    s.dataset.speechMaps = '1';
+    s.onload = () => resolve();
+    s.onerror = () => resolve();
+    document.head.appendChild(s);
+  });
+  return _speechMapsPromise;
+}
+
 function stripHarakat(s) {
   return String(s || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '');
 }
@@ -1419,8 +1485,7 @@ function applyManualSpeechDiacritics(text) {
   for (const [plain, diacritized] of MANUAL_SPEECH_DIACRITICS) {
     if (exact === normalizeArabicForMatch(plain)) return diacritized;
   }
-  const sortedManual = [...MANUAL_SPEECH_DIACRITICS].sort((a, b) => b[0].length - a[0].length);
-  for (const [plain, diacritized] of sortedManual) {
+  for (const [plain, diacritized] of getSortedManualSpeech()) {
     if (plain.length >= 5 && out.includes(plain)) out = out.split(plain).join(diacritized);
   }
   return applyWordDiacritics(out);
@@ -1590,6 +1655,7 @@ function buildFeedbackSpeechText(q, wrongText) {
 
 async function speakFeedbackOnce(q, wrongText, btn) {
   if (!q) return;
+  await ensureSpeechMapsLoaded();
   const text = buildFeedbackSpeechText(q, wrongText);
   const clean = stripForSpeech(text);
   if (!clean) return;
@@ -1599,7 +1665,10 @@ async function speakFeedbackOnce(q, wrongText, btn) {
   try {
     await speakTtsSegment(clean, btn, { keepBtnState: false });
   } catch (e) {
-    if (e.name !== 'AbortError') console.warn('feedback tts:', e);
+    if (e.name !== 'AbortError') {
+      console.warn('feedback tts:', e);
+      toastTtsFail();
+    }
   } finally {
     if (token === hybridSpeechToken && btn) btn.classList.remove('speaking');
   }
@@ -2372,7 +2441,28 @@ async function speakText(text, btn, { allowAnswers = false, question = null } = 
 function speakQuestion() {
   const q = state.questions[state.idx];
   if (!q?.q || !voiceOn) return;
-  speakHybrid(buildQuestionSpeechText(q), q, document.getElementById('btn-speak-question'));
+  if (navigator.onLine === false) {
+    applyOfflineVoicePolicy();
+    return;
+  }
+  void ensureSpeechMapsLoaded().then(() => {
+    speakHybrid(buildQuestionSpeechText(q), q, document.getElementById('btn-speak-question'));
+  });
+}
+
+function applyOfflineVoicePolicy() {
+  if (navigator.onLine !== false) return;
+  if (voiceOn) {
+    voiceOn = false;
+    localStorage.setItem('voiceOn', 'false');
+    stopSpeaking();
+    updateVoiceUI();
+  }
+  if (sessionStorage.getItem('offlineVoiceNoted') === '1') return;
+  sessionStorage.setItem('offlineVoiceNoted', '1');
+  if (typeof showToast === 'function') {
+    showToast('الصوت والتلاوة تحتاج اتصالاً — تم إيقاف القراءة مؤقتاً', 'err');
+  }
 }
 
 function onQuestionSpeakerClick() {
@@ -2551,7 +2641,7 @@ function collapseBrokenArabicSpaces(s) {
 }
 
 function isWorksheetCitation(s) {
-  return /اكتبي|أجيبي|أجيب على|معاني الكلمات|اذكري مناسبة|الأسئلة التالية|س\s*:|ج\s*:|الدليل على أنه|لشيخ الإسلام محمد بن عبدالوهاب.*\d|^[\/.]/i.test(s || '');
+  return /اكتبي|أجيبي|أجيب على|معاني الكلمات|اذكري مناسبة|الأسئلة التالية|س\s*:|ج\s*:|الدليل على أنه|لشيخ الإسلام محمد بن عبدالوهاب.*\d|^[\/.]|ماذا تعرف عن مؤلف/i.test(s || '');
 }
 
 function hasGluedWords(s) {
@@ -2713,10 +2803,18 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
     html += '</div>';
   }
   const rawExp = String(q.exp || '').trim();
+  let showedExp = false;
   if (rawExp && !isWorksheetCitation(rawExp) && rawExp.length >= 8) {
     const cleanedExp = cleanArabicCitation(rawExp, q.id) || collapseBrokenArabicSpaces(rawExp);
     if (cleanedExp && !isGarbageCitation(cleanedExp)) {
       html += `<div class="fb-explanation"><p class="fb-exp-label"><strong>💡 الشرح:</strong></p><p class="fb-exp-text">${escapeHtml(cleanedExp)}</p></div>`;
+      showedExp = true;
+    }
+  }
+  if (!showedExp) {
+    const cite = pickCitationText(q);
+    if (cite) {
+      html += `<div class="fb-explanation"><p class="fb-exp-label"><strong>💡 الشرح:</strong></p><p class="fb-exp-text">${escapeHtml(cite)}</p></div>`;
     }
   }
   html += buildBookCitationHtml(q);
@@ -2877,9 +2975,7 @@ async function beginDemo(book) {
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
   document.getElementById('fb-self-correct').style.display = 'none';
   // Prefetch audio during countdown for snappier first question.
-  prefetchUpcomingQuran(0);
-  prefetchUpcomingTts(0);
-  warmPopularQuranAyahs();
+  warmDemoSessionAudio();
   startDemoCountdown();
 }
 
@@ -2892,20 +2988,16 @@ function startDemoCountdown() {
     return;
   }
   ov.style.display = 'flex';
-  let n = 3;
+  // Demo: shorter countdown (2) for faster start.
+  let n = state.demoMode ? 2 : 3;
   num.textContent = n;
   num.style.animation = 'none';
   void num.offsetWidth;
   num.style.animation = '';
-  // Extra prefetch ticks while counting down.
-  prefetchUpcomingTts(0);
-  prefetchUpcomingQuran(0);
+  warmDemoSessionAudio();
   const iv = setInterval(() => {
     n--;
-    if (n === 2 || n === 1) {
-      prefetchUpcomingTts(0);
-      prefetchUpcomingQuran(0);
-    }
+    if (n >= 1) warmDemoSessionAudio();
     if (n <= 0) {
       clearInterval(iv);
       countdownTimer = null;
@@ -2917,7 +3009,7 @@ function startDemoCountdown() {
     num.style.animation = 'none';
     void num.offsetWidth;
     num.style.animation = '';
-  }, 700);
+  }, state.demoMode ? 550 : 700);
   countdownTimer = iv;
 }
 
@@ -2971,6 +3063,8 @@ function endDemo() {
   renderDemoAnalyticsSummary();
   const shareDemo = document.getElementById('btn-share-demo');
   if (shareDemo) shareDemo.style.display = 'block';
+  const finishBtn = document.getElementById('btn-finish-demo');
+  if (finishBtn) finishBtn.style.display = '';
   show('feedback-screen');
 }
 function setRating(r, el) {
@@ -3081,10 +3175,7 @@ async function submitFeedback() {
   }
 }
 async function finishDemoFlow() {
-  if (localStorage.getItem('demoFeedbackSubmitted') !== '1') {
-    const skip = await showConfirm('لم تُرسل/ِ التقييم بعد. هل تريد/ين المتابعة بدون إرسال؟');
-    if (!skip) return;
-  }
+  // Feedback is encouraged but not a gate — allow trying another book immediately.
   localStorage.setItem('demoDone', '1');
   if (LOGIN_LOCKED) {
     pendingLoginAfterDemo = true;
@@ -3378,12 +3469,39 @@ function updateLoginQuestionHint() {
     : '📚 ' + total + '+ سؤال — جاري تحميل الباقي...';
 }
 
+function refreshBookFromNetwork(book) {
+  if (!QUESTION_BOOKS.includes(book) || navigator.onLine === false) return;
+  if (!getDb()) return;
+  void (async () => {
+    try {
+      const { data, error } = await fetchBookQuestions(book);
+      if (error || !data?.length) return;
+      ingestBookQuestions(book, data);
+      bookLoadState[book] = true;
+      updateLevelCounts();
+      updateDemoBookPicker();
+      updateLoginQuestionHint();
+    } catch (e) {
+      console.warn('background refresh', book, e);
+    }
+  })();
+}
+
 async function loadBookQuestions(book) {
   if (!QUESTION_BOOKS.includes(book)) return [];
-  if (bookLoadState[book] && QUESTIONS[book]?.length) return QUESTIONS[book];
+  if (bookLoadState[book] && QUESTIONS[book]?.length) {
+    if (navigator.onLine !== false && getDb()) refreshBookFromNetwork(book);
+    return QUESTIONS[book];
+  }
+  if (QUESTIONS[book]?.length) {
+    bookLoadState[book] = true;
+    refreshBookFromNetwork(book);
+    return QUESTIONS[book];
+  }
   if (bookLoadPromises[book]) return bookLoadPromises[book];
   bookLoadPromises[book] = (async () => {
     try {
+      if (!getDb()) throw new Error('no supabase');
       const { data, error } = await fetchBookQuestions(book);
       if (error) throw error;
       ingestBookQuestions(book, data || []);
@@ -3398,6 +3516,7 @@ async function loadBookQuestions(book) {
       } else {
         seedQuestionsFromBundle();
         if (QUESTIONS[book]?.length) {
+          bookLoadState[book] = true;
           console.info(`[questions] loaded ${book} from demo bundle`);
         } else {
           throw netErr;
@@ -3432,18 +3551,57 @@ function loadRemainingBooksInBackground() {
 
 function seedQuestionsFromBundle() {
   const bundle = (typeof window !== 'undefined' && window.DEMO_QUESTIONS_BUNDLE) || null;
-  if (!bundle) return;
+  if (!bundle) return false;
+  let seeded = false;
   for (const book of QUESTION_BOOKS) {
-    if (QUESTIONS[book]?.length) continue;
+    if (QUESTIONS[book]?.length) {
+      bookLoadState[book] = true;
+      continue;
+    }
     const rows = bundle[book];
     if (rows?.length) {
       QUESTIONS[book] = dedupeQuestionList(rows);
+      bookLoadState[book] = true;
+      seeded = true;
     }
   }
-  updateDemoBookPicker();
+  if (seeded || QUESTION_BOOKS.some((b) => QUESTIONS[b]?.length)) updateDemoBookPicker();
+  return QUESTION_BOOKS.some((b) => QUESTIONS[b]?.length);
 }
 
 async function loadQuestions() {
+  // Bundle-first: unlock UI without waiting for network.
+  const hasBundle = seedQuestionsFromBundle();
+  if (hasBundle) {
+    updateLoginQuestionHint();
+    updateLevelCounts();
+    updateDemoBookPicker();
+    if (navigator.onLine !== false) {
+      void (async () => {
+        try {
+          if (window.AlhudaPlatform?.loadQuestionsCached) {
+            const data = await AlhudaPlatform.loadQuestionsCached();
+            const fmt = { tawheed: [], usool: [], nawawi: [] };
+            (data || []).forEach((q) => { if (fmt[q.book]) fmt[q.book].push(q); });
+            for (const book of QUESTION_BOOKS) {
+              if (fmt[book]?.length) {
+                ingestBookQuestions(book, fmt[book]);
+                bookLoadState[book] = true;
+              }
+            }
+          } else {
+            loadRemainingBooksInBackground();
+          }
+          updateLoginQuestionHint();
+          updateLevelCounts();
+        } catch (e) {
+          console.warn('background question refresh:', e);
+        }
+      })();
+    }
+    return;
+  }
+
   setAppLoading(true, 'جاري تحميل الأسئلة...');
   try {
     seedQuestionsFromBundle();
@@ -4642,7 +4800,9 @@ async function restoreSession() {
   applyLoginLockUI();
   refreshLoginAnalyticsPanel();
   void refreshTtsProviderBadge();
-  warmPopularQuranAyahs();
+  // Defer Quran warm until demo/game start — avoid competing with first paint.
+  window.addEventListener('offline', () => applyOfflineVoicePolicy());
+  if (navigator.onLine === false) applyOfflineVoicePolicy();
   document.getElementById('login-name')?.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !LOGIN_LOCKED) doLogin();
   });
