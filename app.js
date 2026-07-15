@@ -119,6 +119,9 @@ let questionShownAt = 0;
 let lastDemoSessionStats = null;
 const AZURE_TTS_USAGE_KEY = 'azureTtsCharsMonthV1';
 const AZURE_F0_SOFT_LIMIT = 450000; // warn before free 500k/month
+const TTS_ERROR_STATS_KEY = 'ttsErrorStatsV1';
+let ttsSessionFailCount = 0;
+let ttsLastErrorMsg = '';
 
 const FEEDBACK_RATING_LABELS = {
   3: { emoji: '😍', label: 'أعجبني' },
@@ -322,7 +325,12 @@ function renderDemoResultSummary() {
     `<p class="demo-result-meta">${book ? escapeHtml(book) + ' · ' : ''}` +
     `${arabicNum(stats.wrong)} خطأ` +
     (avg ? ` · متوسط الوقت ${avg}` : '') +
-    `</p>`;
+    `</p>` +
+    (countDemoBooksTried() === 2
+      ? `<p class="demo-result-nudge" role="status">🌟 باقي كتاب واحد — اضغط/ي «جرّب/ي كتاباً آخر» وأكمل/ي الثلاثة!</p>`
+      : countDemoBooksTried() >= 3
+        ? `<p class="demo-result-nudge is-done" role="status">✅ أحسنت! جرّبتَ/ِ الكتب الثلاثة</p>`
+        : '');
   if (pct >= 0.625) {
     try { launchConfetti(); } catch (e) {}
     playSound('achievement');
@@ -841,6 +849,18 @@ function updateDemoBookPicker() {
       ? `جرّبتَ/ِ ${arabicNum(triedN)}/٣ كتب`
       : '٣ كتب × ٨ أسئلة';
   }
+  const nudge = document.getElementById('demo-books-nudge');
+  if (nudge) {
+    const showNudge = triedN === 2;
+    nudge.hidden = !showNudge;
+    if (showNudge) {
+      const remaining = QUESTION_BOOKS.find((b) => !tried[b]);
+      const label = remaining ? (BOOK_LABELS[remaining] || remaining) : '';
+      nudge.textContent = label
+        ? `🌟 باقي كتاب واحد: ${label} — أكمل/ي الكتب الثلاثة!`
+        : '🌟 باقي كتاب واحد — جرّب/ي الكتب الثلاثة كلها!';
+    }
+  }
   for (const book of Object.keys(counts)) {
     counts[book] = buildDemoQuestions(book).length;
     const el = document.getElementById('demo-pick-count-' + book);
@@ -1269,7 +1289,7 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
       body: JSON.stringify({ text, voice }),
       signal,
     });
-    if (!res.ok) throw new Error('tts failed');
+    if (!res.ok) throw new Error(`tts failed:${res.status}`);
     const blob = await res.blob();
     if (!blob.size) throw new Error('empty audio');
     rememberTtsObjectUrl(key, URL.createObjectURL(blob));
@@ -1281,6 +1301,9 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
   ttsPrefetchInFlight.set(key, work);
   try {
     return await work;
+  } catch (e) {
+    if (e?.name !== 'AbortError') recordTtsError(e, 'fetchTtsBlob');
+    throw e;
   } finally {
     ttsPrefetchInFlight.delete(key);
   }
@@ -1385,6 +1408,40 @@ function maybeWarnAzureQuota(chars) {
   }
 }
 
+function getTtsErrorStats() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(TTS_ERROR_STATS_KEY) || '{}');
+    const day = new Date().toISOString().slice(0, 10);
+    if (raw && raw.day === day) return { day, fails: Number(raw.fails) || 0, last: raw.last || '' };
+  } catch (e) {}
+  return { day: new Date().toISOString().slice(0, 10), fails: 0, last: '' };
+}
+
+function recordTtsError(err, context = 'tts') {
+  if (err?.name === 'AbortError') return;
+  ttsSessionFailCount += 1;
+  ttsLastErrorMsg = String(err?.message || err || context).slice(0, 120);
+  const stats = getTtsErrorStats();
+  stats.fails += 1;
+  stats.last = ttsLastErrorMsg;
+  try { localStorage.setItem(TTS_ERROR_STATS_KEY, JSON.stringify(stats)); } catch (e) {}
+  console.warn('[tts-monitor]', context, ttsLastErrorMsg, { session: ttsSessionFailCount, today: stats.fails });
+}
+
+function maybeRemindAzureKeyRotation(hint) {
+  if (!hint) return;
+  const day = new Date().toISOString().slice(0, 10);
+  const flagKey = `azureKeyRotateRemind:${day}`;
+  if (localStorage.getItem(flagKey) === '1') return;
+  try { localStorage.setItem(flagKey, '1'); } catch (e) {}
+  console.warn('[azure-key]', hint);
+  const showDiag = localStorage.getItem('showTtsDiag') === '1'
+    || /[?&]diag=1(?:&|$)/.test(location.search);
+  if (showDiag && typeof showToast === 'function') {
+    showToast('تنبيه أمان: دوّر مفتاح Azure Speech إن ظهر في شات سابقاً', 'err');
+  }
+}
+
 async function refreshTtsProviderBadge() {
   const badge = document.getElementById('tts-provider-badge');
   if (!badge) return;
@@ -1399,14 +1456,21 @@ async function refreshTtsProviderBadge() {
     const data = await res.json();
     const usage = getAzureTtsUsage();
     const pct = Math.min(100, Math.round((usage.chars / 500000) * 100));
+    const errStats = getTtsErrorStats();
+    const serverFails = data.errors?.tts ? Object.values(data.errors.tts).reduce((a, b) => a + (Number(b) || 0), 0) : 0;
     badge.hidden = false;
     badge.textContent = (data.azureConfigured ? 'TTS: Azure' : 'TTS: Edge') +
       ` · ${usage.chars}/${500000} (~${pct}%)` +
-      (data.isolateAzureChars != null ? ` · isolate ${data.isolateAzureChars}` : '');
+      (data.isolateAzureChars != null ? ` · isolate ${data.isolateAzureChars}` : '') +
+      ` · fails ${ttsSessionFailCount}/${errStats.fails}` +
+      (serverFails ? ` · srv ${serverFails}` : '');
     badge.classList.toggle('is-azure', !!data.azureConfigured);
-    badge.classList.toggle('is-warn', usage.chars >= AZURE_F0_SOFT_LIMIT);
+    badge.classList.toggle('is-warn', usage.chars >= AZURE_F0_SOFT_LIMIT || ttsSessionFailCount > 0 || errStats.fails >= 3);
     badge.setAttribute('aria-hidden', 'false');
-    if (data.keyRotationHint) badge.title = data.keyRotationHint;
+    if (data.keyRotationHint) {
+      badge.title = data.keyRotationHint;
+      maybeRemindAzureKeyRotation(data.keyRotationHint);
+    }
   } catch {
     badge.hidden = false;
     badge.textContent = 'TTS: ?';
@@ -2491,7 +2555,10 @@ async function speakHybrid(text, q, btn, { allowAnswers = false } = {}) {
       }
     }
   } catch (e) {
-    if (e.name !== 'AbortError') console.warn('hybrid speech:', e);
+    if (e.name !== 'AbortError') {
+      recordTtsError(e, 'speakHybrid');
+      console.warn('hybrid speech:', e);
+    }
   } finally {
     if (token === hybridSpeechToken && btn) btn.classList.remove('speaking');
     clearTtsAudio();
@@ -2499,7 +2566,11 @@ async function speakHybrid(text, q, btn, { allowAnswers = false } = {}) {
 }
 
 function toastTtsFail() {
-  if (typeof showToast === 'function') showToast('تعذّر تشغيل الصوت — تحقق من الاتصال', 'err');
+  const stats = getTtsErrorStats();
+  const msg = ttsSessionFailCount >= 3 || stats.fails >= 5
+    ? 'تعذّر الصوت عدة مرات — تحقق من الاتصال أو جرّب لاحقاً'
+    : 'تعذّر تشغيل الصوت — تحقق من الاتصال';
+  if (typeof showToast === 'function') showToast(msg, 'err');
 }
 
 async function speakText(text, btn, { allowAnswers = false, question = null } = {}) {
@@ -2517,6 +2588,7 @@ async function speakText(text, btn, { allowAnswers = false, question = null } = 
     await speakTtsSegment(clean, btn, { keepBtnState: false });
   } catch (e) {
     if (e.name === 'AbortError') return;
+    recordTtsError(e, 'speakText');
     console.warn('cloud tts:', e);
     toastTtsFail();
   }
@@ -3160,9 +3232,15 @@ function endDemo() {
   if (finishBtn) {
     finishBtn.style.display = '';
     const n = countDemoBooksTried();
-    finishBtn.textContent = n < 3
-      ? `📚 جرّب/ي كتاباً آخر (${arabicNum(n)}/٣)`
-      : '📚 جرّب/ي كتاباً آخر';
+    if (n === 2) {
+      finishBtn.classList.add('demo-finish-nudge');
+      finishBtn.textContent = '🌟 باقي كتاب واحد — جرّب/يه الآن!';
+    } else {
+      finishBtn.classList.remove('demo-finish-nudge');
+      finishBtn.textContent = n < 3
+        ? `📚 جرّب/ي كتاباً آخر (${arabicNum(n)}/٣)`
+        : '📚 جرّب/ي كتاباً آخر';
+    }
   }
   show('feedback-screen');
 }
@@ -4272,6 +4350,7 @@ function pick(btn, isOk) {
     setFeedbackContinueVisible(true);
     state.lastFeedbackWrong = '';
     updateFeedbackSpeakBtn(true);
+    updateInRoundReviewBtn(false);
   } else {
     btn.classList.add('wrong');
     btn.setAttribute('aria-pressed', 'true');
@@ -4317,6 +4396,7 @@ function pick(btn, isOk) {
     setFeedbackContinueVisible(true);
     state.lastFeedbackWrong = picked;
     updateFeedbackSpeakBtn(true);
+    updateInRoundReviewBtn(true);
   }
   persistGameSession();
 }
@@ -4325,6 +4405,7 @@ function nextQ() {
   if (state.gameEnding || state.gameEnded) return;
   stopSpeaking();
   updateFeedbackSpeakBtn(false);
+  updateInRoundReviewBtn(false);
   state.lastFeedbackWrong = '';
   state.idx++;
   document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
@@ -4349,10 +4430,37 @@ function updateReviewButtons() {
   });
 }
 
+function updateInRoundReviewBtn(forceShow) {
+  const btn = document.getElementById('btn-review-in-round');
+  if (!btn) return;
+  const show = forceShow && state.wrongLog.length > 0 && !state.gameEnded;
+  btn.style.display = show ? 'block' : 'none';
+  if (show) {
+    const n = state.wrongLog.length;
+    btn.textContent = n === 1
+      ? '📋 راجع/ي هذا الخطأ'
+      : `📋 راجع/ي أخطاءك (${arabicNum(n)})`;
+  }
+}
+
+function startInRoundReview() {
+  if (!state.wrongLog.length) return;
+  // Keep game state; return to the same question feedback after review.
+  startReview('game');
+}
+
 function startReview(from) {
   if (!state.wrongLog.length) return;
   state.reviewIdx = 0;
-  state.reviewReturn = from || (document.getElementById('gameover').classList.contains('active') ? 'gameover' : 'results');
+  if (from) {
+    state.reviewReturn = from;
+  } else if (document.getElementById('game')?.classList.contains('active')) {
+    state.reviewReturn = 'game';
+  } else if (document.getElementById('feedback-screen')?.classList.contains('active')) {
+    state.reviewReturn = 'feedback-screen';
+  } else {
+    state.reviewReturn = document.getElementById('gameover')?.classList.contains('active') ? 'gameover' : 'results';
+  }
   renderReviewItem();
   show('review-screen');
 }
@@ -4394,7 +4502,17 @@ function nextReview() {
 }
 
 function exitReview() {
-  show(state.reviewReturn || 'results');
+  const ret = state.reviewReturn || 'results';
+  show(ret);
+  if (ret === 'game') {
+    // Restore in-round feedback UI after mid-round review.
+    const fb = document.getElementById('feedback');
+    if (fb?.classList.contains('show')) {
+      setFeedbackPanelOpen(true);
+      updateInRoundReviewBtn(true);
+      updateFeedbackSpeakBtn(true);
+    }
+  }
 }
 
 function revealAnswer() {

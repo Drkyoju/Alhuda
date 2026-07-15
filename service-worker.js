@@ -7,7 +7,7 @@
 // which previously could throw on renamed functions. enhancements.js triggers
 // the message on next page load so users get the update on the NEXT visit.
 
-const CACHE = 'alhuda-v87';
+const CACHE = 'alhuda-v88';
 const ASSETS = [
   './',
   './index.html',
@@ -22,13 +22,21 @@ const ASSETS = [
   './auth.js',
   './platform.js',
   './enhancements.js',
+  './fonts.css',
   './styles.css',
   './kids-ui.css',
   './enhancements.css',
   './icons/icon.svg',
   './icons/org-logo.png',
+  './icons/org-logo-96.webp',
+  './icons/org-logo-220.webp',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './fonts/tajawal-arabic-400-normal.woff2',
+  './fonts/tajawal-arabic-700-normal.woff2',
+  './fonts/tajawal-arabic-800-normal.woff2',
+  './fonts/amiri-arabic-400-normal.woff2',
+  './fonts/amiri-arabic-700-normal.woff2',
 ];
 
 // Single shared version string. enhancements.js must keep its registration

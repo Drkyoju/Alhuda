@@ -1,4 +1,11 @@
 -- supabase_book_citations_ocr_cleanup.sql
+-- ═══════════════════════════════════════════════════════════════════════════
+-- RUN ME (يدوياً — لا يمكن تطبيقه من العميل بمفتاح anon)
+-- 1) افتح Supabase Dashboard → SQL Editor
+-- 2) الصق هذا الملف كاملاً واضغط Run
+-- 3) النتيجة المتوقعة: ~549 تحديثاً على source_quote (idempotent)
+-- العميل ينظّف الاقتباسات محلياً أيضاً عبر citation-canonical.js
+-- ═══════════════════════════════════════════════════════════════════════════
 -- Full citation repair: 549 changes (549 set, 0 cleared)
 -- Run in Supabase SQL Editor — idempotent
 

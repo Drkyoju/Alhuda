@@ -4,6 +4,8 @@
   "scripts": {
     "test": "playwright test",
     "test:smoke": "playwright test tests/smoke.spec.js",
+    "test:mobile": "playwright test tests/mobile.spec.js",
+    "test:ipad": "playwright test tests/ipad.spec.js",
     "test:a11y": "playwright test tests/a11y.spec.js",
     "test:e2e": "playwright test tests/e2e-login.spec.js",
     "test:api": "LIVE_API_BASE=https://alhuda.ryodan71.workers.dev playwright test tests/api-live.spec.js",

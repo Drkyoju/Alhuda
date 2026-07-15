@@ -73,7 +73,7 @@ async function handleTtsStatus(request, env) {
     azureF0SoftLimit: 450000,
     azureF0HardLimit: 500000,
     keyRotationHint: azure
-      ? 'إذا ظهر المفتاح في شات سابقاً: رجّع المفتاح من Azure Portal وحدّث GitHub Secret AZURE_SPEECH_KEY'
+      ? '⚠️ أمان: إن ظهر مفتاح Azure في شات/سجل سابقاً — ألغِ المفتاح فوراً من Azure Portal → Keys، أنشئ مفتاحاً جديداً، ثم حدّث GitHub Secret AZURE_SPEECH_KEY وأعد النشر'
       : '',
   }), { status: 200, headers: { ...cors, ...JSON_HEADERS } });
 }

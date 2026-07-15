@@ -10,13 +10,24 @@
   <title>المكتبة الثلاثية - أسئلة تعليمية</title>
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preload" href="fonts/tajawal-arabic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="icons/org-logo-220.webp" as="image" type="image/webp">
+  <style>
+    /* Critical login shell — first paint before full CSS */
+    html,body{margin:0;padding:0;background:#f7f3ea;color:#1a2e24;font-family:Tajawal,system-ui,sans-serif}
+    body.islamic-bg{min-height:100dvh}
+    .app-loading{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;background:rgba(247,243,234,.92)}
+    .app-loading[aria-busy="true"]{display:flex}
+    .bismillah-crown{text-align:center;padding:12px 16px 0}
+    .bismillah-hero{font-family:Amiri,serif;font-size:clamp(1.15rem,4vw,1.55rem);color:#163828;margin:0}
+    .screen{display:none}.screen.active{display:block}
+    #login-screen .login-hero{text-align:center;padding:12px 18px 24px}
+    .logo-img{width:min(220px,55vw);height:auto}
+  </style>
+  <link rel="stylesheet" href="fonts.css?v=1">
   <link rel="stylesheet" href="enhancements.css?v=9">
   <link rel="stylesheet" href="kids-ui.css?v=5">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
-  <link rel="stylesheet" href="styles.css?v=41">
+  <link rel="stylesheet" href="styles.css?v=42">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -50,7 +61,10 @@
 
   <!-- شريط علوي — يختفي في الدخول واللعب -->
   <header class="app-topbar">
-    <img src="icons/org-logo.png" alt="شعار جمعية الهدى والحكمة" class="site-logo" width="96" height="96">
+    <picture>
+      <source type="image/webp" srcset="icons/org-logo-96.webp">
+      <img src="icons/org-logo.png" alt="شعار جمعية الهدى والحكمة" class="site-logo" width="96" height="96" decoding="async">
+    </picture>
     <div class="topbar-center">
       <span class="topbar-chip xp" id="topbar-xp">✨ 0</span>
     </div>
@@ -156,7 +170,10 @@
   <div id="login-screen" class="screen active">
     <div class="login-hero">
       <div class="logo-wrap login-brand-hero">
-        <img src="icons/org-logo.png" alt="جمعية الهدى والحكمة" class="logo-img" width="220" height="174">
+        <picture>
+          <source type="image/webp" srcset="icons/org-logo-220.webp">
+          <img src="icons/org-logo.png" alt="جمعية الهدى والحكمة" class="logo-img" width="220" height="174" decoding="async" fetchpriority="high">
+        </picture>
         <div class="org-name org-name-hero">جمعية الهدى والحكمة</div>
         <div class="brand-title">المكتبة الثلاثية</div>
         <div class="brand-sub">أسئلة تعليمية تفاعلية من برامج الجمعية</div>
@@ -193,6 +210,7 @@
       </div>
       <div class="card demo-intro-card">
       <div class="demo-badge" id="demo-books-progress">٣ كتب × ٨ أسئلة</div>
+      <p class="demo-books-nudge" id="demo-books-nudge" hidden role="status">🌟 باقي كتاب واحد — جرّب/ي الكتب الثلاثة كلها!</p>
       <p class="demo-pick-lead">جرّب/ي أي كتاب بدون تسجيل — بعدها عبّي نموذج التقييم 💬</p>
       <div class="demo-book-pick-list">
         <button type="button" class="demo-book-pick" onclick="beginDemo('tawheed')">
@@ -457,6 +475,7 @@
         </div>
         <div class="fb-exp" id="fb-exp"></div>
         <div class="self-correct-box" id="fb-self-correct" style="display:none;"></div>
+        <button type="button" class="btn btn-blue btn-sm" id="btn-review-in-round" onclick="startInRoundReview()" style="display:none;width:100%;margin-top:8px;">📋 راجع/ي أخطاءك حتى الآن</button>
         <button class="btn btn-green btn-sm fb-continue-btn" onclick="nextQ()">متابعة →</button>
       </div>
     </div>
@@ -602,7 +621,7 @@
 <script src="demo-questions-bundle.js"></script>
 <script src="version.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="app.js?v=77" defer></script>
+<script src="app.js?v=78" defer></script>
 <script src="auth.js?v=11" defer></script>
 <script src="enhancements.js?v=9" defer></script>
 <script src="platform.js?v=13" defer></script>
