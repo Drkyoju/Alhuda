@@ -1928,20 +1928,15 @@ function buildFeedbackSpeechText(q, wrongText) {
     const correctIdx = q?.type === 'mc' && q.c != null ? `a${q.c}` : 'correct';
     parts.push(`الْإِجَابَةُ الصَّحِيحَةُ، ${speechPart(q, correctIdx, correct)}`);
   }
-  const rawExp = (q?.exp || '').trim();
-  const exp = rawExp && shouldShowExplanation(rawExp, q)
-    ? speechPart(q, 'exp', rawExp)
-    : '';
-  const rawCite = String(q?.quote || '').replace(/^«|»$/g, '').trim()
-    || (q?.id && getCanonicalQuote(q.id)) || pickCitationText(q);
+  // Speak الاستشهاد only (book quote, or full explanation under that heading — never a separate «شرح»).
+  const rawCite = pickCitationText(q)
+    || String(q?.quote || '').replace(/^«|»$/g, '').trim()
+    || (q?.id && getCanonicalQuote(q.id))
+    || '';
   const quote = speechPart(q, 'quote', rawCite);
-  if (exp) {
-    parts.push(exp);
-    if (quote && !textIsSubstantiallyContained(quote, exp)) parts.push(quote);
-  } else if (quote) {
+  if (quote) {
     parts.push(quote);
-  }
-  if (!exp && !quote) {
+  } else {
     const book = BOOK_LABELS[q?.book] || q?.book || '';
     if (book) parts.push(`من كتاب ${book}`);
     const pageLabel = q?.page != null ? formatPageLabel(q.page) : '';
@@ -3224,7 +3219,7 @@ function citationLooksLikeAyah(bookQuote, verseKey) {
   return false;
 }
 
-/** Book quote only — do not promote explanation into الاستشهاد. */
+/** Book quote only — real source_quote / canonical, not explanation. */
 function getBookQuoteOnly(q) {
   const fromQuote = cleanArabicCitation(q?.quote, q?.id);
   if (fromQuote && !isGarbageCitation(fromQuote)) return formatCitationQuote(fromQuote);
@@ -3234,13 +3229,26 @@ function getBookQuoteOnly(q) {
   return '';
 }
 
+/**
+ * Full explanation as citation body when there is no separate book quote.
+ * (We no longer show a separate «الشرح» block — text lives under الاستشهاد.)
+ */
+function getExplanationAsCitation(q) {
+  const raw = String(q?.exp || '').trim();
+  if (!raw || raw.length < 8 || isWorksheetCitation(raw)) return '';
+  const cleaned = cleanArabicCitation(raw, null) || collapseBrokenArabicSpaces(raw);
+  if (!cleaned || cleaned.length < 8 || isGarbageCitation(cleaned)) return '';
+  if (explanationDuplicatesCorrectAnswer(cleaned, q)) return '';
+  return formatCitationQuote(cleaned);
+}
+
+/** Display / speech citation: book quote first, else full explanation under الاستشهاد. */
+function getCitationBodyText(q) {
+  return getBookQuoteOnly(q) || getExplanationAsCitation(q);
+}
+
 function pickCitationText(q) {
-  const own = getBookQuoteOnly(q);
-  if (own) return own;
-  // Fallback for speech/legacy: allow explanation snippet only when no book quote exists.
-  const fromExp = extractExplanationSnippet(q?.exp);
-  if (fromExp && !isGarbageCitation(fromExp)) return formatCitationQuote(fromExp);
-  return '';
+  return getCitationBodyText(q);
 }
 
 function sanitizeBookQuote(text, questionId) {
@@ -3258,23 +3266,24 @@ function buildBookCitationHtml(q) {
   const chapter = q.cat || '';
   const pageLabel = formatPageLabel(q.page);
   const bookQuote = getBookQuoteOnly(q);
+  const citeBody = getCitationBodyText(q);
   const verseKey = getPrimaryVerseKeyForQuestion(q);
-  const quoteIsAyah = citationLooksLikeAyah(bookQuote, verseKey);
+  const quoteIsAyah = citationLooksLikeAyah(citeBody, verseKey);
 
-  if (!book && !chapter && !pageLabel && !bookQuote && !verseKey) return '';
+  if (!book && !chapter && !pageLabel && !citeBody && !verseKey) return '';
 
   let inner = '';
   let showedAyah = false;
 
-  if (bookQuote && !quoteIsAyah) {
-    // Real book prose — primary citation. Do not inject ayah here.
-    inner += `<p class="book-cite-quote">${escapeHtml(bookQuote)}</p>`;
-  } else if (verseKey && (quoteIsAyah || !bookQuote)) {
+  if (citeBody && !quoteIsAyah) {
+    // Book prose or full explanation moved under الاستشهاد (no separate «الشرح»).
+    inner += `<p class="book-cite-quote">${escapeHtml(citeBody)}</p>`;
+  } else if (verseKey && (quoteIsAyah || !citeBody)) {
     // Citation is the ayah (or no prose quote, only a verse mapping).
     inner += buildQuranAyahBlockHtml(verseKey, { withButton: true });
     showedAyah = true;
-  } else if (bookQuote) {
-    inner += `<p class="book-cite-quote">${escapeHtml(bookQuote)}</p>`;
+  } else if (citeBody) {
+    inner += `<p class="book-cite-quote">${escapeHtml(citeBody)}</p>`;
   }
 
   // If we only had meta (book/page) and nothing else, still show the box.
@@ -3287,7 +3296,7 @@ function buildBookCitationHtml(q) {
   if (showedAyah && verseKey) meta.push(escapeHtml(verseKey.replace(':', '∶')));
   inner += `<p class="book-cite-meta">${meta.join(' · ') || 'راجع/ي نصّ الكتاب في هذا الباب'}</p>`;
 
-  const heading = showedAyah && !bookQuote
+  const heading = showedAyah && !citeBody
     ? '📖 الدليل من القرآن'
     : '📖 الاستشهاد من الكتاب';
   return `<p class="book-cite-heading">${heading}</p><div class="book-cite-box">${inner}</div>`;
@@ -3310,11 +3319,7 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
     html += `<p class="fb-correct-answer">${escapeHtml(correctText)}</p>`;
     html += '</div>';
   }
-  const rawExp = String(q.exp || '').trim();
-  if (shouldShowExplanation(rawExp, q)) {
-    const cleanedExp = cleanArabicCitation(rawExp, null) || collapseBrokenArabicSpaces(rawExp);
-    html += `<div class="fb-explanation"><p class="fb-exp-label"><strong>💡 الشرح:</strong></p><p class="fb-exp-text">${escapeHtml(cleanedExp)}</p></div>`;
-  }
+  // No separate «الشرح» — explanation (if any) lives under الاستشهاد من الكتاب.
   html += buildBookCitationHtml(q);
   html += '</div>';
   return html;
@@ -4786,11 +4791,11 @@ function pick(btn, isOk) {
     fb.className = 'feedback show bad';
     document.getElementById('fb-icon').textContent = '🤔';
     document.getElementById('fb-title').textContent = state.demoMode
-      ? `${n}، إجابة خاطئة — راجع/ي الشرح أدناه 💡`
+      ? `${n}، إجابة خاطئة — راجع/ي الاستشهاد أدناه 📖`
       : `${n}، إجابة خاطئة — راجع/يها لاحقاً في «مراجعة الأخطاء»`;
     if (trainingMode) {
       selfBox.style.display = 'block';
-      selfBox.innerHTML = '<p style="font-size:0.85em;margin-bottom:8px;color:var(--text-soft);">وضع التدريب — لا يُحسب ضدك</p><button type="button" class="btn btn-blue btn-sm" style="width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة والشرح</button>';
+      selfBox.innerHTML = '<p style="font-size:0.85em;margin-bottom:8px;color:var(--text-soft);">وضع التدريب — لا يُحسب ضدك</p><button type="button" class="btn btn-blue btn-sm" style="width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة والاستشهاد</button>';
       mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, false, picked));
     } else {
       selfBox.style.display = 'none';
@@ -4865,7 +4870,7 @@ function renderReviewItem() {
   const actions = document.getElementById('review-voice-actions');
   if (actions) {
     actions.innerHTML = `
-      <button type="button" class="btn btn-white btn-sm" id="btn-review-speak">🔊 اقرأ الشرح</button>
+      <button type="button" class="btn btn-white btn-sm" id="btn-review-speak">🔊 اقرأ الاستشهاد</button>
       ${hasQuranAyahContent(q) ? `<button type="button" class="btn btn-white btn-sm" id="btn-review-recite">${QURAN_RECITE_BTN_LABEL}</button>` : ''}
     `;
     document.getElementById('btn-review-speak')?.addEventListener('click', (e) => {

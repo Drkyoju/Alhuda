@@ -1059,13 +1059,13 @@
     .why-correct-box.is-correct-reveal {
       margin-top: 8px;
     }
-    .fb-wrong-label { margin: 0 0 6px; font-size: 1.12em; }
+    .fb-wrong-label { margin: 0 0 4px; font-size: 0.92em; }
     .fb-wrong-answer {
       margin: 0;
-      font-size: 1.28em;
-      font-weight: 900;
+      font-size: 0.95em;
+      font-weight: 700;
       color: var(--text);
-      line-height: 1.7;
+      line-height: 1.55;
     }
     .why-correct-box strong { display: block; margin-bottom: 6px; font-size: 1.12em; }
     .fb-correct-label { margin: 0 0 6px; font-size: 1.18em; }
@@ -3346,15 +3346,21 @@
       border-radius: 12px;
     }
     #game .feedback .why-correct-box strong,
-    #game .feedback .fb-correct-label,
-    #game .feedback .fb-wrong-label {
+    #game .feedback .fb-correct-label {
       font-size: 1.18em !important;
     }
-    #game .feedback .fb-correct-answer,
-    #game .feedback .fb-wrong-answer {
+    #game .feedback .fb-wrong-label {
+      font-size: 0.92em !important;
+    }
+    #game .feedback .fb-correct-answer {
       font-size: 1.35em !important;
       font-weight: 900 !important;
       line-height: 1.75 !important;
+    }
+    #game .feedback .fb-wrong-answer {
+      font-size: 0.95em !important;
+      font-weight: 700 !important;
+      line-height: 1.55 !important;
     }
     #game .feedback .book-cite-heading {
       margin: 8px 0 6px;
@@ -3560,14 +3566,20 @@
         padding: 12px 14px !important;
       }
       #game .feedback .fb-correct-label,
-      #game .feedback .fb-wrong-label,
       #game .feedback .why-correct-box strong {
         font-size: 1.12em !important;
       }
-      #game .feedback .fb-correct-answer,
-      #game .feedback .fb-wrong-answer {
+      #game .feedback .fb-wrong-label {
+        font-size: 0.9em !important;
+      }
+      #game .feedback .fb-correct-answer {
         font-size: 1.28em !important;
         line-height: 1.75 !important;
+      }
+      #game .feedback .fb-wrong-answer {
+        font-size: 0.92em !important;
+        line-height: 1.5 !important;
+        font-weight: 700 !important;
       }
       #game .feedback .book-cite-quote:not(.book-cite-ayah) {
         font-size: 1.16em !important;
@@ -3725,15 +3737,22 @@
         line-height: 1.7 !important;
       }
       #game .feedback .fb-correct-label,
-      #game .feedback .fb-wrong-label,
-      #game .feedback .why-correct-box strong {
+      #game .feedback .why-correct-box.is-correct strong,
+      #game .feedback .why-correct-box.is-correct-reveal strong {
         font-size: 1.12em !important;
       }
-      #game .feedback .fb-correct-answer,
-      #game .feedback .fb-wrong-answer {
+      #game .feedback .fb-wrong-label {
+        font-size: 0.9em !important;
+      }
+      #game .feedback .fb-correct-answer {
         font-size: 1.28em !important;
         line-height: 1.75 !important;
         font-weight: 900 !important;
+      }
+      #game .feedback .fb-wrong-answer {
+        font-size: 0.92em !important;
+        line-height: 1.5 !important;
+        font-weight: 700 !important;
       }
       #game .feedback .book-cite-heading {
         font-size: 1.05em !important;
@@ -3928,15 +3947,22 @@
       font-weight: 900;
     }
     #game .feedback .fb-correct-label,
-    #game .feedback .fb-wrong-label,
-    #game .feedback .why-correct-box strong {
+    #game .feedback .why-correct-box.is-correct strong,
+    #game .feedback .why-correct-box.is-correct-reveal strong {
       font-size: clamp(1.08rem, calc(var(--base-font-size, 18px) * 1.12), 1.28rem) !important;
     }
-    #game .feedback .fb-correct-answer,
-    #game .feedback .fb-wrong-answer {
+    #game .feedback .fb-wrong-label {
+      font-size: clamp(0.85rem, calc(var(--base-font-size, 18px) * 0.88), 0.98rem) !important;
+    }
+    #game .feedback .fb-correct-answer {
       font-size: clamp(1.22rem, calc(var(--base-font-size, 18px) * 1.28), 1.5rem) !important;
       font-weight: 900 !important;
       line-height: 1.75 !important;
+    }
+    #game .feedback .fb-wrong-answer {
+      font-size: clamp(0.88rem, calc(var(--base-font-size, 18px) * 0.92), 1.02rem) !important;
+      font-weight: 700 !important;
+      line-height: 1.5 !important;
     }
     #game .feedback .book-cite-quote:not(.book-cite-ayah) {
       font-size: clamp(1.12rem, calc(var(--base-font-size, 18px) * 1.18), 1.38rem) !important;
@@ -3954,15 +3980,21 @@
       font-size: clamp(0.8rem, calc(var(--base-font-size, 18px) * 0.85), 0.95rem) !important;
     }
     /* مراجعة الأخطاء — نفس أحجام التغذية الراجعة */
-    #review-screen .fb-correct-label,
-    #review-screen .fb-wrong-label {
+    #review-screen .fb-correct-label {
       font-size: 1.15em !important;
     }
-    #review-screen .fb-correct-answer,
-    #review-screen .fb-wrong-answer {
+    #review-screen .fb-wrong-label {
+      font-size: 0.92em !important;
+    }
+    #review-screen .fb-correct-answer {
       font-size: 1.32em !important;
       font-weight: 900 !important;
       line-height: 1.75 !important;
+    }
+    #review-screen .fb-wrong-answer {
+      font-size: 0.95em !important;
+      font-weight: 700 !important;
+      line-height: 1.5 !important;
     }
     #review-screen .book-cite-quote {
       font-size: 1.2em !important;
