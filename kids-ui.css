@@ -192,14 +192,14 @@
 }
 
 /* ── صندوق السؤال ── */
-.kids-theme .q-box {
+.kids-theme #game .q-main {
   background: linear-gradient(180deg, #FFFFFF, #FFFBEB);
   border: 3px solid transparent;
   background-clip: padding-box;
   position: relative;
   box-shadow: 0 6px 24px rgba(42, 92, 69, 0.1);
 }
-.kids-theme .q-box::before {
+.kids-theme #game .q-main::before {
   content: '';
   position: absolute;
   inset: -3px;
@@ -208,6 +208,15 @@
   z-index: -1;
   animation: kidBorderSpin 6s linear infinite;
   background-size: 300% 300%;
+}
+.kids-theme .q-box {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  position: static;
+}
+.kids-theme .q-box::before {
+  display: none;
 }
 @keyframes kidBorderSpin {
   0% { background-position: 0% 50%; }
@@ -398,5 +407,6 @@
   .kids-theme .btn-demo-login,
   .kids-theme .progress-bar,
   .kids-theme .q-box::before,
+  .kids-theme #game .q-main::before,
   .kids-theme .confirm-answer-btn { animation: none !important; }
 }

@@ -1575,10 +1575,10 @@
       flex-shrink: 0;
     }
     .progress-wrap {
-      flex: 0 0 52px !important;
-      width: 52px !important;
-      min-width: 52px !important;
-      max-width: 52px !important;
+      flex: 0 0 120px !important;
+      width: 120px !important;
+      min-width: 90px !important;
+      max-width: 140px !important;
       height: 6px !important;
       background: var(--border);
       border-radius: 999px;
@@ -1606,34 +1606,57 @@
     .q-meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 6px; }
     .q-num { font-size: 0.75em; color: var(--text-soft); font-weight: 700; }
     .q-box {
-      background: var(--cream);
-      border: 3px solid var(--border);
-      border-radius: 18px;
-      padding: 20px 18px;
-      font-size: 1.1em;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.12em;
       font-weight: 800;
       color: var(--text);
-      line-height: 1.7;
-      margin-bottom: 16px;
+      line-height: 1.75;
+      margin-bottom: 0;
+      white-space: normal;
+      word-break: normal;
+      overflow-wrap: break-word;
     }
     .q-with-timer {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .q-main {
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      background: var(--cream);
+      border: 3px solid var(--border);
+      border-radius: 18px;
+      padding: 14px 14px 12px;
+      box-sizing: border-box;
     }
     .q-box-row {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      flex: 1;
+      width: 100%;
       min-width: 0;
       margin-bottom: 0;
     }
     .q-box-row .q-box {
-      flex: 1;
-      margin-bottom: 0;
+      flex: 1 1 auto;
       min-width: 0;
+      width: auto;
+      margin-bottom: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      border-radius: 0;
     }
     .voice-btn.voice-on {
       background: var(--emerald-light);
@@ -1847,18 +1870,22 @@
       color: var(--emerald-dark);
     }
     .quran-recite-slot {
-      margin: 8px 0 6px;
+      margin: 10px 0 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(201, 169, 98, 0.35);
+      width: 100%;
+      min-width: 0;
     }
     .q-ayah-block {
       display: flex;
       flex-direction: column;
       align-items: stretch;
       gap: 8px;
-      margin: 4px 0 8px;
-      padding: 10px 12px 12px;
-      border-radius: 12px;
-      background: linear-gradient(180deg, rgba(255, 248, 232, 0.95), rgba(245, 230, 184, 0.35));
-      border: 1px solid rgba(201, 169, 98, 0.45);
+      margin: 0;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      border: none;
     }
     .q-ayah-text,
     .book-cite-box .q-ayah-text,
@@ -1872,6 +1899,9 @@
       margin: 0;
       padding: 4px 2px;
       letter-spacing: 0.02em;
+      white-space: normal;
+      word-break: normal;
+      overflow-wrap: anywhere;
     }
     .book-cite-box .q-ayah-block {
       margin: 0 0 8px;
@@ -2639,11 +2669,11 @@
       order: 1;
       flex: 0 1 auto;
       width: fit-content;
-      max-width: min(42vw, 260px);
+      max-width: min(72vw, 420px);
       background: var(--grad-emerald);
       border-radius: 0 0 14px 14px;
-      padding: 5px 8px 6px;
-      gap: 5px;
+      padding: 5px 10px 6px;
+      gap: 6px;
       box-shadow: 0 8px 20px rgba(15, 36, 25, 0.22);
     }
     .top-bar .score-badge {
@@ -2654,11 +2684,11 @@
       font-size: 0.7em;
     }
     .top-bar .progress-wrap {
-      flex: 0 0 40px !important;
-      width: 40px !important;
-      min-width: 40px !important;
-      max-width: 40px !important;
-      height: 5px !important;
+      flex: 0 0 120px !important;
+      width: 120px !important;
+      min-width: 90px !important;
+      max-width: 140px !important;
+      height: 6px !important;
       background: rgba(0,0,0,0.28);
       border-radius: 999px;
       margin: 0 !important;
@@ -2713,15 +2743,15 @@
     }
 
     .q-box {
-      background: var(--white);
-      border: 1px solid var(--border);
-      border-right: 4px solid var(--gold);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      font-family: var(--font-display);
-      font-size: 1.15em;
-      line-height: 1.85;
-      padding: 22px 20px;
+      background: transparent;
+      border: none;
+      border-right: none;
+      border-radius: 0;
+      box-shadow: none;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 1.12em;
+      line-height: 1.75;
+      padding: 0;
     }
     .ans-btn {
       border: 1px solid var(--border);
@@ -3111,14 +3141,28 @@
       max-width: 42%;
       margin-inline-start: auto;
     }
+    #game .q-main {
+      background: linear-gradient(180deg, #FFFFFF, #FFFBEB);
+      border: 1px solid var(--border);
+      border-right: 4px solid var(--gold);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 14px 14px 12px;
+    }
     #game .q-box {
-      padding: 12px 12px;
-      margin-bottom: 6px;
-      font-size: 1.02em;
-      line-height: 1.65;
+      padding: 0;
+      margin-bottom: 0;
+      font-family: 'Tajawal', sans-serif;
+      font-size: clamp(1.05rem, 2.8vw, 1.22rem);
+      line-height: 1.75;
+      font-weight: 800;
+      white-space: normal;
+      word-break: normal;
+      overflow-wrap: break-word;
     }
     #game .q-with-timer {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+      align-items: flex-start;
     }
     #game .ans-grid {
       gap: 7px;
@@ -3426,9 +3470,16 @@
 
     /* ── مراجعة الأخطاء ── */
     #review-screen .q-box {
-      font-family: var(--font-display);
+      font-family: 'Tajawal', sans-serif;
       font-size: 1.05em;
       line-height: 1.75;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-right: 4px solid var(--gold);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 16px 14px;
+      margin-bottom: 12px;
     }
     .review-exp {
       background: var(--emerald-light);
@@ -3528,12 +3579,16 @@
       font-size: clamp(1.05rem, calc(var(--base-font-size, 18px) * 1.1), 1.35rem) !important;
       line-height: 1.75 !important;
       font-weight: 800;
+      font-family: 'Tajawal', sans-serif !important;
       word-break: normal;
       overflow-wrap: break-word;
       white-space: normal;
       text-align: right;
-      padding: 14px 14px;
-      border-radius: 14px;
+      padding: 0 !important;
+      border-radius: 0;
+      max-width: none;
+      width: auto;
+      min-width: 0;
     }
     #game .ans-btn {
       font-size: clamp(0.8rem, calc(var(--base-font-size, 18px) * 0.82), 0.94rem) !important;
@@ -3559,29 +3614,34 @@
       min-width: 0;
     }
     @media (max-width: 768px) {
+      #game .q-main {
+        width: 100%;
+        min-width: 0;
+      }
       #game .q-box-row {
         position: relative;
-        display: block;
+        display: flex;
         width: 100%;
+        min-width: 0;
       }
       #game .q-box-row .q-box {
-        width: 100%;
-        /* Speaker sits on the left (inline-end in RTL) — leave room so text spans the line. */
-        padding: 11px 12px 11px !important;
-        padding-inline-end: 46px !important;
+        width: auto;
+        flex: 1 1 auto;
+        min-width: 0;
+        padding: 0 !important;
+        padding-inline-end: 42px !important;
         font-size: clamp(17px, calc(var(--base-font-size, 18px) * 1.05), 20px) !important;
         line-height: 1.75 !important;
-        border-radius: 11px !important;
-        border-width: 2px;
         word-break: normal;
         overflow-wrap: break-word;
+        white-space: normal;
         text-align: right;
       }
       #game .q-box-row .voice-btn,
       #game #btn-speak-question {
         position: absolute;
-        top: 2px;
-        inset-inline-end: 2px; /* يسار الشاشة في RTL */
+        top: 0;
+        inset-inline-end: 0;
         width: 34px !important;
         height: 34px !important;
         min-height: 34px !important;
@@ -3708,10 +3768,10 @@
         gap: 5px;
       }
       #game .top-bar .progress-wrap {
-        flex: 0 0 40px !important;
-        width: 40px !important;
-        min-width: 40px !important;
-        max-width: 40px !important;
+        flex: 0 0 100px !important;
+        width: 100px !important;
+        min-width: 80px !important;
+        max-width: 120px !important;
         height: 5px !important;
       }
       #game .q-area {
@@ -4157,9 +4217,8 @@
       animation: none !important;
       opacity: 0.04;
     }
-    #game .q-box {
-      content-visibility: auto;
-      contain-intrinsic-size: auto 120px;
+    #game .q-main {
+      content-visibility: visible;
     }
     #game .ans-grid {
       content-visibility: auto;

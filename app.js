@@ -2620,7 +2620,9 @@ function updateQuranReciteSlot(q) {
     slot = document.createElement('div');
     slot.id = 'quran-recite-slot';
     slot.className = 'quran-recite-slot';
-    document.querySelector('.q-box-row')?.insertAdjacentElement('afterend', slot);
+    const host = document.querySelector('#game .q-main') || document.querySelector('.q-box-row')?.parentElement;
+    if (host) host.appendChild(slot);
+    else document.querySelector('.q-box-row')?.insertAdjacentElement('afterend', slot);
   }
   slot.innerHTML = '';
   const verseKey = getPrimaryVerseKeyForQuestion(q);
