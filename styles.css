@@ -3913,72 +3913,102 @@
       margin-bottom: 2px;
     }
     #feedback-screen .feedback-screen-inner h3 {
-      font-size: 0.95rem !important;
-      margin: 10px 0 6px !important;
-      line-height: 1.3;
+      font-size: 0.85rem !important;
+      margin: 6px 0 4px !important;
+      line-height: 1.25 !important;
     }
     #feedback-screen .feedback-label {
-      font-size: 0.8rem !important;
-      margin: 8px 0 5px !important;
+      font-size: 0.72rem !important;
+      margin: 6px 0 3px !important;
+      line-height: 1.25 !important;
     }
     #feedback-screen .feedback-info-row {
-      gap: 6px;
-      margin-bottom: 4px;
+      gap: 5px !important;
+      margin-bottom: 2px !important;
     }
+    #feedback-screen .feedback-info-row .input,
     #feedback-screen .input {
-      padding: 8px 10px !important;
-      font-size: 0.85rem !important;
-      min-height: 38px;
+      padding: 6px 8px !important;
+      font-size: 0.78rem !important;
+      min-height: 32px !important;
+      border-radius: 8px !important;
+    }
+    #feedback-screen .feedback-info-row .input:last-child {
+      max-width: 88px !important;
+      flex: 0 0 88px !important;
     }
     #feedback-screen .rating-row {
-      gap: 6px;
-      margin: 6px 0 4px;
+      gap: 5px !important;
+      margin: 4px 0 2px !important;
     }
     #feedback-screen .rating-btn {
-      min-width: 72px;
-      padding: 8px 8px;
-      border-width: 2px;
-      border-radius: 12px;
-      font-size: 0.78rem;
-      gap: 2px;
+      min-width: 0 !important;
+      flex: 1 1 0 !important;
+      max-width: 110px !important;
+      padding: 5px 4px !important;
+      border-width: 1.5px !important;
+      border-radius: 10px !important;
+      font-size: 0.68rem !important;
+      gap: 1px !important;
+      min-height: 0 !important;
+      box-shadow: none !important;
     }
     #feedback-screen .rating-btn .r-emoji {
-      font-size: 1.25em;
+      font-size: 1.05rem !important;
+      line-height: 1 !important;
+    }
+    #feedback-screen .rating-btn.sel {
+      transform: none !important;
     }
     #feedback-screen .feedback-more-fold {
-      margin: 6px 0 8px;
+      margin: 4px 0 6px !important;
     }
     #feedback-screen .feedback-more-fold summary {
-      font-size: 0.78rem;
-      margin-bottom: 4px;
+      font-size: 0.7rem !important;
+      margin-bottom: 2px !important;
+    }
+    #feedback-screen .want-program-btn {
+      min-width: 0 !important;
+      padding: 6px 8px !important;
+      font-size: 0.75rem !important;
+      border-width: 1.5px !important;
+      border-radius: 10px !important;
     }
     #feedback-screen .feedback-textarea {
-      font-size: 0.82rem !important;
-      padding: 8px 10px !important;
-      min-height: 48px;
+      font-size: 0.75rem !important;
+      padding: 6px 8px !important;
+      min-height: 40px !important;
+      margin-bottom: 6px !important;
+      border-radius: 8px !important;
     }
+    #feedback-screen #btn-submit-feedback,
     #feedback-screen .btn-xl {
-      font-size: 0.92rem !important;
-      min-height: 42px !important;
-      padding: 8px 12px !important;
-      margin-top: 6px;
+      font-size: 0.8rem !important;
+      min-height: 36px !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      padding: 7px 10px !important;
+      margin-top: 4px !important;
+      border-radius: 10px !important;
     }
     #feedback-screen .btn-sm {
-      font-size: 0.78rem !important;
-      min-height: 34px !important;
-      padding: 6px 10px !important;
+      font-size: 0.72rem !important;
+      min-height: 30px !important;
+      padding: 5px 8px !important;
     }
     #feedback-screen .real-game-locked-cta {
-      margin-top: 8px;
+      margin-top: 6px !important;
     }
     #feedback-screen .real-game-locked-note {
-      font-size: 0.75rem;
-      margin-bottom: 4px;
+      font-size: 0.68rem !important;
+      margin-bottom: 3px !important;
+      line-height: 1.3 !important;
     }
     #feedback-screen .real-game-locked-btn {
-      font-size: 0.82rem !important;
-      min-height: 40px !important;
-      padding: 8px 10px !important;
+      font-size: 0.72rem !important;
+      min-height: 34px !important;
+      padding: 6px 8px !important;
+      border-radius: 10px !important;
     }
     .feedback-status-msg {
       margin-top: 6px;
@@ -5152,4 +5182,45 @@
     #game .q-main .q-box {
       font-size: 0.9rem !important;
       line-height: 1.5 !important;
+    }
+
+    /* ── نموذج التقييم: مضغوط بقوة (يفوز على كل القواعد) ── */
+    #feedback-screen .feedback-screen-inner h3 {
+      font-size: 0.82rem !important;
+      margin: 6px 0 3px !important;
+    }
+    #feedback-screen .feedback-label {
+      font-size: 0.7rem !important;
+      margin: 5px 0 2px !important;
+    }
+    #feedback-screen .feedback-info-row .input,
+    #feedback-screen .input {
+      font-size: 0.75rem !important;
+      min-height: 30px !important;
+      padding: 5px 8px !important;
+    }
+    #feedback-screen .rating-btn {
+      padding: 4px 3px !important;
+      font-size: 0.65rem !important;
+      gap: 0 !important;
+      min-width: 0 !important;
+      max-width: 104px !important;
+    }
+    #feedback-screen .rating-btn .r-emoji {
+      font-size: 0.95rem !important;
+    }
+    #feedback-screen #btn-submit-feedback.btn-xl,
+    #feedback-screen #btn-submit-feedback,
+    #feedback-screen .btn.btn-xl {
+      font-size: 0.78rem !important;
+      min-height: 34px !important;
+      padding: 6px 10px !important;
+      max-width: none !important;
+    }
+    #feedback-screen .rating-row {
+      margin: 3px 0 2px !important;
+      gap: 4px !important;
+    }
+    #feedback-screen .feedback-more-fold summary {
+      font-size: 0.68rem !important;
     }
