@@ -810,8 +810,8 @@ function toggleSound() {
   if (soundOn) playSound('correct');
 }
 
-/* ── Voice reading (Edge Neural TTS + browser fallback) ── */
-const TTS_VOICE = 'ar-SA-ZariyahNeural';
+/* ── Voice reading (Azure Neural TTS preferred; Edge Hamed fallback) ── */
+const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-EG-SalmaNeural';
 let cachedArabicVoice = null;
 
@@ -1056,7 +1056,7 @@ function dedupeTtsPlan(plan) {
 /**
  * Choose speech text for one part. If it carries a Quran ayah, keep the ORIGINAL
  * text so buildSpeechPlan can split it out for Hudhaify; otherwise use the
- * per-field diacritized form for best Zariyah pronunciation.
+ * per-field diacritized form for best Hamed / Azure pronunciation.
  */
 function speechPart(q, field, raw) {
   const original = String(raw || '').trim();
@@ -1529,7 +1529,7 @@ function scoreArabicVoice(v) {
   let score = 0;
   if (lang === 'ar-sa') score += 40;
   else if (lang.startsWith('ar')) score += 25;
-  if (/zariyah|hamed|maj(ed)?|tarik|naayf|salma|shakir|premium|enhanced|neural|google|microsoft|natural/.test(name)) score += 30;
+  if (/hamed|salma|maj(ed)?|tarik|naayf|shakir|zariyah|premium|enhanced|neural|google|microsoft|natural/.test(name)) score += 30;
   if (/compact|low|robot|espeak|festival/.test(name)) score -= 40;
   if (v.localService === false) score += 10;
   return score;

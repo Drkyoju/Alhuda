@@ -1,6 +1,11 @@
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
 import { DEFAULT_ARABIC_VOICE, synthesizeArabicSpeech } from './edge-tts.js';
+import {
+  DEFAULT_AZURE_ARABIC_VOICE,
+  azureSpeechConfigured,
+  synthesizeAzureArabicSpeech,
+} from './azure-tts.js';
 
 function corsHeaders(request) {
   const origin = request.headers.get('Origin') || '*';
@@ -131,7 +136,7 @@ async function handleFeedbackNotify(request, env) {
   });
 }
 
-async function handleTts(request) {
+async function handleTts(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: cors });
@@ -172,16 +177,30 @@ async function handleTts(request) {
 
   const voice = typeof body?.voice === 'string' && body.voice.trim()
     ? body.voice.trim()
-    : DEFAULT_ARABIC_VOICE;
+    : (azureSpeechConfigured(env) ? DEFAULT_AZURE_ARABIC_VOICE : DEFAULT_ARABIC_VOICE);
 
   try {
-    const stream = await synthesizeArabicSpeech(text, voice);
+    let stream;
+    let provider = 'edge';
+    if (azureSpeechConfigured(env)) {
+      try {
+        stream = await synthesizeAzureArabicSpeech(text, voice, env);
+        provider = 'azure';
+      } catch (azureErr) {
+        console.warn('[tts] azure failed, falling back to edge:', azureErr);
+        stream = await synthesizeArabicSpeech(text, voice);
+        provider = 'edge-fallback';
+      }
+    } else {
+      stream = await synthesizeArabicSpeech(text, voice);
+    }
     return new Response(stream, {
       status: 200,
       headers: {
         ...cors,
         'Content-Type': 'audio/mpeg',
         'Cache-Control': 'public, max-age=86400',
+        'X-TTS-Provider': provider,
       },
     });
   } catch (err) {
@@ -200,7 +219,7 @@ export default {
       return handleFeedbackNotify(request, env);
     }
     if (url.pathname === '/api/tts') {
-      return handleTts(request);
+      return handleTts(request, env);
     }
     return env.ASSETS.fetch(request);
   },

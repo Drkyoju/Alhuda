@@ -1,6 +1,6 @@
-/** Microsoft Edge neural TTS (Worker-native, based on cloudflare-edge-tts). */
+/** Microsoft Edge neural TTS (Worker-native fallback when Azure key is absent). */
 
-export const DEFAULT_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
+export const DEFAULT_ARABIC_VOICE = 'ar-SA-HamedNeural';
 export const FALLBACK_ARABIC_VOICE = 'ar-EG-SalmaNeural';
 
 const READALOUD_BASE = 'speech.platform.bing.com/consumer/speech/synthesize/readaloud';
