@@ -69,6 +69,32 @@ test('game exit asks before leaving mid-round', async ({ page }) => {
   await expect(page.locator('#game')).toHaveClass(/active/);
 });
 
+test('settings has dark mode and Hudhaify default', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
+  await page.evaluate(() => {
+    if (typeof toggleSettings === 'function') toggleSettings();
+  });
+  await expect(page.locator('#settings-overlay.open')).toBeVisible({ timeout: 5000 });
+  await expect(page.locator('#theme-btn')).toBeVisible();
+  await expect(page.locator('#reciter-label')).toHaveText(/الحذيفي/);
+  await page.evaluate(() => {
+    if (typeof toggleDarkMode === 'function') toggleDarkMode();
+  });
+  await expect(page.locator('body')).toHaveClass(/dark-mode/);
+});
+
+test('demo offline seed still starts a round', async ({ page, context }) => {
+  await page.goto('/');
+  await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
+  await context.setOffline(true);
+  await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
+  await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
+  await dismissOverlays(page);
+  await expect(page.locator('#game')).toHaveClass(/active/);
+  await expect(page.locator('#q-text')).not.toHaveText('...');
+});
+
 test('manifest includes PNG icons', async ({ page }) => {
   const res = await page.request.get('/manifest.json');
   const manifest = await res.json();

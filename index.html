@@ -17,7 +17,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;700;800&display=swap"></noscript>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="styles.css?v=36">
+  <link rel="stylesheet" href="styles.css?v=37">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -246,11 +246,12 @@
         <button type="button" class="want-program-btn" onclick="setWantProgram(false,this)" data-w="no">❌ لا</button>
       </div>
 
-      <p class="feedback-label">اقتراحات أو تحسينات <span class="feedback-optional">(اختياري)</span></p>
-      <textarea class="feedback-textarea" id="feedback-improve" placeholder="اكتب/ي اقتراحاتك: ماذا نضيف؟ ماذا نحسّن؟"></textarea>
-
-      <p class="feedback-label">ملاحظات إضافية <span class="feedback-optional">(اختياري)</span></p>
-      <textarea class="feedback-textarea" id="feedback-like" placeholder="أي تعليق آخر عن تجربتك..."></textarea>
+      <p class="feedback-label">اقتراحات أو ملاحظات <span class="feedback-optional">(اختياري)</span></p>
+      <textarea class="feedback-textarea" id="feedback-improve" placeholder="اكتب/ي اقتراحاتك باختصار..." rows="2"></textarea>
+      <details class="feedback-more-fold">
+        <summary>ملاحظات إضافية (اختياري)</summary>
+        <textarea class="feedback-textarea" id="feedback-like" placeholder="أي تعليق آخر عن تجربتك..." rows="2"></textarea>
+      </details>
 
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
       <div id="demo-analytics-summary" class="demo-analytics-summary" hidden></div>
@@ -598,8 +599,9 @@
 <script src="question-verse-map.js"></script>
 <script src="ayah-snippet-map.js"></script>
 <script src="speech-diacritics-map.js"></script>
+<script src="demo-questions-bundle.js"></script>
 <script src="version.js"></script>
-<script src="app.js?v=72"></script>
+<script src="app.js?v=73"></script>
 <script src="auth.js?v=11"></script>
 <script src="enhancements.js?v=9"></script>
 <script src="platform.js?v=13"></script>

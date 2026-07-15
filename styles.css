@@ -3865,3 +3865,42 @@
       #login-screen .login-hero { max-width: 640px; }
       .login-brand-hero .logo-img { width: 240px; }
     }
+
+    .fb-explanation {
+      margin: 10px 0 8px;
+      padding: 10px 12px;
+      background: rgba(42, 92, 69, 0.07);
+      border-radius: var(--radius-sm);
+      text-align: right;
+    }
+    .fb-exp-label { margin-bottom: 4px; font-size: 0.9em; }
+    .fb-exp-text { color: var(--text-soft); line-height: 1.7; font-weight: 700; font-size: 0.92em; }
+    .feedback-more-fold {
+      margin: 8px 0 12px;
+      text-align: right;
+    }
+    .feedback-more-fold summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: var(--text-soft);
+      font-size: 0.88em;
+      margin-bottom: 6px;
+    }
+    body.dark-mode .fb-explanation {
+      background: rgba(201, 169, 98, 0.1);
+    }
+    body.dark-mode .settings-overlay {
+      background: rgba(0, 0, 0, 0.55);
+    }
+    body.dark-mode .btn-white {
+      background: #1e2c25;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    body.dark-mode .q-box,
+    body.dark-mode .ans-btn {
+      background: #1a2620;
+      color: var(--text);
+    }
+    body.dark-mode .page-hero h2 { color: #e8efe9; }
+    body.dark-mode .quran-recite-status { color: var(--gold-shine); }

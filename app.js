@@ -604,23 +604,37 @@ function onRangeInputChange() {
 }
 
 function buildDemoQuestions(book) {
-  const pool = dedupeQuestionList(getOrderedPool(book, 'all'));
-  const out = [];
   const seen = new Set();
-  for (const q of pool) {
-    if (seen.has(q.id)) continue;
-    seen.add(q.id);
-    out.push(q);
-    if (out.length >= DEMO_COUNT) return out;
-  }
-  for (const q of DEMO_FALLBACK) {
-    if (q.book !== book) continue;
-    if (seen.has(q.id)) continue;
-    seen.add(q.id);
-    out.push(q);
-    if (out.length >= DEMO_COUNT) break;
-  }
+  const out = [];
+  const pushUnique = (list) => {
+    for (const q of list || []) {
+      if (!q || seen.has(q.id)) continue;
+      if (q.book && q.book !== book) continue;
+      seen.add(q.id);
+      out.push(q);
+      if (out.length >= DEMO_COUNT) return true;
+    }
+    return false;
+  };
+
+  // Diversify: shuffle live pool each session so demos vary.
+  const pool = shuffleArray(dedupeQuestionList(getOrderedPool(book, 'all')));
+  if (pushUnique(pool)) return out.slice(0, DEMO_COUNT);
+
+  const bundled = (typeof window !== 'undefined' && window.DEMO_QUESTIONS_BUNDLE?.[book]) || [];
+  if (pushUnique(shuffleArray([...bundled]))) return out.slice(0, DEMO_COUNT);
+
+  pushUnique(DEMO_FALLBACK.filter((q) => q.book === book));
   return out.slice(0, DEMO_COUNT);
+}
+
+function shuffleArray(arr) {
+  const a = [...(arr || [])];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 function arabicNum(n) {
@@ -956,6 +970,133 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-EG-SalmaNeural';
 let cachedArabicVoice = null;
+const TTS_BLOB_CACHE_MAX = 40;
+const ttsBlobMemoryCache = new Map(); // key -> objectUrl
+const ttsPrefetchInFlight = new Map();
+const TTS_IDB_NAME = 'alhudaTtsCache';
+const TTS_IDB_STORE = 'audio';
+
+function ttsCacheKey(text, voice) {
+  return `${voice || TTS_VOICE}::${String(text || '').slice(0, 600)}`;
+}
+
+function openTtsIdb() {
+  return new Promise((resolve, reject) => {
+    if (!('indexedDB' in window)) {
+      reject(new Error('no idb'));
+      return;
+    }
+    const req = indexedDB.open(TTS_IDB_NAME, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(TTS_IDB_STORE)) db.createObjectStore(TTS_IDB_STORE);
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function getTtsBlobFromIdb(key) {
+  try {
+    const db = await openTtsIdb();
+    const blob = await new Promise((resolve, reject) => {
+      const tx = db.transaction(TTS_IDB_STORE, 'readonly');
+      const r = tx.objectStore(TTS_IDB_STORE).get(key);
+      r.onsuccess = () => resolve(r.result || null);
+      r.onerror = () => reject(r.error);
+    });
+    db.close();
+    return blob instanceof Blob ? blob : null;
+  } catch {
+    return null;
+  }
+}
+
+async function putTtsBlobInIdb(key, blob) {
+  try {
+    const db = await openTtsIdb();
+    await new Promise((resolve, reject) => {
+      const tx = db.transaction(TTS_IDB_STORE, 'readwrite');
+      tx.objectStore(TTS_IDB_STORE).put(blob, key);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  } catch (e) {
+    console.warn('tts idb put:', e);
+  }
+}
+
+function rememberTtsObjectUrl(key, objectUrl) {
+  if (!key || !objectUrl) return;
+  if (ttsBlobMemoryCache.has(key)) {
+    const prev = ttsBlobMemoryCache.get(key);
+    if (prev && prev !== objectUrl) URL.revokeObjectURL(prev);
+    ttsBlobMemoryCache.delete(key);
+  }
+  ttsBlobMemoryCache.set(key, objectUrl);
+  while (ttsBlobMemoryCache.size > TTS_BLOB_CACHE_MAX) {
+    const oldest = ttsBlobMemoryCache.keys().next().value;
+    const old = ttsBlobMemoryCache.get(oldest);
+    if (old) URL.revokeObjectURL(old);
+    ttsBlobMemoryCache.delete(oldest);
+  }
+}
+
+async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
+  const key = ttsCacheKey(text, voice);
+  if (ttsBlobMemoryCache.has(key)) {
+    const url = ttsBlobMemoryCache.get(key);
+    const res = await fetch(url);
+    return res.blob();
+  }
+  const cached = await getTtsBlobFromIdb(key);
+  if (cached?.size) {
+    const objectUrl = URL.createObjectURL(cached);
+    rememberTtsObjectUrl(key, objectUrl);
+    return cached;
+  }
+  if (ttsPrefetchInFlight.has(key)) return ttsPrefetchInFlight.get(key);
+
+  const work = (async () => {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice }),
+      signal,
+    });
+    if (!res.ok) throw new Error('tts failed');
+    const blob = await res.blob();
+    if (!blob.size) throw new Error('empty audio');
+    rememberTtsObjectUrl(key, URL.createObjectURL(blob));
+    void putTtsBlobInIdb(key, blob);
+    return blob;
+  })();
+
+  ttsPrefetchInFlight.set(key, work);
+  try {
+    return await work;
+  } finally {
+    ttsPrefetchInFlight.delete(key);
+  }
+}
+
+function prefetchTtsText(text, voice = TTS_VOICE) {
+  const clean = sanitizeTtsText(prepareArabicForSpeech(applyManualSpeechDiacritics(text || '')));
+  if (!clean || clean.length < 2) return;
+  const key = ttsCacheKey(clean, voice);
+  if (ttsBlobMemoryCache.has(key) || ttsPrefetchInFlight.has(key)) return;
+  void fetchTtsBlob(clean, voice).catch(() => {});
+}
+
+function prefetchUpcomingTts(fromIdx = state.idx) {
+  const slice = (state.questions || []).slice(Math.max(0, fromIdx | 0), (fromIdx | 0) + 2);
+  for (const q of slice) {
+    if (!q) continue;
+    prefetchTtsText(q.q);
+    if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
+  }
+}
 
 /** Strip punctuation/symbols the neural voice vocalizes (e.g. ":" → "نقطتان"). Keeps Arabic harakat. */
 function sanitizeTtsText(text) {
@@ -1473,11 +1614,18 @@ function prefetchQuranForQuestion(q) {
   void (async () => {
     try {
       const verseKey = await resolveVerseKeyForQuestion(q);
-      if (verseKey) {
-        setQuranReciteStatus(q, 'loading');
-        await fetchQuranAudioObjectUrl(verseKey);
-        setQuranReciteStatus(q, 'ready');
+      if (!verseKey) {
+        setQuranReciteStatus(q, '');
+        return;
       }
+      const cacheKey = quranBlobCacheKey(verseKey);
+      if (quranAudioBlobCache.has(cacheKey)) {
+        setQuranReciteStatus(q, 'ready');
+        return;
+      }
+      setQuranReciteStatus(q, 'loading');
+      const url = await fetchQuranAudioObjectUrl(verseKey);
+      setQuranReciteStatus(q, url ? 'ready' : '');
     } catch (e) {
       console.warn('quran prefetch question:', e);
       setQuranReciteStatus(q, '');
@@ -1763,9 +1911,10 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
     try {
       setQuranReciteStatus(null, 'loading');
       objectUrl = await fetchQuranAudioObjectUrl(verseKey);
-      if (objectUrl) setQuranReciteStatus(null, 'ready');
+      setQuranReciteStatus(null, objectUrl ? 'ready' : '');
     } catch (e) {
       console.warn('quran cache fetch:', e);
+      setQuranReciteStatus(null, '');
     }
   } else {
     setQuranReciteStatus(null, 'ready');
@@ -1820,13 +1969,12 @@ async function playQuranForQuestion(q, btn) {
       return;
     }
     const ready = quranAudioBlobCache.has(quranBlobCacheKey(verseKey));
-    if (btn && !ready) {
-      btn.textContent = '⏳...';
-      setQuranReciteStatus(q, 'loading');
-    }
+    if (!ready) setQuranReciteStatus(q, 'loading');
+    if (btn && !ready) btn.textContent = '⏳...';
     if (btn) btn.textContent = QURAN_RECITE_BTN_LABEL;
     await playQuranRecitation(verseKey, btn);
-    setQuranReciteStatus(q, 'ready');
+    const nowReady = quranAudioBlobCache.has(quranBlobCacheKey(verseKey));
+    setQuranReciteStatus(q, nowReady ? 'ready' : '');
   } finally {
     if (btn) {
       btn.disabled = false;
@@ -1886,8 +2034,10 @@ function clearTtsAudio(btn) {
     ttsAudio.pause();
     ttsAudio = null;
   }
+  // Don't revoke URLs that live in the TTS memory cache — reuse them next time.
   if (ttsObjectUrl) {
-    URL.revokeObjectURL(ttsObjectUrl);
+    const cached = [...ttsBlobMemoryCache.values()].includes(ttsObjectUrl);
+    if (!cached) URL.revokeObjectURL(ttsObjectUrl);
     ttsObjectUrl = null;
   }
   if (btn) btn.classList.remove('speaking');
@@ -1925,16 +2075,10 @@ function speakTextBrowser(text, btn) {
 
 async function speakTextCloud(text, btn, voice = TTS_VOICE) {
   ttsAbort = new AbortController();
-  const res = await fetch('/api/tts', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, voice }),
-    signal: ttsAbort.signal,
-  });
-  if (!res.ok) throw new Error('tts failed');
-  const blob = await res.blob();
-  if (!blob.size) throw new Error('empty audio');
-  ttsObjectUrl = URL.createObjectURL(blob);
+  const blob = await fetchTtsBlob(text, voice, ttsAbort.signal);
+  const key = ttsCacheKey(text, voice);
+  ttsObjectUrl = ttsBlobMemoryCache.get(key) || URL.createObjectURL(blob);
+  if (!ttsBlobMemoryCache.has(key)) rememberTtsObjectUrl(key, ttsObjectUrl);
   ttsAudio = new Audio(ttsObjectUrl);
   if (btn) btn.classList.add('speaking');
   await ttsAudio.play();
@@ -2238,9 +2382,14 @@ function cleanArabicCitation(raw, questionId) {
   if (questionId && getCanonicalQuote(questionId)) return getCanonicalQuote(questionId);
   if (!raw || isWorksheetCitation(raw)) return '';
   let s = raw.trim();
+  // Strip PDF/OCR private-use glyphs and presentation forms leftovers.
+  s = s.replace(/[\uE000-\uF8FF\uF000-\uFFFF]/g, '');
+  s = s.replace(/[\uFD3E\uFD3F]/g, ''); // ornate Quran paren ornaments often OCR'd empty
   s = s.replace(/^كتاب التوحيد[^.«]{0,120}?\d+\s*/u, '');
   s = s.replace(/لشيخ الإسلام محمد بن عبدالوهاب[^\n«]*/gi, '');
   s = s.replace(/[]/g, '');
+  s = s.replace(/أجل\s*واب|واب\s*جلا|اجلا واب|اجل واب/gi, '');
+  s = s.replace(/الإجابة\s*الصحيحة\s*:?\s*/gi, '');
   s = s.replace(/\s+/g, ' ').trim();
   if (!s || isWorksheetCitation(s)) return '';
   s = postFixCitationPhrases(collapseBrokenArabicSpaces(s));
@@ -2332,6 +2481,13 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
     html += '<p class="fb-correct-label"><strong>✅ الإجابة الصحيحة:</strong></p>';
     html += `<p class="fb-correct-answer">${escapeHtml(correctText)}</p>`;
     html += '</div>';
+  }
+  const rawExp = String(q.exp || '').trim();
+  if (rawExp && !isWorksheetCitation(rawExp) && rawExp.length >= 8) {
+    const cleanedExp = cleanArabicCitation(rawExp, q.id) || collapseBrokenArabicSpaces(rawExp);
+    if (cleanedExp && !isGarbageCitation(cleanedExp)) {
+      html += `<div class="fb-explanation"><p class="fb-exp-label"><strong>💡 الشرح:</strong></p><p class="fb-exp-text">${escapeHtml(cleanedExp)}</p></div>`;
+    }
   }
   html += buildBookCitationHtml(q);
   html += '</div>';
@@ -2493,6 +2649,7 @@ async function beginDemo(book) {
   show('game');
   renderQ();
   prefetchUpcomingQuran(0);
+  prefetchUpcomingTts(0);
 }
 async function skipDemo() {
   localStorage.setItem('demoDone', '1');
@@ -2569,6 +2726,23 @@ async function submitFeedback() {
   if (improveText) parts.push(`اقتراحات وتحسينات:\n${improveText}`);
   if (likeText) parts.push(`ملاحظات إضافية:\n${likeText}`);
   if (state.total) parts.push(`نتيجة النموذج: ${state.correct}/${state.total} صحيحة`);
+  const hard = getDemoHardQuestionsSummary(5);
+  if (hard.length) {
+    parts.push(
+      'تحليلات التجربة (أصعب الأسئلة محلياً):\n' +
+      hard.map((h) => `- ${h.q || h.id} (خطأ ${h.wrong}/${h.total})`).join('\n')
+    );
+  }
+  try {
+    const analytics = JSON.parse(localStorage.getItem(DEMO_ANALYTICS_KEY) || '[]');
+    const sessionRows = Array.isArray(analytics)
+      ? analytics.filter((r) => r && r.book === state.demoBook).slice(-DEMO_COUNT)
+      : [];
+    if (sessionRows.length) {
+      const wrongIds = sessionRows.filter((r) => !r.correct).map((r) => r.questionId).filter(Boolean);
+      if (wrongIds.length) parts.push(`معرّفات الأسئلة الخاطئة: ${wrongIds.join(', ')}`);
+    }
+  } catch (e) {}
   const fullMsg = parts.join('\n\n');
   const payload = {
     user_name: name || state.userName || 'مجهول',
@@ -2940,7 +3114,12 @@ async function loadBookQuestions(book) {
         bookLoadState[book] = true;
         console.info(`[questions] loaded ${book} from offline cache`);
       } else {
-        throw netErr;
+        seedQuestionsFromBundle();
+        if (QUESTIONS[book]?.length) {
+          console.info(`[questions] loaded ${book} from demo bundle`);
+        } else {
+          throw netErr;
+        }
       }
     }
     updateLevelCounts();
@@ -2969,9 +3148,23 @@ function loadRemainingBooksInBackground() {
   }).catch((e) => console.warn('background question load:', e));
 }
 
+function seedQuestionsFromBundle() {
+  const bundle = (typeof window !== 'undefined' && window.DEMO_QUESTIONS_BUNDLE) || null;
+  if (!bundle) return;
+  for (const book of QUESTION_BOOKS) {
+    if (QUESTIONS[book]?.length) continue;
+    const rows = bundle[book];
+    if (rows?.length) {
+      QUESTIONS[book] = dedupeQuestionList(rows);
+    }
+  }
+  updateDemoBookPicker();
+}
+
 async function loadQuestions() {
   setAppLoading(true, 'جاري تحميل الأسئلة...');
   try {
+    seedQuestionsFromBundle();
     if (window.AlhudaPlatform?.loadQuestionsCached) {
       try {
         const data = await AlhudaPlatform.loadQuestionsCached();
@@ -3009,6 +3202,7 @@ async function loadQuestions() {
     loadRemainingBooksInBackground();
   } catch (e) {
     console.error(e);
+    seedQuestionsFromBundle();
     const offline = await loadQuestionsOffline();
     if (offline?.books) {
       for (const book of QUESTION_BOOKS) {
@@ -3021,6 +3215,11 @@ async function loadQuestions() {
       updateLoginQuestionHint();
       updateDemoBookPicker();
       if (typeof showToast === 'function') showToast('وضع دون اتصال — أسئلة محفوظة محلياً', 'ok');
+      return;
+    }
+    if (QUESTION_BOOKS.some((b) => QUESTIONS[b]?.length)) {
+      updateLoginQuestionHint();
+      updateDemoBookPicker();
       return;
     }
     const hint = document.getElementById('login-hint');
@@ -3594,6 +3793,7 @@ function nextQ() {
   } else {
     renderQ();
     prefetchUpcomingQuran(state.idx);
+    prefetchUpcomingTts(state.idx);
   }
 }
 
