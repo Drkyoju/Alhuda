@@ -11,7 +11,7 @@
       .replace(/'/g, '&#39;');
   }
 
-  function showToast(message, type) {
+  function showToast(message, type, opts) {
     let el = document.getElementById('app-toast');
     if (!el) {
       el = document.createElement('div');
@@ -23,8 +23,15 @@
     el.className = 'app-toast ' + (type || 'info');
     el.textContent = message;
     el.classList.add('show');
+    el.style.cursor = opts?.onClick ? 'pointer' : '';
+    el.onclick = typeof opts?.onClick === 'function' ? opts.onClick : null;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+    const ms = opts?.duration || (opts?.onClick ? 8000 : 3200);
+    toastTimer = setTimeout(() => {
+      el.classList.remove('show');
+      el.onclick = null;
+      el.style.cursor = '';
+    }, ms);
   }
 
   function trackEvent(name, data) {
@@ -95,23 +102,40 @@
     if (!('serviceWorker' in navigator)) return;
     const swVer = window.ALHUDA_ASSETS?.sw || 39;
     let pendingReg = null;
+    let refreshing = false;
     const activateWaiting = () => {
       if (pendingReg?.waiting) pendingReg.waiting.postMessage('SKIP_WAITING');
     };
+    const promptUpdate = () => {
+      if (!pendingReg?.waiting) return;
+      showToast('تحديث متاح — اضغط للتطبيق الآن', 'info', {
+        duration: 12000,
+        onClick: () => {
+          activateWaiting();
+          showToast('جاري تطبيق التحديث...', 'ok', { duration: 4000 });
+        },
+      });
+    };
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
     window.addEventListener('pagehide', activateWaiting);
     navigator.serviceWorker.register(`./service-worker.js?v=${swVer}`).then((reg) => {
       pendingReg = reg;
+      if (reg.waiting && navigator.serviceWorker.controller) promptUpdate();
       reg.addEventListener('updatefound', () => {
         const nw = reg.installing;
         if (!nw) return;
         nw.addEventListener('statechange', () => {
           if (nw.state === 'installed' && navigator.serviceWorker.controller && reg.waiting) {
-            if (typeof showToast === 'function') {
-              showToast('تحديث متاح — سيُطبَّق عند إعادة فتح التطبيق', 'info');
-            }
+            promptUpdate();
           }
         });
       });
+      // Check for a newer SW shortly after load.
+      try { reg.update(); } catch (e) {}
     }).catch((err) => {
       console.warn('[SW] registration failed:', err);
     });

@@ -974,8 +974,8 @@ async function syncPendingScores() {
 function setFeedbackPanelOpen(open) {
   document.getElementById('game')?.classList.toggle('feedback-open', !!open);
   if (open) {
-    // Restore last dragged height (or default mid size)
-    applyFeedbackSheetHeight(feedbackSheetHeightPx || null);
+    // Restore last dragged height (persisted) or default mid size
+    applyFeedbackSheetHeight(feedbackSheetHeightPx || loadFeedbackSheetHeight() || null);
     ensureFeedbackSheetDragBound();
   } else {
     const qArea = document.querySelector('#game .q-area');
@@ -990,6 +990,21 @@ function setFeedbackContinueVisible(visible) {
 
 let feedbackSheetHeightPx = 0;
 let feedbackSheetDragBound = false;
+const FB_SHEET_HEIGHT_KEY = 'alhudaFbSheetHeightV1';
+
+function loadFeedbackSheetHeight() {
+  if (feedbackSheetHeightPx) return feedbackSheetHeightPx;
+  try {
+    const n = parseInt(localStorage.getItem(FB_SHEET_HEIGHT_KEY) || '', 10);
+    if (Number.isFinite(n) && n >= 120) feedbackSheetHeightPx = n;
+  } catch (e) {}
+  return feedbackSheetHeightPx;
+}
+
+function saveFeedbackSheetHeight() {
+  if (!feedbackSheetHeightPx) return;
+  try { localStorage.setItem(FB_SHEET_HEIGHT_KEY, String(feedbackSheetHeightPx)); } catch (e) {}
+}
 
 function feedbackSheetHeightBounds() {
   const vh = window.innerHeight || 640;
@@ -1004,7 +1019,8 @@ function applyFeedbackSheetHeight(px) {
   const fb = document.getElementById('feedback');
   if (!fb) return;
   const { min, max, def } = feedbackSheetHeightBounds();
-  const h = Math.max(min, Math.min(max, Math.round(px || def)));
+  const preferred = px || loadFeedbackSheetHeight() || def;
+  const h = Math.max(min, Math.min(max, Math.round(preferred)));
   feedbackSheetHeightPx = h;
   fb.style.maxHeight = h + 'px';
   fb.style.height = h + 'px';
@@ -1037,6 +1053,7 @@ function ensureFeedbackSheetDragBound() {
     if (!dragging) return;
     dragging = false;
     fb.classList.remove('is-dragging');
+    saveFeedbackSheetHeight();
     try { handle.releasePointerCapture?.(handle._fbPointerId); } catch (e) {}
   };
 
@@ -1060,18 +1077,22 @@ function ensureFeedbackSheetDragBound() {
   // Keyboard: expand / collapse
   handle.addEventListener('keydown', (e) => {
     const { min, max, def } = feedbackSheetHeightBounds();
-    const cur = feedbackSheetHeightPx || def;
+    const cur = feedbackSheetHeightPx || loadFeedbackSheetHeight() || def;
     if (e.key === 'ArrowUp') {
       applyFeedbackSheetHeight(cur + 40);
+      saveFeedbackSheetHeight();
       e.preventDefault();
     } else if (e.key === 'ArrowDown') {
       applyFeedbackSheetHeight(cur - 40);
+      saveFeedbackSheetHeight();
       e.preventDefault();
     } else if (e.key === 'Home') {
       applyFeedbackSheetHeight(max);
+      saveFeedbackSheetHeight();
       e.preventDefault();
     } else if (e.key === 'End') {
       applyFeedbackSheetHeight(min);
+      saveFeedbackSheetHeight();
       e.preventDefault();
     }
   });
@@ -1908,7 +1929,7 @@ function buildFeedbackSpeechText(q, wrongText) {
     parts.push(`الْإِجَابَةُ الصَّحِيحَةُ، ${speechPart(q, correctIdx, correct)}`);
   }
   const rawExp = (q?.exp || '').trim();
-  const exp = rawExp && !explanationDuplicatesCitation(rawExp, q)
+  const exp = rawExp && shouldShowExplanation(rawExp, q)
     ? speechPart(q, 'exp', rawExp)
     : '';
   const rawCite = String(q?.quote || '').replace(/^«|»$/g, '').trim()
@@ -2136,7 +2157,10 @@ async function fillAyahTextElements(root, verseKey) {
 
 function normalizeArabicForMatch(s) {
   return stripArabicDiacritics(s)
-    .replace(/[«»()"[\]،.؛:!؟\-]/g, ' ')
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/[«»()"[\]،.؛:!؟\-✓✗✅❌]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -3137,6 +3161,43 @@ function explanationDuplicatesCitation(exp, q) {
   return false;
 }
 
+/** True when «الشرح» mostly repeats «الإجابة الصحيحة» — hide the redundant block. */
+function explanationDuplicatesCorrectAnswer(exp, q) {
+  const correct = getCorrectAnswerText(q);
+  if (!correct) return false;
+  const expBare = normalizeArabicForMatch(String(exp || ''));
+  const corBare = normalizeArabicForMatch(String(correct));
+  if (!expBare || expBare.length < 6 || !corBare) return false;
+  if (expBare === corBare) return true;
+  const stripped = expBare
+    .replace(/^الاجابه\s*الصحيحه\s*/g, '')
+    .replace(/^العباره\s*(غير\s*)?صحيحه\s*/g, '')
+    .replace(/^الصحيح\s*(هو|ان)?\s*/g, '')
+    .trim();
+  if (stripped && stripped === corBare) return true;
+  if (textIsSubstantiallyContained(expBare, corBare)) return true;
+  if (textIsSubstantiallyContained(corBare, expBare)) {
+    // Correct answer sits inside the explanation — keep شرح only if it adds real unique text.
+    const leftover = expBare.split(corBare).join(' ').replace(/\s+/g, ' ').trim();
+    if (!leftover) return true;
+    if (leftover.length <= 22) return true;
+    if (leftover.length / Math.max(1, expBare.length) < 0.38) return true;
+  }
+  return false;
+}
+
+function shouldShowExplanation(exp, q) {
+  const raw = String(exp || '').trim();
+  if (!raw || raw.length < 8 || isWorksheetCitation(raw)) return false;
+  // Do not pass questionId — cleanArabicCitation would swap in the book quote.
+  const cleaned = cleanArabicCitation(raw, null) || collapseBrokenArabicSpaces(raw);
+  if (!cleaned || cleaned.length < 8) return false;
+  if (isGarbageCitation(cleaned)) return false;
+  if (explanationDuplicatesCitation(cleaned, q)) return false;
+  if (explanationDuplicatesCorrectAnswer(cleaned, q)) return false;
+  return true;
+}
+
 /** Book quote only — do not promote explanation into الاستشهاد. */
 function getBookQuoteOnly(q) {
   const fromQuote = cleanArabicCitation(q?.quote, q?.id);
@@ -3208,12 +3269,9 @@ function buildAnswerFeedbackHtml(q, isCorrect = true, wrongText = '') {
     html += '</div>';
   }
   const rawExp = String(q.exp || '').trim();
-  if (rawExp && !isWorksheetCitation(rawExp) && rawExp.length >= 8) {
-    const cleanedExp = cleanArabicCitation(rawExp, q.id) || collapseBrokenArabicSpaces(rawExp);
-    // Prefer book citation alone when "الشرح" is just a copy of the quote.
-    if (cleanedExp && !isGarbageCitation(cleanedExp) && !explanationDuplicatesCitation(cleanedExp, q)) {
-      html += `<div class="fb-explanation"><p class="fb-exp-label"><strong>💡 الشرح:</strong></p><p class="fb-exp-text">${escapeHtml(cleanedExp)}</p></div>`;
-    }
+  if (shouldShowExplanation(rawExp, q)) {
+    const cleanedExp = cleanArabicCitation(rawExp, null) || collapseBrokenArabicSpaces(rawExp);
+    html += `<div class="fb-explanation"><p class="fb-exp-label"><strong>💡 الشرح:</strong></p><p class="fb-exp-text">${escapeHtml(cleanedExp)}</p></div>`;
   }
   html += buildBookCitationHtml(q);
   html += '</div>';
