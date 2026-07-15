@@ -1870,9 +1870,9 @@
       color: var(--emerald-dark);
     }
     .quran-recite-slot {
-      margin: 10px 0 0;
-      padding-top: 10px;
-      border-top: 1px solid rgba(201, 169, 98, 0.35);
+      margin: 6px 0 0;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(201, 169, 98, 0.28);
       width: 100%;
       min-width: 0;
     }
@@ -1880,7 +1880,7 @@
       display: flex;
       flex-direction: column;
       align-items: stretch;
-      gap: 8px;
+      gap: 4px;
       margin: 0;
       padding: 0;
       border-radius: 0;
@@ -1903,11 +1903,29 @@
       word-break: normal;
       overflow-wrap: break-word;
     }
-    /* آية السؤال فوق الخيارات — أوضح قليلاً من آية الاستشهاد */
+    /* آية داخل مربع السؤال — صغيرة ومدمجة، لا صندوق ثاني */
     #game .quran-recite-slot .q-ayah-text,
-    #game .q-main .q-ayah-text {
-      font-size: clamp(1.02rem, 3.6vw, 1.18rem);
-      line-height: 1.85;
+    #game .q-main .q-ayah-text,
+    #game .q-ayah-block--compact .q-ayah-text {
+      font-size: clamp(0.68rem, 2.5vw, 0.78rem) !important;
+      line-height: 1.5 !important;
+      font-weight: 600 !important;
+      padding: 0 2px !important;
+      margin: 0 !important;
+      min-height: 0 !important;
+    }
+    #game .quran-recite-slot {
+      margin: 4px 0 0;
+      padding-top: 5px;
+    }
+    #game .q-ayah-block--compact {
+      gap: 3px;
+    }
+    #game .quran-recite-slot .quran-recite-btn {
+      font-size: 0.68em;
+      padding: 3px 8px;
+      min-height: 28px;
+      box-shadow: 0 1px 0 #c9a84c;
     }
     .book-cite-box .q-ayah-block {
       margin: 0 0 8px;
@@ -3803,13 +3821,20 @@
       #game .quran-recite-slot .quran-recite-btn {
         font-size: 10px !important;
         padding: 2px 7px !important;
-        min-height: 26px !important;
+        min-height: 24px !important;
         border-radius: 6px;
         box-shadow: 0 1px 0 #c9a84c;
         gap: 2px;
       }
       #game .quran-recite-slot {
-        margin: 3px 0 1px;
+        margin: 2px 0 0;
+        padding-top: 4px;
+      }
+      #game .quran-recite-slot .q-ayah-text,
+      #game .q-main .q-ayah-text,
+      #game .q-ayah-block--compact .q-ayah-text {
+        font-size: 0.7rem !important;
+        line-height: 1.45 !important;
       }
       #game.feedback-open .q-area {
         padding-bottom: max(46dvh, 90px);
@@ -4650,4 +4675,14 @@
         font-size: 1.02rem !important;
         line-height: 1.7 !important;
       }
+    }
+    /* ── آية السؤال: صغيرة جداً داخل نفس مربع السؤال ── */
+    #game .q-main .quran-recite-slot .q-ayah-text,
+    #game .q-main .q-ayah-block--compact .q-ayah-text {
+      font-size: 0.72rem !important;
+      line-height: 1.45 !important;
+      font-weight: 600 !important;
+      padding: 0 !important;
+      max-height: 4.4em;
+      overflow: hidden;
     }

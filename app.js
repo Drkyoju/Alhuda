@@ -2102,6 +2102,15 @@ function formatAyahDisplay(text) {
   return `﴿ ${t} ﴾`;
 }
 
+/** Compact ayah for the question card — snippet first, never dump a full long verse. */
+function compactAyahForQuestion(text, maxLen = 110) {
+  let t = String(text || '').trim().replace(/^﴿\s*|\s*﴾$/g, '').trim();
+  if (!t) return '';
+  if (t.length <= maxLen) return formatAyahDisplay(t);
+  const cut = t.slice(0, maxLen).replace(/\s+\S*$/, '').trim();
+  return formatAyahDisplay(`${cut || t.slice(0, maxLen)}…`);
+}
+
 /** Uthmani ayah text for a verse key (cached; local snippet fallback). */
 async function fetchAyahUthmani(verseKey) {
   if (!verseKey) return '';
@@ -2127,23 +2136,32 @@ async function fetchAyahUthmani(verseKey) {
   return local || '';
 }
 
-function buildQuranAyahBlockHtml(verseKey, { withButton = true, id = '' } = {}) {
+function buildQuranAyahBlockHtml(verseKey, { withButton = true, id = '', compact = false } = {}) {
   const local = getLocalAyahSnippet(verseKey);
   const idAttr = id ? ` id="${id}"` : '';
-  const text = formatAyahDisplay(local) || '…';
+  const text = compact
+    ? (compactAyahForQuestion(local) || '…')
+    : (formatAyahDisplay(local) || '…');
   return (
-    `<div class="q-ayah-block" data-verse-key="${escapeHtml(verseKey || '')}">` +
+    `<div class="q-ayah-block${compact ? ' q-ayah-block--compact' : ''}" data-verse-key="${escapeHtml(verseKey || '')}">` +
     `<p class="q-ayah-text"${idAttr} data-ayah-text>${escapeHtml(text)}</p>` +
     (withButton ? buildQuranReciteButtonHtml() : '') +
     `</div>`
   );
 }
 
-async function fillAyahTextElements(root, verseKey) {
+async function fillAyahTextElements(root, verseKey, { preferSnippet = false, compact = false } = {}) {
   if (!root || !verseKey) return;
-  const text = await fetchAyahUthmani(verseKey);
+  const local = getLocalAyahSnippet(verseKey);
+  let text = '';
+  if (preferSnippet && local) {
+    text = local;
+  } else {
+    text = await fetchAyahUthmani(verseKey);
+    if (!text && local) text = local;
+  }
   if (!text) return;
-  const display = formatAyahDisplay(text);
+  const display = compact ? compactAyahForQuestion(text) : formatAyahDisplay(text);
   root.querySelectorAll('[data-ayah-text]').forEach((el) => {
     el.textContent = display;
   });
@@ -2627,11 +2645,15 @@ function updateQuranReciteSlot(q) {
     return;
   }
   slot.style.display = '';
-  // Always write the ayah in ornate script next to تلاوة so players can read it.
-  slot.innerHTML = buildQuranAyahBlockHtml(verseKey, { withButton: true, id: 'q-ayah-text' });
+  // Compact snippet + ornament inside the same question card (never full long ayah).
+  slot.innerHTML = buildQuranAyahBlockHtml(verseKey, {
+    withButton: true,
+    id: 'q-ayah-text',
+    compact: true,
+  });
   bindQuranReciteButton(slot, q);
   prefetchQuranForQuestion(q);
-  void fillAyahTextElements(slot, verseKey);
+  void fillAyahTextElements(slot, verseKey, { preferSnippet: true, compact: true });
 }
 
 function scoreArabicVoice(v) {
