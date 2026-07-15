@@ -2024,6 +2024,8 @@ function getQuranReciteAria() {
   return `استمع لتلاوة الآية — ${getActiveQuranReciter().label}`;
 }
 const QURAN_RECITER_BITRATE = 64;
+/** Faster than natural pace so تلاوة finishes sooner without sounding rushed. */
+const QURAN_PLAYBACK_RATE = 1.28;
 const QURAN_BLOB_CACHE_MAX = 32;
 const quranAudioBlobCache = new Map(); // cacheKey -> objectUrl
 const quranPrefetchInFlight = new Map();
@@ -2552,6 +2554,8 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
     if (playToken !== quranPlayToken) return;
     quranAudio = new Audio(src);
     quranAudio.preload = 'auto';
+    quranAudio.playbackRate = QURAN_PLAYBACK_RATE;
+    quranAudio.preservesPitch = true;
     await quranAudio.play();
     await new Promise((resolve, reject) => {
       quranAudio.onended = resolve;

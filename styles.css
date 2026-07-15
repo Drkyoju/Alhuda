@@ -1042,13 +1042,13 @@
     .why-correct-box {
       background: var(--emerald-light);
       border: 1px solid var(--emerald);
-      border-radius: 10px;
-      padding: 8px 10px;
-      margin-top: 6px;
-      font-size: 0.86em;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-top: 8px;
+      font-size: 1.08em;
       font-weight: 700;
       color: var(--emerald-dark);
-      line-height: 1.55;
+      line-height: 1.7;
       text-align: right;
     }
     .why-correct-box.is-wrong {
@@ -1057,24 +1057,24 @@
       color: var(--coral-dark);
     }
     .why-correct-box.is-correct-reveal {
-      margin-top: 6px;
+      margin-top: 8px;
     }
-    .fb-wrong-label { margin: 0 0 2px; }
+    .fb-wrong-label { margin: 0 0 6px; font-size: 1.12em; }
     .fb-wrong-answer {
       margin: 0;
-      font-size: 1em;
-      font-weight: 800;
+      font-size: 1.28em;
+      font-weight: 900;
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.7;
     }
-    .why-correct-box strong { display: block; margin-bottom: 2px; font-size: 0.92em; }
-    .fb-correct-label { margin: 0 0 2px; }
+    .why-correct-box strong { display: block; margin-bottom: 6px; font-size: 1.12em; }
+    .fb-correct-label { margin: 0 0 6px; font-size: 1.18em; }
     .fb-correct-answer {
       margin: 0;
-      font-size: 1em;
-      font-weight: 800;
+      font-size: 1.32em;
+      font-weight: 900;
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.75;
     }
     .answer-feedback .book-cite-box { margin-top: 0; }
     .review-picked {
@@ -1843,21 +1843,21 @@
       margin: 0 0 6px;
     }
     .book-cite-quote {
-      margin: 0 0 6px;
-      padding: 8px 10px;
+      margin: 0 0 8px;
+      padding: 12px 14px;
       border-right: 3px solid var(--emerald);
       background: var(--white);
       border-radius: 0 8px 8px 0;
-      font-weight: 600;
-      color: var(--text-soft);
-      font-size: 0.82em;
-      line-height: 1.7;
+      font-weight: 700;
+      color: var(--text);
+      font-size: 1.18em;
+      line-height: 1.8;
     }
     /* Ayah gets vertical reading space; speaker sits a bit above it. */
     .book-cite-ayah {
       padding: 14px 12px 16px;
       min-height: 4.2em;
-      font-size: 0.92em;
+      font-size: 1.28em;
       font-weight: 700;
       line-height: 1.95;
       color: var(--text);
@@ -3339,52 +3339,63 @@
       border-radius: 4px;
     }
     #game .feedback .why-correct-box {
-      font-size: 0.8em !important;
-      line-height: 1.4 !important;
-      padding: 5px 7px;
-      margin-top: 3px;
-      border-radius: 7px;
+      font-size: 1.08em !important;
+      line-height: 1.7 !important;
+      padding: 14px 16px;
+      margin-top: 8px;
+      border-radius: 12px;
     }
-    #game .feedback .why-correct-box strong {
-      font-size: 0.88em;
+    #game .feedback .why-correct-box strong,
+    #game .feedback .fb-correct-label,
+    #game .feedback .fb-wrong-label {
+      font-size: 1.18em !important;
+    }
+    #game .feedback .fb-correct-answer,
+    #game .feedback .fb-wrong-answer {
+      font-size: 1.35em !important;
+      font-weight: 900 !important;
+      line-height: 1.75 !important;
     }
     #game .feedback .book-cite-heading {
-      margin: 3px 0 2px;
-      font-size: 0.74em;
-      font-weight: 800;
+      margin: 8px 0 6px;
+      font-size: 1.12em;
+      font-weight: 900;
     }
     #game .feedback .book-cite-box {
-      padding: 5px 7px;
+      padding: 12px 14px;
       margin-top: 0;
-      border-radius: 7px;
+      border-radius: 12px;
     }
     #game .feedback .quran-recite-above {
-      margin: 0 0 3px;
+      margin: 0 0 6px;
     }
     #game .feedback .book-cite-quote {
-      padding: 5px 7px;
-      margin-bottom: 3px;
-      font-size: 0.74em !important;
-      line-height: 1.5 !important;
-      font-weight: 600;
+      padding: 12px 14px;
+      margin-bottom: 6px;
+      font-size: 1.22em !important;
+      line-height: 1.8 !important;
+      font-weight: 700;
+      color: var(--text) !important;
     }
-    #game .feedback .book-cite-ayah {
-      padding: 10px 8px 12px !important;
+    #game .feedback .book-cite-ayah,
+    #game .feedback .q-ayah-text {
+      padding: 14px 12px 16px !important;
       min-height: 3.8em;
-      font-size: 0.84em !important;
-      line-height: 1.85 !important;
+      font-size: 1.32em !important;
+      line-height: 1.95 !important;
       font-weight: 700 !important;
       color: var(--text) !important;
     }
     #game .feedback .book-cite-meta {
-      font-size: 0.66em;
+      font-size: 0.82em;
+      font-weight: 700;
     }
     #game .feedback .quran-recite-btn {
       margin-top: 0;
-      font-size: 0.68em;
-      padding: 3px 8px;
-      min-height: 28px;
-      border-radius: 6px;
+      font-size: 0.82em;
+      padding: 6px 12px;
+      min-height: 34px;
+      border-radius: 8px;
     }
     .fb-continue-btn,
     .confirm-answer-btn {
@@ -3542,13 +3553,29 @@
       #game .q-area { padding: 4px 10px 16px; }
       #game.feedback-open .q-area { padding: 4px 10px max(50dvh, 100px); }
       #game .feedback #fb-title {
-        font-size: 0.86em !important;
+        font-size: 0.95em !important;
       }
       #game .feedback .why-correct-box {
-        font-size: 0.82em !important;
+        font-size: 1.05em !important;
+        padding: 12px 14px !important;
       }
-      #game .feedback .fb-correct-answer {
-        font-size: 0.92em !important;
+      #game .feedback .fb-correct-label,
+      #game .feedback .fb-wrong-label,
+      #game .feedback .why-correct-box strong {
+        font-size: 1.12em !important;
+      }
+      #game .feedback .fb-correct-answer,
+      #game .feedback .fb-wrong-answer {
+        font-size: 1.28em !important;
+        line-height: 1.75 !important;
+      }
+      #game .feedback .book-cite-quote:not(.book-cite-ayah) {
+        font-size: 1.16em !important;
+        line-height: 1.8 !important;
+      }
+      #game .feedback .book-cite-ayah,
+      #game .feedback .q-ayah-text {
+        font-size: 1.26em !important;
       }
     }
     @media (max-width: 768px) {
@@ -3691,37 +3718,45 @@
         padding: 2px;
       }
       #game .feedback .why-correct-box {
-        font-size: clamp(11px, calc(var(--base-font-size, 18px) * 0.72), 13px) !important;
-        padding: 4px 6px !important;
-        margin-top: 3px !important;
-        border-radius: 6px;
-        line-height: 1.4 !important;
+        font-size: 1.05em !important;
+        padding: 12px 14px !important;
+        margin-top: 6px !important;
+        border-radius: 10px;
+        line-height: 1.7 !important;
+      }
+      #game .feedback .fb-correct-label,
+      #game .feedback .fb-wrong-label,
+      #game .feedback .why-correct-box strong {
+        font-size: 1.12em !important;
       }
       #game .feedback .fb-correct-answer,
       #game .feedback .fb-wrong-answer {
-        font-size: 0.95em !important;
-        line-height: 1.4 !important;
+        font-size: 1.28em !important;
+        line-height: 1.75 !important;
+        font-weight: 900 !important;
       }
       #game .feedback .book-cite-heading {
-        font-size: clamp(10px, calc(var(--base-font-size, 18px) * 0.68), 12px) !important;
-        margin: 2px 0 2px;
+        font-size: 1.05em !important;
+        margin: 6px 0 4px;
       }
       #game .feedback .book-cite-quote:not(.book-cite-ayah) {
-        font-size: clamp(10px, calc(var(--base-font-size, 18px) * 0.68), 12px) !important;
-        padding: 4px 6px !important;
-        line-height: 1.45 !important;
-        margin-bottom: 3px !important;
+        font-size: 1.16em !important;
+        padding: 12px 14px !important;
+        line-height: 1.8 !important;
+        margin-bottom: 6px !important;
+        font-weight: 700 !important;
       }
-      #game .feedback .book-cite-ayah {
-        font-size: clamp(13px, calc(var(--base-font-size, 18px) * 0.82), 15px) !important;
-        line-height: 1.85 !important;
-        padding: 10px 8px 12px !important;
+      #game .feedback .book-cite-ayah,
+      #game .feedback .q-ayah-text {
+        font-size: 1.26em !important;
+        line-height: 1.95 !important;
+        padding: 14px 12px 16px !important;
         min-height: 3.6em;
-        margin-bottom: 3px !important;
-        border-radius: 0 6px 6px 0;
+        margin-bottom: 4px !important;
+        border-radius: 0 8px 8px 0;
       }
       #game .feedback .book-cite-meta {
-        font-size: clamp(9px, calc(var(--base-font-size, 18px) * 0.62), 11px) !important;
+        font-size: 0.85em !important;
       }
       #game .feedback .book-cite-box {
         padding: 4px 6px;
@@ -3889,23 +3924,55 @@
 
     /* ── استشهاد من الكتاب (ثابت بدون طي) ── */
     .answer-feedback .book-cite-heading {
-      font-size: clamp(0.72rem, calc(var(--base-font-size, 18px) * 0.78), 0.82rem);
+      font-size: clamp(1.05rem, calc(var(--base-font-size, 18px) * 1.08), 1.22rem);
+      font-weight: 900;
     }
-    #game .feedback .fb-correct-answer {
-      font-size: 0.84em !important;
+    #game .feedback .fb-correct-label,
+    #game .feedback .fb-wrong-label,
+    #game .feedback .why-correct-box strong {
+      font-size: clamp(1.08rem, calc(var(--base-font-size, 18px) * 1.12), 1.28rem) !important;
+    }
+    #game .feedback .fb-correct-answer,
+    #game .feedback .fb-wrong-answer {
+      font-size: clamp(1.22rem, calc(var(--base-font-size, 18px) * 1.28), 1.5rem) !important;
+      font-weight: 900 !important;
+      line-height: 1.75 !important;
     }
     #game .feedback .book-cite-quote:not(.book-cite-ayah) {
-      font-size: clamp(0.7rem, calc(var(--base-font-size, 18px) * 0.74), 0.8rem) !important;
-      line-height: 1.5 !important;
+      font-size: clamp(1.12rem, calc(var(--base-font-size, 18px) * 1.18), 1.38rem) !important;
+      line-height: 1.8 !important;
+      font-weight: 700 !important;
     }
-    #game .feedback .book-cite-ayah {
-      font-size: clamp(0.82rem, calc(var(--base-font-size, 18px) * 0.86), 0.94rem) !important;
-      line-height: 1.85 !important;
-      padding: 10px 8px 12px !important;
+    #game .feedback .book-cite-ayah,
+    #game .feedback .q-ayah-text {
+      font-size: clamp(1.22rem, calc(var(--base-font-size, 18px) * 1.28), 1.52rem) !important;
+      line-height: 1.95 !important;
+      padding: 14px 12px 16px !important;
       min-height: 3.6em;
     }
     #game .feedback .book-cite-meta {
-      font-size: clamp(0.66rem, calc(var(--base-font-size, 18px) * 0.68), 0.74rem) !important;
+      font-size: clamp(0.8rem, calc(var(--base-font-size, 18px) * 0.85), 0.95rem) !important;
+    }
+    /* مراجعة الأخطاء — نفس أحجام التغذية الراجعة */
+    #review-screen .fb-correct-label,
+    #review-screen .fb-wrong-label {
+      font-size: 1.15em !important;
+    }
+    #review-screen .fb-correct-answer,
+    #review-screen .fb-wrong-answer {
+      font-size: 1.32em !important;
+      font-weight: 900 !important;
+      line-height: 1.75 !important;
+    }
+    #review-screen .book-cite-quote {
+      font-size: 1.2em !important;
+      line-height: 1.8 !important;
+      font-weight: 700 !important;
+    }
+    #review-screen .book-cite-ayah,
+    #review-screen .q-ayah-text {
+      font-size: 1.32em !important;
+      line-height: 1.95 !important;
     }
 
     /* ── تعليمات اللعب ── */
