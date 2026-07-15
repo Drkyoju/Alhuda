@@ -1190,9 +1190,11 @@ function toggleSound() {
   if (soundOn) playSound('correct');
 }
 
-/* ── Voice reading (Azure Neural TTS preferred; Edge Hamed fallback) ── */
-const TTS_VOICE = 'ar-SA-HamedNeural';
-const TTS_VOICE_FALLBACK = 'ar-EG-SalmaNeural';
+/* ── Voice reading (Azure Zariyah preferred; Hamed fallback) ── */
+const TTS_VOICE = 'ar-SA-ZariyahNeural';
+const TTS_VOICE_FALLBACK = 'ar-SA-HamedNeural';
+/** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
+const TTS_CACHE_VER = 'v3';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1201,7 +1203,7 @@ const TTS_IDB_NAME = 'alhudaTtsCache';
 const TTS_IDB_STORE = 'audio';
 
 function ttsCacheKey(text, voice) {
-  return `${voice || TTS_VOICE}::${String(text || '').slice(0, 600)}`;
+  return `${TTS_CACHE_VER}::${voice || TTS_VOICE}::${String(text || '').slice(0, 600)}`;
 }
 
 function openTtsIdb() {
@@ -1481,11 +1483,17 @@ async function refreshTtsProviderBadge() {
 function sanitizeTtsText(text) {
   return (text || '')
     .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
+    .replace(/ﷺ/g, ' صلى الله عليه وسلم ')
+    .replace(/ﷻ/g, ' جل جلاله ')
+    .replace(/رضي الله عنهما/g, ' رضي الله عنهما ')
+    .replace(/رضي الله عنها/g, ' رضي الله عنها ')
+    .replace(/رضي الله عنه/g, ' رضي الله عنه ')
     .replace(/[:：]/g, '، ')
     .replace(/[;؛]/g, '، ')
     .replace(/[()\[\]{}«»"'“”‘’*_#<>=+~^`]/g, ' ')
     .replace(/[\/\\|]/g, ' ')
-    .replace(/[–—]/g, ' ')
+    .replace(/[–—]/g, '، ')
+    .replace(/\.{2,}/g, '، ')
     .replace(/(^|\s)[-•·](\s|$)/g, ' ')
     .replace(/\s+([،.؟!])/g, '$1')
     .replace(/،(\s*،)+/g, '،')
@@ -1650,13 +1658,15 @@ let ttsObjectUrl = null;
 let hybridSpeechToken = 0;
 
 function stripForSpeech(text) {
-  return prepareArabicForSpeech(
-    removeQuranicVersesForSpeech(
-      applyManualSpeechDiacritics(
-        (text || '')
-          .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
-          .replace(/\s+/g, ' ')
-          .trim()
+  return sanitizeTtsText(
+    prepareArabicForSpeech(
+      removeQuranicVersesForSpeech(
+        applyManualSpeechDiacritics(
+          (text || '')
+            .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
+            .replace(/\s+/g, ' ')
+            .trim()
+        )
       )
     )
   );
@@ -1828,7 +1838,7 @@ function onFeedbackSpeakerClick() {
   void speakFeedbackOnce(q, state.lastFeedbackWrong || '', document.getElementById('btn-speak-feedback'));
 }
 
-/* ── Quran recitation (حذيفي / عفاسي — عبر بروكسي Cloudflare + prefetch) ── */
+/* ── Quran recitation (الحذيفي فقط — عبر بروكسي Cloudflare + prefetch) ── */
 const QURAN_RECITERS = {
   hudhaify: {
     key: 'hudhaify',
@@ -1836,25 +1846,23 @@ const QURAN_RECITERS = {
     edition: 'ar.hudhaify',
     everyayah: 'Hudhaify_64kbps',
   },
-  alafasy: {
-    key: 'alafasy',
-    label: 'العفاسي',
-    edition: 'ar.alafasy',
-    everyayah: 'Alafasy_64kbps',
-  },
 };
-let quranReciterKey = localStorage.getItem('quranReciter') || 'hudhaify';
-if (!QURAN_RECITERS[quranReciterKey]) quranReciterKey = 'hudhaify';
+let quranReciterKey = 'hudhaify';
+try {
+  // Force Hudhaify only — migrate away from any previous Afasy preference.
+  if (localStorage.getItem('quranReciter') !== 'hudhaify') {
+    localStorage.setItem('quranReciter', 'hudhaify');
+  }
+} catch (e) {}
 
 function getActiveQuranReciter() {
-  return QURAN_RECITERS[quranReciterKey] || QURAN_RECITERS.hudhaify;
+  return QURAN_RECITERS.hudhaify;
 }
 
-function setQuranReciter(key) {
-  if (!QURAN_RECITERS[key]) return;
-  quranReciterKey = key;
-  localStorage.setItem('quranReciter', key);
-  // Clear blob cache when switching reciter (different audio files).
+function setQuranReciter(_key) {
+  // Kept for backwards compatibility; Afasy and others are ignored.
+  quranReciterKey = 'hudhaify';
+  try { localStorage.setItem('quranReciter', 'hudhaify'); } catch (e) {}
   for (const url of quranAudioBlobCache.values()) {
     try { URL.revokeObjectURL(url); } catch (e) {}
   }
@@ -1868,12 +1876,8 @@ function setQuranReciter(key) {
 }
 
 function updateReciterSettingsUI() {
-  const label = getActiveQuranReciter().label;
-  document.querySelectorAll('[data-reciter]').forEach((btn) => {
-    btn.classList.toggle('active', btn.getAttribute('data-reciter') === quranReciterKey);
-  });
   const el = document.getElementById('reciter-label');
-  if (el) el.textContent = label;
+  if (el) el.textContent = 'الحذيفي';
 }
 
 const QURAN_RECITE_BTN_LABEL = `🎧 تلاوة`;
@@ -2514,6 +2518,7 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE) {
 }
 
 async function speakTtsSegment(text, btn, { keepBtnState = true } = {}) {
+  // Pipeline: diacritics → speech prep → sanitize (once). Avoid double-mutating.
   const clean = sanitizeTtsText(prepareArabicForSpeech(applyManualSpeechDiacritics(text)));
   if (!clean) return;
   try {

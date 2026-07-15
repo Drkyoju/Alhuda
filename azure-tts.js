@@ -1,9 +1,10 @@
 /** Azure Cognitive Services Speech — Neural TTS (Free F0: 0.5M chars/month). */
 
-export const DEFAULT_AZURE_ARABIC_VOICE = 'ar-SA-HamedNeural';
-export const FALLBACK_AZURE_ARABIC_VOICE = 'ar-EG-SalmaNeural';
+export const DEFAULT_AZURE_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
+export const FALLBACK_AZURE_ARABIC_VOICE = 'ar-SA-HamedNeural';
 
-const OUTPUT_FORMAT = 'audio-16khz-128kbitrate-mono-mp3';
+/** Higher bitrate than 16kHz — clearer Arabic consonants and harakat. */
+const OUTPUT_FORMAT = 'audio-24khz-160kbitrate-mono-mp3';
 
 function escapeXml(text) {
   return String(text || '')
@@ -14,14 +15,32 @@ function escapeXml(text) {
     .replace(/'/g, '&apos;');
 }
 
-function buildSsml(text, voice, rate = '-5%') {
+/** Insert short pauses after Arabic punctuation so phrases don't rush. */
+function textToSsmlBody(text) {
+  const parts = String(text || '').split(/([،.؟!؛\n]+)/);
+  let out = '';
+  for (const part of parts) {
+    if (!part) continue;
+    if (/^[،.؟!؛\n]+$/.test(part)) {
+      out += escapeXml(part);
+      out += '<break time="260ms"/>';
+    } else {
+      out += escapeXml(part);
+    }
+  }
+  return out || escapeXml(text);
+}
+
+function buildSsml(text, voice) {
   const lang = String(voice).startsWith('ar-EG') ? 'ar-EG' : 'ar-SA';
-  const safe = escapeXml(text).replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, ' ');
-  // Slightly slower helps diacritics and religious terms land clearly.
+  const hasHarakat = /[\u064B-\u065F\u0670]/.test(text);
+  // Slower with tashkil — neural voices need time to land diacritics.
+  const rate = hasHarakat ? '-12%' : '-8%';
+  const body = textToSsmlBody(String(text || '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, ' '));
   return (
-    `<speak version="1.0" xml:lang="${lang}">` +
+    `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +
     `<voice name="${escapeXml(voice)}">` +
-    `<prosody rate="${rate}">${safe}</prosody>` +
+    `<prosody rate="${rate}" pitch="+0%">${body}</prosody>` +
     `</voice></speak>`
   );
 }

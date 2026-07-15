@@ -41,7 +41,6 @@ function corsHeaders(request, methods = 'GET, POST, OPTIONS') {
 
 const QURAN_RECITER_CDN = {
   hudhaify: { edition: 'ar.hudhaify', everyayah: 'Hudhaify_64kbps' },
-  alafasy: { edition: 'ar.alafasy', everyayah: 'Alafasy_64kbps' },
 };
 
 const SURAH_AYAH_COUNTS_W = [
@@ -142,8 +141,9 @@ async function handleQuranAudio(request, env) {
   const url = new URL(request.url);
   const surah = parseInt(url.searchParams.get('surah') || '0', 10);
   const ayah = parseInt(url.searchParams.get('ayah') || '0', 10);
-  const reciterKey = (url.searchParams.get('reciter') || 'hudhaify').toLowerCase();
-  const reciter = QURAN_RECITER_CDN[reciterKey] || QURAN_RECITER_CDN.hudhaify;
+  // Hudhaify only — ignore legacy Afasy (or any other) reciter param.
+  const reciterKey = 'hudhaify';
+  const reciter = QURAN_RECITER_CDN.hudhaify;
   if (!surah || !ayah || ayah > (SURAH_AYAH_COUNTS_W[surah - 1] || 0)) {
     bumpApiError('quran', 400);
     return new Response(JSON.stringify({ ok: false, error: 'Invalid surah/ayah' }), {
