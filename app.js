@@ -111,7 +111,7 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null };
 let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
@@ -1194,7 +1194,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v4';
+const TTS_CACHE_VER = 'v5';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1326,6 +1326,12 @@ async function prefetchHybridSpeechForQuestion(q) {
   try {
     await ensureSpeechMapsLoaded();
     const text = buildQuestionSpeechText(q);
+    const needsHybrid = textMayHaveQuranAyah(q.q, null) || textMayHaveQuranAyah(text, null);
+    if (!needsHybrid) {
+      prefetchTtsText(text);
+      if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
+      return;
+    }
     const plan = await buildSpeechPlan(text, q);
     for (const seg of plan) {
       if (seg.type === 'tts' && seg.text) prefetchTtsText(seg.text);
@@ -1333,7 +1339,6 @@ async function prefetchHybridSpeechForQuestion(q) {
         void fetchQuranAudioObjectUrl(seg.verseKey).catch(() => {});
       }
     }
-    // Also warm short feedback speech for snappier post-answer voice.
     if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
   } catch (e) {
     console.warn('hybrid prefetch:', e);
@@ -1769,17 +1774,24 @@ function speechPart(q, field, raw) {
 }
 
 function buildQuestionSpeechText(q) {
+  // Speak only what the player sees: question + options in DISPLAY order.
+  // Do NOT append book citations — that sounded like "extra weird words".
   const parts = [speechPart(q, 'q', q?.q)].filter(Boolean);
-  const rawCite = String(q?.quote || '').replace(/^«|»$/g, '').trim()
-    || (q?.id && getCanonicalQuote(q.id)) || pickCitationText(q);
-  const cite = speechPart(q, 'quote', rawCite);
-  if (cite && !textIsSubstantiallyContained(cite, parts[0] || '')) parts.push(cite);
   if (q?.type === 'mc' && Array.isArray(q.a) && q.a.length) {
-    const labels = ['أ', 'ب', 'ج', 'د'];
-    q.a.forEach((opt, i) => {
-      const t = speechPart(q, `a${i}`, opt);
-      if (t) parts.push(`${labels[i] || ''} ${t}`.trim());
+    const order = Array.isArray(state.displayAnswerOrder) && state.displayAnswerOrder.length
+      ? state.displayAnswerOrder
+      : q.a.map((_, i) => i);
+    const ordinals = ['أولاً', 'ثانياً', 'ثالثاً', 'رابعاً'];
+    order.forEach((origIdx, displayIdx) => {
+      const opt = q.a[origIdx];
+      if (opt == null || opt === '') return;
+      const t = speechPart(q, `a${origIdx}`, opt);
+      if (t) parts.push(`${ordinals[displayIdx] || ''}، ${t}`.trim());
     });
+  } else if (q?.type === 'tf') {
+    // Matches renderQ order: صح ثم خطأ
+    parts.push('أولاً، صح');
+    parts.push('ثانياً، خطأ');
   }
   return parts.join('، ');
 }
@@ -2210,39 +2222,28 @@ async function buildSpeechPlan(text, q) {
     await appendStandaloneAyahSegments(raw, plan, pool);
   }
   const hasQuran = plan.some((s) => s.type === 'quran');
-  if (!hasQuran && pool.length && !isHadithQudsiText(raw) && /تعالى|﴿|سورة/i.test(raw)) {
-    if (!plan.some((s) => s.type === 'tts')) {
-      const ttsOnly = stripForSpeech(raw);
-      if (ttsOnly) plan.push({ type: 'tts', text: ttsOnly });
-    }
-    plan.push({ type: 'quran', verseKey: pool[0] });
-  } else if (!plan.length) {
+  if (!plan.length) {
+    const ttsOnly = stripForSpeech(raw);
+    if (ttsOnly) plan.push({ type: 'tts', text: ttsOnly });
+  } else if (!hasQuran && !plan.some((s) => s.type === 'tts')) {
     const ttsOnly = stripForSpeech(raw);
     if (ttsOnly) plan.push({ type: 'tts', text: ttsOnly });
   }
-  if (q && pool.length) {
-    for (const verseKey of pool) {
-      if (!plan.some((s) => s.type === 'quran' && s.verseKey === verseKey)) {
-        plan.push({ type: 'quran', verseKey });
-      }
-    }
-  }
+  // Never auto-inject mapped verses that were not matched in the spoken text.
   return dedupeTtsPlan(plan.filter((s) => (s.type === 'tts' && s.text?.trim()) || (s.type === 'quran' && s.verseKey)));
 }
 
 function textMayHaveQuranAyah(text, q) {
   const src = text || '';
+  if (!src.trim()) return false;
   if (isQuranicAyahText(src)) return true;
   if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿|\[?\s*سورة|الذاريات\s*[:：]/i.test(src)) {
     if (!isHadithQudsiText(src)) return true;
   }
   if (extractAyahSnippets(src).some(isQuranicAyahText)) return true;
   if (findVerseKeysSync(src).length) return true;
-  if (q && getQuestionVerseKey(q.id)) {
-    const blob = getQuestionContentBlob(q, src);
-    if (/تعالى|﴿|سورة/i.test(blob) && findVerseKeysSync(blob).length) return true;
-    if (isQuranicAyahText(src) || extractAyahSnippets(blob).some(isQuranicAyahText)) return true;
-  }
+  // Do NOT treat "question has a mapped verse" as Quran-in-this-utterance —
+  // that made answer-option TTS inject Hudhaify ayahs unrelated to the option.
   return false;
 }
 
@@ -2606,9 +2607,27 @@ function speakQuestion() {
     applyOfflineVoicePolicy();
     return;
   }
-  void ensureSpeechMapsLoaded().then(() => {
-    speakHybrid(buildQuestionSpeechText(q), q, document.getElementById('btn-speak-question'));
-  });
+  const btn = document.getElementById('btn-speak-question');
+  void (async () => {
+    try {
+      await ensureSpeechMapsLoaded();
+      const text = buildQuestionSpeechText(q);
+      // Fast path: plain educational text → TTS only (no Quran.com / hybrid delay).
+      if (!textMayHaveQuranAyah(q.q, null) && !textMayHaveQuranAyah(text, null)) {
+        if (!text.trim()) return;
+        stopSpeaking();
+        // Same pipeline as prefetchTtsText so the blob is usually already warm.
+        await speakTtsSegment(text, btn, { keepBtnState: false });
+        return;
+      }
+      await speakHybrid(text, q, btn);
+    } catch (e) {
+      if (e?.name !== 'AbortError') {
+        recordTtsError(e, 'speakQuestion');
+        console.warn('speakQuestion:', e);
+      }
+    }
+  })();
 }
 
 function applyOfflineVoicePolicy() {
@@ -2704,7 +2723,11 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q) {
     sp.className = 'voice-btn voice-btn-sm';
     sp.setAttribute('aria-label', 'اقرأ الإجابة');
     sp.textContent = '🔊';
-    sp.onclick = (e) => { e.stopPropagation(); speakText(text, sp, { allowAnswers: true, question: q }); };
+    sp.onclick = (e) => {
+      e.stopPropagation();
+      // Do not pass question — avoids injecting mapped Quran into option TTS.
+      speakText(text, sp, { allowAnswers: true, question: null });
+    };
     wrap.appendChild(btn);
     wrap.appendChild(sp);
     grid.appendChild(wrap);
@@ -4299,17 +4322,22 @@ function renderQ() {
   const grid = document.getElementById('ans-grid');
   grid.innerHTML = '';
   if (q.type === 'tf') {
+    state.displayAnswerOrder = null;
     ['صح ✓', 'خطأ ✗'].forEach((txt, i) => {
       appendAnswerOption(grid, txt, (i === 0) === q.tf, i === 0 ? 0 : 3, q);
     });
   } else {
-    shuffleArr([0,1,2,3].slice(0, (q.a || []).length)).forEach((i, orderIdx) => {
+    const order = shuffleArr([0, 1, 2, 3].slice(0, (q.a || []).length));
+    state.displayAnswerOrder = order.slice();
+    order.forEach((i, orderIdx) => {
       appendAnswerOption(grid, q.a[i], i === q.c, orderIdx, q);
     });
   }
   startQuestionTimer();
   questionShownAt = Date.now();
   updateQuranReciteSlot(q);
+  // Prefetch AFTER display order is known so cache matches what we speak.
+  void prefetchHybridSpeechForQuestion(q);
   if (voiceOn) speakQuestion();
   persistGameSession();
 }
