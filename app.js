@@ -1928,11 +1928,8 @@ function buildFeedbackSpeechText(q, wrongText) {
     const correctIdx = q?.type === 'mc' && q.c != null ? `a${q.c}` : 'correct';
     parts.push(`الْإِجَابَةُ الصَّحِيحَةُ، ${speechPart(q, correctIdx, correct)}`);
   }
-  // Speak الاستشهاد only (book quote, or full explanation under that heading — never a separate «شرح»).
-  const rawCite = pickCitationText(q)
-    || String(q?.quote || '').replace(/^«|»$/g, '').trim()
-    || (q?.id && getCanonicalQuote(q.id))
-    || '';
+  // Speak الاستشهاد only — same resolved text as the UI (never raw garbage quote / separate شرح).
+  const rawCite = pickCitationText(q) || '';
   const quote = speechPart(q, 'quote', rawCite);
   if (quote) {
     parts.push(quote);
@@ -3359,10 +3356,10 @@ function buildBookCitationHtml(q) {
   const book = BOOK_LABELS[q.book] || q.book || '';
   const chapter = q.cat || '';
   const pageLabel = formatPageLabel(q.page);
-  const bookQuote = getBookQuoteOnly(q);
+  const bookQuote = getBookQuoteOnly(q); // kept for ayah-heading heuristics
   const citeBody = getCitationBodyText(q);
   const verseKey = getPrimaryVerseKeyForQuestion(q);
-  const quoteIsAyah = citationLooksLikeAyah(citeBody, verseKey);
+  const quoteIsAyah = citationLooksLikeAyah(citeBody || bookQuote, verseKey);
 
   if (!book && !chapter && !pageLabel && !citeBody && !verseKey) return '';
 
