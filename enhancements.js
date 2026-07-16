@@ -101,76 +101,11 @@
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
     const swVer = window.ALHUDA_ASSETS?.sw || 39;
-    const isAutomation = !!navigator.webdriver;
-    let pendingReg = null;
-    let refreshing = false;
-    let userRequestedUpdate = false;
-    const activateWaiting = () => {
-      if (pendingReg?.waiting) pendingReg.waiting.postMessage('SKIP_WAITING');
-    };
-    const promptUpdate = () => {
-      if (!pendingReg?.waiting) return;
-      showToast('تحديث متاح — اضغط للتطبيق الآن', 'info', {
-        duration: 15000,
-        onClick: () => {
-          userRequestedUpdate = true;
-          activateWaiting();
-          showToast('جاري تطبيق التحديث...', 'ok', { duration: 4000 });
-        },
-      });
-    };
-    // Only reload when the user tapped the update toast (never auto-reload — breaks smoke).
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!userRequestedUpdate || refreshing) return;
-      refreshing = true;
-      window.location.reload();
-    });
-    window.addEventListener('pagehide', activateWaiting);
     navigator.serviceWorker.register(`./service-worker.js?v=${swVer}`).then((reg) => {
-      pendingReg = reg;
-      if (reg.waiting && navigator.serviceWorker.controller) promptUpdate();
-      reg.addEventListener('updatefound', () => {
-        const nw = reg.installing;
-        if (!nw) return;
-        nw.addEventListener('statechange', () => {
-          if (nw.state === 'installed' && navigator.serviceWorker.controller && reg.waiting) {
-            promptUpdate();
-          }
-        });
-      });
       try { reg.update(); } catch (e) {}
     }).catch((err) => {
       console.warn('[SW] registration failed:', err);
     });
-
-    // Stale-cache detector: if network version.js is newer, prompt (don't auto-reload in tests).
-    if (!isAutomation) {
-      void (async () => {
-        try {
-          const res = await fetch(`./version.js?_=${Date.now()}`, { cache: 'no-store' });
-          const text = await res.text();
-          const m = text.match(/cache:\s*'([^']+)'/);
-          const live = m?.[1];
-          const local = window.ALHUDA_ASSETS?.cache;
-          if (!live || !local || live === local) return;
-          showToast('نسخة أحدث متاحة — اضغط للتحديث', 'info', {
-            duration: 20000,
-            onClick: async () => {
-              userRequestedUpdate = true;
-              const regs = await navigator.serviceWorker.getRegistrations();
-              for (const r of regs) {
-                if (r.waiting) r.waiting.postMessage('SKIP_WAITING');
-              }
-              if (window.caches) {
-                const keys = await caches.keys();
-                await Promise.all(keys.map((k) => caches.delete(k)));
-              }
-              window.location.reload();
-            },
-          });
-        } catch (e) {}
-      })();
-    }
   }
 
   function initKidsUI() {
