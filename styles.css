@@ -62,10 +62,31 @@
     body.login-mode #settings-btn {
       position: fixed;
       top: max(10px, env(safe-area-inset-top));
-      inset-inline-start: 14px;
+      inset-inline-start: 10px;
       inset-inline-end: auto;
       z-index: 2200;
       pointer-events: auto;
+      width: auto;
+      max-width: min(78vw, 280px);
+      min-height: 48px;
+      padding: 8px 12px;
+      gap: 8px;
+      border-radius: 14px;
+      border: 2px solid var(--gold);
+      background: linear-gradient(180deg, #fff, #fff8e8);
+      box-shadow: 0 4px 14px rgba(22, 56, 40, 0.16);
+    }
+    body.login-mode #settings-btn .settings-font-icon {
+      font-size: 1.45rem;
+    }
+    body.login-mode #settings-btn .settings-font-label {
+      display: inline;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--emerald-dark);
+      line-height: 1.25;
+      text-align: start;
+      white-space: normal;
     }
     body.game-mode .app-topbar { display: none; }
     body.game-mode { --app-header-h: 0px; }
@@ -244,6 +265,42 @@
     }
     .topbar-btn:active { transform: scale(0.95); }
     .topbar-btn.icon-only { padding: 0; width: 44px; }
+    .settings-font-btn {
+      width: auto !important;
+      min-width: 0;
+      max-width: min(72vw, 260px);
+      min-height: 44px;
+      padding: 6px 10px !important;
+      gap: 7px;
+      border-radius: 12px;
+      border-color: rgba(201, 169, 98, 0.55);
+      background: linear-gradient(180deg, #ffffff, #fff9ee);
+    }
+    .settings-font-icon {
+      font-size: 1.35rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .settings-font-label {
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--emerald-dark);
+      line-height: 1.25;
+      text-align: start;
+      white-space: normal;
+    }
+    @media (max-width: 360px) {
+      .settings-font-label {
+        font-size: 0.72rem;
+      }
+      body.login-mode #settings-btn {
+        max-width: min(86vw, 240px);
+        padding: 7px 10px;
+      }
+      body.login-mode #settings-btn .settings-font-label {
+        font-size: 0.74rem;
+      }
+    }
     .site-logo {
       max-width: 96px;
       max-height: 96px;
@@ -2862,18 +2919,18 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 5px;
       flex-shrink: 1;
       min-width: 0;
       max-width: 100%;
-      min-height: 32px;
-      padding: 4px 7px;
+      min-height: 34px;
+      padding: 5px 8px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.35);
-      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.2);
       color: #fff;
       cursor: pointer;
-      font-family: var(--font-display), 'Tajawal', sans-serif;
+      font-family: 'Tajawal', sans-serif;
       box-shadow: none;
       line-height: 1.15;
     }
@@ -2882,26 +2939,25 @@
       box-shadow: none;
     }
     .game-settings-icon {
-      font-size: 1.25em;
+      font-size: 1.35em;
       line-height: 1;
       flex-shrink: 0;
     }
     .game-settings-hint {
-      font-size: 0.68em;
+      font-size: 0.72em;
       font-weight: 800;
       text-align: start;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 9.5em;
+      white-space: normal;
+      line-height: 1.2;
+      max-width: 11em;
     }
     @media (max-width: 380px) {
       .game-settings-hint {
-        font-size: 0.62em;
-        max-width: 7.5em;
+        font-size: 0.64em;
+        max-width: 8.5em;
       }
       .game-settings-btn {
-        padding: 3px 6px;
+        padding: 4px 6px;
         min-height: 30px;
       }
     }
