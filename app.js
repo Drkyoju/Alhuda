@@ -5514,18 +5514,20 @@ function applyLoginLockUI() {
 }
 
 async function restoreSession() {
+  const client = getDb();
   if (LOGIN_LOCKED) {
-    await db.auth.signOut().catch(() => {});
+    await client?.auth.signOut().catch(() => {});
     state.user = null;
     state.userType = '';
     state.userName = '';
     return false;
   }
-  const { data: { session } } = await db.auth.getSession();
+  if (!client) return false;
+  const { data: { session } } = await client.auth.getSession();
   if (!session?.user) return false;
-  const { data: profile, error } = await db.from('profiles').select('name,role').eq('id', session.user.id).maybeSingle();
+  const { data: profile, error } = await client.from('profiles').select('name,role').eq('id', session.user.id).maybeSingle();
   if (error || !profile || profile.role !== 'student') {
-    await db.auth.signOut();
+    await client.auth.signOut();
     return false;
   }
   state.user = session.user;
@@ -5533,7 +5535,7 @@ async function restoreSession() {
   state.userName = profile.name || localStorage.getItem('savedName') || DEFAULT_PLAYER;
   const savedName = localStorage.getItem('savedName');
   if (savedName && profile.name && profile.name !== savedName) {
-    await db.auth.signOut();
+    await client.auth.signOut();
     return false;
   }
   localStorage.setItem('savedName', state.userName);
