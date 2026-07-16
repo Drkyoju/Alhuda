@@ -2,17 +2,17 @@
 const SUPABASE_URL = 'https://smcyaqwxbmhshhhhdece.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_4OhSsWwIfV4QxGRf1fujLA_TjE111eU';
 /** Lazy client — Supabase CDN may load after first paint. */
-let db = null;
+let dbClient = null;
 function getDb() {
-  if (db) return db;
+  if (dbClient) return dbClient;
   if (typeof window !== 'undefined' && window.supabase?.createClient) {
-    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    dbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
-  return db;
+  return dbClient;
 }
 Object.defineProperty(window, '__alhudaDb', { get: getDb });
 // Compat: most code uses `db.` — bind via Proxy after first access pattern.
-db = new Proxy({}, {
+const db = new Proxy({}, {
   get(_t, prop) {
     const client = getDb();
     if (!client) {
