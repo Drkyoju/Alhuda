@@ -1449,18 +1449,21 @@ async function prefetchHybridSpeechForQuestion(q) {
   if (!q || navigator.onLine === false) return;
   try {
     await ensureSpeechMapsLoaded();
-    const text = buildQuestionSpeechText(q);
-    const needsHybrid = textMayHaveQuranAyah(q.q, null) || textMayHaveQuranAyah(text, null);
-    if (!needsHybrid) {
-      prefetchTtsText(text);
-      if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
-      return;
-    }
-    const plan = await buildSpeechPlan(text, q);
-    for (const seg of plan) {
-      if (seg.type === 'tts' && seg.text) prefetchTtsText(seg.text);
-      if (seg.type === 'quran' && seg.verseKey) {
-        void fetchQuranAudioObjectUrl(seg.verseKey).catch(() => {});
+    // Warm the mapped ayah so the auto-recite after the question starts instantly.
+    const primaryVerse = getPrimaryVerseKeyForQuestion(q);
+    if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
+    // Warm the same segments playback will request (question and options split).
+    const { questionText, optionsText } = buildQuestionSpeechParts(q);
+    for (const part of [questionText, optionsText]) {
+      if (!part || !part.trim()) continue;
+      if (textMayHaveQuranAyah(part, q)) {
+        const plan = await buildSpeechPlan(part, q);
+        for (const seg of plan) {
+          if (seg.type === 'tts' && seg.text) prefetchTtsText(seg.text);
+          if (seg.type === 'quran' && seg.verseKey) void fetchQuranAudioObjectUrl(seg.verseKey).catch(() => {});
+        }
+      } else {
+        prefetchTtsText(part);
       }
     }
     if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
@@ -1897,10 +1900,11 @@ function speechPart(q, field, raw) {
   return speechTextFor(q, field, original);
 }
 
-function buildQuestionSpeechText(q) {
-  // Speak only what the player sees: question + options in DISPLAY order.
-  // Do NOT append book citations — that sounded like "extra weird words".
-  const parts = [speechPart(q, 'q', q?.q)].filter(Boolean);
+/** Question text and options as SEPARATE strings, so a mapped ayah can be
+ *  recited (Hudhaify) between them without a تلاوة tap. */
+function buildQuestionSpeechParts(q) {
+  const questionText = speechPart(q, 'q', q?.q) || '';
+  const optionParts = [];
   if (q?.type === 'mc' && Array.isArray(q.a) && q.a.length) {
     const order = Array.isArray(state.displayAnswerOrder) && state.displayAnswerOrder.length
       ? state.displayAnswerOrder
@@ -1910,14 +1914,21 @@ function buildQuestionSpeechText(q) {
       const opt = q.a[origIdx];
       if (opt == null || opt === '') return;
       const t = speechPart(q, `a${origIdx}`, opt);
-      if (t) parts.push(`${ordinals[displayIdx] || ''}، ${t}`.trim());
+      if (t) optionParts.push(`${ordinals[displayIdx] || ''}، ${t}`.trim());
     });
   } else if (q?.type === 'tf') {
     // Matches renderQ order: صح ثم خطأ
-    parts.push('أولاً، صح');
-    parts.push('ثانياً، خطأ');
+    optionParts.push('أولاً، صح');
+    optionParts.push('ثانياً، خطأ');
   }
-  return parts.join('، ');
+  return { questionText, optionsText: optionParts.join('، ') };
+}
+
+function buildQuestionSpeechText(q) {
+  // Speak only what the player sees: question + options in DISPLAY order.
+  // Do NOT append book citations — that sounded like "extra weird words".
+  const { questionText, optionsText } = buildQuestionSpeechParts(q);
+  return [questionText, optionsText].filter(Boolean).join('، ');
 }
 
 function buildFeedbackSpeechText(q, wrongText) {
@@ -2816,6 +2827,36 @@ async function speakTtsSegment(text, btn, { keepBtnState = true } = {}) {
   clearTtsAudio(keepBtnState ? null : btn);
 }
 
+/**
+ * Play one text as an ordered sequence: Azure TTS for normal words, Hudhaify
+ * recitation for any ayah found inside it. Does NOT reset hybridSpeechToken —
+ * the caller owns the sequence token so multiple calls chain seamlessly.
+ * Returns the set of verse keys that were recited (to avoid double-reciting).
+ */
+async function playSpeechForText(text, q, btn, token) {
+  const recited = new Set();
+  const src = String(text || '').trim();
+  if (!src) return recited;
+  if (textMayHaveQuranAyah(src, q)) {
+    const plan = await buildSpeechPlan(src, q);
+    if (token !== hybridSpeechToken) return recited;
+    if (plan.length) {
+      for (const seg of plan) {
+        if (token !== hybridSpeechToken) break;
+        if (seg.type === 'quran' && seg.verseKey) {
+          recited.add(seg.verseKey);
+          await playQuranRecitation(seg.verseKey, btn, { interruptAll: false });
+        } else if (seg.type === 'tts' && seg.text?.trim()) {
+          await speakTtsSegment(seg.text, btn);
+        }
+      }
+      return recited;
+    }
+  }
+  await speakTtsSegment(src, btn);
+  return recited;
+}
+
 async function speakHybrid(text, q, btn, { allowAnswers = false } = {}) {
   const maySpeak = voiceOn || (allowAnswers && voiceReadAnswers);
   if (!maySpeak || !text) return;
@@ -2888,16 +2929,27 @@ function speakQuestion() {
   void (async () => {
     try {
       await ensureSpeechMapsLoaded();
-      const text = buildQuestionSpeechText(q);
-      // Fast path: plain educational text → TTS only (no Quran.com / hybrid delay).
-      if (!textMayHaveQuranAyah(q.q, null) && !textMayHaveQuranAyah(text, null)) {
-        if (!text.trim()) return;
-        stopSpeaking();
-        // Same pipeline as prefetchTtsText so the blob is usually already warm.
-        await speakTtsSegment(text, btn, { keepBtnState: false });
-        return;
+      stopSpeaking();
+      const token = hybridSpeechToken;
+      if (btn) btn.classList.add('speaking');
+      try {
+        const { questionText, optionsText } = buildQuestionSpeechParts(q);
+        // 1) Question text with Azure (recites any ayah embedded inside it).
+        const recited = await playSpeechForText(questionText, q, btn, token);
+        if (token !== hybridSpeechToken) return;
+        // 2) Mapped ayah shown with the question → recite it automatically with
+        //    Hudhaify (no تلاوة tap), unless it was already recited in step 1.
+        const verseKey = getPrimaryVerseKeyForQuestion(q);
+        if (verseKey && !recited.has(verseKey)) {
+          await playQuranRecitation(verseKey, btn, { interruptAll: false });
+          if (token !== hybridSpeechToken) return;
+        }
+        // 3) Answer options with Azure.
+        if (optionsText.trim()) await playSpeechForText(optionsText, q, btn, token);
+      } finally {
+        if (token === hybridSpeechToken && btn) btn.classList.remove('speaking');
+        clearTtsAudio();
       }
-      await speakHybrid(text, q, btn);
     } catch (e) {
       if (e?.name !== 'AbortError') {
         recordTtsError(e, 'speakQuestion');
