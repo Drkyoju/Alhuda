@@ -260,6 +260,23 @@ for (const row of db) {
   }
 }
 
+// Merge Gemini-generated full diacritics (highest priority) and register them
+// as exact phrases so both the fast path and the hybrid path pronounce them right.
+const geminiSpeech = readJsonIfExists('scripts/verified-questions-speech.json') || {};
+let geminiFields = 0;
+for (const [id, fields] of Object.entries(geminiSpeech)) {
+  if (!fields || typeof fields !== 'object') continue;
+  const entry = byQuestion[id] || {};
+  for (const [field, value] of Object.entries(fields)) {
+    const speech = String(value || '').replace(/^«|»$/g, '').trim();
+    if (!speech || !hasWellFormedTashkeel(speech)) continue;
+    entry[field] = speech;
+    geminiFields += 1;
+    registerPhrase(stripHarakat(speech), speech);
+  }
+  if (Object.keys(entry).length) byQuestion[id] = entry;
+}
+
 const wordMap = { ...verifiedWords };
 
 writeFileSync(
@@ -278,6 +295,7 @@ writeFileSync(
 
 console.log(
   `speech-diacritics-map.js: ${Object.keys(phraseMap).length} phrases, ` +
-    `${Object.keys(wordMap).length} verified words, ${Object.keys(byQuestion).length} questions`
+    `${Object.keys(wordMap).length} verified words, ${Object.keys(byQuestion).length} questions ` +
+    `(+${geminiFields} Gemini fields)`
 );
 void applyVerifiedWords;

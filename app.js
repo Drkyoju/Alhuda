@@ -2413,9 +2413,15 @@ async function appendStandaloneAyahSegments(text, plan, fallbackKeys) {
     const before = text.slice(lastIndex, m.index);
     const ttsBefore = stripForSpeech(before);
     if (ttsBefore) plan.push({ type: 'tts', text: ttsBefore });
-    let verseKey = lookupKnownVerseKey(inner) || await searchVerseKey(inner);
-    if (!verseKey && fallbackKeys.length) verseKey = fallbackKeys.shift();
-    if (verseKey) plan.push({ type: 'quran', verseKey });
+    const verseKey = lookupKnownVerseKey(inner) || await searchVerseKey(inner);
+    if (verseKey) {
+      plan.push({ type: 'quran', verseKey });
+    } else {
+      // Not a resolvable Quran verse (usually an embedded hadith) — speak it
+      // with TTS instead of silently dropping it.
+      const ttsInner = stripForSpeech(inner);
+      if (ttsInner) plan.push({ type: 'tts', text: ttsInner });
+    }
     lastIndex = m.index + m[0].length;
   }
   const tail = text.slice(lastIndex);
@@ -2444,7 +2450,13 @@ async function buildSpeechPlan(text, q) {
       verseKey = lookupKnownVerseKey(ayahText) || await searchVerseKey(ayahText);
     }
     if (!verseKey && pool.length) verseKey = pool.shift();
-    if (verseKey) plan.push({ type: 'quran', verseKey });
+    if (verseKey) {
+      plan.push({ type: 'quran', verseKey });
+    } else if (ayahText) {
+      // No verse resolved — speak the quoted text (e.g. a hadith) instead of dropping it.
+      const ttsAyah = stripForSpeech(ayahText);
+      if (ttsAyah) plan.push({ type: 'tts', text: ttsAyah });
+    }
     lastIndex = match.index + match[0].length;
   }
   const tail = raw.slice(lastIndex);
@@ -5567,6 +5579,14 @@ async function restoreSession() {
   if ('speechSynthesis' in window) {
     loadArabicVoice();
     speechSynthesis.onvoiceschanged = loadArabicVoice;
+  }
+  // Warm the diacritics map during idle boot so the first question speaks
+  // instantly instead of waiting to fetch a ~100 KB script on tap.
+  {
+    const idle = typeof requestIdleCallback === 'function'
+      ? requestIdleCallback
+      : (fn) => setTimeout(fn, 800);
+    idle(() => { void ensureSpeechMapsLoaded(); });
   }
   const savedName = localStorage.getItem('savedName');
   const loginScreenActive = document.getElementById('login-screen')?.classList.contains('active');
