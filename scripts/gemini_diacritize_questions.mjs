@@ -36,8 +36,10 @@ if (!API_KEY) {
   process.exit(1);
 }
 
-const HARAKAT = /[\u064B-\u065F\u0670\u0640]/g;
-const bare = (s) => String(s || '').replace(HARAKAT, '').replace(/\s+/g, ' ').trim();
+/** Arabic letters only — used to prove the model changed nothing but harakat. */
+const lettersOnly = (s) => String(s || '').replace(/[^\u0621-\u064A\u0671]/g, '');
+/** Remove markdown/formatting noise the model sometimes adds. */
+const cleanDiac = (s) => String(s || '').replace(/[*`_#]+/g, '').replace(/\s+/g, ' ').trim();
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 /** Load every question field we want spoken, keyed by id. */
@@ -89,6 +91,7 @@ const PROMPT = [
   '- لا تغيّر الحروف ولا الكلمات ولا ترتيبها ولا علامات الترقيم؛ أضف الحركات فقط.',
   '- شكِّل الآيات والأحاديث تشكيلًا صحيحًا فصيحًا.',
   '- لا تحذف ولا تضف أي كلمة. أعِد نفس المفاتيح ("id" و"fields" بنفس المفاتيح الداخلية).',
+  '- لا تستخدم أي رموز تنسيق (نجوم * أو علامات ماركداون).',
   '- أخرِج JSON صالحًا فقط بدون أي شرح.',
 ].join('\n');
 
@@ -96,7 +99,11 @@ async function callGemini(batch, attempt = 1) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
   const payload = {
     contents: [{ role: 'user', parts: [{ text: `${PROMPT}\n\nالمدخل:\n${JSON.stringify(batch)}` }] }],
-    generationConfig: { temperature: 0, responseMimeType: 'application/json' },
+    generationConfig: {
+      temperature: 0,
+      responseMimeType: 'application/json',
+      thinkingConfig: { thinkingBudget: 0 },
+    },
   };
   const res = await fetch(url, {
     method: 'POST',
@@ -129,11 +136,11 @@ async function callGemini(batch, attempt = 1) {
 function acceptDiacritized(inputFields, outputFields) {
   const out = {};
   for (const [key, original] of Object.entries(inputFields)) {
-    const cand = outputFields?.[key];
-    if (typeof cand !== 'string') continue;
-    if (bare(cand) !== bare(original)) continue;
+    const cand = cleanDiac(outputFields?.[key]);
+    if (!cand) continue;
+    if (lettersOnly(cand) !== lettersOnly(original)) continue; // letters must be identical
     if (!/[\u064B-\u065F\u0670]/.test(cand)) continue; // must actually add marks
-    out[key] = cand.replace(/\s+/g, ' ').trim();
+    out[key] = cand;
   }
   return out;
 }
