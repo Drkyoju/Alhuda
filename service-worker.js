@@ -4,7 +4,7 @@
 // On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
 // without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v152';
+const CACHE = 'alhuda-v153';
 const ASSETS = [
   './',
   './index.html',
