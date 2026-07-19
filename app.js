@@ -3293,7 +3293,12 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
   const btn = document.createElement('button');
   btn.type = 'button';
   btn.className = 'ans-btn ans-color-' + (colorIdx ?? 0);
-  btn.textContent = text;
+  const raw = String(text || '');
+  const shown = speechField
+    ? displayFieldText(q, speechField, raw)
+    : displayFieldText(q, null, raw);
+  btn.textContent = shown;
+  btn.dataset.raw = raw;
   btn.dataset.correct = isOk ? '1' : '0';
   btn.setAttribute('aria-pressed', 'false');
   btn.onclick = () => pick(btn, isOk);
@@ -3304,7 +3309,7 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
     sp.className = 'voice-btn voice-btn-sm';
     sp.setAttribute('aria-label', 'اقرأ الإجابة');
     sp.textContent = '🔊';
-    const rawSpeak = String(text || '').replace(/[✓✗]/g, '').trim();
+    const rawSpeak = raw.replace(/[✓✗]/g, '').trim();
     const toSpeak = speechField
       ? speechPart(q, speechField, rawSpeak)
       : prepareArabicForSpeech(applyManualSpeechDiacritics(rawSpeak));
@@ -3366,8 +3371,20 @@ async function shareDemoResult() {
 
 /* ── Demo & Feedback ── */
 function getCorrectAnswerText(q) {
-  if (q.type === 'tf') return q.tf ? 'صح ✓' : 'خطأ ✗';
-  return q.a && q.c != null ? q.a[q.c] : '';
+  if (q.type === 'tf') return q.tf ? 'صَحّ ✓' : 'خَطَأٌ ✗';
+  const raw = q.a && q.c != null ? q.a[q.c] : '';
+  if (!raw) return '';
+  return speechPart(q, `a${q.c}`, raw) || raw;
+}
+
+/** Visible label with tashkeel when the speech map has it. */
+function displayFieldText(q, field, raw) {
+  const src = String(raw || '');
+  if (!src.trim()) return src;
+  const marks = src.match(/[✓✗]/g);
+  const bare = src.replace(/[✓✗]/g, '').trim();
+  const spoken = speechPart(q, field, bare) || applyManualSpeechDiacritics(bare) || bare;
+  return marks?.length ? `${spoken} ${marks.join('')}` : spoken;
 }
 
 function formatPageLabel(page) {
@@ -3966,6 +3983,8 @@ async function beginDemo(book) {
   // Prefetch hybrid speech for Q0/Q1 during countdown (once).
   demoAudioWarmStarted = false;
   warmDemoSessionAudio({ force: true });
+  // Ensure diacritics map is ready so the first question paints with tashkeel.
+  await ensureSpeechMapsLoaded();
   // Warm Q0 in background — do NOT block entering the game (iOS autoplay
   // breaks if we await multi-second TTS before the first play()).
   void warmQuestionSpeech(state.questions[0]);
@@ -5070,7 +5089,33 @@ function renderQ() {
     ? `السؤال ${state.idx + 1} من ${state.total}`
     : `${stagePrefix}سؤال ${state.qFrom + state.idx} — ${state.idx + 1}/${state.total}`;
   updateStageGameBadge();
-  document.getElementById('q-text').textContent = q.q;
+  // Show diacritized text when the speech map is ready; otherwise paint raw then refresh.
+  const qEl = document.getElementById('q-text');
+  const paintQuestionText = () => {
+    qEl.textContent = displayFieldText(q, 'q', q.q) || q.q;
+  };
+  paintQuestionText();
+  if (!(typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID)) {
+    void ensureSpeechMapsLoaded().then(() => {
+      if (state.questions[state.idx]?.id === q.id) {
+        paintQuestionText();
+        // Re-paint options with tashkeel once the map arrives.
+        const grid = document.getElementById('ans-grid');
+        if (grid && !state.answered) {
+          const order = state.displayAnswerOrder;
+          grid.querySelectorAll('.ans-btn').forEach((btn, displayIdx) => {
+            const raw = btn.dataset.raw || btn.textContent;
+            if (q.type === 'tf') {
+              btn.textContent = displayFieldText(q, null, raw);
+            } else if (order && order[displayIdx] != null) {
+              const origIdx = order[displayIdx];
+              btn.textContent = displayFieldText(q, `a${origIdx}`, q.a[origIdx] || raw);
+            }
+          });
+        }
+      }
+    });
+  }
   document.getElementById('q-book-badge').textContent = BOOK_LABELS[q.book] || q.book;
   document.getElementById('q-type-badge').style.display = q.type === 'tf' ? 'inline-block' : 'none';
   updateVoiceUI();
@@ -5129,7 +5174,9 @@ function applyAnsweredStateToGrid(prior) {
     const isCorrectBtn = b.dataset.correct === '1';
     if (isCorrectBtn) b.classList.add('correct');
     if (prior.isOk && isCorrectBtn) b.setAttribute('aria-pressed', 'true');
-    if (!prior.isOk && prior.picked && b.textContent === prior.picked) {
+    const label = b.dataset.raw || b.textContent;
+    if (!prior.isOk && prior.picked
+      && normalizeArabicForMatch(label) === normalizeArabicForMatch(prior.picked)) {
       b.classList.add('wrong');
       b.setAttribute('aria-pressed', 'true');
     }
