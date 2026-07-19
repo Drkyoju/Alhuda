@@ -1889,14 +1889,28 @@ function dedupeTtsPlan(plan) {
 }
 
 /**
- * Choose speech text for one part. If it carries a Quran ayah, keep the ORIGINAL
- * text so buildSpeechPlan can split it out for Hudhaify; otherwise use the
- * per-field diacritized form for best Hamed / Azure pronunciation.
+ * True only when the text LITERALLY contains a Quran verse we can split out for
+ * Hudhaify — a resolvable verse key inside quotes/brackets, or an explicit
+ * «قال تعالى / ﴿…﴾» marker. Deliberately does NOT use the loose isQuranicAyahText
+ * heuristic, which wrongly flagged normal questions/answers (e.g. any text ≥28
+ * chars containing "الله/كفر/إيمان") and stripped their diacritics.
+ */
+function fieldHasEmbeddedAyah(text) {
+  const src = String(text || '');
+  if (!src.trim()) return false;
+  if (/﴿|قال\s+(الله\s+)?تعالى|قوله\s+تعالى/.test(src)) return true;
+  return findVerseKeysSync(src).length > 0;
+}
+
+/**
+ * Choose speech text for one part. If it carries a real Quran ayah, keep the
+ * ORIGINAL text so buildSpeechPlan can split it out for Hudhaify; otherwise use
+ * the per-field diacritized form for correct Hamed / Azure pronunciation.
  */
 function speechPart(q, field, raw) {
   const original = String(raw || '').trim();
   if (!original) return '';
-  if (textMayHaveQuranAyah(original, q) || findVerseKeysSync(original).length) return original;
+  if (fieldHasEmbeddedAyah(original)) return original;
   return speechTextFor(q, field, original);
 }
 
