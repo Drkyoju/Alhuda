@@ -1318,7 +1318,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v7';
+const TTS_CACHE_VER = 'v8';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1465,19 +1465,23 @@ async function ensureTtsObjectUrl(text, voice = TTS_VOICE, signal) {
   return url;
 }
 
-/** Single TTS text pipeline — prefetch and playback MUST share this or cache misses. */
+/** Single TTS text pipeline — prefetch and playback MUST share this or cache misses.
+ *  Policy: full harakat on normal lesson text; hadith kept as curated; ayahs never
+ *  go through here (Hudhaify only via buildSpeechPlan). */
 function prepareTtsPayload(text) {
   const cleaned = String(text || '')
     .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
     .replace(/\s+/g, ' ')
     .trim();
   if (!cleaned) return '';
-  // Phrase/field diacritics first when the chunk is sparse…
+  // Hadith: speak the curated wording as-is — do not rewrite tokens via word map.
+  if (isHadithPassage(cleaned)) {
+    return sanitizeTtsText(prepareArabicForSpeech(cleaned));
+  }
+  // Normal Q&A / explanation: full diacritics + fill any leftover bare words.
   let forTts = hasWellFormedTashkeel(cleaned)
     ? cleaned
     : applyManualSpeechDiacritics(cleaned);
-  // …then ALWAYS fill any remaining bare tokens from the word map.
-  // Mixed bare+diacritized Arabic confuses Azure and causes "dumb" misreadings.
   forTts = applyWordDiacritics(forTts);
   return sanitizeTtsText(prepareArabicForSpeech(forTts));
 }
@@ -1851,7 +1855,13 @@ function applyManualSpeechDiacritics(text) {
 function speechTextFor(q, field, raw) {
   const byId = (typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID) || {};
   const hit = q?.id && byId[q.id]?.[field];
-  return prepareArabicForSpeech(applyManualSpeechDiacritics(hit || raw));
+  const base = String(hit || raw || '').trim();
+  if (!base) return '';
+  // Hadith / quote-hadith: keep curated form (Gemini or source) — no word-map rewrite.
+  if (isHadithPassage(base) || (field === 'quote' && isHadithPassage(base))) {
+    return prepareArabicForSpeech(base);
+  }
+  return prepareArabicForSpeech(applyManualSpeechDiacritics(base));
 }
 let ttsAudio = null;
 let ttsAbort = null;
@@ -1863,7 +1873,13 @@ function stripForSpeech(text) {
     .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
     .replace(/\s+/g, ' ')
     .trim();
-  // Prefer diacritized forms, then fill any leftover bare tokens from the word map.
+  if (!cleaned) return '';
+  // Hadith stays as-is (after dropping any embedded Quran markers).
+  if (isHadithPassage(cleaned)) {
+    return sanitizeTtsText(
+      prepareArabicForSpeech(removeQuranicVersesForSpeech(cleaned))
+    );
+  }
   const forTts = applyWordDiacritics(
     hasWellFormedTashkeel(cleaned) ? cleaned : applyManualSpeechDiacritics(cleaned)
   );
@@ -1907,10 +1923,21 @@ function isHadithQudsiText(s) {
   return false;
 }
 
+/** Broader hadith detection — these stay as curated text (no word-map rewrite, never Hudhaify). */
+function isHadithPassage(s) {
+  const t = String(s || '').trim();
+  if (!t) return false;
+  if (isHadithQudsiText(t)) return true;
+  if (/ﷺ/.test(t)) return true;
+  if (/قال\s*(رسول|النبي)\s*الله|عن\s+النبي|حديث\s+(قدسي|صحيح|حسن)|رواه\s+\S+|أخرجه\s+\S+/i.test(t)) return true;
+  if (/قال\s*صلى\s*الله|فيما\s+يرويه\s+عن\s*(ربه|الله)/i.test(t)) return true;
+  return false;
+}
+
 function isQuranicAyahText(s) {
   const t = (s || '').replace(/[،.؛:!؟«»"[\]]/g, '').trim();
   if (!t || t.length < 10) return false;
-  if (isHadithQudsiText(t)) return false;
+  if (isHadithPassage(t)) return false;
   if (/^الإجابة\s*الصحيحة/i.test(t)) return false;
   if (/^(إنما\s+الأعمال|إن\s+الله\s+تجاوز|لا\s+يؤمن|من\s+حلف|إن\s+الحلال|البر\s+حسن)/i.test(t)) return false;
   if (/^(إن|إني|إنا|الذين|فمن|ومن|يا\s+أيها|تبارك|سبحان|قل|لقد|وما\s+خلقت|فلا\s+تخاف|فلا\s+تجعل)/i.test(t)) return true;
@@ -2063,15 +2090,20 @@ function diacritizeFieldText(q, rawText) {
   const fields = (typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID?.[q?.id]) || {};
   const target = normalizeArabicForMatch(raw);
   for (const v of Object.values(fields)) {
-    if (v && normalizeArabicForMatch(v) === target) return prepareArabicForSpeech(v);
+    if (v && normalizeArabicForMatch(v) === target) {
+      // Hadith: return curated value unchanged (no further word-map pass).
+      if (isHadithPassage(v)) return prepareArabicForSpeech(v);
+      return prepareArabicForSpeech(applyWordDiacritics(v));
+    }
   }
+  if (isHadithPassage(raw)) return prepareArabicForSpeech(raw);
   return prepareArabicForSpeech(applyManualSpeechDiacritics(raw));
 }
 
 /**
  * Ordered speech plan for the feedback panel that mirrors exactly what is shown:
- * (wrong answer →) correct answer → citation. Quran citations are RECITED with
- * Hudhaify; everything else is spoken with correct diacritics.
+ * (wrong answer →) correct answer → citation.
+ * Ayah citations → Hudhaify only; hadith citations → TTS as curated; else full harakat.
  */
 function buildFeedbackSpeechPlan(q, wrongText) {
   const plan = [];
@@ -2084,7 +2116,9 @@ function buildFeedbackSpeechPlan(q, wrongText) {
   const quoteIsAyah = typeof citationLooksLikeAyah === 'function'
     ? citationLooksLikeAyah(citeBody, verseKey)
     : false;
-  if (verseKey && (quoteIsAyah || !citeBody)) {
+  if (isHadithPassage(citeBody)) {
+    plan.push({ type: 'tts', text: diacritizeFieldText(q, citeBody) });
+  } else if (verseKey && (quoteIsAyah || !citeBody)) {
     plan.push({ type: 'quran', verseKey });
   } else if (citeBody) {
     plan.push({ type: 'tts', text: diacritizeFieldText(q, citeBody) });
@@ -2550,7 +2584,17 @@ async function appendStandaloneAyahSegments(text, plan, fallbackKeys) {
   let lastIndex = 0;
   for (const m of text.matchAll(STANDALONE_AYAH_RE)) {
     const inner = (m[2] || m[3] || m[4] || '').trim();
-    if (!isQuranicAyahText(inner) || isHadithQudsiText(inner)) continue;
+    // Hadith in quotes/parens → Azure TTS as curated, never Hudhaify.
+    if (isHadithPassage(inner)) {
+      const before = text.slice(lastIndex, m.index);
+      const ttsBefore = stripForSpeech(before);
+      if (ttsBefore) plan.push({ type: 'tts', text: ttsBefore });
+      const ttsHadith = prepareTtsPayload(inner);
+      if (ttsHadith) plan.push({ type: 'tts', text: ttsHadith });
+      lastIndex = m.index + m[0].length;
+      continue;
+    }
+    if (!isQuranicAyahText(inner)) continue;
     const before = text.slice(lastIndex, m.index);
     const ttsBefore = stripForSpeech(before);
     if (ttsBefore) plan.push({ type: 'tts', text: ttsBefore });
@@ -2558,8 +2602,7 @@ async function appendStandaloneAyahSegments(text, plan, fallbackKeys) {
     if (verseKey) {
       plan.push({ type: 'quran', verseKey });
     } else {
-      // Not a resolvable Quran verse (usually an embedded hadith) — speak it
-      // with TTS instead of silently dropping it.
+      // Not a resolvable Quran verse — speak with full harakat TTS.
       const ttsInner = stripForSpeech(inner);
       if (ttsInner) plan.push({ type: 'tts', text: ttsInner });
     }
