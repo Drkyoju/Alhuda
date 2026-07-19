@@ -3072,6 +3072,19 @@ async function speakText(text, btn, { allowAnswers = false, question = null } = 
   }
 }
 
+/** Best-effort unlock so later async Audio.play() works on iOS/Safari. */
+function unlockTtsAudio() {
+  try {
+    const silent = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYoRwmHAAAAAAD/+1DEAAAGAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==';
+    const a = new Audio(silent);
+    a.volume = 0.01;
+    const p = a.play();
+    if (p && typeof p.then === 'function') {
+      p.then(() => { try { a.pause(); } catch { /* ignore */ } }).catch(() => {});
+    }
+  } catch { /* ignore */ }
+}
+
 function speakQuestion() {
   const q = state.questions[state.idx];
   if (!q?.q || !voiceOn) return;
@@ -3080,9 +3093,11 @@ function speakQuestion() {
     return;
   }
   const btn = document.getElementById('btn-speak-question');
+  const askIdx = state.idx;
   void (async () => {
     try {
       await ensureSpeechMapsLoaded();
+      if (!voiceOn || state.idx !== askIdx) return;
       stopSpeaking();
       const token = hybridSpeechToken;
       if (btn) btn.classList.add('speaking');
@@ -3093,30 +3108,41 @@ function speakQuestion() {
         const verseKey = getPrimaryVerseKeyForQuestion(q);
         if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
 
-        // Wait for BOTH clips up front (usually already warmed). Preload the
-        // options Audio while the question plays → zero silence between them.
-        const [qUrl, oUrl] = await Promise.all([
-          qClean ? ensureTtsObjectUrl(qClean) : null,
-          oClean ? ensureTtsObjectUrl(oClean) : null,
-        ]);
-        if (token !== hybridSpeechToken) return;
+        // Warm options in parallel — NEVER block / fail the question on options errors.
+        const optionsPromise = oClean
+          ? ensureTtsObjectUrl(oClean).catch((e) => {
+            console.warn('options tts warm:', e);
+            return null;
+          })
+          : Promise.resolve(null);
 
-        let optionsAudio = null;
-        if (oUrl) {
-          optionsAudio = new Audio(oUrl);
-          optionsAudio.preload = 'auto';
-          try { optionsAudio.load(); } catch { /* ignore */ }
+        // 1) Question audio first (independent of options).
+        let qUrl = null;
+        if (qClean) {
+          try {
+            qUrl = await ensureTtsObjectUrl(qClean);
+          } catch (e) {
+            if (e?.name === 'AbortError') return;
+            console.warn('question tts:', e);
+            toastTtsFail();
+            return;
+          }
         }
+        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 1) Question — use hot memory URL path (no post-end fetch for answers).
         if (qClean && textMayHaveQuranAyah(questionText, q)) {
           const recited = await playSpeechForText(questionText, q, btn, token);
-          if (token !== hybridSpeechToken) return;
-          if (optionsAudio) {
-            await playPreloadedAudio(optionsAudio, btn);
-            if (token !== hybridSpeechToken) return;
+          if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+          const oUrl = await optionsPromise;
+          if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+          if (oUrl) {
+            try {
+              await playPreloadedAudio(new Audio(oUrl), btn);
+            } catch (e) {
+              if (e?.name !== 'AbortError') console.warn('options play:', e);
+            }
           }
-          if (verseKey && !recited.has(verseKey)) {
+          if (verseKey && !recited.has(verseKey) && token === hybridSpeechToken) {
             await playQuranRecitation(verseKey, btn, { interruptAll: false });
           }
           return;
@@ -3126,20 +3152,46 @@ function speakQuestion() {
           ttsObjectUrl = qUrl;
           ttsAudio = new Audio(qUrl);
           if (btn) btn.classList.add('speaking');
-          await ttsAudio.play();
+          try {
+            await ttsAudio.play();
+          } catch (e) {
+            // iOS often blocks play() after async gaps — retry once, then tell the user.
+            try {
+              unlockTtsAudio();
+              await ttsAudio.play();
+            } catch (e2) {
+              console.warn('question play:', e2);
+              toastTtsFail();
+              return;
+            }
+          }
           await new Promise((resolve, reject) => {
             if (!ttsAudio) return resolve();
             ttsAudio.onended = resolve;
             ttsAudio.onerror = () => reject(new Error('audio error'));
           });
         }
-        if (token !== hybridSpeechToken) return;
+        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 2) Answers immediately from the preloaded element — no network, no gap.
-        if (optionsAudio) {
-          await playPreloadedAudio(optionsAudio, btn);
-          if (token !== hybridSpeechToken) return;
+        // 2) Answers — only after question, using whatever options warm produced.
+        const oUrl = await optionsPromise;
+        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+        if (oUrl) {
+          try {
+            const optionsAudio = new Audio(oUrl);
+            optionsAudio.preload = 'auto';
+            await playPreloadedAudio(optionsAudio, btn);
+          } catch (e) {
+            if (e?.name === 'AbortError') return;
+            // Fallback: fetch+speak options independently so they are never skipped silently.
+            try {
+              await speakTtsSegment(oClean, btn, { clearAfter: false });
+            } catch (e2) {
+              if (e2?.name !== 'AbortError') console.warn('options fallback:', e2);
+            }
+          }
         }
+        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
         // 3) Mapped citation ayah after the full Q+answers pass.
         if (verseKey) {
@@ -3153,6 +3205,7 @@ function speakQuestion() {
       if (e?.name !== 'AbortError') {
         recordTtsError(e, 'speakQuestion');
         console.warn('speakQuestion:', e);
+        toastTtsFail();
       }
     }
   })();
@@ -3880,6 +3933,7 @@ function showDemoIntro(name) {
 }
 async function beginDemo(book) {
   if (!book) book = state.demoBook || 'tawheed';
+  unlockTtsAudio();
   const demoBtns = document.querySelectorAll('.demo-book-pick');
   demoBtns.forEach((b) => { b.disabled = true; });
   try {
@@ -3912,13 +3966,9 @@ async function beginDemo(book) {
   // Prefetch hybrid speech for Q0/Q1 during countdown (once).
   demoAudioWarmStarted = false;
   warmDemoSessionAudio({ force: true });
-  // Await Q0 audio so the first question speaks immediately (no 1–2s silence).
-  demoBtns.forEach((b) => { b.disabled = true; });
-  try {
-    await warmQuestionSpeech(state.questions[0]);
-  } finally {
-    demoBtns.forEach((b) => { b.disabled = false; });
-  }
+  // Warm Q0 in background — do NOT block entering the game (iOS autoplay
+  // breaks if we await multi-second TTS before the first play()).
+  void warmQuestionSpeech(state.questions[0]);
   startDemoCountdown();
 }
 
