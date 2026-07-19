@@ -50,13 +50,15 @@ function normalizeForAzure(text) {
 
 function buildSsml(text, voice) {
   const lang = String(voice).startsWith('ar-EG') ? 'ar-EG' : 'ar-SA';
-  // Mild slowdown only — heavy negative rate sounds unnatural.
-  const rate = '-3%';
+  // Mild slowdown — clearer educational Arabic with full tashkeel.
+  const rate = '-8%';
   const body = textToSsmlBody(normalizeForAzure(text));
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +
     `<voice name="${escapeXml(voice)}">` +
+    `<lang xml:lang="${lang}">` +
     `<prosody rate="${rate}">${body}</prosody>` +
+    `</lang>` +
     `</voice></speak>`
   );
 }

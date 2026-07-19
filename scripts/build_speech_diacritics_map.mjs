@@ -288,6 +288,30 @@ for (const [id, fields] of Object.entries(geminiSpeech)) {
 
 const wordMap = { ...verifiedWords };
 
+// Harvest every diacritized token from Gemini / by-question fields into the word
+// map so mixed bare leftovers get filled at speak time (Azure misreads partial tashkeel).
+function harvestWordsIntoMap(speech) {
+  const s = String(speech || '');
+  if (!hasAnyTashkeel(s)) return;
+  for (const tok of s.match(WORD_RE) || []) {
+    if (!/[\u064B-\u065F\u0670]/.test(tok)) continue;
+    const bare = stripHarakat(tok);
+    if (bare.length < 2) continue;
+    const prev = wordMap[bare];
+    // Prefer the denser (more marks) form; ties → longer token.
+    const marks = (tok.match(/[\u064B-\u065F\u0670]/g) || []).length;
+    const prevMarks = prev ? (prev.match(/[\u064B-\u065F\u0670]/g) || []).length : -1;
+    if (!prev || marks > prevMarks || (marks === prevMarks && tok.length > prev.length)) {
+      wordMap[bare] = tok;
+    }
+  }
+}
+for (const fields of Object.values(byQuestion)) {
+  if (!fields || typeof fields !== 'object') continue;
+  for (const value of Object.values(fields)) harvestWordsIntoMap(value);
+}
+for (const value of Object.values(phraseMap)) harvestWordsIntoMap(value);
+
 writeFileSync(
   join(root, 'speech-diacritics-map.js'),
   '/** Auto-generated — node scripts/build_speech_diacritics_map.mjs */\n' +

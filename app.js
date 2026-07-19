@@ -1318,7 +1318,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v6';
+const TTS_CACHE_VER = 'v7';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1472,9 +1472,13 @@ function prepareTtsPayload(text) {
     .replace(/\s+/g, ' ')
     .trim();
   if (!cleaned) return '';
-  const forTts = hasWellFormedTashkeel(cleaned)
+  // Phrase/field diacritics first when the chunk is sparse…
+  let forTts = hasWellFormedTashkeel(cleaned)
     ? cleaned
     : applyManualSpeechDiacritics(cleaned);
+  // …then ALWAYS fill any remaining bare tokens from the word map.
+  // Mixed bare+diacritized Arabic confuses Azure and causes "dumb" misreadings.
+  forTts = applyWordDiacritics(forTts);
   return sanitizeTtsText(prepareArabicForSpeech(forTts));
 }
 
@@ -1859,11 +1863,10 @@ function stripForSpeech(text) {
     .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
     .replace(/\s+/g, ' ')
     .trim();
-  // If the chunk is already diacritized (from SPEECH_BY_QUESTION_ID), only
-  // sanitize punctuation — re-running the word map would corrupt forms like عُبِدَ.
-  const forTts = hasWellFormedTashkeel(cleaned)
-    ? cleaned
-    : applyManualSpeechDiacritics(cleaned);
+  // Prefer diacritized forms, then fill any leftover bare tokens from the word map.
+  const forTts = applyWordDiacritics(
+    hasWellFormedTashkeel(cleaned) ? cleaned : applyManualSpeechDiacritics(cleaned)
+  );
   return sanitizeTtsText(
     prepareArabicForSpeech(
       removeQuranicVersesForSpeech(forTts)
