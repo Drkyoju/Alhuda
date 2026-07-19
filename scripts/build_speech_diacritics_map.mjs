@@ -269,12 +269,16 @@ for (const row of db) {
 // as exact phrases so both the fast path and the hybrid path pronounce them right.
 const geminiSpeech = readJsonIfExists('scripts/verified-questions-speech.json') || {};
 let geminiFields = 0;
+// Gemini output is already letter-validated, so keep any harakat-bearing value —
+// including short single-word answers (شَاةً / نَعَمْ / سِحْرَ) that the stricter
+// hasWellFormedTashkeel gate (needs ≥4 letters) would wrongly drop and leave bare.
+const hasAnyTashkeel = (s) => /[\u064B-\u065F\u0670]/.test(String(s || ''));
 for (const [id, fields] of Object.entries(geminiSpeech)) {
   if (!fields || typeof fields !== 'object') continue;
   const entry = byQuestion[id] || {};
   for (const [field, value] of Object.entries(fields)) {
     const speech = String(value || '').replace(/^«|»$/g, '').trim();
-    if (!speech || !hasWellFormedTashkeel(speech)) continue;
+    if (!speech || !hasAnyTashkeel(speech)) continue;
     entry[field] = speech;
     geminiFields += 1;
     registerPhrase(stripHarakat(speech), speech);
