@@ -1318,7 +1318,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v5';
+const TTS_CACHE_VER = 'v6';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1435,9 +1435,22 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
   }
 }
 
+/** Single TTS text pipeline — prefetch and playback MUST share this or cache misses. */
+function prepareTtsPayload(text) {
+  const cleaned = String(text || '')
+    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!cleaned) return '';
+  const forTts = hasWellFormedTashkeel(cleaned)
+    ? cleaned
+    : applyManualSpeechDiacritics(cleaned);
+  return sanitizeTtsText(prepareArabicForSpeech(forTts));
+}
+
 function prefetchTtsText(text, voice = TTS_VOICE) {
   void ensureSpeechMapsLoaded().then(() => {
-    const clean = sanitizeTtsText(prepareArabicForSpeech(applyManualSpeechDiacritics(text || '')));
+    const clean = prepareTtsPayload(text);
     if (!clean || clean.length < 2) return;
     const key = ttsCacheKey(clean, voice);
     if (ttsBlobMemoryCache.has(key) || ttsPrefetchInFlight.has(key)) return;
@@ -1445,14 +1458,39 @@ function prefetchTtsText(text, voice = TTS_VOICE) {
   });
 }
 
+/** Prefetch question audio and resolve when the blob is ready (first speak = instant). */
+async function warmQuestionSpeech(q) {
+  if (!q || navigator.onLine === false) return null;
+  await ensureSpeechMapsLoaded();
+  const { questionText, optionsText } = buildQuestionSpeechParts(q);
+  const primaryVerse = getPrimaryVerseKeyForQuestion(q);
+  if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
+  if (optionsText?.trim()) prefetchTtsText(optionsText);
+  // Prefetch each option alone (answer 🔊 buttons use these, not the joined string).
+  if (q.type === 'mc' && Array.isArray(q.a)) {
+    q.a.forEach((opt, i) => {
+      if (opt == null || opt === '') return;
+      prefetchTtsText(speechPart(q, `a${i}`, opt));
+    });
+  } else if (q.type === 'tf') {
+    prefetchTtsText('صَحّ');
+    prefetchTtsText('خَطَأٌ');
+  }
+  const clean = prepareTtsPayload(questionText);
+  if (!clean) return null;
+  try {
+    return await fetchTtsBlob(clean);
+  } catch {
+    return null;
+  }
+}
+
 async function prefetchHybridSpeechForQuestion(q) {
   if (!q || navigator.onLine === false) return;
   try {
     await ensureSpeechMapsLoaded();
-    // Warm the mapped ayah so the auto-recite after the question starts instantly.
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
-    // Warm the same segments playback will request (question and options split).
     const { questionText, optionsText } = buildQuestionSpeechParts(q);
     for (const part of [questionText, optionsText]) {
       if (!part || !part.trim()) continue;
@@ -1465,6 +1503,12 @@ async function prefetchHybridSpeechForQuestion(q) {
       } else {
         prefetchTtsText(part);
       }
+    }
+    if (q.type === 'mc' && Array.isArray(q.a)) {
+      q.a.forEach((opt, i) => {
+        if (opt == null || opt === '') return;
+        prefetchTtsText(speechPart(q, `a${i}`, opt));
+      });
     }
     if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
   } catch (e) {
@@ -2509,7 +2553,11 @@ async function buildSpeechPlan(text, q) {
   const plan = [];
   const raw = (text || '').trim();
   if (!raw) return plan;
-  const fallbackKeys = q ? await resolveAllVerseKeysForQuestion(q) : [];
+  // Only resolve mapped verse keys when the spoken text actually looks like it
+  // embeds an ayah — otherwise this was a multi-second network stall on every Q.
+  const needsVersePool = /قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿/.test(raw)
+    || findVerseKeysSync(raw).length > 0;
+  const fallbackKeys = (needsVersePool && q) ? await resolveAllVerseKeysForQuestion(q) : [];
   const pool = [...fallbackKeys];
   let lastIndex = 0;
   let matchedTaala = false;
@@ -2538,7 +2586,7 @@ async function buildSpeechPlan(text, q) {
   const tail = raw.slice(lastIndex);
   if (matchedTaala) {
     if (tail.trim()) await appendStandaloneAyahSegments(tail, plan, pool);
-  } else {
+  } else if (needsVersePool) {
     await appendStandaloneAyahSegments(raw, plan, pool);
   }
   const hasQuran = plan.some((s) => s.type === 'quran');
@@ -2556,14 +2604,14 @@ async function buildSpeechPlan(text, q) {
 function textMayHaveQuranAyah(text, q) {
   const src = text || '';
   if (!src.trim()) return false;
-  if (isQuranicAyahText(src)) return true;
-  if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿|\[?\s*سورة|الذاريات\s*[:：]/i.test(src)) {
+  // Tight gate only. The old isQuranicAyahText heuristic flagged normal
+  // questions/answers containing "الله" and forced a slow Quran.com search
+  // before any Azure audio started — multi-second silence on every speak.
+  if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿/.test(src)) {
     if (!isHadithQudsiText(src)) return true;
   }
-  if (extractAyahSnippets(src).some(isQuranicAyahText)) return true;
   if (findVerseKeysSync(src).length) return true;
-  // Do NOT treat "question has a mapped verse" as Quran-in-this-utterance —
-  // that made answer-option TTS inject Hudhaify ayahs unrelated to the option.
+  if (extractAyahSnippets(src).some((s) => !!lookupKnownVerseKey(s))) return true;
   return false;
 }
 
@@ -2872,8 +2920,8 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE) {
 }
 
 async function speakTtsSegment(text, btn, { keepBtnState = true } = {}) {
-  // Pipeline: diacritics → speech prep → sanitize (once). Avoid double-mutating.
-  const clean = sanitizeTtsText(prepareArabicForSpeech(applyManualSpeechDiacritics(text)));
+  // Same pipeline as prefetchTtsText — shared cache key = instant when warmed.
+  const clean = prepareTtsPayload(text);
   if (!clean) return;
   try {
     await speakTextCloud(clean, btn, TTS_VOICE);
@@ -2999,12 +3047,15 @@ function speakQuestion() {
       if (btn) btn.classList.add('speaking');
       try {
         const { questionText, optionsText } = buildQuestionSpeechParts(q);
+        // Warm options (+ mapped ayah) while the question audio plays / fetches.
+        if (optionsText.trim()) prefetchTtsText(optionsText);
+        const verseKey = getPrimaryVerseKeyForQuestion(q);
+        if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
         // 1) Question text with Azure (recites any ayah embedded inside it).
         const recited = await playSpeechForText(questionText, q, btn, token);
         if (token !== hybridSpeechToken) return;
         // 2) Mapped ayah shown with the question → recite it automatically with
         //    Hudhaify (no تلاوة tap), unless it was already recited in step 1.
-        const verseKey = getPrimaryVerseKeyForQuestion(q);
         if (verseKey && !recited.has(verseKey)) {
           await playQuranRecitation(verseKey, btn, { interruptAll: false });
           if (token !== hybridSpeechToken) return;
@@ -3100,7 +3151,7 @@ function toggleVoiceAnswers() {
   if (document.getElementById('game')?.classList.contains('active') && state.questions.length) renderQ();
 }
 
-function appendAnswerOption(grid, text, isOk, colorIdx, q) {
+function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
   const wrap = document.createElement('div');
   wrap.className = 'ans-row ans-row-single';
   const btn = document.createElement('button');
@@ -3117,10 +3168,15 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q) {
     sp.className = 'voice-btn voice-btn-sm';
     sp.setAttribute('aria-label', 'اقرأ الإجابة');
     sp.textContent = '🔊';
+    const rawSpeak = String(text || '').replace(/[✓✗]/g, '').trim();
+    const toSpeak = speechField
+      ? speechPart(q, speechField, rawSpeak)
+      : prepareArabicForSpeech(applyManualSpeechDiacritics(rawSpeak));
+    prefetchTtsText(toSpeak);
     sp.onclick = (e) => {
       e.stopPropagation();
       // Do not pass question — avoids injecting mapped Quran into option TTS.
-      speakText(text, sp, { allowAnswers: true, question: null });
+      speakText(toSpeak, sp, { allowAnswers: true, question: null });
     };
     wrap.appendChild(btn);
     wrap.appendChild(sp);
@@ -3773,6 +3829,13 @@ async function beginDemo(book) {
   // Prefetch hybrid speech for Q0/Q1 during countdown (once).
   demoAudioWarmStarted = false;
   warmDemoSessionAudio({ force: true });
+  // Await Q0 audio so the first question speaks immediately (no 1–2s silence).
+  demoBtns.forEach((b) => { b.disabled = true; });
+  try {
+    await warmQuestionSpeech(state.questions[0]);
+  } finally {
+    demoBtns.forEach((b) => { b.disabled = false; });
+  }
   startDemoCountdown();
 }
 
@@ -4884,7 +4947,7 @@ function renderQ() {
   if (q.type === 'tf') {
     state.displayAnswerOrder = null;
     ['صح ✓', 'خطأ ✗'].forEach((txt, i) => {
-      appendAnswerOption(grid, txt, (i === 0) === q.tf, i === 0 ? 0 : 3, q);
+      appendAnswerOption(grid, txt, (i === 0) === q.tf, i === 0 ? 0 : 3, q, null);
     });
   } else {
     const order = (prior?.displayAnswerOrder?.length
@@ -4892,11 +4955,15 @@ function renderQ() {
       : shuffleArr([0, 1, 2, 3].slice(0, (q.a || []).length)));
     state.displayAnswerOrder = order.slice();
     order.forEach((i, orderIdx) => {
-      appendAnswerOption(grid, q.a[i], i === q.c, orderIdx, q);
+      appendAnswerOption(grid, q.a[i], i === q.c, orderIdx, q, `a${i}`);
     });
   }
   updateQuranReciteSlot(q);
-  void prefetchHybridSpeechForQuestion(q);
+  // Start current-question audio fetch immediately so speakQuestion joins the
+  // in-flight request (shared cache) instead of waiting cold on Azure (~1.2s).
+  void warmQuestionSpeech(q);
+  const nextQ = state.questions[state.idx + 1];
+  if (nextQ) void prefetchHybridSpeechForQuestion(nextQ);
   if (prior) {
     clearQuestionTimer();
     setTimerVisible(false);
@@ -5697,14 +5764,9 @@ async function restoreSession() {
     loadArabicVoice();
     speechSynthesis.onvoiceschanged = loadArabicVoice;
   }
-  // Warm the diacritics map during idle boot so the first question speaks
-  // instantly instead of waiting to fetch a ~100 KB script on tap.
-  {
-    const idle = typeof requestIdleCallback === 'function'
-      ? requestIdleCallback
-      : (fn) => setTimeout(fn, 800);
-    idle(() => { void ensureSpeechMapsLoaded(); });
-  }
+  // Start diacritics map immediately (not idle) so the first speak never waits
+  // on a ~670 KB script download after the question is already on screen.
+  void ensureSpeechMapsLoaded();
   const savedName = localStorage.getItem('savedName');
   const loginScreenActive = document.getElementById('login-screen')?.classList.contains('active');
   if (savedName && loginScreenActive && !LOGIN_LOCKED) document.getElementById('login-name').value = savedName;
