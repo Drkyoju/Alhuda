@@ -1411,19 +1411,35 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
   if (ttsPrefetchInFlight.has(key)) return ttsPrefetchInFlight.get(key);
 
   const work = (async () => {
-    const res = await fetch('/api/tts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, voice }),
-      signal,
-    });
-    if (!res.ok) throw new Error(`tts failed:${res.status}`);
-    const blob = await res.blob();
-    if (!blob.size) throw new Error('empty audio');
-    rememberTtsObjectUrl(key, URL.createObjectURL(blob));
-    void putTtsBlobInIdb(key, blob);
-    recordAzureTtsUsage(text.length, res.headers.get('X-TTS-Provider'));
-    return blob;
+    let lastErr = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+      try {
+        const res = await fetch('/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, voice }),
+          signal,
+        });
+        if (res.status === 429 || res.status === 503) {
+          lastErr = new Error(`tts failed:${res.status}`);
+          await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+          continue;
+        }
+        if (!res.ok) throw new Error(`tts failed:${res.status}`);
+        const blob = await res.blob();
+        if (!blob.size) throw new Error('empty audio');
+        rememberTtsObjectUrl(key, URL.createObjectURL(blob));
+        void putTtsBlobInIdb(key, blob);
+        recordAzureTtsUsage(text.length, res.headers.get('X-TTS-Provider'));
+        return blob;
+      } catch (e) {
+        if (e?.name === 'AbortError') throw e;
+        lastErr = e;
+        if (attempt < 2) await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
+      }
+    }
+    throw lastErr || new Error('tts failed');
   })();
 
   ttsPrefetchInFlight.set(key, work);
@@ -1509,25 +1525,9 @@ async function prefetchHybridSpeechForQuestion(q) {
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
     const { questionText, optionsText } = buildQuestionSpeechParts(q);
-    for (const part of [questionText, optionsText]) {
-      if (!part || !part.trim()) continue;
-      if (textMayHaveQuranAyah(part, q)) {
-        const plan = await buildSpeechPlan(part, q);
-        for (const seg of plan) {
-          if (seg.type === 'tts' && seg.text) prefetchTtsText(seg.text);
-          if (seg.type === 'quran' && seg.verseKey) void fetchQuranAudioObjectUrl(seg.verseKey).catch(() => {});
-        }
-      } else {
-        prefetchTtsText(part);
-      }
-    }
-    if (q.type === 'mc' && Array.isArray(q.a)) {
-      q.a.forEach((opt, i) => {
-        if (opt == null || opt === '') return;
-        prefetchTtsText(speechPart(q, `a${i}`, opt));
-      });
-    }
-    if (q.exp) prefetchTtsText(String(q.exp).slice(0, 280));
+    // Only the two clips speakQuestion needs — avoid 429 from prefetching every option + exp.
+    if (questionText?.trim()) prefetchTtsText(questionText);
+    if (optionsText?.trim()) prefetchTtsText(optionsText);
   } catch (e) {
     console.warn('hybrid prefetch:', e);
     prefetchTtsText(q.q);
@@ -1535,7 +1535,8 @@ async function prefetchHybridSpeechForQuestion(q) {
 }
 
 function prefetchUpcomingTts(fromIdx = state.idx) {
-  const slice = (state.questions || []).slice(Math.max(0, fromIdx | 0), (fromIdx | 0) + 5);
+  // Only warm current + next — prefetching 5 ahead caused Azure 429 and silent skips.
+  const slice = (state.questions || []).slice(Math.max(0, fromIdx | 0), (fromIdx | 0) + 2);
   for (const q of slice) {
     if (!q) continue;
     void prefetchHybridSpeechForQuestion(q);
@@ -1989,7 +1990,7 @@ function buildQuestionSpeechParts(q) {
     const order = Array.isArray(state.displayAnswerOrder) && state.displayAnswerOrder.length
       ? state.displayAnswerOrder
       : q.a.map((_, i) => i);
-    const ordinals = ['أولاً', 'ثانياً', 'ثالثاً', 'رابعاً'];
+    const ordinals = ['أَوَّلًا', 'ثَانِيًا', 'ثَالِثًا', 'رَابِعًا'];
     order.forEach((origIdx, displayIdx) => {
       const opt = q.a[origIdx];
       if (opt == null || opt === '') return;
