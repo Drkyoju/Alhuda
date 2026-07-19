@@ -20,13 +20,73 @@ function escapeXml(text) {
     .replace(/'/g, '&apos;');
 }
 
-/** Spoken SSML body only — punctuation must never appear (voices say «نقطة»). */
+/** Spoken SSML body — strip punctuation; force correct Allāh phonemes. */
 function textToSsmlBody(text) {
-  const clean = String(text || '')
-    .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-  return escapeXml(clean);
+  const clean = normalizeAllahForTts(
+    String(text || '')
+      .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
+  // Azure Arabic often mangles bare «الله» — IPA locks geminated لام.
+  const re =
+    /(اللَّهُمَّ|[بوفكت]اللَّه[\u064E\u064F\u0650]?|لِلَّه[\u064E\u064F\u0650]?|اللَّه[\u064E\u064F\u0650]?)/g;
+  let out = '';
+  let last = 0;
+  let m;
+  while ((m = re.exec(clean))) {
+    if (m.index > last) out += escapeXml(clean.slice(last, m.index));
+    const tok = m[0];
+    out += `<phoneme alphabet="ipa" ph="${allahIpa(tok)}">${escapeXml(tok)}</phoneme>`;
+    last = m.index + tok.length;
+  }
+  if (last < clean.length) out += escapeXml(clean.slice(last));
+  return out;
+}
+
+/**
+ * Force shadda on لام in الله / اللهم / لله — without it Hamed says «أله»-like.
+ * Harakat class: fatha/damma/kasra/sukun/shadda/tanwin/dagger-alif.
+ */
+function normalizeAllahForTts(text) {
+  const H = '[\u064B-\u065F\u0670]*';
+  let s = String(text || '');
+  s = s.replace(new RegExp(`ال${H}ل${H}ه${H}م${H}`, 'g'), 'اللَّهُمَّ');
+  s = s.replace(new RegExp(`([بوفكت])ال${H}ل${H}ه(${H})`, 'g'), (_, p, end) => {
+    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '';
+    return `${p}اللَّه${e}`;
+  });
+  s = s.replace(
+    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
+    (_, pre, end) => {
+      const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || 'ِ';
+      return `${pre}لِلَّه${e}`;
+    }
+  );
+  s = s.replace(new RegExp(`ال${H}ل${H}ه(${H})(?![\\u0621-\\u064Aم])`, 'g'), (_, end) => {
+    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '';
+    return `اللَّه${e}`;
+  });
+  return s;
+}
+
+function allahIpa(token) {
+  if (token === 'اللَّهُمَّ') return 'ʔallaːhumma';
+  if (token.startsWith('لِلَّه')) {
+    return token.endsWith('\u0650') ? 'lillaːhi' : 'lillaːh';
+  }
+  const prefix = /^[بوفكت]/.test(token) ? token[0] : '';
+  const core = prefix ? token.slice(1) : token;
+  let base = 'ʔallaːh';
+  if (core.endsWith('\u064F')) base = 'ʔallaːhu';
+  else if (core.endsWith('\u064E')) base = 'ʔallaːha';
+  else if (core.endsWith('\u0650')) base = 'ʔallaːhi';
+  if (prefix === 'ب') return core.endsWith('\u0650') ? 'billaːhi' : 'billaːh';
+  if (prefix === 'و') return 'wallaːh';
+  if (prefix === 'ف') return 'fallaːh';
+  if (prefix === 'ت') return 'tallaːh';
+  if (prefix === 'ك') return 'kallaːh';
+  return base;
 }
 
 /** Digits → Arabic words (short numbers only) so Hamed does not spell digits. */
@@ -78,7 +138,7 @@ function normalizeForAzure(text) {
     .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  return s;
+  return normalizeAllahForTts(s);
 }
 
 function buildSsml(text, voice) {

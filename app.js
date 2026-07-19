@@ -1318,7 +1318,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v10';
+const TTS_CACHE_VER = 'v11';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1683,17 +1683,45 @@ async function refreshTtsProviderBadge() {
 
 /** Strip punctuation/symbols the neural voice vocalizes (e.g. ":" → "نقطتان"). Keeps Arabic harakat. */
 function sanitizeTtsText(text) {
-  return (text || '')
-    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
-    .replace(/ﷺ/g, ' صلى الله عليه وسلم ')
-    .replace(/ﷻ/g, ' جل جلاله ')
-    .replace(/رضي الله عنهما/g, ' رضي الله عنهما ')
-    .replace(/رضي الله عنها/g, ' رضي الله عنها ')
-    .replace(/رضي الله عنه/g, ' رضي الله عنه ')
-    // Skip punctuation entirely — never send to TTS (Arabic voices say «نقطة» etc.).
-    .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return normalizeAllahForTts(
+    (text || '')
+      .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
+      .replace(/ﷺ/g, ' صلى الله عليه وسلم ')
+      .replace(/ﷻ/g, ' جل جلاله ')
+      .replace(/رضي الله عنهما/g, ' رضي الله عنهما ')
+      .replace(/رضي الله عنها/g, ' رضي الله عنها ')
+      .replace(/رضي الله عنه/g, ' رضي الله عنه ')
+      // Skip punctuation entirely — never send to TTS (Arabic voices say «نقطة» etc.).
+      .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
+}
+
+/**
+ * Force shadda on لام in الله so Azure says Allāh (not a flat «أله»).
+ * Also normalizes اللهم / لله / بالله…
+ */
+function normalizeAllahForTts(text) {
+  const H = '[\u064B-\u065F\u0670]*';
+  let s = String(text || '');
+  s = s.replace(new RegExp(`ال${H}ل${H}ه${H}م${H}`, 'g'), 'اللَّهُمَّ');
+  s = s.replace(new RegExp(`([بوفكت])ال${H}ل${H}ه(${H})`, 'g'), (_, p, end) => {
+    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '';
+    return `${p}اللَّه${e}`;
+  });
+  s = s.replace(
+    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
+    (_, pre, end) => {
+      const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || 'ِ';
+      return `${pre}لِلَّه${e}`;
+    }
+  );
+  s = s.replace(new RegExp(`ال${H}ل${H}ه(${H})(?![\\u0621-\\u064Aم])`, 'g'), (_, end) => {
+    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '';
+    return `اللَّه${e}`;
+  });
+  return s;
 }
 
 const ARABIC_HARAKAT_RE = /[\u064B-\u065F\u0670\u0610-\u061A]/;
