@@ -1748,11 +1748,14 @@ function stripHarakat(s) {
   return String(s || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '');
 }
 
-/** Word-level diacritization fallback — covers every word using the generated map. */
+/** Word-level diacritization fallback — covers every word using the generated map.
+ *  Never overwrite a token that already has harakat: Gemini / per-question fields
+ *  are authoritative (e.g. عُبِدَ must not become عَبْد from the bare-word map). */
 function applyWordDiacritics(text) {
   const wordMap = (typeof window !== 'undefined' && window.SPEECH_WORD_MAP) || null;
   if (!wordMap) return text;
   return String(text).replace(SPEECH_WORD_RE, (tok) => {
+    if (ARABIC_HARAKAT_RE.test(tok)) return tok;
     const bare = stripHarakat(tok);
     return wordMap[bare] || tok;
   });
@@ -1790,16 +1793,18 @@ let ttsObjectUrl = null;
 let hybridSpeechToken = 0;
 
 function stripForSpeech(text) {
+  const cleaned = (text || '')
+    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  // If the chunk is already diacritized (from SPEECH_BY_QUESTION_ID), only
+  // sanitize punctuation — re-running the word map would corrupt forms like عُبِدَ.
+  const forTts = hasWellFormedTashkeel(cleaned)
+    ? cleaned
+    : applyManualSpeechDiacritics(cleaned);
   return sanitizeTtsText(
     prepareArabicForSpeech(
-      removeQuranicVersesForSpeech(
-        applyManualSpeechDiacritics(
-          (text || '')
-            .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
-            .replace(/\s+/g, ' ')
-            .trim()
-        )
-      )
+      removeQuranicVersesForSpeech(forTts)
     )
   );
 }
