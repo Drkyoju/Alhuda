@@ -157,13 +157,18 @@ const DEMO_SPEECH = {
   },
 };
 
+// MUST mirror the runtime normalizeArabicForMatch() in app.js (incl. hamza /
+// ta-marbuta / alef-maqsura folding), otherwise phrase-map keys built here never
+// match at speak time and explanations lose their diacritics.
 const norm = (s) =>
   (s || '')
     .replace(/[\u064B-\u065F\u0670\u0610-\u061A]/g, '')
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
     .replace(/[«»"،.؛:!؟\-()[\]]/g, ' ')
     .replace(/\s+/g, ' ')
-    .trim()
-    .toLowerCase();
+    .trim();
 
 function hasWellFormedTashkeel(s) {
   const letters = (String(s).match(/[\u0621-\u064A\u0671]/g) || []).length;

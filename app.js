@@ -1981,19 +1981,64 @@ function buildFeedbackSpeechTextFromDom(root = document.getElementById('fb-exp')
   return text;
 }
 
+/**
+ * Return the verified fully-diacritized form of a raw field value by matching it
+ * against this question's diacritized fields (by id), regardless of which field
+ * it came from. Falls back to the manual/word diacritizer. This is what lets the
+ * feedback panel pronounce answers and explanations with correct harakat.
+ */
+function diacritizeFieldText(q, rawText) {
+  const raw = String(rawText || '').replace(/^«|»$/g, '').trim();
+  if (!raw) return '';
+  const fields = (typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID?.[q?.id]) || {};
+  const target = normalizeArabicForMatch(raw);
+  for (const v of Object.values(fields)) {
+    if (v && normalizeArabicForMatch(v) === target) return prepareArabicForSpeech(v);
+  }
+  return prepareArabicForSpeech(applyManualSpeechDiacritics(raw));
+}
+
+/**
+ * Ordered speech plan for the feedback panel that mirrors exactly what is shown:
+ * (wrong answer →) correct answer → citation. Quran citations are RECITED with
+ * Hudhaify; everything else is spoken with correct diacritics.
+ */
+function buildFeedbackSpeechPlan(q, wrongText) {
+  const plan = [];
+  const wrong = String(wrongText || '').trim();
+  if (wrong) plan.push({ type: 'tts', text: `إِجَابَتُكَ خَاطِئَةٌ، ${diacritizeFieldText(q, wrong)}` });
+  const correct = getCorrectAnswerText(q);
+  if (correct) plan.push({ type: 'tts', text: `الْإِجَابَةُ الصَّحِيحَةُ، ${diacritizeFieldText(q, correct)}` });
+  const verseKey = getPrimaryVerseKeyForQuestion(q);
+  const citeBody = (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '') || '';
+  const quoteIsAyah = typeof citationLooksLikeAyah === 'function'
+    ? citationLooksLikeAyah(citeBody, verseKey)
+    : false;
+  if (verseKey && (quoteIsAyah || !citeBody)) {
+    plan.push({ type: 'quran', verseKey });
+  } else if (citeBody) {
+    plan.push({ type: 'tts', text: diacritizeFieldText(q, citeBody) });
+  }
+  return plan;
+}
+
 async function speakFeedbackOnce(q, wrongText, btn) {
   if (!q) return;
   await ensureSpeechMapsLoaded();
-  // Prefer visible panel text so mic never reads content that isn't shown.
-  const fromDom = buildFeedbackSpeechTextFromDom();
-  const text = fromDom || buildFeedbackSpeechText(q, wrongText);
-  const clean = stripForSpeech(text);
-  if (!clean) return;
   stopSpeaking();
   const token = hybridSpeechToken;
   if (btn) btn.classList.add('speaking');
   try {
-    await speakTtsSegment(clean, btn, { keepBtnState: false });
+    const plan = buildFeedbackSpeechPlan(q, wrongText);
+    for (const seg of plan) {
+      if (token !== hybridSpeechToken) break;
+      if (seg.type === 'quran' && seg.verseKey) {
+        await playQuranRecitation(seg.verseKey, btn, { interruptAll: false });
+      } else if (seg.type === 'tts' && seg.text?.trim()) {
+        const clean = stripForSpeech(seg.text);
+        if (clean) await speakTtsSegment(clean, btn);
+      }
+    }
   } catch (e) {
     if (e.name !== 'AbortError') {
       console.warn('feedback tts:', e);
@@ -2001,6 +2046,7 @@ async function speakFeedbackOnce(q, wrongText, btn) {
     }
   } finally {
     if (token === hybridSpeechToken && btn) btn.classList.remove('speaking');
+    clearTtsAudio();
   }
 }
 
