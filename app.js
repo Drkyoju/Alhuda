@@ -1458,14 +1458,13 @@ function prefetchTtsText(text, voice = TTS_VOICE) {
   });
 }
 
-/** Prefetch question audio and resolve when the blob is ready (first speak = instant). */
+/** Prefetch question + options audio; resolve when both are ready (seamless Q→answers). */
 async function warmQuestionSpeech(q) {
   if (!q || navigator.onLine === false) return null;
   await ensureSpeechMapsLoaded();
   const { questionText, optionsText } = buildQuestionSpeechParts(q);
   const primaryVerse = getPrimaryVerseKeyForQuestion(q);
   if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
-  if (optionsText?.trim()) prefetchTtsText(optionsText);
   // Prefetch each option alone (answer 🔊 buttons use these, not the joined string).
   if (q.type === 'mc' && Array.isArray(q.a)) {
     q.a.forEach((opt, i) => {
@@ -1476,10 +1475,14 @@ async function warmQuestionSpeech(q) {
     prefetchTtsText('صَحّ');
     prefetchTtsText('خَطَأٌ');
   }
-  const clean = prepareTtsPayload(questionText);
-  if (!clean) return null;
+  const qClean = prepareTtsPayload(questionText);
+  const oClean = optionsText?.trim() ? prepareTtsPayload(optionsText) : '';
   try {
-    return await fetchTtsBlob(clean);
+    const jobs = [];
+    if (qClean) jobs.push(fetchTtsBlob(qClean));
+    if (oClean) jobs.push(fetchTtsBlob(oClean));
+    const [qBlob] = await Promise.all(jobs);
+    return qBlob || null;
   } catch {
     return null;
   }
@@ -3048,21 +3051,31 @@ function speakQuestion() {
       if (btn) btn.classList.add('speaking');
       try {
         const { questionText, optionsText } = buildQuestionSpeechParts(q);
-        // Warm options (+ mapped ayah) while the question audio plays / fetches.
-        if (optionsText.trim()) prefetchTtsText(optionsText);
+        const optionsClean = optionsText.trim() ? prepareTtsPayload(optionsText) : '';
+        // Fetch options audio in parallel with the question — zero gap when Q ends.
+        const optionsWarm = optionsClean
+          ? fetchTtsBlob(optionsClean).catch(() => null)
+          : null;
         const verseKey = getPrimaryVerseKeyForQuestion(q);
         if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
-        // 1) Question text with Azure (recites any ayah embedded inside it).
+
+        // 1) Question text (Azure). Any ayah embedded in the text is recited here.
         const recited = await playSpeechForText(questionText, q, btn, token);
         if (token !== hybridSpeechToken) return;
-        // 2) Mapped ayah shown with the question → recite it automatically with
-        //    Hudhaify (no تلاوة tap), unless it was already recited in step 1.
-        if (verseKey && !recited.has(verseKey)) {
-          await playQuranRecitation(verseKey, btn, { interruptAll: false });
+
+        // 2) Answer options immediately — do NOT insert Hudhaify between Q and answers
+        //    (that felt like a long "delay" before options on mapped-verse questions).
+        if (optionsClean) {
+          await optionsWarm;
+          if (token !== hybridSpeechToken) return;
+          await playSpeechForText(optionsText, q, btn, token);
           if (token !== hybridSpeechToken) return;
         }
-        // 3) Answer options with Azure.
-        if (optionsText.trim()) await playSpeechForText(optionsText, q, btn, token);
+
+        // 3) Mapped citation ayah after the full Q+answers pass (no تلاوة tap).
+        if (verseKey && !recited.has(verseKey)) {
+          await playQuranRecitation(verseKey, btn, { interruptAll: false });
+        }
       } finally {
         if (token === hybridSpeechToken && btn) btn.classList.remove('speaking');
         clearTtsAudio();
