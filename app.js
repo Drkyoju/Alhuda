@@ -1952,14 +1952,14 @@ function fieldHasEmbeddedAyah(text) {
 }
 
 /**
- * Choose speech text for one part. If it carries a real Quran ayah, keep the
- * ORIGINAL text so buildSpeechPlan can split it out for Hudhaify; otherwise use
- * the per-field diacritized form for correct Hamed / Azure pronunciation.
+ * Choose speech text for one part. Always prefer the diacritized per-field form.
+ * buildSpeechPlan can still split ﴿…﴾ / قال تعالى from diacritized text — returning
+ * the bare original here used to strip tashkeel whenever a parenthetical phrase
+ * (e.g. لا إله إلا الله) matched a known verse key.
  */
 function speechPart(q, field, raw) {
   const original = String(raw || '').trim();
   if (!original) return '';
-  if (fieldHasEmbeddedAyah(original)) return original;
   return speechTextFor(q, field, original);
 }
 
@@ -2556,7 +2556,7 @@ async function buildSpeechPlan(text, q) {
   // Only resolve mapped verse keys when the spoken text actually looks like it
   // embeds an ayah — otherwise this was a multi-second network stall on every Q.
   const needsVersePool = /قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿/.test(raw)
-    || findVerseKeysSync(raw).length > 0;
+    || (typeof parseSurahAyahReferences === 'function' && parseSurahAyahReferences(raw).length > 0);
   const fallbackKeys = (needsVersePool && q) ? await resolveAllVerseKeysForQuestion(q) : [];
   const pool = [...fallbackKeys];
   let lastIndex = 0;
@@ -2604,14 +2604,15 @@ async function buildSpeechPlan(text, q) {
 function textMayHaveQuranAyah(text, q) {
   const src = text || '';
   if (!src.trim()) return false;
-  // Tight gate only. The old isQuranicAyahText heuristic flagged normal
-  // questions/answers containing "الله" and forced a slow Quran.com search
-  // before any Azure audio started — multi-second silence on every speak.
+  // Explicit Quran citation markers only. Matching known short phrases inside
+  // parentheses (e.g. لا إله إلا الله → 47:19) forced a slow hybrid/API path
+  // and stripped diacritics on ordinary questions.
   if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿/.test(src)) {
     if (!isHadithQudsiText(src)) return true;
   }
-  if (findVerseKeysSync(src).length) return true;
-  if (extractAyahSnippets(src).some((s) => !!lookupKnownVerseKey(s))) return true;
+  if (typeof parseSurahAyahReferences === 'function' && parseSurahAyahReferences(src).length) {
+    return true;
+  }
   return false;
 }
 
