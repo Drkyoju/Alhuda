@@ -1318,7 +1318,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v8';
+const TTS_CACHE_VER = 'v10';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1690,15 +1690,8 @@ function sanitizeTtsText(text) {
     .replace(/رضي الله عنهما/g, ' رضي الله عنهما ')
     .replace(/رضي الله عنها/g, ' رضي الله عنها ')
     .replace(/رضي الله عنه/g, ' رضي الله عنه ')
-    .replace(/[:：]/g, '، ')
-    .replace(/[;؛]/g, '، ')
-    .replace(/[()\[\]{}«»"'“”‘’*_#<>=+~^`]/g, ' ')
-    .replace(/[\/\\|]/g, ' ')
-    .replace(/[–—]/g, '، ')
-    .replace(/\.{2,}/g, '، ')
-    .replace(/(^|\s)[-•·](\s|$)/g, ' ')
-    .replace(/\s+([،.؟!])/g, '$1')
-    .replace(/،(\s*،)+/g, '،')
+    // Skip punctuation entirely — never send to TTS (Arabic voices say «نقطة» etc.).
+    .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }

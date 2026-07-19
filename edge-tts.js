@@ -92,16 +92,15 @@ function buildSpeechConfigMessage() {
 function buildSsmlMessage(requestId, voice, text) {
   // Mild rate — match Azure naturalness; let neural handle comma prosody.
   const rate = '-3%';
-  const parts = String(text || '').split(/([.؟!]+)/);
-  let body = '';
-  for (const part of parts) {
-    if (!part) continue;
-    if (/^[.؟!]+$/.test(part)) {
-      body += escapeXml(part) + "<break time='180ms'/>";
-    } else {
-      body += escapeXml(removeInvalidXmlCharacters(part));
-    }
-  }
+  // Skip punctuation entirely — never speak «نقطة / علامة استفهام».
+  const body = escapeXml(
+    removeInvalidXmlCharacters(
+      String(text || '')
+        .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+    )
+  );
   const ssml =
     "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='ar-SA'>" +
     `<voice name='${voice}'>` +
