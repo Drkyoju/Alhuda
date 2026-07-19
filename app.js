@@ -1396,9 +1396,11 @@ function rememberTtsObjectUrl(key, objectUrl) {
 async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
   const key = ttsCacheKey(text, voice);
   if (ttsBlobMemoryCache.has(key)) {
-    const url = ttsBlobMemoryCache.get(key);
-    const res = await fetch(url);
-    return res.blob();
+    // Object URL already warmed — avoid a second round-trip through fetch().
+    try {
+      const res = await fetch(ttsBlobMemoryCache.get(key));
+      if (res.ok) return res.blob();
+    } catch { /* fall through and re-fetch */ }
   }
   const cached = await getTtsBlobFromIdb(key);
   if (cached?.size) {
@@ -1433,6 +1435,18 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
   } finally {
     ttsPrefetchInFlight.delete(key);
   }
+}
+
+/** Resolve a playable object URL for TTS text (memory → IDB → network). */
+async function ensureTtsObjectUrl(text, voice = TTS_VOICE, signal) {
+  const clean = String(text || '').trim();
+  if (!clean) return null;
+  const key = ttsCacheKey(clean, voice);
+  if (ttsBlobMemoryCache.has(key)) return ttsBlobMemoryCache.get(key);
+  const blob = await fetchTtsBlob(clean, voice, signal);
+  const url = ttsBlobMemoryCache.get(key) || URL.createObjectURL(blob);
+  if (!ttsBlobMemoryCache.has(key)) rememberTtsObjectUrl(key, url);
+  return url;
 }
 
 /** Single TTS text pipeline — prefetch and playback MUST share this or cache misses. */
@@ -2909,12 +2923,16 @@ function speakTextBrowser(text, btn) {
 }
 
 async function speakTextCloud(text, btn, voice = TTS_VOICE) {
-  ttsAbort = new AbortController();
-  const blob = await fetchTtsBlob(text, voice, ttsAbort.signal);
   const key = ttsCacheKey(text, voice);
-  ttsObjectUrl = ttsBlobMemoryCache.get(key) || URL.createObjectURL(blob);
-  if (!ttsBlobMemoryCache.has(key)) rememberTtsObjectUrl(key, ttsObjectUrl);
-  ttsAudio = new Audio(ttsObjectUrl);
+  // Hot path: play from memory URL immediately — no IDB / network / blob re-fetch.
+  let url = ttsBlobMemoryCache.get(key) || null;
+  if (!url) {
+    ttsAbort = new AbortController();
+    url = await ensureTtsObjectUrl(text, voice, ttsAbort.signal);
+  }
+  if (!url) throw new Error('empty audio');
+  ttsObjectUrl = url;
+  ttsAudio = new Audio(url);
   if (btn) btn.classList.add('speaking');
   await ttsAudio.play();
   await new Promise((resolve, reject) => {
@@ -2923,7 +2941,26 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE) {
   });
 }
 
-async function speakTtsSegment(text, btn, { keepBtnState = true } = {}) {
+/** Play a preloaded Audio element with no fetch gap (used to chain Q → answers). */
+async function playPreloadedAudio(audio, btn) {
+  if (!audio) return;
+  // Swap in without aborting in-flight prefetches (clearTtsAudio aborts ttsAbort).
+  if (ttsAudio) {
+    ttsAudio.onended = null;
+    ttsAudio.onerror = null;
+    ttsAudio.pause();
+  }
+  ttsAudio = audio;
+  ttsObjectUrl = audio.src || ttsObjectUrl;
+  if (btn) btn.classList.add('speaking');
+  await ttsAudio.play();
+  await new Promise((resolve, reject) => {
+    ttsAudio.onended = resolve;
+    ttsAudio.onerror = () => reject(new Error('audio error'));
+  });
+}
+
+async function speakTtsSegment(text, btn, { keepBtnState = true, clearAfter = true } = {}) {
   // Same pipeline as prefetchTtsText — shared cache key = instant when warmed.
   const clean = prepareTtsPayload(text);
   if (!clean) return;
@@ -2941,7 +2978,7 @@ async function speakTtsSegment(text, btn, { keepBtnState = true } = {}) {
       return;
     }
   }
-  clearTtsAudio(keepBtnState ? null : btn);
+  if (clearAfter) clearTtsAudio(keepBtnState ? null : btn);
 }
 
 /**
@@ -3051,29 +3088,61 @@ function speakQuestion() {
       if (btn) btn.classList.add('speaking');
       try {
         const { questionText, optionsText } = buildQuestionSpeechParts(q);
-        const optionsClean = optionsText.trim() ? prepareTtsPayload(optionsText) : '';
-        // Fetch options audio in parallel with the question — zero gap when Q ends.
-        const optionsWarm = optionsClean
-          ? fetchTtsBlob(optionsClean).catch(() => null)
-          : null;
+        const qClean = prepareTtsPayload(questionText);
+        const oClean = optionsText.trim() ? prepareTtsPayload(optionsText) : '';
         const verseKey = getPrimaryVerseKeyForQuestion(q);
         if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
 
-        // 1) Question text (Azure). Any ayah embedded in the text is recited here.
-        const recited = await playSpeechForText(questionText, q, btn, token);
+        // Wait for BOTH clips up front (usually already warmed). Preload the
+        // options Audio while the question plays → zero silence between them.
+        const [qUrl, oUrl] = await Promise.all([
+          qClean ? ensureTtsObjectUrl(qClean) : null,
+          oClean ? ensureTtsObjectUrl(oClean) : null,
+        ]);
         if (token !== hybridSpeechToken) return;
 
-        // 2) Answer options immediately — do NOT insert Hudhaify between Q and answers
-        //    (that felt like a long "delay" before options on mapped-verse questions).
-        if (optionsClean) {
-          await optionsWarm;
+        let optionsAudio = null;
+        if (oUrl) {
+          optionsAudio = new Audio(oUrl);
+          optionsAudio.preload = 'auto';
+          try { optionsAudio.load(); } catch { /* ignore */ }
+        }
+
+        // 1) Question — use hot memory URL path (no post-end fetch for answers).
+        if (qClean && textMayHaveQuranAyah(questionText, q)) {
+          const recited = await playSpeechForText(questionText, q, btn, token);
           if (token !== hybridSpeechToken) return;
-          await playSpeechForText(optionsText, q, btn, token);
+          if (optionsAudio) {
+            await playPreloadedAudio(optionsAudio, btn);
+            if (token !== hybridSpeechToken) return;
+          }
+          if (verseKey && !recited.has(verseKey)) {
+            await playQuranRecitation(verseKey, btn, { interruptAll: false });
+          }
+          return;
+        }
+
+        if (qUrl) {
+          ttsObjectUrl = qUrl;
+          ttsAudio = new Audio(qUrl);
+          if (btn) btn.classList.add('speaking');
+          await ttsAudio.play();
+          await new Promise((resolve, reject) => {
+            if (!ttsAudio) return resolve();
+            ttsAudio.onended = resolve;
+            ttsAudio.onerror = () => reject(new Error('audio error'));
+          });
+        }
+        if (token !== hybridSpeechToken) return;
+
+        // 2) Answers immediately from the preloaded element — no network, no gap.
+        if (optionsAudio) {
+          await playPreloadedAudio(optionsAudio, btn);
           if (token !== hybridSpeechToken) return;
         }
 
-        // 3) Mapped citation ayah after the full Q+answers pass (no تلاوة tap).
-        if (verseKey && !recited.has(verseKey)) {
+        // 3) Mapped citation ayah after the full Q+answers pass.
+        if (verseKey) {
           await playQuranRecitation(verseKey, btn, { interruptAll: false });
         }
       } finally {
