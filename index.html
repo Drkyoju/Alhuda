@@ -140,28 +140,28 @@
     </div>
   </div>
 
-  <!-- Game tutorial (first play) -->
+  <!-- Game tutorial (first play / demo) -->
   <div id="game-tutorial-overlay" class="game-tutorial-overlay" role="dialog" aria-modal="true" aria-labelledby="game-tutorial-title" aria-hidden="true">
     <div class="onb-card gt-card">
-      <h3 id="game-tutorial-title" class="sr-only">تعليمات اللعب</h3>
+      <h3 id="game-tutorial-title" class="sr-only">تعليمات سريعة</h3>
       <div class="gt-slide active">
+        <div class="onb-icon">🔊</div>
+        <h3>الصوت يقرأ معك</h3>
+        <p>اضغط/ي 🔊 أعلى السؤال. الترتيب: <strong>السؤال</strong> ثم <strong>الآية</strong> (إن وُجدت) ثم <strong>الإجابات</strong>.</p>
+      </div>
+      <div class="gt-slide">
         <div class="onb-icon">📖</div>
-        <h3>اقرأ/ي السؤال</h3>
-        <p>السؤال كبير وواضح. اضغط/ي 🔊 لتشغيل الصوت أو 🔇 لإيقافه.</p>
+        <h3>الآية تحت السؤال</h3>
+        <p>إذا ظهرت آية قرآنية فهي تُتلى بصوت الحذيفي تلقائياً بعد السؤال — مو جزء من خيارات الإجابة.</p>
       </div>
       <div class="gt-slide">
-        <div class="onb-icon">👆</div>
-        <h3>اختر/ي إجابة</h3>
-        <p>اضغط/ي الإجابة مباشرة. راقب/ي الساعة الرملية ⏳ — الوقت محدود!</p>
-      </div>
-      <div class="gt-slide">
-        <div class="onb-icon">⭐</div>
-        <h3>اجمع/ي نقاطاً!</h3>
-        <p>كل إجابة صحيحة تقرّبك من النجوم والمرتبة الأعلى 🏆</p>
+        <div class="onb-icon">✅</div>
+        <h3>اختر ثم تابع</h3>
+        <p>اضغط/ي إجابة، راجع/ي النتيجة، ثم اضغط/ي <strong>متابعة ←</strong> للسؤال التالي.</p>
       </div>
       <div class="onb-dots gt-dots"><span class="onb-dot gt-dot on"></span><span class="onb-dot gt-dot"></span><span class="onb-dot gt-dot"></span></div>
       <button class="btn btn-gold btn-xl" onclick="gameTutorialNext()">التالي →</button>
-      <button class="btn btn-sm btn-white" onclick="closeGameTutorial()" style="margin-top:8px;width:100%;">فهمت! ✅</button>
+      <button class="btn btn-sm btn-white" onclick="closeGameTutorial()" style="margin-top:8px;width:100%;">فهمت! ابدأ/ي ✅</button>
     </div>
   </div>
 
@@ -630,12 +630,13 @@
   </div>
 
 <script src="citation-canonical.js"></script>
-<script src="question-verse-map.js"></script>
-<script src="ayah-snippet-map.js"></script>
-<script src="demo-questions-bundle.js"></script>
-<script src="version.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="app.js?v=128" defer></script>
+  <script src="question-verse-map.js"></script>
+  <script src="ayah-snippet-map.js"></script>
+  <script src="speech-pronunciation-lexicon.js"></script>
+  <script src="demo-questions-bundle.js"></script>
+  <script src="version.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="app.js?v=129" defer></script>
 <script src="auth.js?v=11" defer></script>
 <script src="enhancements.js?v=14" defer></script>
 <script src="platform.js?v=13" defer></script>

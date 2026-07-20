@@ -429,11 +429,14 @@ function setFontPreset(size) {
 }
 
 function showGameTutorialIfNeeded() {
-  if (state.demoMode) return; // demo: skip tutorial for faster first answer
-  if (localStorage.getItem('gameTutorialDone')) return;
+  // Show for demo and full play — many first-timers skip understanding voice/ayah/continue.
+  if (localStorage.getItem('alhudaTutorialV2') === '1') return;
   if (sessionStorage.getItem('skipGameTutorial')) return;
   const ov = document.getElementById('game-tutorial-overlay');
   if (!ov) return;
+  // Reset to first slide each first-open.
+  ov.querySelectorAll('.gt-slide').forEach((s, i) => s.classList.toggle('active', i === 0));
+  ov.querySelectorAll('.gt-dot').forEach((d, i) => d.classList.toggle('on', i === 0));
   ov.classList.add('open');
   ov.setAttribute('aria-hidden', 'false');
   trapFocusInOverlay(ov);
@@ -453,6 +456,7 @@ function gameTutorialNext() {
 }
 
 function closeGameTutorial() {
+  localStorage.setItem('alhudaTutorialV2', '1');
   localStorage.setItem('gameTutorialDone', '1');
   const ov = document.getElementById('game-tutorial-overlay');
   if (ov) {
@@ -1318,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v13';
+const TTS_CACHE_VER = 'v14';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1408,6 +1412,10 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
     rememberTtsObjectUrl(key, objectUrl);
     return cached;
   }
+  // Offline: play from memory/IDB only — never turn voice off globally.
+  if (navigator.onLine === false) {
+    throw new Error('tts offline cache miss');
+  }
   if (ttsPrefetchInFlight.has(key)) return ttsPrefetchInFlight.get(key);
 
   const work = (async () => {
@@ -1476,13 +1484,14 @@ function prepareTtsPayload(text) {
   if (!cleaned) return '';
   // Hadith: speak the curated wording as-is — do not rewrite tokens via word map.
   if (isHadithPassage(cleaned)) {
-    return sanitizeTtsText(prepareArabicForSpeech(cleaned));
+    return sanitizeTtsText(prepareArabicForSpeech(applyPronunciationLexicon(cleaned)));
   }
-  // Normal Q&A / explanation: full diacritics + fill any leftover bare words.
+  // Normal Q&A / explanation: full diacritics + curated lexicon + word map fill.
   let forTts = hasWellFormedTashkeel(cleaned)
     ? cleaned
     : applyManualSpeechDiacritics(cleaned);
   forTts = applyWordDiacritics(forTts);
+  forTts = applyPronunciationLexicon(forTts);
   return sanitizeTtsText(prepareArabicForSpeech(forTts));
 }
 
@@ -1527,27 +1536,31 @@ async function warmQuestionSpeech(q) {
 }
 
 async function prefetchHybridSpeechForQuestion(q) {
-  if (!q || navigator.onLine === false) return;
+  if (!q) return;
   try {
     await ensureSpeechMapsLoaded();
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
     const { questionText, optionsText } = buildQuestionSpeechParts(q);
-    // Only the two clips speakQuestion needs — avoid 429 from prefetching every option + exp.
+    // Warm the exact clips speakQuestion needs (works offline from IDB too).
     if (questionText?.trim()) prefetchTtsText(questionText);
     if (optionsText?.trim()) prefetchTtsText(optionsText);
   } catch (e) {
     console.warn('hybrid prefetch:', e);
-    prefetchTtsText(q.q);
+    if (q.q) prefetchTtsText(q.q);
   }
 }
 
 function prefetchUpcomingTts(fromIdx = state.idx) {
-  // Only warm current + next — prefetching 5 ahead caused Azure 429 and silent skips.
-  const slice = (state.questions || []).slice(Math.max(0, fromIdx | 0), (fromIdx | 0) + 2);
-  for (const q of slice) {
+  // Warm current + next two — enough for seamless continue without Azure 429 storms.
+  const start = Math.max(0, fromIdx | 0);
+  const qs = state.questions || [];
+  for (let i = start; i < start + 3 && i < qs.length; i++) {
+    const q = qs[i];
     if (!q) continue;
     void prefetchHybridSpeechForQuestion(q);
+    // Fully resolve blobs for current + immediate next only.
+    if (i <= start + 1) void warmQuestionSpeech(q);
   }
 }
 
@@ -1816,25 +1829,54 @@ function getSortedManualSpeech() {
 }
 
 function ensureSpeechMapsLoaded() {
-  if (typeof window !== 'undefined' && window.SPEECH_PHRASE_MAP) return Promise.resolve();
+  if (typeof window !== 'undefined' && window.SPEECH_MAPS_FULL) return Promise.resolve();
   if (_speechMapsPromise) return _speechMapsPromise;
-  _speechMapsPromise = new Promise((resolve) => {
-    const existing = document.querySelector('script[data-speech-maps]');
-    if (existing) {
-      existing.addEventListener('load', () => resolve());
-      existing.addEventListener('error', () => resolve());
+  _speechMapsPromise = (async () => {
+    const ver = (typeof window !== 'undefined' && window.ALHUDA_ASSETS?.sw) || 87;
+    // 1) Tiny core (~45KB) — enough for demo + curated lexicon quality.
+    if (!window.SPEECH_BY_QUESTION_ID) {
+      await loadSpeechScript(`speech-diacritics-core.js?v=${ver}`, 'speech-maps-core');
+    }
+    // 2) Full map idle — upgrades word/phrase coverage without blocking first 🔊.
+    const idle = typeof requestIdleCallback === 'function'
+      ? (fn) => requestIdleCallback(fn, { timeout: 4000 })
+      : (fn) => setTimeout(fn, 1800);
+    idle(() => {
+      if (window.SPEECH_MAPS_FULL) return;
+      void loadSpeechScript(`speech-diacritics-map.js?v=${ver}`, 'speech-maps-full').then(() => {
+        window.SPEECH_MAPS_FULL = true;
+      });
+    });
+  })();
+  return _speechMapsPromise;
+}
+
+function loadSpeechScript(src, marker) {
+  return new Promise((resolve) => {
+    if (document.querySelector(`script[data-${marker}]`)) {
+      resolve();
       return;
     }
-    const ver = (typeof window !== 'undefined' && window.ALHUDA_ASSETS?.sw) || 87;
     const s = document.createElement('script');
-    s.src = `speech-diacritics-map.js?v=${ver}`;
+    s.src = src;
     s.async = true;
-    s.dataset.speechMaps = '1';
+    s.dataset[marker.replace(/-([a-z])/g, (_, c) => c.toUpperCase())] = '1';
+    // data-speech-maps-core style
+    s.setAttribute(`data-${marker}`, '1');
     s.onload = () => resolve();
     s.onerror = () => resolve();
     document.head.appendChild(s);
   });
-  return _speechMapsPromise;
+}
+
+/** Curated lexicon wins over auto word-map for problem words (الله، التوحيد…). */
+function applyPronunciationLexicon(text) {
+  const lex = (typeof window !== 'undefined' && window.SPEECH_PRON_LEXICON) || null;
+  if (!lex) return text;
+  return String(text).replace(SPEECH_WORD_RE, (tok) => {
+    const bare = stripHarakat(tok);
+    return lex[bare] || tok;
+  });
 }
 
 function stripHarakat(s) {
@@ -1843,14 +1885,17 @@ function stripHarakat(s) {
 
 /** Word-level diacritization fallback — covers every word using the generated map.
  *  Never overwrite a token that already has harakat: Gemini / per-question fields
- *  are authoritative (e.g. عُبِدَ must not become عَبْد from the bare-word map). */
+ *  are authoritative (e.g. عُبِدَ must not become عَبْد from the bare-word map).
+ *  Lexicon is applied separately and may override. */
 function applyWordDiacritics(text) {
   const wordMap = (typeof window !== 'undefined' && window.SPEECH_WORD_MAP) || null;
-  if (!wordMap) return text;
+  const lex = (typeof window !== 'undefined' && window.SPEECH_PRON_LEXICON) || null;
+  if (!wordMap && !lex) return text;
   return String(text).replace(SPEECH_WORD_RE, (tok) => {
-    if (ARABIC_HARAKAT_RE.test(tok)) return tok;
     const bare = stripHarakat(tok);
-    return wordMap[bare] || tok;
+    if (lex?.[bare]) return lex[bare];
+    if (ARABIC_HARAKAT_RE.test(tok)) return tok;
+    return (wordMap && wordMap[bare]) || tok;
   });
 }
 
@@ -3162,7 +3207,7 @@ function speakQuestion() {
   if (!q?.q || !voiceOn) return;
   if (navigator.onLine === false) {
     applyOfflineVoicePolicy();
-    return;
+    // Continue — play from memory/IDB cache when available.
   }
   const btn = document.getElementById('btn-speak-question');
   const askIdx = state.idx;
@@ -3187,6 +3232,13 @@ function speakQuestion() {
             return null;
           })
           : Promise.resolve(null);
+
+        // Warm next question while this one plays.
+        const next = state.questions[askIdx + 1];
+        if (next) {
+          void prefetchHybridSpeechForQuestion(next);
+          void warmQuestionSpeech(next);
+        }
 
         // Order for every question: 1) سؤال  2) آية إن وُجدت  3) الإجابات
         const recited = new Set();
@@ -3271,16 +3323,11 @@ function speakQuestion() {
 
 function applyOfflineVoicePolicy() {
   if (navigator.onLine !== false) return;
-  if (voiceOn) {
-    voiceOn = false;
-    localStorage.setItem('voiceOn', 'false');
-    stopSpeaking();
-    updateVoiceUI();
-  }
+  // Keep voiceOn — cached clips in IndexedDB/memory still play offline.
   if (sessionStorage.getItem('offlineVoiceNoted') === '1') return;
   sessionStorage.setItem('offlineVoiceNoted', '1');
   if (typeof showToast === 'function') {
-    showToast('الصوت والتلاوة تحتاج اتصالاً — تم إيقاف القراءة مؤقتاً', 'err');
+    showToast('بدون نت: الصوت يعمل من الكاش إن سبق تحميله', 'ok');
   }
 }
 
