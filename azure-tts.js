@@ -54,7 +54,7 @@ function normalizeAllahForTts(text) {
   // لله
   s = s.replace(
     new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre) => `${pre}لِلَّهِ`
+    (_, pre) => `${pre}\u0644\u0650\u0644\u0651\u064E\u0647\u0650`
   );
   // bare الله / اللَّه / ٱللَّه… — don't eat the start of اللهم (harakat + م)
   s = s.replace(

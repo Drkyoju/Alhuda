@@ -1714,7 +1714,7 @@ function normalizeAllahForTts(text) {
   });
   s = s.replace(
     new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre) => `${pre}لِلَّهِ`
+    (_, pre) => `${pre}\u0644\u0650\u0644\u0651\u064E\u0647\u0650`
   );
   s = s.replace(
     new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
