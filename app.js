@@ -5404,23 +5404,12 @@ function updateReviewButtons() {
   });
 }
 
-function updateInRoundReviewBtn(forceShow) {
-  const btn = document.getElementById('btn-review-in-round');
-  if (!btn) return;
-  const show = forceShow && state.wrongLog.length > 0 && !state.gameEnded;
-  btn.style.display = show ? '' : 'none';
-  if (show) {
-    const n = state.wrongLog.length;
-    btn.textContent = n === 1
-      ? '📋 راجع الخطأ'
-      : `📋 راجع الأخطاء (${arabicNum(n)})`;
-  }
+function updateInRoundReviewBtn(_forceShow) {
+  // Mid-round review removed — mistakes are reviewed only at session end.
 }
 
 function startInRoundReview() {
-  if (!state.wrongLog.length) return;
-  // Keep game state; return to the same question feedback after review.
-  startReview('game');
+  // no-op: use end-of-session «مراجعة الأخطاء» instead
 }
 
 function startReview(from) {
@@ -5481,12 +5470,9 @@ function exitReview() {
   const ret = state.reviewReturn || 'results';
   show(ret);
   if (ret === 'game') {
-    // Restore in-round feedback UI after mid-round review.
     const fb = document.getElementById('feedback');
     if (fb?.classList.contains('show')) {
       setFeedbackPanelOpen(true);
-      updateInRoundReviewBtn(true);
-      updateFeedbackSpeakBtn(true);
     }
   }
 }
