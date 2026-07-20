@@ -1318,7 +1318,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v11';
+const TTS_CACHE_VER = 'v12';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1699,27 +1699,26 @@ function sanitizeTtsText(text) {
 }
 
 /**
- * Force shadda on لام in الله so Azure says Allāh (not a flat «أله»).
- * Also normalizes اللهم / لله / بالله…
+ * Rewrite الله-family to Quranic wasla + shadda (ٱللَّهُ) for clearer Azure TTS.
+ * Must stay in sync with azure-tts.js normalizeAllahForTts.
  */
 function normalizeAllahForTts(text) {
   const H = '[\u064B-\u065F\u0670]*';
+  const allah = (v) => `\u0671\u0644\u0644\u0651\u064E\u0647${v && /[\u064E\u064F\u0650]/.test(v) ? v : '\u064F'}`;
   let s = String(text || '');
-  s = s.replace(new RegExp(`ال${H}ل${H}ه${H}م${H}`, 'g'), 'اللَّهُمَّ');
-  s = s.replace(new RegExp(`([بوفكت])ال${H}ل${H}ه(${H})`, 'g'), (_, p, end) => {
-    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '';
-    return `${p}اللَّه${e}`;
+  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), '\u0671\u0644\u0644\u0651\u064E\u0647\u064F\u0645\u0651\u064E');
+  s = s.replace(new RegExp(`([بوفكت])[اأإآٱ]?${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p, end) => {
+    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '\u0650';
+    const join = p === 'ب' ? 'بِ' : p === 'و' ? 'وَ' : p === 'ف' ? 'فَ' : p === 'ت' ? 'تَ' : 'كَ';
+    return `${join}${allah(e)}`;
   });
   s = s.replace(
     new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre, end) => {
-      const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || 'ِ';
-      return `${pre}لِلَّه${e}`;
-    }
+    (_, pre) => `${pre}لِلَّهِ`
   );
-  s = s.replace(new RegExp(`ال${H}ل${H}ه(${H})(?![\\u0621-\\u064Aم])`, 'g'), (_, end) => {
-    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '';
-    return `اللَّه${e}`;
+  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064Aم])`, 'g'), (_, end) => {
+    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '\u064F';
+    return allah(e);
   });
   return s;
 }
