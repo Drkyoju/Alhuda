@@ -39,7 +39,6 @@ test('mobile demo: readable question and compact citation UI', async ({ page }) 
 
   await page.locator('.ans-btn').first().click();
   await expect(page.locator('#game .feedback.show')).toBeVisible({ timeout: 5000 });
-  await expect(page.locator('#btn-speak-feedback')).toBeVisible();
 
   // Voice button sits upper-left of the question on iPhone layout
   const voiceBtn = page.locator('#btn-speak-question');

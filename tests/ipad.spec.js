@@ -45,7 +45,6 @@ test('iPad demo: two-column answers and readable voice layout', async ({ page })
 
   await page.locator('.ans-btn').first().click();
   await expect(page.locator('#game .feedback.show')).toBeVisible({ timeout: 5000 });
-  await expect(page.locator('#btn-speak-feedback')).toBeVisible();
 
   const voiceBtn = page.locator('#btn-speak-question');
   await expect(voiceBtn).toBeVisible();

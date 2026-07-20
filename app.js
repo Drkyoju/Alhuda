@@ -2176,9 +2176,11 @@ async function speakFeedbackOnce(q, wrongText, btn) {
 }
 
 function onFeedbackSpeakerClick() {
-  const q = state.questions?.[state.idx];
-  if (!q) return;
-  void speakFeedbackOnce(q, state.lastFeedbackWrong || '', document.getElementById('btn-speak-feedback'));
+  // Feedback speak button removed — keep stub for any leftover onclick refs.
+}
+
+function updateFeedbackSpeakBtn(_show) {
+  // no-op: feedback panel no longer has a speak button
 }
 
 /* ── Quran recitation (الحذيفي فقط — عبر بروكسي Cloudflare + prefetch) ── */
@@ -3292,13 +3294,6 @@ function onQuestionSpeakerClick() {
   localStorage.setItem('voiceOn', 'true');
   updateVoiceUI();
   speakQuestion();
-}
-
-function updateFeedbackSpeakBtn(show) {
-  const btn = document.getElementById('btn-speak-feedback');
-  if (!btn) return;
-  btn.style.display = show ? 'inline-flex' : 'none';
-  btn.classList.remove('speaking');
 }
 
 function updateVoiceUI() {
