@@ -56,11 +56,14 @@ function normalizeAllahForTts(text) {
     new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
     (_, pre) => `${pre}لِلَّهِ`
   );
-  // bare الله / اللَّه / ٱللَّه…
-  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064Aم])`, 'g'), (_, end) => {
-    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '\u064F';
-    return allahSpoken(e);
-  });
+  // bare الله / اللَّه / ٱللَّه… — don't eat the start of اللهم (harakat + م)
+  s = s.replace(
+    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
+    (_, end) => {
+      const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '\u064F';
+      return allahSpoken(e);
+    }
+  );
   return s;
 }
 

@@ -1318,7 +1318,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v12';
+const TTS_CACHE_VER = 'v13';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1716,10 +1716,13 @@ function normalizeAllahForTts(text) {
     new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
     (_, pre) => `${pre}لِلَّهِ`
   );
-  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064Aم])`, 'g'), (_, end) => {
-    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '\u064F';
-    return allah(e);
-  });
+  s = s.replace(
+    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
+    (_, end) => {
+      const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '\u064F';
+      return allah(e);
+    }
+  );
   return s;
 }
 
