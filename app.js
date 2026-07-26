@@ -1322,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v14';
+const TTS_CACHE_VER = 'v15';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1712,29 +1712,35 @@ function sanitizeTtsText(text) {
 }
 
 /**
- * Rewrite الله-family to Quranic wasla + shadda (ٱللَّهُ) for clearer Azure TTS.
- * Must stay in sync with azure-tts.js normalizeAllahForTts.
+ * Rewrite الله-family to TTS-friendly spellings (اللاه / للاه…).
+ * Avoid ٱ wasla — Azure Neural often misreads it. Must match azure-tts.js.
  */
 function normalizeAllahForTts(text) {
   const H = '[\u064B-\u065F\u0670]*';
-  const allah = (v) => `\u0671\u0644\u0644\u0651\u064E\u0647${v && /[\u064E\u064F\u0650]/.test(v) ? v : '\u064F'}`;
+  const ALLAH = 'اللاه';
+  const ALLAHUMMA = 'اللهم';
+  const LILLAH = 'للاه';
+  const BILLAH = 'باللاه';
+  const WALLAH = 'واللاه';
+  const FALLAH = 'فاللاه';
+  const TALLAH = 'تاللاه';
+  const KALLAH = 'كاللاه';
   let s = String(text || '');
-  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), '\u0671\u0644\u0644\u0651\u064E\u0647\u064F\u0645\u0651\u064E');
-  s = s.replace(new RegExp(`([بوفكت])[اأإآٱ]?${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p, end) => {
-    const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '\u0650';
-    const join = p === 'ب' ? 'بِ' : p === 'و' ? 'وَ' : p === 'ف' ? 'فَ' : p === 'ت' ? 'تَ' : 'كَ';
-    return `${join}${allah(e)}`;
+  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);
+  s = s.replace(new RegExp(`([بوفكت])[اأإآٱ]?${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
+    if (p === 'ب') return BILLAH;
+    if (p === 'و') return WALLAH;
+    if (p === 'ف') return FALLAH;
+    if (p === 'ت') return TALLAH;
+    return KALLAH;
   });
   s = s.replace(
     new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre) => `${pre}\u0644\u0650\u0644\u0651\u064E\u0647\u0650`
+    (_, pre) => `${pre}${LILLAH}`
   );
   s = s.replace(
     new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
-    (_, end) => {
-      const e = (end || '').match(/[\u064E\u064F\u0650]/)?.[0] || '\u064F';
-      return allah(e);
-    }
+    () => ALLAH
   );
   return s;
 }

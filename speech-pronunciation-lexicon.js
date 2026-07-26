@@ -4,16 +4,16 @@
  * Keep bare (undiacritized) keys only.
  */
 window.SPEECH_PRON_LEXICON = {
-  /* الله — wasla + shadda; final vowel helps Azure Neural */
-  الله: 'ٱللَّهُ',
-  اللهم: 'ٱللَّهُمَّ',
-  لله: 'لِلَّهِ',
-  بالله: 'بِٱللَّهِ',
-  والله: 'وَٱللَّهِ',
-  فالله: 'فَٱللَّهِ',
-  تالله: 'تَٱللَّهِ',
-  كالله: 'كَٱللَّهِ',
-  باللهه: 'بِٱللَّهِ',
+  /* الله-family — TTS-only spellings (extra ألف) so Azure says Allāh / lillāh.
+     Display text is unchanged; only the speech pipeline uses these. */
+  الله: 'اللاه',
+  اللهم: 'اللهم',
+  لله: 'للاه',
+  بالله: 'باللاه',
+  والله: 'واللاه',
+  فالله: 'فاللاه',
+  تالله: 'تاللاه',
+  كالله: 'كاللاه',
 
   التوحيد: 'التَّوْحِيدُ',
   توحيد: 'تَوْحِيدُ',
