@@ -42,6 +42,7 @@ test.describe('accessibility', () => {
 
   test('confirm overlay is accessible', async ({ page }) => {
     await page.addInitScript(() => {
+      localStorage.setItem('alhudaTutorialV2', '1');
       localStorage.setItem('gameTutorialDone', '1');
       localStorage.setItem('onboardingDone', '1');
       localStorage.setItem('voiceOn', 'false');
