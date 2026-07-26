@@ -1740,9 +1740,13 @@ function normalizeAllahForTts(text) {
     new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
     (_, pre) => `${pre}${LILLAH}`
   );
+  // bare الله — only at token start (do not re-write inside بِاللَّهِ / وَاللَّهِ)
   s = s.replace(
-    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
-    () => ALLAH
+    new RegExp(
+      `(^|[^\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`,
+      'g'
+    ),
+    (_, pre) => `${pre}${ALLAH}`
   );
   // Scrub legacy whole-token hacks only — never touch للاهتداء etc.
   const scrubHack = (hack, repl) => {

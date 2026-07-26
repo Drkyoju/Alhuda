@@ -114,10 +114,13 @@ function normalizeAllahForTts(text) {
     (_, pre) => `${pre}${LILLAH}`
   );
 
-  // bare الله / اللّٰه / ٱللَّه (no optional middle alef — that ate «اللاه» hacks inconsistently)
+  // bare الله — only at token start (do not re-write inside بِاللَّهِ / وَاللَّهِ)
   s = s.replace(
-    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
-    () => ALLAH
+    new RegExp(
+      `(^|[^\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`,
+      'g'
+    ),
+    (_, pre) => `${pre}${ALLAH}`
   );
   // Scrub legacy whole-token hacks only — never touch للاهتداء.
   const scrubHack = (hack, repl) => {
