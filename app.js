@@ -1322,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v16';
+const TTS_CACHE_VER = 'v17';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1740,17 +1740,23 @@ function normalizeAllahForTts(text) {
     (_, pre) => `${pre}${LILLAH}`
   );
   s = s.replace(
-    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}(?:ا)?ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
+    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
     () => ALLAH
   );
-  // Scrub legacy bad TTS hacks from older clients/cache keys.
-  s = s.replace(/اللاه/g, ALLAH);
-  s = s.replace(/للاه/g, LILLAH);
-  s = s.replace(/باللاه/g, BILLAH);
-  s = s.replace(/واللاه/g, WALLAH);
-  s = s.replace(/فاللاه/g, FALLAH);
-  s = s.replace(/تاللاه/g, TALLAH);
-  s = s.replace(/كاللاه/g, KALLAH);
+  // Scrub legacy whole-token hacks only — never touch للاهتداء etc.
+  const scrubHack = (hack, repl) => {
+    s = s.replace(
+      new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
+      (_, p) => `${p}${repl}`
+    );
+  };
+  scrubHack('اللاه', ALLAH);
+  scrubHack('للاه', LILLAH);
+  scrubHack('باللاه', BILLAH);
+  scrubHack('واللاه', WALLAH);
+  scrubHack('فاللاه', FALLAH);
+  scrubHack('تاللاه', TALLAH);
+  scrubHack('كاللاه', KALLAH);
   return s;
 }
 

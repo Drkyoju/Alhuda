@@ -106,19 +106,25 @@ function normalizeAllahForTts(text) {
     (_, pre) => `${pre}${LILLAH}`
   );
 
-  // bare الله (and اللّٰه / ٱللَّه / اللاله leftovers from older builds)
+  // bare الله / اللّٰه / ٱللَّه (no optional middle alef — that ate «اللاه» hacks inconsistently)
   s = s.replace(
-    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}(?:ا)?ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
+    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
     () => ALLAH
   );
-  // catch legacy TTS hack «اللاه» if still in cached client text
-  s = s.replace(/اللاه/g, ALLAH);
-  s = s.replace(/للاه/g, LILLAH);
-  s = s.replace(/باللاه/g, BILLAH);
-  s = s.replace(/واللاه/g, WALLAH);
-  s = s.replace(/فاللاه/g, FALLAH);
-  s = s.replace(/تاللاه/g, TALLAH);
-  s = s.replace(/كاللاه/g, KALLAH);
+  // Scrub legacy whole-token hacks only — never touch للاهتداء.
+  const scrubHack = (hack, repl) => {
+    s = s.replace(
+      new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
+      (_, p) => `${p}${repl}`
+    );
+  };
+  scrubHack('اللاه', ALLAH);
+  scrubHack('للاه', LILLAH);
+  scrubHack('باللاه', BILLAH);
+  scrubHack('واللاه', WALLAH);
+  scrubHack('فاللاه', FALLAH);
+  scrubHack('تاللاه', TALLAH);
+  scrubHack('كاللاه', KALLAH);
 
   return s;
 }
