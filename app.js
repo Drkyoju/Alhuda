@@ -1322,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v17';
+const TTS_CACHE_VER = 'v18';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1712,19 +1712,20 @@ function sanitizeTtsText(text) {
 }
 
 /**
- * Rewrite الله-family to dagger-alef orthography (اللّٰه / لِلّٰه / بِاللّٰه).
- * Do NOT use fake «اللاه» — that made Azure sound worse. Sync with azure-tts.js.
+ * Rewrite الله-family for Azure TTS: فتحة + حركة إعراب (اللَّهُ / لِلَّهِ).
+ * Avoid ألف خنجرية — Hamed often mangles لِلّٰه. Never use fake «اللاه».
+ * Sync with azure-tts.js.
  */
 function normalizeAllahForTts(text) {
   const H = '[\u064B-\u065F\u0670]*';
-  const ALLAH = '\u0627\u0644\u0644\u0651\u0670\u0647'; // اللّٰه
+  const ALLAH = '\u0627\u0644\u0644\u0651\u064E\u0647\u064F'; // اللَّهُ
   const ALLAHUMMA = '\u0627\u0644\u0644\u0651\u064E\u0647\u064F\u0645\u0651\u064E';
-  const LILLAH = '\u0644\u0650\u0644\u0651\u0670\u0647';
-  const BILLAH = '\u0628\u0650\u0627\u0644\u0644\u0651\u0670\u0647';
-  const WALLAH = '\u0648\u064E\u0627\u0644\u0644\u0651\u0670\u0647';
-  const FALLAH = '\u0641\u064E\u0627\u0644\u0644\u0651\u0670\u0647';
-  const TALLAH = '\u062A\u064E\u0627\u0644\u0644\u0651\u0670\u0647';
-  const KALLAH = '\u0643\u064E\u0627\u0644\u0644\u0651\u0670\u0647';
+  const LILLAH = '\u0644\u0650\u0644\u0651\u064E\u0647\u0650'; // لِلَّهِ
+  const BILLAH = '\u0628\u0650\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
+  const WALLAH = '\u0648\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
+  const FALLAH = '\u0641\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
+  const TALLAH = '\u062A\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
+  const KALLAH = '\u0643\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
   let s = String(text || '');
   s = s.replace(/\uFDF2/g, ALLAH); // ﷲ ligature
   s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);

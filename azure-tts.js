@@ -21,30 +21,33 @@ function escapeXml(text) {
 }
 
 /**
- * Correct Arabic orthography for Allāh (NOT fake «اللاه»).
- * ا + ل + ل + شدة + ألف خنجرية + ه  →  اللّٰه
- * The dagger alef (U+0670) is what lengthens ā; wasla/extra-alef hacks break Hamed.
+ * TTS orthography for Allāh-family (NOT fake «اللاه»).
+ * Prefer فتحة on the geminated لام instead of ألف خنجرية (U+0670):
+ * HamedNeural often mangles dagger-alef forms like لِلّٰه.
+ * Case endings help the neural voice lock the long ā: اللَّهُ / لِلَّهِ.
  */
-const ALLAH = '\u0627\u0644\u0644\u0651\u0670\u0647'; // اللّٰه
+const ALLAH = '\u0627\u0644\u0644\u0651\u064E\u0647\u064F'; // اللَّهُ
 const ALLAHUMMA = '\u0627\u0644\u0644\u0651\u064E\u0647\u064F\u0645\u0651\u064E'; // اللَّهُمَّ
-const LILLAH = '\u0644\u0650\u0644\u0651\u0670\u0647'; // لِلّٰه
-const BILLAH = '\u0628\u0650\u0627\u0644\u0644\u0651\u0670\u0647'; // بِاللّٰه
-const WALLAH = '\u0648\u064E\u0627\u0644\u0644\u0651\u0670\u0647'; // وَاللّٰه
-const FALLAH = '\u0641\u064E\u0627\u0644\u0644\u0651\u0670\u0647'; // فَاللّٰه
-const TALLAH = '\u062A\u064E\u0627\u0644\u0644\u0651\u0670\u0647'; // تَاللّٰه
-const KALLAH = '\u0643\u064E\u0627\u0644\u0644\u0651\u0670\u0647'; // كَاللّٰه
+const LILLAH = '\u0644\u0650\u0644\u0651\u064E\u0647\u0650'; // لِلَّهِ
+const BILLAH = '\u0628\u0650\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // بِاللَّهِ
+const WALLAH = '\u0648\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // وَاللَّهِ
+const FALLAH = '\u0641\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // فَاللَّهِ
+const TALLAH = '\u062A\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // تَاللَّهِ
+const KALLAH = '\u0643\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // كَاللَّهِ
 
 /** Unicode ligature ﷲ — some neural voices special-case this glyph. */
 const ALLAH_LIGATURE = '\uFDF2';
 
-/** Spoken SSML body — punctuation stripped; Allah tokens slightly slowed. */
+/** Spoken SSML body — punctuation stripped; Allah tokens slowed + lightly emphasized. */
 function textToSsmlBody(text) {
   const clean = String(text || '')
     .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 
-  // Match normalized Allah-family forms (including ligature).
+  // Match normalized Allah-family forms (including ligature + legacy dagger variants).
+  const daggerAllah = '\u0627\u0644\u0644\u0651\u0670\u0647';
+  const daggerLillah = '\u0644\u0650\u0644\u0651\u0670\u0647';
   const re = new RegExp(
     `(${[
       ALLAHUMMA,
@@ -55,6 +58,8 @@ function textToSsmlBody(text) {
       KALLAH,
       LILLAH,
       ALLAH,
+      daggerLillah,
+      daggerAllah,
       ALLAH_LIGATURE,
     ].join('|')})`,
     'g'
@@ -65,20 +70,23 @@ function textToSsmlBody(text) {
   let m;
   while ((m = re.exec(clean))) {
     if (m.index > last) out += escapeXml(clean.slice(last, m.index));
-    const tok = m[0];
-    // Slow just this token — no fake spellings, no IPA, no <sub alias>.
+    let tok = m[0];
+    if (tok === ALLAH_LIGATURE || tok === daggerAllah) tok = ALLAH;
+    else if (tok === daggerLillah) tok = LILLAH;
+    // لله especially needs a clear lock — slower + mild emphasis, no IPA/sub hacks.
+    const rate = tok === LILLAH ? '-36%' : '-28%';
     out +=
-      `<break time="50ms"/>` +
-      `<prosody rate="-28%">${escapeXml(tok === ALLAH_LIGATURE ? ALLAH : tok)}</prosody>` +
-      `<break time="50ms"/>`;
-    last = m.index + tok.length;
+      `<break time="60ms"/>` +
+      `<emphasis level="moderate"><prosody rate="${rate}">${escapeXml(tok)}</prosody></emphasis>` +
+      `<break time="60ms"/>`;
+    last = m.index + m[0].length;
   }
   if (last < clean.length) out += escapeXml(clean.slice(last));
   return out;
 }
 
 /**
- * Normalize every الله-family token to dagger-alef orthography.
+ * Normalize every الله-family token for Azure (فتحة + إعراب, not dagger-alef).
  * Must stay in sync with app.js normalizeAllahForTts.
  */
 function normalizeAllahForTts(text) {
