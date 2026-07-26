@@ -1322,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v18';
+const TTS_CACHE_VER = 'v19';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1726,16 +1726,25 @@ function normalizeAllahForTts(text) {
   const FALLAH = '\u0641\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
   const TALLAH = '\u062A\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
   const KALLAH = '\u0643\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
+  const WALILLAH = '\u0648\u064E' + LILLAH; // وَلِلَّهِ (ولله — no alef, ≠ والله)
+  const FALILLAH = '\u0641\u064E' + LILLAH; // فَلِلَّهِ
   let s = String(text || '');
   s = s.replace(/\uFDF2/g, ALLAH); // ﷲ ligature
   s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);
-  s = s.replace(new RegExp(`([بوفكت])[اأإآٱ]?${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
+  // ب|و|ف|ك|ت + الله — alef REQUIRED (otherwise ولله «wa-lillāh» becomes وَاللَّهِ).
+  // Allow harakat right after the prefix letter (بِالله).
+  s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
     if (p === 'ب') return BILLAH;
     if (p === 'و') return WALLAH;
     if (p === 'ف') return FALLAH;
     if (p === 'ت') return TALLAH;
     return KALLAH;
   });
+  // ولله / فلله (no alef) → وَلِلَّهِ / فَلِلَّهِ
+  s = s.replace(
+    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])([وف])${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
+    (_, pre, p) => `${pre}${p === 'و' ? WALILLAH : FALILLAH}`
+  );
   s = s.replace(
     new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
     (_, pre) => `${pre}${LILLAH}`

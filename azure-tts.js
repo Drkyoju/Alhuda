@@ -34,6 +34,8 @@ const WALLAH = '\u0648\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // وَ
 const FALLAH = '\u0641\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // فَاللَّهِ
 const TALLAH = '\u062A\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // تَاللَّهِ
 const KALLAH = '\u0643\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // كَاللَّهِ
+const WALILLAH = '\u0648\u064E' + LILLAH; // وَلِلَّهِ (ولله — no alef, ≠ والله)
+const FALILLAH = '\u0641\u064E' + LILLAH; // فَلِلَّهِ
 
 /** Unicode ligature ﷲ — some neural voices special-case this glyph. */
 const ALLAH_LIGATURE = '\uFDF2';
@@ -56,6 +58,8 @@ function textToSsmlBody(text) {
       FALLAH,
       TALLAH,
       KALLAH,
+      WALILLAH,
+      FALILLAH,
       LILLAH,
       ALLAH,
       daggerLillah,
@@ -74,7 +78,7 @@ function textToSsmlBody(text) {
     if (tok === ALLAH_LIGATURE || tok === daggerAllah) tok = ALLAH;
     else if (tok === daggerLillah) tok = LILLAH;
     // لله especially needs a clear lock — slower + mild emphasis, no IPA/sub hacks.
-    const rate = tok === LILLAH ? '-36%' : '-28%';
+    const rate = tok === LILLAH || tok === WALILLAH || tok === FALILLAH ? '-36%' : '-28%';
     out +=
       `<break time="60ms"/>` +
       `<emphasis level="moderate"><prosody rate="${rate}">${escapeXml(tok)}</prosody></emphasis>` +
@@ -99,14 +103,21 @@ function normalizeAllahForTts(text) {
   // اللهم first
   s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);
 
-  // ب|و|ف|ك|ت + الله
-  s = s.replace(new RegExp(`([بوفكت])[اأإآٱ]?${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
+  // ب|و|ف|ك|ت + الله — alef REQUIRED (otherwise ولله «wa-lillāh» becomes وَاللَّهِ).
+  // Allow harakat right after the prefix letter (بِالله).
+  s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
     if (p === 'ب') return BILLAH;
     if (p === 'و') return WALLAH;
     if (p === 'ف') return FALLAH;
     if (p === 'ت') return TALLAH;
     return KALLAH;
   });
+
+  // ولله / فلله (no alef) → وَلِلَّهِ / فَلِلَّهِ
+  s = s.replace(
+    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])([وف])${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
+    (_, pre, p) => `${pre}${p === 'و' ? WALILLAH : FALILLAH}`
+  );
 
   // لله
   s = s.replace(
@@ -145,6 +156,8 @@ const AZURE_PRON_LEXICON = [
   ['الله', ALLAH],
   ['اللهم', ALLAHUMMA],
   ['لله', LILLAH],
+  ['ولله', WALILLAH],
+  ['فلله', FALILLAH],
   ['بالله', BILLAH],
   ['والله', WALLAH],
   ['فالله', FALLAH],
