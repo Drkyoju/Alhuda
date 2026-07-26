@@ -4,16 +4,19 @@
  * Keep bare (undiacritized) keys only.
  */
 window.SPEECH_PRON_LEXICON = {
-  /* الله-family — TTS-only spellings (extra ألف) so Azure says Allāh / lillāh.
-     Display text is unchanged; only the speech pipeline uses these. */
-  الله: 'اللاه',
-  اللهم: 'اللهم',
-  لله: 'للاه',
-  بالله: 'باللاه',
-  والله: 'واللاه',
-  فالله: 'فاللاه',
-  تالله: 'تاللاه',
-  كالله: 'كاللاه',
+  /* الله-family — dagger alef (اللّٰه), never fake «اللاه». TTS-only; UI unchanged. */
+  الله: 'اللّٰه',
+  اللهم: 'اللَّهُمَّ',
+  لله: 'لِلّٰه',
+  بالله: 'بِاللّٰه',
+  والله: 'وَاللّٰه',
+  فالله: 'فَاللّٰه',
+  تالله: 'تَاللّٰه',
+  كالله: 'كَاللّٰه',
+  اللاه: 'اللّٰه',
+  للاه: 'لِلّٰه',
+  باللاه: 'بِاللّٰه',
+  واللاه: 'وَاللّٰه',
 
   التوحيد: 'التَّوْحِيدُ',
   توحيد: 'تَوْحِيدُ',

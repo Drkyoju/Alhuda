@@ -1322,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v15';
+const TTS_CACHE_VER = 'v16';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1712,20 +1712,21 @@ function sanitizeTtsText(text) {
 }
 
 /**
- * Rewrite الله-family to TTS-friendly spellings (اللاه / للاه…).
- * Avoid ٱ wasla — Azure Neural often misreads it. Must match azure-tts.js.
+ * Rewrite الله-family to dagger-alef orthography (اللّٰه / لِلّٰه / بِاللّٰه).
+ * Do NOT use fake «اللاه» — that made Azure sound worse. Sync with azure-tts.js.
  */
 function normalizeAllahForTts(text) {
   const H = '[\u064B-\u065F\u0670]*';
-  const ALLAH = 'اللاه';
-  const ALLAHUMMA = 'اللهم';
-  const LILLAH = 'للاه';
-  const BILLAH = 'باللاه';
-  const WALLAH = 'واللاه';
-  const FALLAH = 'فاللاه';
-  const TALLAH = 'تاللاه';
-  const KALLAH = 'كاللاه';
+  const ALLAH = '\u0627\u0644\u0644\u0651\u0670\u0647'; // اللّٰه
+  const ALLAHUMMA = '\u0627\u0644\u0644\u0651\u064E\u0647\u064F\u0645\u0651\u064E';
+  const LILLAH = '\u0644\u0650\u0644\u0651\u0670\u0647';
+  const BILLAH = '\u0628\u0650\u0627\u0644\u0644\u0651\u0670\u0647';
+  const WALLAH = '\u0648\u064E\u0627\u0644\u0644\u0651\u0670\u0647';
+  const FALLAH = '\u0641\u064E\u0627\u0644\u0644\u0651\u0670\u0647';
+  const TALLAH = '\u062A\u064E\u0627\u0644\u0644\u0651\u0670\u0647';
+  const KALLAH = '\u0643\u064E\u0627\u0644\u0644\u0651\u0670\u0647';
   let s = String(text || '');
+  s = s.replace(/\uFDF2/g, ALLAH); // ﷲ ligature
   s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);
   s = s.replace(new RegExp(`([بوفكت])[اأإآٱ]?${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
     if (p === 'ب') return BILLAH;
@@ -1739,9 +1740,17 @@ function normalizeAllahForTts(text) {
     (_, pre) => `${pre}${LILLAH}`
   );
   s = s.replace(
-    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
+    new RegExp(`[اأإآٱ]${H}ل${H}ل${H}(?:ا)?ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'),
     () => ALLAH
   );
+  // Scrub legacy bad TTS hacks from older clients/cache keys.
+  s = s.replace(/اللاه/g, ALLAH);
+  s = s.replace(/للاه/g, LILLAH);
+  s = s.replace(/باللاه/g, BILLAH);
+  s = s.replace(/واللاه/g, WALLAH);
+  s = s.replace(/فاللاه/g, FALLAH);
+  s = s.replace(/تاللاه/g, TALLAH);
+  s = s.replace(/كاللاه/g, KALLAH);
   return s;
 }
 
