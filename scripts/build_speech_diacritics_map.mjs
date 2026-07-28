@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /** Generate speech-diacritics-map.js — manual tashkil + well-formed DB quotes for TTS. */
 import { readFileSync, writeFileSync } from 'fs';
+import { spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -311,6 +312,7 @@ for (const fields of Object.values(byQuestion)) {
   for (const value of Object.values(fields)) harvestWordsIntoMap(value);
 }
 for (const value of Object.values(phraseMap)) harvestWordsIntoMap(value);
+delete wordMap.الله;
 
 writeFileSync(
   join(root, 'speech-diacritics-map.js'),
@@ -331,4 +333,7 @@ console.log(
     `${Object.keys(wordMap).length} verified words, ${Object.keys(byQuestion).length} questions ` +
     `(+${geminiFields} Gemini fields)`
 );
+
+const irab = spawnSync(process.execPath, ['scripts/fix_allah_irab_in_maps.mjs'], { cwd: root, stdio: 'inherit' });
+if (irab.status !== 0) process.exit(irab.status || 1);
 void applyVerifiedWords;

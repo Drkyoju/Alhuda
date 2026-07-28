@@ -1322,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v27';
+const TTS_CACHE_VER = 'v28';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1594,6 +1594,7 @@ function prepareTtsPayload(text) {
     : applyManualSpeechDiacritics(cleaned);
   forTts = applyWordDiacritics(forTts);
   forTts = applyPronunciationLexicon(forTts);
+  forTts = typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(forTts) : forTts;
   return sanitizeTtsText(prepareArabicForSpeech(forTts));
 }
 
@@ -1985,6 +1986,20 @@ function getSortedManualSpeech() {
 
 function ensureSpeechMapsLoaded() {
   if (typeof window !== 'undefined' && window.SPEECH_MAPS_FULL) return Promise.resolve();
+  if (typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID && !_speechMapsPromise) {
+    // Core map already in index.html — resolve instantly; full map loads idle.
+    const ver = window.ALHUDA_ASSETS?.sw || 172;
+    const idle = typeof requestIdleCallback === 'function'
+      ? (fn) => requestIdleCallback(fn, { timeout: 4000 })
+      : (fn) => setTimeout(fn, 1800);
+    idle(() => {
+      if (window.SPEECH_MAPS_FULL) return;
+      void loadSpeechScript(`speech-diacritics-map.js?v=${ver}`, 'speech-maps-full').then(() => {
+        window.SPEECH_MAPS_FULL = true;
+      });
+    });
+    return Promise.resolve();
+  }
   if (_speechMapsPromise) return _speechMapsPromise;
   _speechMapsPromise = (async () => {
     const ver = (typeof window !== 'undefined' && window.ALHUDA_ASSETS?.sw) || 87;
@@ -3392,7 +3407,12 @@ function speakQuestion() {
   const askIdx = state.idx;
   void (async () => {
     try {
-      await ensureSpeechMapsLoaded();
+      const warmP = questionSpeechWarmPromises.get(q) || warmQuestionSpeech(q);
+      // Maps + audio blob in parallel — join warm so play() hits cache, not cold network.
+      await Promise.all([
+        ensureSpeechMapsLoaded(),
+        warmP.catch(() => null),
+      ]);
       if (!voiceOn || state.idx !== askIdx) return;
 
       const { questionText, optionsText } = buildQuestionSpeechParts(q);
@@ -3400,8 +3420,6 @@ function speakQuestion() {
       const oClean = optionsText.trim() ? prepareTtsPayload(optionsText) : '';
       const verseKey = getPrimaryVerseKeyForQuestion(q);
 
-      // Kick warm in parallel — no artificial 350ms wait before speaking.
-      void warmQuestionSpeech(q);
       if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
       if (oClean) prefetchTtsText(oClean);
       const next = state.questions[askIdx + 1];

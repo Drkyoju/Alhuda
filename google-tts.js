@@ -1,5 +1,7 @@
 /** Google Cloud Text-to-Speech (paid; primary fallback candidate for Allah). */
 
+import { fixAllahIrabInText } from './allah-irab.js';
+
 export const DEFAULT_GOOGLE_ARABIC_VOICE = 'ar-XA-Chirp3-HD-Achird';
 export const FALLBACK_GOOGLE_ARABIC_VOICE = 'ar-XA-Wavenet-B';
 
@@ -144,11 +146,7 @@ function stripTtsPunctuation(text) {
 }
 
 function buildGoogleSsml(text) {
-  const clean = applyGooglePronunciationLexicon(
-    normalizeAllahForGoogleTts(
-      applyGooglePhraseRules(stripTtsPunctuation(text))
-    )
-  );
+  const clean = fixAllahIrabInText(stripTtsPunctuation(text));
   return (
     `<speak version="1.0" xml:lang="ar-XA">` +
     `<prosody rate="92%">${escapeXml(clean)}</prosody>` +
