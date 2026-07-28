@@ -1712,36 +1712,62 @@ function sanitizeTtsText(text) {
 }
 
 /**
- * Flatten الله-family to bare orthography for TTS.
- * Forced tashkeel + slow SSML made Azure draw الله out like «اللاه».
- * Sync with azure-tts.js.
+ * Collapse الله-family to bare orthography for Azure TTS.
+ * Heavy tashkeel + SSML chopping made Hamed say «اللاه» awkwardly.
+ * Never use fake «اللاه» spellings. Sync with azure-tts.js.
  */
 function normalizeAllahForTts(text) {
-  const ALLAH_LIGATURE = '\uFDF2';
-  const bareByStripped = {
-    الله: 'الله',
-    اللهم: 'اللهم',
-    لله: 'لله',
-    ولله: 'ولله',
-    فلله: 'فلله',
-    بالله: 'بالله',
-    والله: 'والله',
-    فالله: 'فالله',
-    تالله: 'تالله',
-    كالله: 'كالله',
-    اللاه: 'الله',
-    للاه: 'لله',
-    باللاه: 'بالله',
-    واللاه: 'والله',
-    فاللاه: 'فالله',
-    تاللاه: 'تالله',
-    كاللاه: 'كالله',
-  };
-  return String(text || '').replace(/[\u0621-\u0671\u064B-\u065F\u0670\uFDF2]+/g, (tok) => {
-    if (tok === ALLAH_LIGATURE) return 'الله';
-    const bare = String(tok).replace(/[\u064B-\u065F\u0670\u0640]/g, '');
-    return bareByStripped[bare] || tok;
+  const H = '[\u064B-\u065F\u0670]*';
+  const ALLAH = 'الله';
+  const ALLAHUMMA = 'اللهم';
+  const LILLAH = 'لله';
+  const BILLAH = 'بالله';
+  const WALLAH = 'والله';
+  const FALLAH = 'فالله';
+  const TALLAH = 'تالله';
+  const KALLAH = 'كالله';
+  const WALILLAH = 'ولله';
+  const FALILLAH = 'فلله';
+  let s = String(text || '');
+  s = s.replace(/\uFDF2/g, ALLAH);
+  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);
+  // ب|و|ف|ك|ت + الله — alef REQUIRED (otherwise ولله becomes والله).
+  s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
+    if (p === 'ب') return BILLAH;
+    if (p === 'و') return WALLAH;
+    if (p === 'ف') return FALLAH;
+    if (p === 'ت') return TALLAH;
+    return KALLAH;
   });
+  s = s.replace(
+    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])([وف])${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
+    (_, pre, p) => `${pre}${p === 'و' ? WALILLAH : FALILLAH}`
+  );
+  s = s.replace(
+    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
+    (_, pre) => `${pre}${LILLAH}`
+  );
+  s = s.replace(
+    new RegExp(
+      `(^|[^\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`,
+      'g'
+    ),
+    (_, pre) => `${pre}${ALLAH}`
+  );
+  const scrubHack = (hack, repl) => {
+    s = s.replace(
+      new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
+      (_, p) => `${p}${repl}`
+    );
+  };
+  scrubHack('اللاه', ALLAH);
+  scrubHack('للاه', LILLAH);
+  scrubHack('باللاه', BILLAH);
+  scrubHack('واللاه', WALLAH);
+  scrubHack('فاللاه', FALLAH);
+  scrubHack('تاللاه', TALLAH);
+  scrubHack('كاللاه', KALLAH);
+  return s;
 }
 
 const ARABIC_HARAKAT_RE = /[\u064B-\u065F\u0670\u0610-\u061A]/;

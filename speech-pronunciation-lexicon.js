@@ -4,7 +4,7 @@
  * Keep bare (undiacritized) keys only.
  */
 window.SPEECH_PRON_LEXICON = {
-  /* الله-family — bare only. Forced tashkeel made Azure say «اللاه». */
+  /* الله-family — bare orthography for TTS (heavy tashkeel made Azure say «اللاه»). */
   الله: 'الله',
   اللهم: 'اللهم',
   لله: 'لله',
