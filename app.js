@@ -1322,13 +1322,100 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v20';
+const TTS_CACHE_VER = 'v21';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
 const TTS_IDB_NAME = 'alhudaTtsCache';
 const TTS_IDB_STORE = 'audio';
+
+/**
+ * Quran word-by-word clips for الله-family (same idea as Hudhaify ayahs).
+ * Azure cannot say Allāh correctly; these clips do.
+ */
+const ALLAH_PRON_CLIPS = {
+  اللهم: 'audio/pron/allahumma.mp3',
+  بالله: 'audio/pron/billah.mp3',
+  والله: 'audio/pron/wallah.mp3',
+  فالله: 'audio/pron/fallah.mp3',
+  تالله: 'audio/pron/tallah.mp3',
+  كالله: 'audio/pron/kallah.mp3',
+  ولله: 'audio/pron/walillah.mp3',
+  فلله: 'audio/pron/falillah.mp3',
+  لله: 'audio/pron/lillah.mp3',
+  الله: 'audio/pron/allah.mp3',
+};
+const ALLAH_PRON_KEYS = Object.keys(ALLAH_PRON_CLIPS);
+const ALLAH_PRON_RE = new RegExp(
+  `(^|[^\\u0621-\\u064A\\u0671])(${ALLAH_PRON_KEYS.join('|')})(?=[^\\u0621-\\u064A\\u0671]|$)`,
+  'g'
+);
+const allahPronUrlCache = new Map(); // path -> objectUrl
+let allahPronWarmPromise = null;
+
+function splitTtsWithAllahPron(text) {
+  const s = String(text || '').trim();
+  if (!s) return [];
+  const parts = [];
+  let last = 0;
+  ALLAH_PRON_RE.lastIndex = 0;
+  let m;
+  while ((m = ALLAH_PRON_RE.exec(s))) {
+    const pre = m[1] || '';
+    const tok = m[2];
+    const tokStart = m.index + pre.length;
+    if (tokStart > last) {
+      const chunk = s.slice(last, tokStart).trim();
+      if (chunk) parts.push({ type: 'tts', text: chunk });
+    }
+    parts.push({ type: 'allah', text: tok, clip: ALLAH_PRON_CLIPS[tok] });
+    last = tokStart + tok.length;
+  }
+  if (last < s.length) {
+    const chunk = s.slice(last).trim();
+    if (chunk) parts.push({ type: 'tts', text: chunk });
+  }
+  return parts.length ? parts : [{ type: 'tts', text: s }];
+}
+
+async function ensureAllahPronClipUrl(path) {
+  if (!path) return null;
+  if (allahPronUrlCache.has(path)) return allahPronUrlCache.get(path);
+  const res = await fetch(path, { cache: 'force-cache' });
+  if (!res.ok) throw new Error(`pron clip ${res.status}`);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  allahPronUrlCache.set(path, url);
+  return url;
+}
+
+function warmAllahPronClips() {
+  if (allahPronWarmPromise) return allahPronWarmPromise;
+  const paths = [...new Set(Object.values(ALLAH_PRON_CLIPS))];
+  allahPronWarmPromise = Promise.all(
+    paths.map((p) => ensureAllahPronClipUrl(p).catch(() => null))
+  );
+  return allahPronWarmPromise;
+}
+
+async function playAllahPronClip(path, btn) {
+  const url = await ensureAllahPronClipUrl(path);
+  if (!url) throw new Error('missing pron clip');
+  if (ttsAudio) {
+    ttsAudio.onended = null;
+    ttsAudio.onerror = null;
+    ttsAudio.pause();
+  }
+  ttsAudio = new Audio(url);
+  ttsObjectUrl = url;
+  if (btn) btn.classList.add('speaking');
+  await ttsAudio.play();
+  await new Promise((resolve, reject) => {
+    ttsAudio.onended = resolve;
+    ttsAudio.onerror = () => reject(new Error('pron audio error'));
+  });
+}
 
 function ttsCacheKey(text, voice) {
   return `${TTS_CACHE_VER}::${voice || TTS_VOICE}::${String(text || '').slice(0, 600)}`;
@@ -1499,9 +1586,14 @@ function prefetchTtsText(text, voice = TTS_VOICE) {
   void ensureSpeechMapsLoaded().then(() => {
     const clean = prepareTtsPayload(text);
     if (!clean || clean.length < 2) return;
-    const key = ttsCacheKey(clean, voice);
-    if (ttsBlobMemoryCache.has(key) || ttsPrefetchInFlight.has(key)) return;
-    void fetchTtsBlob(clean, voice).catch(() => {});
+    void warmAllahPronClips();
+    const parts = splitTtsWithAllahPron(clean);
+    for (const part of parts) {
+      if (part.type !== 'tts' || !part.text || part.text.length < 2) continue;
+      const key = ttsCacheKey(part.text, voice);
+      if (ttsBlobMemoryCache.has(key) || ttsPrefetchInFlight.has(key)) continue;
+      void fetchTtsBlob(part.text, voice).catch(() => {});
+    }
   });
 }
 
@@ -1525,11 +1617,10 @@ async function warmQuestionSpeech(q) {
   const qClean = prepareTtsPayload(questionText);
   const oClean = optionsText?.trim() ? prepareTtsPayload(optionsText) : '';
   try {
-    const jobs = [];
-    if (qClean) jobs.push(fetchTtsBlob(qClean));
-    if (oClean) jobs.push(fetchTtsBlob(oClean));
-    const [qBlob] = await Promise.all(jobs);
-    return qBlob || null;
+    void warmAllahPronClips();
+    if (qClean) prefetchTtsText(qClean);
+    if (oClean) prefetchTtsText(oClean);
+    return null;
   } catch {
     return null;
   }
@@ -3112,19 +3203,36 @@ async function speakTtsSegment(text, btn, { keepBtnState = true, clearAfter = tr
   // Same pipeline as prefetchTtsText — shared cache key = instant when warmed.
   const clean = prepareTtsPayload(text);
   if (!clean) return;
+  const parts = splitTtsWithAllahPron(clean);
   try {
-    await speakTextCloud(clean, btn, TTS_VOICE);
+    void warmAllahPronClips();
+    for (const part of parts) {
+      if (part.type === 'allah' && part.clip) {
+        try {
+          await playAllahPronClip(part.clip, btn);
+        } catch (clipErr) {
+          // Clip failed — fall back to cloud TTS for this token only.
+          await speakTextCloud(part.text, btn, TTS_VOICE);
+        }
+      } else if (part.text) {
+        try {
+          await speakTextCloud(part.text, btn, TTS_VOICE);
+        } catch (e) {
+          if (e.name === 'AbortError') throw e;
+          try {
+            await speakTextCloud(part.text, btn, TTS_VOICE_FALLBACK);
+          } catch (e2) {
+            if (e2.name === 'AbortError') throw e2;
+            clearTtsAudio(keepBtnState ? null : btn);
+            const ok = await speakTextBrowser(part.text, btn);
+            if (!ok) throw e2;
+          }
+        }
+      }
+    }
   } catch (e) {
     if (e.name === 'AbortError') throw e;
-    try {
-      await speakTextCloud(clean, btn, TTS_VOICE_FALLBACK);
-    } catch (e2) {
-      if (e2.name === 'AbortError') throw e2;
-      clearTtsAudio(keepBtnState ? null : btn);
-      const ok = await speakTextBrowser(clean, btn);
-      if (!ok) throw e2;
-      return;
-    }
+    throw e;
   }
   if (clearAfter) clearTtsAudio(keepBtnState ? null : btn);
 }
@@ -3256,13 +3364,9 @@ function speakQuestion() {
         const verseKey = getPrimaryVerseKeyForQuestion(q);
         if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
 
-        // Warm options in parallel — never block the question on options errors.
-        const optionsPromise = oClean
-          ? ensureTtsObjectUrl(oClean).catch((e) => {
-            console.warn('options tts warm:', e);
-            return null;
-          })
-          : Promise.resolve(null);
+        // Warm options segments in parallel (Allah clips + TTS chunks).
+        if (oClean) prefetchTtsText(oClean);
+        void warmAllahPronClips();
 
         // Warm next question while this one plays.
         const next = state.questions[askIdx + 1];
@@ -3279,37 +3383,13 @@ function speakQuestion() {
           const fromQ = await playSpeechForText(questionText, q, btn, token);
           fromQ.forEach((k) => recited.add(k));
         } else if (qClean) {
-          let qUrl = null;
           try {
-            qUrl = await ensureTtsObjectUrl(qClean);
+            await speakTtsSegment(qClean, btn, { clearAfter: false });
           } catch (e) {
             if (e?.name === 'AbortError') return;
             console.warn('question tts:', e);
             toastTtsFail();
             return;
-          }
-          if (token !== hybridSpeechToken || state.idx !== askIdx) return;
-          if (qUrl) {
-            ttsObjectUrl = qUrl;
-            ttsAudio = new Audio(qUrl);
-            if (btn) btn.classList.add('speaking');
-            try {
-              await ttsAudio.play();
-            } catch (e) {
-              try {
-                unlockTtsAudio();
-                await ttsAudio.play();
-              } catch (e2) {
-                console.warn('question play:', e2);
-                toastTtsFail();
-                return;
-              }
-            }
-            await new Promise((resolve, reject) => {
-              if (!ttsAudio) return resolve();
-              ttsAudio.onended = resolve;
-              ttsAudio.onerror = () => reject(new Error('audio error'));
-            });
           }
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
@@ -3321,21 +3401,12 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 3) Answer options last.
-        const oUrl = await optionsPromise;
-        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
-        if (oUrl) {
+        // 3) Answer options last — mix Quran Allah clips into TTS.
+        if (oClean) {
           try {
-            const optionsAudio = new Audio(oUrl);
-            optionsAudio.preload = 'auto';
-            await playPreloadedAudio(optionsAudio, btn);
+            await speakTtsSegment(oClean, btn, { clearAfter: false });
           } catch (e) {
-            if (e?.name === 'AbortError') return;
-            try {
-              await speakTtsSegment(oClean, btn, { clearAfter: false });
-            } catch (e2) {
-              if (e2?.name !== 'AbortError') console.warn('options fallback:', e2);
-            }
+            if (e?.name !== 'AbortError') console.warn('options tts:', e);
           }
         }
       } finally {
@@ -6062,6 +6133,7 @@ async function restoreSession() {
   // Start diacritics map immediately (not idle) so the first speak never waits
   // on a ~670 KB script download after the question is already on screen.
   void ensureSpeechMapsLoaded();
+  void warmAllahPronClips();
   const savedName = localStorage.getItem('savedName');
   const loginScreenActive = document.getElementById('login-screen')?.classList.contains('active');
   if (savedName && loginScreenActive && !LOGIN_LOCKED) document.getElementById('login-name').value = savedName;
