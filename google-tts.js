@@ -6,19 +6,19 @@ export const FALLBACK_GOOGLE_ARABIC_VOICE = 'ar-XA-Chirp3-HD-Achird';
 const GOOGLE_TTS_ENDPOINT = 'https://texttospeech.googleapis.com/v1/text:synthesize';
 const GOOGLE_HARAKAT_RE = /[\u064B-\u065F\u0670]/g;
 
-const GOOGLE_ALLAH = 'اللَّه';
-const GOOGLE_ALLAHUMMA = 'اللَّهُمَّ';
-const GOOGLE_LILLAH = 'لِلَّه';
-const GOOGLE_BILLAH = 'بِاللَّه';
-const GOOGLE_WALLAH = 'وَاللَّه';
-const GOOGLE_FALLAH = 'فَاللَّه';
-const GOOGLE_TALLAH = 'تَاللَّه';
-const GOOGLE_KALLAH = 'كَاللَّه';
-const GOOGLE_WALILLAH = 'وَلِلَّه';
-const GOOGLE_FALILLAH = 'فَلِلَّه';
-const GOOGLE_ILLA_ALLAH = 'إِلَّا اللَّه';
-const GOOGLE_LA_ILAHA_ILLA_ALLAH = 'لَا إِلَهَ إِلَّا اللَّه';
-const GOOGLE_LA_MABUDA_BIHAQQ_ILLA_ALLAH = 'لَا مَعْبُودَ بِحَقٍّ إِلَّا اللَّه';
+const GOOGLE_ALLAH = 'اللّٰه';
+const GOOGLE_ALLAHUMMA = 'اللّٰهُمَّ';
+const GOOGLE_LILLAH = 'لِلّٰه';
+const GOOGLE_BILLAH = 'بِاللّٰه';
+const GOOGLE_WALLAH = 'وَاللّٰه';
+const GOOGLE_FALLAH = 'فَاللّٰه';
+const GOOGLE_TALLAH = 'تَاللّٰه';
+const GOOGLE_KALLAH = 'كَاللّٰه';
+const GOOGLE_WALILLAH = 'وَلِلّٰه';
+const GOOGLE_FALILLAH = 'فَلِلّٰه';
+const GOOGLE_ILLA_ALLAH = 'إِلَّا اللّٰه';
+const GOOGLE_LA_ILAHA_ILLA_ALLAH = 'لَا إِلَهَ إِلَّا اللّٰه';
+const GOOGLE_LA_MABUDA_BIHAQQ_ILLA_ALLAH = 'لَا مَعْبُودَ بِحَقٍّ إِلَّا اللّٰه';
 
 function stripHarakat(text) {
   return String(text || '').replace(GOOGLE_HARAKAT_RE, '');
