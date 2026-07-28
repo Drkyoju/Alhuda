@@ -132,15 +132,16 @@ export async function synthesizeElevenLabsArabicSpeech(text, voiceId, env) {
 
   const selectedVoice = String(voiceId || env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID;
   const modelId = String(env?.ELEVENLABS_MODEL_ID || DEFAULT_ELEVENLABS_MODEL_ID).trim() || DEFAULT_ELEVENLABS_MODEL_ID;
-  const endpoint = `${ELEVENLABS_TTS_ENDPOINT}/${encodeURIComponent(selectedVoice)}/stream?output_format=mp3_44100_128`;
+  // optimize_streaming_latency=3 → faster first audio byte; 64kbps → smaller/faster download.
+  const endpoint = `${ELEVENLABS_TTS_ENDPOINT}/${encodeURIComponent(selectedVoice)}/stream?output_format=mp3_44100_64&optimize_streaming_latency=3`;
   const payload = {
     text: normalizeForElevenLabs(text),
     model_id: modelId,
     language_code: 'ar',
     voice_settings: {
-      stability: 0.45,
-      similarity_boost: 0.8,
-      style: 0.05,
+      stability: 0.4,
+      similarity_boost: 0.75,
+      style: 0,
       use_speaker_boost: true,
     },
   };

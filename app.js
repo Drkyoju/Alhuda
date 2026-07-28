@@ -1322,11 +1322,12 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v25';
+const TTS_CACHE_VER = 'v26';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
+const ttsPreloadedAudio = new Map(); // key -> HTMLAudioElement (decoded ahead of play)
 const TTS_IDB_NAME = 'alhudaTtsCache';
 const TTS_IDB_STORE = 'audio';
 
@@ -1482,11 +1483,19 @@ function rememberTtsObjectUrl(key, objectUrl) {
     ttsBlobMemoryCache.delete(key);
   }
   ttsBlobMemoryCache.set(key, objectUrl);
+  // Decode ahead so play() starts without a cold media-pipeline stall.
+  try {
+    const warm = new Audio();
+    warm.preload = 'auto';
+    warm.src = objectUrl;
+    ttsPreloadedAudio.set(key, warm);
+  } catch { /* ignore */ }
   while (ttsBlobMemoryCache.size > TTS_BLOB_CACHE_MAX) {
     const oldest = ttsBlobMemoryCache.keys().next().value;
     const old = ttsBlobMemoryCache.get(oldest);
     if (old) URL.revokeObjectURL(old);
     ttsBlobMemoryCache.delete(oldest);
+    ttsPreloadedAudio.delete(oldest);
   }
 }
 
@@ -1605,7 +1614,7 @@ function prefetchTtsText(text, voice = TTS_VOICE) {
 
 const questionSpeechWarmPromises = new WeakMap();
 
-/** Prefetch question + options audio; resolve when both are ready (seamless Q→answers). */
+/** Prefetch question audio first (resolves ASAP); options/quran warm in background. */
 async function warmQuestionSpeech(q) {
   if (!q || navigator.onLine === false) return null;
   const existing = questionSpeechWarmPromises.get(q);
@@ -1614,9 +1623,8 @@ async function warmQuestionSpeech(q) {
     await ensureSpeechMapsLoaded();
     const { questionText, optionsText } = buildQuestionSpeechParts(q);
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
-    const waits = [];
-    if (primaryVerse) waits.push(fetchQuranAudioObjectUrl(primaryVerse).catch(() => null));
-    // Prefetch each option alone (answer 🔊 buttons use these, not the joined string).
+    // Options + ayah: fire-and-forget — never block question start.
+    if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => null);
     if (q.type === 'mc' && Array.isArray(q.a)) {
       q.a.forEach((opt, i) => {
         if (opt == null || opt === '') return;
@@ -1630,16 +1638,16 @@ async function warmQuestionSpeech(q) {
     const oClean = optionsText?.trim() ? prepareTtsPayload(optionsText) : '';
     try {
       void warmAllahPronClips();
+      if (oClean) prefetchTtsText(oClean);
+      // Only await question TTS — that is what speakQuestion needs to start.
       if (qClean) {
         const parts = splitTtsWithAllahPron(qClean);
-        for (const part of parts) {
-          if (part.type === 'tts' && part.text?.length >= 2) {
-            waits.push(fetchTtsBlob(part.text).catch(() => null));
-          }
-        }
+        await Promise.all(
+          parts
+            .filter((part) => part.type === 'tts' && part.text?.length >= 2)
+            .map((part) => fetchTtsBlob(part.text).catch(() => null))
+        );
       }
-      if (oClean) prefetchTtsText(oClean);
-      await Promise.all(waits);
       return null;
     } catch {
       return null;
@@ -3196,7 +3204,13 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE) {
   }
   if (!url) throw new Error('empty audio');
   ttsObjectUrl = url;
-  ttsAudio = new Audio(url);
+  const preloaded = ttsPreloadedAudio.get(key);
+  if (preloaded) {
+    ttsAudio = preloaded;
+    try { ttsAudio.currentTime = 0; } catch { /* ignore */ }
+  } else {
+    ttsAudio = new Audio(url);
+  }
   if (btn) btn.classList.add('speaking');
   await ttsAudio.play();
   await new Promise((resolve, reject) => {
@@ -3224,9 +3238,10 @@ async function playPreloadedAudio(audio, btn) {
   });
 }
 
-async function speakTtsSegment(text, btn, { keepBtnState = true, clearAfter = true } = {}) {
+async function speakTtsSegment(text, btn, { keepBtnState = true, clearAfter = true, alreadyPrepared = false } = {}) {
   // Same pipeline as prefetchTtsText — shared cache key = instant when warmed.
-  const clean = prepareTtsPayload(text);
+  // alreadyPrepared: caller already ran prepareTtsPayload (avoid double-normalize cache miss).
+  const clean = alreadyPrepared ? String(text || '').trim() : prepareTtsPayload(text);
   if (!clean) return;
   const parts = splitTtsWithAllahPron(clean);
   try {
@@ -3378,42 +3393,37 @@ function speakQuestion() {
   void (async () => {
     try {
       await ensureSpeechMapsLoaded();
-      await Promise.race([
-        warmQuestionSpeech(q),
-        new Promise((resolve) => setTimeout(resolve, 350)),
-      ]);
       if (!voiceOn || state.idx !== askIdx) return;
+
+      const { questionText, optionsText } = buildQuestionSpeechParts(q);
+      const qClean = prepareTtsPayload(questionText);
+      const oClean = optionsText.trim() ? prepareTtsPayload(optionsText) : '';
+      const verseKey = getPrimaryVerseKeyForQuestion(q);
+
+      // Kick warm in parallel — no artificial 350ms wait before speaking.
+      void warmQuestionSpeech(q);
+      if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
+      if (oClean) prefetchTtsText(oClean);
+      const next = state.questions[askIdx + 1];
+      if (next) {
+        void prefetchHybridSpeechForQuestion(next);
+        void warmQuestionSpeech(next);
+      }
+
       stopSpeaking();
       const token = hybridSpeechToken;
       if (btn) btn.classList.add('speaking');
       try {
-        const { questionText, optionsText } = buildQuestionSpeechParts(q);
-        const qClean = prepareTtsPayload(questionText);
-        const oClean = optionsText.trim() ? prepareTtsPayload(optionsText) : '';
-        const verseKey = getPrimaryVerseKeyForQuestion(q);
-        if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
-
-        // Warm options segments in parallel (Allah clips + TTS chunks).
-        if (oClean) prefetchTtsText(oClean);
         void warmAllahPronClips();
-
-        // Warm next question while this one plays.
-        const next = state.questions[askIdx + 1];
-        if (next) {
-          void prefetchHybridSpeechForQuestion(next);
-          void warmQuestionSpeech(next);
-        }
-
-        // Order for every question: 1) سؤال  2) آية إن وُجدت  3) الإجابات
         const recited = new Set();
 
-        // 1) Question text (hybrid only when the question itself embeds an ayah).
+        // 1) Question text — join in-flight warm; start as soon as blob is ready.
         if (qClean && textMayHaveQuranAyah(questionText, q)) {
           const fromQ = await playSpeechForText(questionText, q, btn, token);
           fromQ.forEach((k) => recited.add(k));
         } else if (qClean) {
           try {
-            await speakTtsSegment(qClean, btn, { clearAfter: false });
+            await speakTtsSegment(qClean, btn, { clearAfter: false, alreadyPrepared: true });
           } catch (e) {
             if (e?.name === 'AbortError') return;
             console.warn('question tts:', e);
@@ -3433,7 +3443,7 @@ function speakQuestion() {
         // 3) Answer options last — mix Quran Allah clips into TTS.
         if (oClean) {
           try {
-            await speakTtsSegment(oClean, btn, { clearAfter: false });
+            await speakTtsSegment(oClean, btn, { clearAfter: false, alreadyPrepared: true });
           } catch (e) {
             if (e?.name !== 'AbortError') console.warn('options tts:', e);
           }
