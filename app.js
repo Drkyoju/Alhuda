@@ -1603,33 +1603,52 @@ function prefetchTtsText(text, voice = TTS_VOICE) {
   });
 }
 
+const questionSpeechWarmPromises = new WeakMap();
+
 /** Prefetch question + options audio; resolve when both are ready (seamless Q→answers). */
 async function warmQuestionSpeech(q) {
   if (!q || navigator.onLine === false) return null;
-  await ensureSpeechMapsLoaded();
-  const { questionText, optionsText } = buildQuestionSpeechParts(q);
-  const primaryVerse = getPrimaryVerseKeyForQuestion(q);
-  if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
-  // Prefetch each option alone (answer 🔊 buttons use these, not the joined string).
-  if (q.type === 'mc' && Array.isArray(q.a)) {
-    q.a.forEach((opt, i) => {
-      if (opt == null || opt === '') return;
-      prefetchTtsText(speechPart(q, `a${i}`, opt));
-    });
-  } else if (q.type === 'tf') {
-    prefetchTtsText('صَحّ');
-    prefetchTtsText('خَطَأٌ');
-  }
-  const qClean = prepareTtsPayload(questionText);
-  const oClean = optionsText?.trim() ? prepareTtsPayload(optionsText) : '';
-  try {
-    void warmAllahPronClips();
-    if (qClean) prefetchTtsText(qClean);
-    if (oClean) prefetchTtsText(oClean);
-    return null;
-  } catch {
-    return null;
-  }
+  const existing = questionSpeechWarmPromises.get(q);
+  if (existing) return existing;
+  const work = (async () => {
+    await ensureSpeechMapsLoaded();
+    const { questionText, optionsText } = buildQuestionSpeechParts(q);
+    const primaryVerse = getPrimaryVerseKeyForQuestion(q);
+    const waits = [];
+    if (primaryVerse) waits.push(fetchQuranAudioObjectUrl(primaryVerse).catch(() => null));
+    // Prefetch each option alone (answer 🔊 buttons use these, not the joined string).
+    if (q.type === 'mc' && Array.isArray(q.a)) {
+      q.a.forEach((opt, i) => {
+        if (opt == null || opt === '') return;
+        prefetchTtsText(speechPart(q, `a${i}`, opt));
+      });
+    } else if (q.type === 'tf') {
+      prefetchTtsText('صَحّ');
+      prefetchTtsText('خَطَأٌ');
+    }
+    const qClean = prepareTtsPayload(questionText);
+    const oClean = optionsText?.trim() ? prepareTtsPayload(optionsText) : '';
+    try {
+      void warmAllahPronClips();
+      if (qClean) {
+        const parts = splitTtsWithAllahPron(qClean);
+        for (const part of parts) {
+          if (part.type === 'tts' && part.text?.length >= 2) {
+            waits.push(fetchTtsBlob(part.text).catch(() => null));
+          }
+        }
+      }
+      if (oClean) prefetchTtsText(oClean);
+      await Promise.all(waits);
+      return null;
+    } catch {
+      return null;
+    }
+  })().finally(() => {
+    questionSpeechWarmPromises.delete(q);
+  });
+  questionSpeechWarmPromises.set(q, work);
+  return work;
 }
 
 async function prefetchHybridSpeechForQuestion(q) {
@@ -3359,6 +3378,10 @@ function speakQuestion() {
   void (async () => {
     try {
       await ensureSpeechMapsLoaded();
+      await Promise.race([
+        warmQuestionSpeech(q),
+        new Promise((resolve) => setTimeout(resolve, 350)),
+      ]);
       if (!voiceOn || state.idx !== askIdx) return;
       stopSpeaking();
       const token = hybridSpeechToken;
@@ -5285,6 +5308,7 @@ function renderQ() {
   if (state.idx >= state.questions.length) { void endGame(); return; }
   stopSpeaking();
   const q = state.questions[state.idx];
+  void warmQuestionSpeech(q);
   const prior = state.answerLog?.[state.idx] || null;
   state.answered = !!prior;
   document.getElementById('show-answer-btn').style.display = 'none';
