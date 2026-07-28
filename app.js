@@ -1322,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v21';
+const TTS_CACHE_VER = 'v22';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1335,16 +1335,16 @@ const TTS_IDB_STORE = 'audio';
  * Azure cannot say Allāh correctly; these clips do.
  */
 const ALLAH_PRON_CLIPS = {
-  اللهم: 'audio/pron/allahumma.mp3',
-  بالله: 'audio/pron/billah.mp3',
-  والله: 'audio/pron/wallah.mp3',
-  فالله: 'audio/pron/fallah.mp3',
-  تالله: 'audio/pron/tallah.mp3',
-  كالله: 'audio/pron/kallah.mp3',
-  ولله: 'audio/pron/walillah.mp3',
-  فلله: 'audio/pron/falillah.mp3',
-  لله: 'audio/pron/lillah.mp3',
-  الله: 'audio/pron/allah.mp3',
+  اللهم: 'audio/pron/allahumma.mp3?v=2',
+  بالله: 'audio/pron/billah.mp3?v=2',
+  والله: 'audio/pron/wallah.mp3?v=2',
+  فالله: 'audio/pron/fallah.mp3?v=2',
+  تالله: 'audio/pron/tallah.mp3?v=2',
+  كالله: 'audio/pron/kallah.mp3?v=2',
+  ولله: 'audio/pron/walillah.mp3?v=2',
+  فلله: 'audio/pron/falillah.mp3?v=2',
+  لله: 'audio/pron/lillah.mp3?v=2',
+  الله: 'audio/pron/allah.mp3?v=2',
 };
 const ALLAH_PRON_KEYS = Object.keys(ALLAH_PRON_CLIPS);
 const ALLAH_PRON_RE = new RegExp(
@@ -1408,6 +1408,8 @@ async function playAllahPronClip(path, btn) {
     ttsAudio.pause();
   }
   ttsAudio = new Audio(url);
+  // Match lesson TTS loudness — raw tilawa clips were much louder/longer.
+  ttsAudio.volume = 0.92;
   ttsObjectUrl = url;
   if (btn) btn.classList.add('speaking');
   await ttsAudio.play();
