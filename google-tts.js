@@ -1,9 +1,93 @@
 /** Google Cloud Text-to-Speech (paid; primary fallback candidate for Allah). */
 
-export const DEFAULT_GOOGLE_ARABIC_VOICE = 'ar-XA-Chirp3-HD-Achernar';
-export const FALLBACK_GOOGLE_ARABIC_VOICE = 'ar-XA-Wavenet-B';
+export const DEFAULT_GOOGLE_ARABIC_VOICE = 'ar-XA-Wavenet-B';
+export const FALLBACK_GOOGLE_ARABIC_VOICE = 'ar-XA-Chirp3-HD-Achird';
 
 const GOOGLE_TTS_ENDPOINT = 'https://texttospeech.googleapis.com/v1/text:synthesize';
+const GOOGLE_HARAKAT_RE = /[\u064B-\u065F\u0670]/g;
+
+const GOOGLE_ALLAH = 'اللَّه';
+const GOOGLE_ALLAHUMMA = 'اللَّهُمَّ';
+const GOOGLE_LILLAH = 'لِلَّه';
+const GOOGLE_BILLAH = 'بِاللَّه';
+const GOOGLE_WALLAH = 'وَاللَّه';
+const GOOGLE_FALLAH = 'فَاللَّه';
+const GOOGLE_TALLAH = 'تَاللَّه';
+const GOOGLE_KALLAH = 'كَاللَّه';
+const GOOGLE_WALILLAH = 'وَلِلَّه';
+const GOOGLE_FALILLAH = 'فَلِلَّه';
+
+function stripHarakat(text) {
+  return String(text || '').replace(GOOGLE_HARAKAT_RE, '');
+}
+
+function normalizeAllahForGoogleTts(text) {
+  const H = '[\\u064B-\\u065F\\u0670]*';
+  let s = String(text || '');
+
+  s = s.replace(/\uFDF2/g, GOOGLE_ALLAH);
+  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), GOOGLE_ALLAHUMMA);
+
+  s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
+    if (p === 'ب') return GOOGLE_BILLAH;
+    if (p === 'و') return GOOGLE_WALLAH;
+    if (p === 'ف') return GOOGLE_FALLAH;
+    if (p === 'ت') return GOOGLE_TALLAH;
+    return GOOGLE_KALLAH;
+  });
+
+  s = s.replace(
+    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])([وف])${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
+    (_, pre, p) => `${pre}${p === 'و' ? GOOGLE_WALILLAH : GOOGLE_FALILLAH}`
+  );
+
+  s = s.replace(
+    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
+    (_, pre) => `${pre}${GOOGLE_LILLAH}`
+  );
+
+  s = s.replace(
+    new RegExp(
+      `(^|[^\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`,
+      'g'
+    ),
+    (_, pre) => `${pre}${GOOGLE_ALLAH}`
+  );
+
+  const scrubHack = (hack, repl) => {
+    s = s.replace(
+      new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
+      (_, p) => `${p}${repl}`
+    );
+  };
+  scrubHack('اللاه', GOOGLE_ALLAH);
+  scrubHack('للاه', GOOGLE_LILLAH);
+  scrubHack('باللاه', GOOGLE_BILLAH);
+  scrubHack('واللاه', GOOGLE_WALLAH);
+  scrubHack('فاللاه', GOOGLE_FALLAH);
+  scrubHack('تاللاه', GOOGLE_TALLAH);
+  scrubHack('كاللاه', GOOGLE_KALLAH);
+
+  return s.replace(/(^|[\s(«"'])تعالى(?=$|[\s).،؟!؛»"'])/g, '$1تَعَالَى');
+}
+
+function applyGooglePronunciationLexicon(text) {
+  return String(text || '').replace(/[\u0621-\u0671\u064B-\u065F\u0670\uFDF2]+/g, (token) => {
+    const bare = stripHarakat(token);
+    if (bare === 'الله') return GOOGLE_ALLAH;
+    if (bare === 'اللهم') return GOOGLE_ALLAHUMMA;
+    if (bare === 'لله') return GOOGLE_LILLAH;
+    if (bare === 'ولله') return GOOGLE_WALILLAH;
+    if (bare === 'فلله') return GOOGLE_FALILLAH;
+    if (bare === 'بالله') return GOOGLE_BILLAH;
+    if (bare === 'والله') return GOOGLE_WALLAH;
+    if (bare === 'فالله') return GOOGLE_FALLAH;
+    if (bare === 'تالله') return GOOGLE_TALLAH;
+    if (bare === 'كالله') return GOOGLE_KALLAH;
+    if (bare === 'تعالى') return 'تَعَالَى';
+    return token;
+  });
+}
 
 function escapeXml(text) {
   return String(text || '')
@@ -23,7 +107,7 @@ function stripTtsPunctuation(text) {
 }
 
 function buildGoogleSsml(text) {
-  const clean = stripTtsPunctuation(text);
+  const clean = applyGooglePronunciationLexicon(normalizeAllahForGoogleTts(stripTtsPunctuation(text)));
   return (
     `<speak version="1.0" xml:lang="ar-XA">` +
     `<prosody rate="92%">${escapeXml(clean)}</prosody>` +
