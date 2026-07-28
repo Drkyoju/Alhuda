@@ -1,28 +1,30 @@
 /** ElevenLabs Text-to-Speech (primary Arabic provider candidate). */
 
 export const DEFAULT_ELEVENLABS_MODEL_ID = 'eleven_multilingual_v2';
-export const DEFAULT_ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL';
+/** Yousef — Modern Standard Arabic (not the English premade Sarah voice). */
+export const DEFAULT_ELEVENLABS_VOICE_ID = 'ZCXYdzd5Evtsll2EdoCi';
 
 const ELEVENLABS_TTS_ENDPOINT = 'https://api.elevenlabs.io/v1/text-to-speech';
 const ELEVENLABS_HARAKAT_RE = /[\u064B-\u065F\u0670]/g;
 
-const EL_ALLAH = 'اللّٰه';
-const EL_ALLAHUMMA = 'اللّٰهُمَّ';
-const EL_LILLAH = 'لِلّٰه';
-const EL_BILLAH = 'بِاللّٰه';
-const EL_WALLAH = 'وَاللّٰه';
-const EL_FALLAH = 'فَاللّٰه';
-const EL_TALLAH = 'تَاللّٰه';
-const EL_KALLAH = 'كَاللّٰه';
-const EL_WALILLAH = 'وَلِلّٰه';
-const EL_FALILLAH = 'فَلِلّٰه';
-const EL_ILLA_ALLAH = 'إِلَّا اللّٰه';
-const EL_LA_ILAHA_ILLA_ALLAH = 'لَا إِلَهَ إِلَّا اللّٰه';
-const EL_LA_MABUDA_BIHAQQ_ILLA_ALLAH = 'لَا مَعْبُودَ بِحَقٍّ إِلَّا اللّٰه';
+/** Full tashkeel (not alef khanjariyya) — ElevenLabs reads اللّٰه/الله as «اللاه» too often. */
+const EL_ALLAH = 'اللَّهُ';
+const EL_ALLAHUMMA = 'اللَّهُمَّ';
+const EL_LILLAH = 'لِلَّهِ';
+const EL_BILLAH = 'بِاللَّهِ';
+const EL_WALLAH = 'وَاللَّهُ';
+const EL_FALLAH = 'فَاللَّهُ';
+const EL_TALLAH = 'تَاللَّهُ';
+const EL_KALLAH = 'كَاللَّهُ';
+const EL_WALILLAH = 'وَلِلَّهِ';
+const EL_FALILLAH = 'فَلِلَّهِ';
+const EL_ILLA_ALLAH = 'إِلَّا اللَّهَ';
+const EL_LA_ILAHA_ILLA_ALLAH = 'لَا إِلَٰهَ إِلَّا اللَّهُ';
+const EL_LA_MABUDA_BIHAQQ_ILLA_ALLAH = 'لَا مَعْبُودَ بِحَقٍّ إِلَّا اللَّهَ';
 
 const ELEVENLABS_PHRASE_RULES = [
-  [/شهادة أن لا إله إلا الله/g, 'شَهَادَةُ أَنْ لَا إِلَهَ إِلَّا اللّٰه'],
-  [/شهادة ان لا اله الا الله/g, 'شَهَادَةُ أَنْ لَا إِلَهَ إِلَّا اللّٰه'],
+  [/شهادة أن لا إله إلا الله/g, 'شَهَادَةُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ'],
+  [/شهادة ان لا اله الا الله/g, 'شَهَادَةُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ'],
   [/لا إله إلا الله/g, EL_LA_ILAHA_ILLA_ALLAH],
   [/لا اله الا الله/g, EL_LA_ILAHA_ILLA_ALLAH],
   [/لا معبود بحق إلا الله/g, EL_LA_MABUDA_BIHAQQ_ILLA_ALLAH],
@@ -76,6 +78,21 @@ function normalizeAllahForElevenLabs(text) {
   s = s.replace(new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'), (_, pre) => `${pre}${EL_LILLAH}`);
   s = s.replace(new RegExp(`(^|[^\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`, 'g'), (_, pre) => `${pre}${EL_ALLAH}`);
   s = s.replace(/(^|[\s(«"'])تعالى(?=$|[\s).،؟!؛»"'])/g, '$1تَعَالَى');
+
+  const scrubHack = (hack, repl) => {
+    s = s.replace(
+      new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
+      (_, pre) => `${pre}${repl}`
+    );
+  };
+  scrubHack('اللاه', EL_ALLAH);
+  scrubHack('للاه', EL_LILLAH);
+  scrubHack('باللاه', EL_BILLAH);
+  scrubHack('واللاه', EL_WALLAH);
+  scrubHack('فاللاه', EL_FALLAH);
+  scrubHack('تاللاه', EL_TALLAH);
+  scrubHack('كاللاه', EL_KALLAH);
+
   return s;
 }
 
@@ -102,6 +119,8 @@ function applyWordLexicon(text) {
 function normalizeForElevenLabs(text) {
   return applyWordLexicon(normalizeAllahForElevenLabs(applyPhraseRules(stripTtsPunctuation(text))));
 }
+
+export { normalizeForElevenLabs };
 
 export function elevenLabsConfigured(env) {
   return !!String(env?.ELEVENLABS_API_KEY || '').trim();
