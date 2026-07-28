@@ -19,9 +19,36 @@ const GOOGLE_FALILLAH = 'فَلِلّٰه';
 const GOOGLE_ILLA_ALLAH = 'إِلَّا اللّٰه';
 const GOOGLE_LA_ILAHA_ILLA_ALLAH = 'لَا إِلَهَ إِلَّا اللّٰه';
 const GOOGLE_LA_MABUDA_BIHAQQ_ILLA_ALLAH = 'لَا مَعْبُودَ بِحَقٍّ إِلَّا اللّٰه';
+const GOOGLE_PHRASE_RULES = [
+  [/شهادة أن لا إله إلا الله/g, 'شَهَادَةُ أَنْ لَا إِلَهَ إِلَّا اللّٰه'],
+  [/شهادة ان لا اله الا الله/g, 'شَهَادَةُ أَنْ لَا إِلَهَ إِلَّا اللّٰه'],
+  [/لا إله إلا الله/g, GOOGLE_LA_ILAHA_ILLA_ALLAH],
+  [/لا اله الا الله/g, GOOGLE_LA_ILAHA_ILLA_ALLAH],
+  [/لا معبود بحق إلا الله/g, GOOGLE_LA_MABUDA_BIHAQQ_ILLA_ALLAH],
+  [/لا معبود بحق الا الله/g, GOOGLE_LA_MABUDA_BIHAQQ_ILLA_ALLAH],
+  [/إلا الله/g, GOOGLE_ILLA_ALLAH],
+  [/الا الله/g, GOOGLE_ILLA_ALLAH],
+  [/إفراد الله بالعبادة/g, `إِفْرَادُ ${GOOGLE_ALLAH} بِالْعِبَادَةِ`],
+  [/افراد الله بالعباده/g, `إِفْرَادُ ${GOOGLE_ALLAH} بِالْعِبَادَةِ`],
+  [/لعن الله من ذبح لغير الله/g, `لَعَنَ ${GOOGLE_ALLAH} مَنْ ذَبَحَ لِغَيْرِ ${GOOGLE_ALLAH}`],
+  [/بالله عليك/g, `${GOOGLE_BILLAH} عَلَيْكَ`],
+  [/والله أعلم/g, `${GOOGLE_WALLAH} أَعْلَمُ`],
+  [/والله اعلم/g, `${GOOGLE_WALLAH} أَعْلَمُ`],
+  [/إن شاء الله/g, `إِنْ شَاءَ ${GOOGLE_ALLAH}`],
+  [/ان شاء الله/g, `إِنْ شَاءَ ${GOOGLE_ALLAH}`],
+  [/ما شاء الله/g, `مَا شَاءَ ${GOOGLE_ALLAH}`],
+];
 
 function stripHarakat(text) {
   return String(text || '').replace(GOOGLE_HARAKAT_RE, '');
+}
+
+function applyGooglePhraseRules(text) {
+  let s = String(text || '');
+  for (const [pattern, replacement] of GOOGLE_PHRASE_RULES) {
+    s = s.replace(pattern, replacement);
+  }
+  return s;
 }
 
 function normalizeAllahForGoogleTts(text) {
@@ -117,7 +144,11 @@ function stripTtsPunctuation(text) {
 }
 
 function buildGoogleSsml(text) {
-  const clean = applyGooglePronunciationLexicon(normalizeAllahForGoogleTts(stripTtsPunctuation(text)));
+  const clean = applyGooglePronunciationLexicon(
+    normalizeAllahForGoogleTts(
+      applyGooglePhraseRules(stripTtsPunctuation(text))
+    )
+  );
   return (
     `<speak version="1.0" xml:lang="ar-XA">` +
     `<prosody rate="92%">${escapeXml(clean)}</prosody>` +
