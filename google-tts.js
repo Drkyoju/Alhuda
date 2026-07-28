@@ -16,6 +16,9 @@ const GOOGLE_TALLAH = 'تَاللَّه';
 const GOOGLE_KALLAH = 'كَاللَّه';
 const GOOGLE_WALILLAH = 'وَلِلَّه';
 const GOOGLE_FALILLAH = 'فَلِلَّه';
+const GOOGLE_ILLA_ALLAH = 'إِلَّا اللَّه';
+const GOOGLE_LA_ILAHA_ILLA_ALLAH = 'لَا إِلَهَ إِلَّا اللَّه';
+const GOOGLE_LA_MABUDA_BIHAQQ_ILLA_ALLAH = 'لَا مَعْبُودَ بِحَقٍّ إِلَّا اللَّه';
 
 function stripHarakat(text) {
   return String(text || '').replace(GOOGLE_HARAKAT_RE, '');
@@ -26,6 +29,9 @@ function normalizeAllahForGoogleTts(text) {
   let s = String(text || '');
 
   s = s.replace(/\uFDF2/g, GOOGLE_ALLAH);
+  s = s.replace(new RegExp(`ل${H}ا${H}\\s+إ${H}ل${H}ه${H}\\s+إ${H}ل${H}[اأإآٱ]?${H}\\s+[اأإآٱ]${H}ل${H}ل${H}ه`, 'g'), GOOGLE_LA_ILAHA_ILLA_ALLAH);
+  s = s.replace(new RegExp(`إ${H}ل${H}[اأإآٱ]?${H}\\s+[اأإآٱ]${H}ل${H}ل${H}ه`, 'g'), GOOGLE_ILLA_ALLAH);
+  s = s.replace(new RegExp(`ل${H}ا${H}\\s+م${H}ع${H}ب${H}و${H}د${H}\\s+ب${H}ح${H}ق${H}\\s+إ${H}ل${H}[اأإآٱ]?${H}\\s+[اأإآٱ]${H}ل${H}ل${H}ه`, 'g'), GOOGLE_LA_MABUDA_BIHAQQ_ILLA_ALLAH);
   s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), GOOGLE_ALLAHUMMA);
 
   s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
@@ -67,6 +73,8 @@ function normalizeAllahForGoogleTts(text) {
   scrubHack('فاللاه', GOOGLE_FALLAH);
   scrubHack('تاللاه', GOOGLE_TALLAH);
   scrubHack('كاللاه', GOOGLE_KALLAH);
+  scrubHack('الا الله', GOOGLE_ILLA_ALLAH);
+  scrubHack('إلا الله', GOOGLE_ILLA_ALLAH);
 
   return s.replace(/(^|[\s(«"'])تعالى(?=$|[\s).،؟!؛»"'])/g, '$1تَعَالَى');
 }
@@ -84,6 +92,8 @@ function applyGooglePronunciationLexicon(text) {
     if (bare === 'فالله') return GOOGLE_FALLAH;
     if (bare === 'تالله') return GOOGLE_TALLAH;
     if (bare === 'كالله') return GOOGLE_KALLAH;
+    if (bare === 'إلاالله' || bare === 'الاالله') return GOOGLE_ILLA_ALLAH;
+    if (bare === 'لاإلهإلاالله' || bare === 'لاالهالاالله' || bare === 'لاالهإلاالله') return GOOGLE_LA_ILAHA_ILLA_ALLAH;
     if (bare === 'تعالى') return 'تَعَالَى';
     return token;
   });
