@@ -213,15 +213,22 @@ function normalizeForAzure(text) {
   return normalizeAllahForTts(s);
 }
 
-function buildSsml(text, voice) {
+/** Public base for Azure to fetch our PLS lexicon (must be absolute HTTPS). */
+const DEFAULT_PUBLIC_BASE = 'https://alhuda.ryodan71.workers.dev';
+const ALLAH_LEXICON_PATH = '/lexicons/ar-sa-allah.xml';
+
+function buildSsml(text, voice, { lexiconUri } = {}) {
   const lang = String(voice).startsWith('ar-EG') ? 'ar-EG' : 'ar-SA';
-  // Mild slowdown only — heavy rate + per-token wrapping made Allah sound wrong/choppy.
   const rate = '-8%';
   const body = textToSsmlBody(normalizeForAzure(text));
+  const lexiconTag = lexiconUri
+    ? `<lexicon uri="${escapeXml(lexiconUri)}"/>`
+    : '';
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +
     `<voice name="${escapeXml(voice)}">` +
     `<lang xml:lang="${lang}">` +
+    lexiconTag +
     `<prosody rate="${rate}">${body}</prosody>` +
     `</lang>` +
     `</voice></speak>`
@@ -235,33 +242,31 @@ export async function synthesizeAzureArabicSpeech(text, voiceShortName, env) {
     throw new Error('Azure Speech not configured (missing AZURE_SPEECH_KEY / AZURE_SPEECH_REGION)');
   }
   const voice = (voiceShortName || DEFAULT_AZURE_ARABIC_VOICE).trim() || DEFAULT_AZURE_ARABIC_VOICE;
+  const base = String(env?.PUBLIC_BASE_URL || DEFAULT_PUBLIC_BASE).replace(/\/$/, '');
+  const lexiconUri = `${base}${ALLAH_LEXICON_PATH}`;
   const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
-  const res = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Ocp-Apim-Subscription-Key': key,
-      'Content-Type': 'application/ssml+xml',
-      'X-Microsoft-OutputFormat': OUTPUT_FORMAT,
-      'User-Agent': 'AlhudaApp',
-    },
-    body: buildSsml(text, voice),
-  });
+
+  async function post(ssml, format = OUTPUT_FORMAT) {
+    return fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Ocp-Apim-Subscription-Key': key,
+        'Content-Type': 'application/ssml+xml',
+        'X-Microsoft-OutputFormat': format,
+        'User-Agent': 'AlhudaApp',
+      },
+      body: ssml,
+    });
+  }
+
+  // Prefer lexicon so Hamed says الله with forced IPA (same voice, correct phonemes).
+  let res = await post(buildSsml(text, voice, { lexiconUri }));
+  if (!res.ok && res.status === 400) {
+    // Lexicon fetch/parse failed — fall back to plain Hamed SSML.
+    console.warn('[tts] lexicon SSML rejected, retrying without lexicon');
+    res = await post(buildSsml(text, voice, {}), 'audio-24khz-160kbitrate-mono-mp3');
+  }
   if (!res.ok) {
-    if (res.status === 400) {
-      const retry = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Ocp-Apim-Subscription-Key': key,
-          'Content-Type': 'application/ssml+xml',
-          'X-Microsoft-OutputFormat': 'audio-24khz-160kbitrate-mono-mp3',
-          'User-Agent': 'AlhudaApp',
-        },
-        body: buildSsml(text, voice),
-      });
-      if (retry.ok) return retry.body;
-      const d2 = await retry.text().catch(() => '');
-      throw new Error(`Azure TTS ${retry.status}: ${d2.slice(0, 180)}`);
-    }
     const detail = await res.text().catch(() => '');
     throw new Error(`Azure TTS ${res.status}: ${detail.slice(0, 180)}`);
   }

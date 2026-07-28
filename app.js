@@ -1322,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v22';
+const TTS_CACHE_VER = 'v23';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1331,9 +1331,11 @@ const TTS_IDB_NAME = 'alhudaTtsCache';
 const TTS_IDB_STORE = 'audio';
 
 /**
- * Quran word-by-word clips for الله-family (same idea as Hudhaify ayahs).
- * Azure cannot say Allāh correctly; these clips do.
+ * Quran word-by-word clips for الله-family.
+ * OFF by default: we now force Hamed via Azure custom lexicon (same voice).
+ * Set true only if lexicon fails and mixed-voice clips are preferred.
  */
+const USE_ALLAH_QURAN_CLIPS = false;
 const ALLAH_PRON_CLIPS = {
   اللهم: 'audio/pron/allahumma.mp3?v=2',
   بالله: 'audio/pron/billah.mp3?v=2',
@@ -1357,6 +1359,8 @@ let allahPronWarmPromise = null;
 function splitTtsWithAllahPron(text) {
   const s = String(text || '').trim();
   if (!s) return [];
+  // Pure Hamed path (lexicon on the Worker) — no clip splicing.
+  if (!USE_ALLAH_QURAN_CLIPS) return [{ type: 'tts', text: s }];
   const parts = [];
   let last = 0;
   ALLAH_PRON_RE.lastIndex = 0;
