@@ -21,138 +21,23 @@ function escapeXml(text) {
 }
 
 /**
- * TTS orthography for Allāh-family (NOT fake «اللاه»).
- * Prefer فتحة on the geminated لام instead of ألف خنجرية (U+0670):
- * HamedNeural often mangles dagger-alef forms like لِلّٰه.
- * Case endings help the neural voice lock the long ā: اللَّهُ / لِلَّهِ.
+ * Allah-family: send BARE undiacritized Arabic only.
+ * Heavy tashkeel + slow SSML made Hamed draw it out like «اللاه».
+ * Azure’s built-in lexicon handles plain الله / لله / بالله better.
  */
-const ALLAH = '\u0627\u0644\u0644\u0651\u064E\u0647\u064F'; // اللَّهُ
-const ALLAHUMMA = '\u0627\u0644\u0644\u0651\u064E\u0647\u064F\u0645\u0651\u064E'; // اللَّهُمَّ
-const LILLAH = '\u0644\u0650\u0644\u0651\u064E\u0647\u0650'; // لِلَّهِ
-const BILLAH = '\u0628\u0650\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // بِاللَّهِ
-const WALLAH = '\u0648\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // وَاللَّهِ
-const FALLAH = '\u0641\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // فَاللَّهِ
-const TALLAH = '\u062A\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // تَاللَّهِ
-const KALLAH = '\u0643\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650'; // كَاللَّهِ
-const WALILLAH = '\u0648\u064E' + LILLAH; // وَلِلَّهِ (ولله — no alef, ≠ والله)
-const FALILLAH = '\u0641\u064E' + LILLAH; // فَلِلَّهِ
-
-/** Unicode ligature ﷲ — some neural voices special-case this glyph. */
+const ALLAH = 'الله';
+const ALLAHUMMA = 'اللهم';
+const LILLAH = 'لله';
+const BILLAH = 'بالله';
+const WALLAH = 'والله';
+const FALLAH = 'فالله';
+const TALLAH = 'تالله';
+const KALLAH = 'كالله';
+const WALILLAH = 'ولله';
+const FALILLAH = 'فلله';
 const ALLAH_LIGATURE = '\uFDF2';
 
-/** Spoken SSML body — punctuation stripped; Allah tokens slowed + lightly emphasized. */
-function textToSsmlBody(text) {
-  const clean = String(text || '')
-    .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  // Match normalized Allah-family forms (including ligature + legacy dagger variants).
-  const daggerAllah = '\u0627\u0644\u0644\u0651\u0670\u0647';
-  const daggerLillah = '\u0644\u0650\u0644\u0651\u0670\u0647';
-  const re = new RegExp(
-    `(${[
-      ALLAHUMMA,
-      BILLAH,
-      WALLAH,
-      FALLAH,
-      TALLAH,
-      KALLAH,
-      WALILLAH,
-      FALILLAH,
-      LILLAH,
-      ALLAH,
-      daggerLillah,
-      daggerAllah,
-      ALLAH_LIGATURE,
-    ].join('|')})`,
-    'g'
-  );
-
-  let out = '';
-  let last = 0;
-  let m;
-  while ((m = re.exec(clean))) {
-    if (m.index > last) out += escapeXml(clean.slice(last, m.index));
-    let tok = m[0];
-    if (tok === ALLAH_LIGATURE || tok === daggerAllah) tok = ALLAH;
-    else if (tok === daggerLillah) tok = LILLAH;
-    // لله especially needs a clear lock — slower + mild emphasis, no IPA/sub hacks.
-    const rate = tok === LILLAH || tok === WALILLAH || tok === FALILLAH ? '-36%' : '-28%';
-    out +=
-      `<break time="60ms"/>` +
-      `<emphasis level="moderate"><prosody rate="${rate}">${escapeXml(tok)}</prosody></emphasis>` +
-      `<break time="60ms"/>`;
-    last = m.index + m[0].length;
-  }
-  if (last < clean.length) out += escapeXml(clean.slice(last));
-  return out;
-}
-
-/**
- * Normalize every الله-family token for Azure (فتحة + إعراب, not dagger-alef).
- * Must stay in sync with app.js normalizeAllahForTts.
- */
-function normalizeAllahForTts(text) {
-  const H = '[\u064B-\u065F\u0670]*';
-  let s = String(text || '');
-
-  // Already-normalized / ligature → canonical
-  s = s.replace(new RegExp(ALLAH_LIGATURE, 'g'), ALLAH);
-
-  // اللهم first
-  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);
-
-  // ب|و|ف|ك|ت + الله — alef REQUIRED (otherwise ولله «wa-lillāh» becomes وَاللَّهِ).
-  // Allow harakat right after the prefix letter (بِالله).
-  s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
-    if (p === 'ب') return BILLAH;
-    if (p === 'و') return WALLAH;
-    if (p === 'ف') return FALLAH;
-    if (p === 'ت') return TALLAH;
-    return KALLAH;
-  });
-
-  // ولله / فلله (no alef) → وَلِلَّهِ / فَلِلَّهِ
-  s = s.replace(
-    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])([وف])${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre, p) => `${pre}${p === 'و' ? WALILLAH : FALILLAH}`
-  );
-
-  // لله
-  s = s.replace(
-    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre) => `${pre}${LILLAH}`
-  );
-
-  // bare الله — only at token start (do not re-write inside بِاللَّهِ / وَاللَّهِ)
-  s = s.replace(
-    new RegExp(
-      `(^|[^\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`,
-      'g'
-    ),
-    (_, pre) => `${pre}${ALLAH}`
-  );
-  // Scrub legacy whole-token hacks only — never touch للاهتداء.
-  const scrubHack = (hack, repl) => {
-    s = s.replace(
-      new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
-      (_, p) => `${p}${repl}`
-    );
-  };
-  scrubHack('اللاه', ALLAH);
-  scrubHack('للاه', LILLAH);
-  scrubHack('باللاه', BILLAH);
-  scrubHack('واللاه', WALLAH);
-  scrubHack('فاللاه', FALLAH);
-  scrubHack('تاللاه', TALLAH);
-  scrubHack('كاللاه', KALLAH);
-
-  return s;
-}
-
-/** Extra pronunciation anchors (bare → spoken). Allah family uses dagger-alef forms. */
-const AZURE_PRON_LEXICON = [
+const ALLAH_BARE_BY_STRIPPED = new Map([
   ['الله', ALLAH],
   ['اللهم', ALLAHUMMA],
   ['لله', LILLAH],
@@ -163,10 +48,47 @@ const AZURE_PRON_LEXICON = [
   ['فالله', FALLAH],
   ['تالله', TALLAH],
   ['كالله', KALLAH],
+  // legacy TTS hacks → correct bare forms
   ['اللاه', ALLAH],
   ['للاه', LILLAH],
   ['باللاه', BILLAH],
   ['واللاه', WALLAH],
+  ['فاللاه', FALLAH],
+  ['تاللاه', TALLAH],
+  ['كاللاه', KALLAH],
+]);
+
+function stripHarakatLocal(s) {
+  return String(s || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '');
+}
+
+/** Flatten Allah-family tokens to bare orthography; leave other words alone. */
+function normalizeAllahForTts(text) {
+  return String(text || '').replace(/[\u0621-\u0671\u064B-\u065F\u0670\uFDF2]+/g, (tok) => {
+    if (tok === ALLAH_LIGATURE) return ALLAH;
+    const bare = stripHarakatLocal(tok);
+    return ALLAH_BARE_BY_STRIPPED.get(bare) || tok;
+  });
+}
+
+/** Spoken SSML body — punctuation stripped; NO per-token slowdown/emphasis. */
+function textToSsmlBody(text) {
+  const clean = String(text || '')
+    .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return escapeXml(clean);
+}
+
+/** Extra pronunciation anchors (bare → spoken). Allah stays bare — no forced tashkeel. */
+const AZURE_PRON_LEXICON = [
+  ['اللاه', ALLAH],
+  ['للاه', LILLAH],
+  ['باللاه', BILLAH],
+  ['واللاه', WALLAH],
+  ['فاللاه', FALLAH],
+  ['تاللاه', TALLAH],
+  ['كاللاه', KALLAH],
   ['التوحيد', 'التَّوْحِيدُ'],
   ['توحيد', 'تَوْحِيدُ'],
   ['الألوهية', 'الْأُلُوهِيَّةِ'],
@@ -195,10 +117,6 @@ const AZURE_PRON_LEXICON = [
   ['الطيرة', 'الطِّيَرَةُ'],
   ['تعالى', 'تَعَالَى'],
 ];
-
-function stripHarakatLocal(s) {
-  return String(s || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '');
-}
 
 function applyAzurePronLexicon(text) {
   return String(text || '').replace(/[\u0621-\u0671\u064B-\u065F\u0670\uFDF2]+/g, (tok) => {
@@ -258,7 +176,7 @@ function normalizeForAzure(text) {
 
 function buildSsml(text, voice) {
   const lang = String(voice).startsWith('ar-EG') ? 'ar-EG' : 'ar-SA';
-  const rate = '-18%';
+  const rate = '-5%';
   const body = textToSsmlBody(normalizeForAzure(text));
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +

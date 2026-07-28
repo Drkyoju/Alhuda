@@ -1322,7 +1322,7 @@ function toggleSound() {
 const TTS_VOICE = 'ar-SA-HamedNeural';
 const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v19';
+const TTS_CACHE_VER = 'v20';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1712,66 +1712,36 @@ function sanitizeTtsText(text) {
 }
 
 /**
- * Rewrite الله-family for Azure TTS: فتحة + حركة إعراب (اللَّهُ / لِلَّهِ).
- * Avoid ألف خنجرية — Hamed often mangles لِلّٰه. Never use fake «اللاه».
+ * Flatten الله-family to bare orthography for TTS.
+ * Forced tashkeel + slow SSML made Azure draw الله out like «اللاه».
  * Sync with azure-tts.js.
  */
 function normalizeAllahForTts(text) {
-  const H = '[\u064B-\u065F\u0670]*';
-  const ALLAH = '\u0627\u0644\u0644\u0651\u064E\u0647\u064F'; // اللَّهُ
-  const ALLAHUMMA = '\u0627\u0644\u0644\u0651\u064E\u0647\u064F\u0645\u0651\u064E';
-  const LILLAH = '\u0644\u0650\u0644\u0651\u064E\u0647\u0650'; // لِلَّهِ
-  const BILLAH = '\u0628\u0650\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
-  const WALLAH = '\u0648\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
-  const FALLAH = '\u0641\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
-  const TALLAH = '\u062A\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
-  const KALLAH = '\u0643\u064E\u0627\u0644\u0644\u0651\u064E\u0647\u0650';
-  const WALILLAH = '\u0648\u064E' + LILLAH; // وَلِلَّهِ (ولله — no alef, ≠ والله)
-  const FALILLAH = '\u0641\u064E' + LILLAH; // فَلِلَّهِ
-  let s = String(text || '');
-  s = s.replace(/\uFDF2/g, ALLAH); // ﷲ ligature
-  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);
-  // ب|و|ف|ك|ت + الله — alef REQUIRED (otherwise ولله «wa-lillāh» becomes وَاللَّهِ).
-  // Allow harakat right after the prefix letter (بِالله).
-  s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
-    if (p === 'ب') return BILLAH;
-    if (p === 'و') return WALLAH;
-    if (p === 'ف') return FALLAH;
-    if (p === 'ت') return TALLAH;
-    return KALLAH;
-  });
-  // ولله / فلله (no alef) → وَلِلَّهِ / فَلِلَّهِ
-  s = s.replace(
-    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])([وف])${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre, p) => `${pre}${p === 'و' ? WALILLAH : FALILLAH}`
-  );
-  s = s.replace(
-    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre) => `${pre}${LILLAH}`
-  );
-  // bare الله — only at token start (do not re-write inside بِاللَّهِ / وَاللَّهِ)
-  s = s.replace(
-    new RegExp(
-      `(^|[^\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`,
-      'g'
-    ),
-    (_, pre) => `${pre}${ALLAH}`
-  );
-  // Scrub legacy whole-token hacks only — never touch للاهتداء etc.
-  const scrubHack = (hack, repl) => {
-    s = s.replace(
-      new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
-      (_, p) => `${p}${repl}`
-    );
+  const ALLAH_LIGATURE = '\uFDF2';
+  const bareByStripped = {
+    الله: 'الله',
+    اللهم: 'اللهم',
+    لله: 'لله',
+    ولله: 'ولله',
+    فلله: 'فلله',
+    بالله: 'بالله',
+    والله: 'والله',
+    فالله: 'فالله',
+    تالله: 'تالله',
+    كالله: 'كالله',
+    اللاه: 'الله',
+    للاه: 'لله',
+    باللاه: 'بالله',
+    واللاه: 'والله',
+    فاللاه: 'فالله',
+    تاللاه: 'تالله',
+    كاللاه: 'كالله',
   };
-  scrubHack('اللاه', ALLAH);
-  scrubHack('للاه', LILLAH);
-  scrubHack('باللاه', BILLAH);
-  scrubHack('واللاه', WALLAH);
-  scrubHack('فاللاه', FALLAH);
-  scrubHack('تاللاه', TALLAH);
-  scrubHack('كاللاه', KALLAH);
-  return s;
+  return String(text || '').replace(/[\u0621-\u0671\u064B-\u065F\u0670\uFDF2]+/g, (tok) => {
+    if (tok === ALLAH_LIGATURE) return 'الله';
+    const bare = String(tok).replace(/[\u064B-\u065F\u0670\u0640]/g, '');
+    return bareByStripped[bare] || tok;
+  });
 }
 
 const ARABIC_HARAKAT_RE = /[\u064B-\u065F\u0670\u0610-\u061A]/;
