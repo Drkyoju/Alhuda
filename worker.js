@@ -16,6 +16,7 @@ import {
   azureSpeechConfigured,
   synthesizeAzureArabicSpeech,
 } from './azure-tts.js';
+import { bakedTtsAssetPath, BAKED_TTS_VOICE } from './baked-tts.js';
 
 /** Lightweight in-isolate error counters (reset when isolate recycles). */
 const apiErrorCounters = {
@@ -71,16 +72,22 @@ function verseKeyToGlobalAyahNumW(surah, ayah) {
 async function handleTtsStatus(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
+  const bakedOnly = String(env?.BAKED_TTS_ONLY || '').trim() === '1';
   const eleven = elevenLabsConfigured(env);
   const google = googleTtsConfigured(env);
   const azure = azureSpeechConfigured(env);
   return new Response(JSON.stringify({
     ok: true,
+    bakedTtsOnly: bakedOnly,
     elevenLabsConfigured: eleven,
     googleConfigured: google,
     azureConfigured: azure,
-    provider: eleven ? 'elevenlabs' : google ? 'google' : azure ? 'azure' : 'edge',
-    voice: eleven
+    provider: bakedOnly
+      ? 'baked'
+      : eleven ? 'elevenlabs' : google ? 'google' : azure ? 'azure' : 'edge',
+    voice: bakedOnly
+      ? BAKED_TTS_VOICE
+      : eleven
       ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
       : google
         ? DEFAULT_GOOGLE_ARABIC_VOICE
@@ -390,7 +397,32 @@ async function handleTts(request, env) {
         ? DEFAULT_AZURE_ARABIC_VOICE
         : DEFAULT_ARABIC_VOICE);
 
+  const bakedOnly = String(env?.BAKED_TTS_ONLY || '').trim() === '1';
+  const lookupVoice =
+    voice === BAKED_TTS_VOICE || voice.includes('Neural') ? BAKED_TTS_VOICE : voice;
+
   try {
+    const bakedPath = await bakedTtsAssetPath(text, lookupVoice);
+    const assetRes = await env.ASSETS.fetch(new URL(bakedPath, request.url));
+    if (assetRes.ok) {
+      return new Response(assetRes.body, {
+        status: 200,
+        headers: {
+          ...cors,
+          'Content-Type': 'audio/mpeg',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+          'X-TTS-Provider': 'baked',
+          'X-TTS-Chars': String(text.length),
+        },
+      });
+    }
+    if (bakedOnly) {
+      return new Response(JSON.stringify({ ok: false, error: 'Baked TTS miss' }), {
+        status: 404,
+        headers: { ...cors, ...JSON_HEADERS },
+      });
+    }
+
     let stream;
     let provider = 'edge';
     if (elevenLabsConfigured(env)) {

@@ -1,0 +1,13 @@
+{
+  "version": "v29",
+  "voice": "ZCXYdzd5Evtsll2EdoCi",
+  "voiceLabel": "Yousef (ElevenLabs)",
+  "provider": "elevenlabs-baked",
+  "totalStrings": 2865,
+  "bakedThisRun": 2822,
+  "skippedExisting": 42,
+  "failed": 0,
+  "approxChars": 109095,
+  "generatedAt": "2026-07-28T16:31:26.871Z",
+  "note": "Yousef MSA via live worker bake; includes smoke phrase السلام عليكم"
+}

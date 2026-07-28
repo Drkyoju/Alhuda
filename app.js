@@ -1319,10 +1319,11 @@ function toggleSound() {
 }
 
 /* ── Voice reading (Azure Hamed — best Arabic pronunciation; Zariyah fallback) ── */
-const TTS_VOICE = 'ar-SA-HamedNeural';
-const TTS_VOICE_FALLBACK = 'ar-SA-ZariyahNeural';
+/** Yousef (ElevenLabs) — primary Arabic TTS; baked MP3s use this voice id in cache keys. */
+const TTS_VOICE = 'ZCXYdzd5Evtsll2EdoCi';
+const TTS_VOICE_FALLBACK = 'ar-SA-HamedNeural';
 /** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
-const TTS_CACHE_VER = 'v28';
+const TTS_CACHE_VER = 'v29';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -1513,6 +1514,23 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
     const objectUrl = URL.createObjectURL(cached);
     rememberTtsObjectUrl(key, objectUrl);
     return cached;
+  }
+  // Static baked MP3s (free — no ElevenLabs / paid API).
+  if (typeof bakedTtsAssetPath === 'function') {
+    try {
+      const bakedUrl = await bakedTtsAssetPath(text, voice);
+      const bakedRes = await fetch(bakedUrl, { signal, cache: 'force-cache' });
+      if (bakedRes.ok) {
+        const blob = await bakedRes.blob();
+        if (blob.size > 500) {
+          rememberTtsObjectUrl(key, URL.createObjectURL(blob));
+          void putTtsBlobInIdb(key, blob);
+          return blob;
+        }
+      }
+    } catch {
+      /* fall through to live TTS */
+    }
   }
   // Offline: play from memory/IDB only — never turn voice off globally.
   if (navigator.onLine === false) {

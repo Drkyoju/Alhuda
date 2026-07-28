@@ -5,6 +5,7 @@ main = "worker.js"
 
 [vars]
 FEEDBACK_NOTIFY_EMAIL = "hd.hk1444920@gmail.com"
+BAKED_TTS_ONLY = "1"
 
 [assets]
 directory = "."
