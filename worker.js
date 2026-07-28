@@ -2,6 +2,11 @@ const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
 import { DEFAULT_ARABIC_VOICE, synthesizeArabicSpeech } from './edge-tts.js';
 import {
+  DEFAULT_ELEVENLABS_VOICE_ID,
+  elevenLabsConfigured,
+  synthesizeElevenLabsArabicSpeech,
+} from './elevenlabs-tts.js';
+import {
   DEFAULT_GOOGLE_ARABIC_VOICE,
   googleTtsConfigured,
   synthesizeGoogleArabicSpeech,
@@ -66,14 +71,22 @@ function verseKeyToGlobalAyahNumW(surah, ayah) {
 async function handleTtsStatus(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
+  const eleven = elevenLabsConfigured(env);
   const google = googleTtsConfigured(env);
   const azure = azureSpeechConfigured(env);
   return new Response(JSON.stringify({
     ok: true,
+    elevenLabsConfigured: eleven,
     googleConfigured: google,
     azureConfigured: azure,
-    provider: google ? 'google' : azure ? 'azure' : 'edge',
-    voice: google ? DEFAULT_GOOGLE_ARABIC_VOICE : azure ? DEFAULT_AZURE_ARABIC_VOICE : DEFAULT_ARABIC_VOICE,
+    provider: eleven ? 'elevenlabs' : google ? 'google' : azure ? 'azure' : 'edge',
+    voice: eleven
+      ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
+      : google
+        ? DEFAULT_GOOGLE_ARABIC_VOICE
+        : azure
+          ? DEFAULT_AZURE_ARABIC_VOICE
+          : DEFAULT_ARABIC_VOICE,
     errors: apiErrorCounters,
     isolateAzureChars,
     azureF0SoftLimit: 450000,
@@ -369,7 +382,9 @@ async function handleTts(request, env) {
 
   const voice = typeof body?.voice === 'string' && body.voice.trim()
     ? body.voice.trim()
-    : (googleTtsConfigured(env)
+    : (elevenLabsConfigured(env)
+      ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
+      : googleTtsConfigured(env)
       ? DEFAULT_GOOGLE_ARABIC_VOICE
       : azureSpeechConfigured(env)
         ? DEFAULT_AZURE_ARABIC_VOICE
@@ -378,7 +393,25 @@ async function handleTts(request, env) {
   try {
     let stream;
     let provider = 'edge';
-    if (googleTtsConfigured(env)) {
+    if (elevenLabsConfigured(env)) {
+      try {
+        stream = await synthesizeElevenLabsArabicSpeech(text, voice, env);
+        provider = 'elevenlabs';
+      } catch (elevenErr) {
+        console.warn('[tts] elevenlabs failed, falling back:', elevenErr);
+        if (googleTtsConfigured(env)) {
+          stream = await synthesizeGoogleArabicSpeech(text, DEFAULT_GOOGLE_ARABIC_VOICE, env);
+          provider = 'google-fallback';
+        } else if (azureSpeechConfigured(env)) {
+          stream = await synthesizeAzureArabicSpeech(text, DEFAULT_AZURE_ARABIC_VOICE, env);
+          provider = 'azure-fallback';
+          isolateAzureChars += text.length;
+        } else {
+          stream = await synthesizeArabicSpeech(text, DEFAULT_ARABIC_VOICE);
+          provider = 'edge-fallback';
+        }
+      }
+    } else if (googleTtsConfigured(env)) {
       try {
         stream = await synthesizeGoogleArabicSpeech(text, voice, env);
         provider = 'google';
