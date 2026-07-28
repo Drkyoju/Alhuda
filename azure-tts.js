@@ -37,52 +37,17 @@ const KALLAH = 'كالله';
 const WALILLAH = 'ولله'; // ≠ والله
 const FALILLAH = 'فلله';
 
-const ALLAH_AUDIO_CLIPS = {
-  [ALLAHUMMA]: 'audio/pron/allahumma.mp3?v=3',
-  [BILLAH]: 'audio/pron/billah.mp3?v=3',
-  [WALLAH]: 'audio/pron/wallah.mp3?v=3',
-  [FALLAH]: 'audio/pron/fallah.mp3?v=3',
-  [TALLAH]: 'audio/pron/tallah.mp3?v=3',
-  [KALLAH]: 'audio/pron/kallah.mp3?v=3',
-  [WALILLAH]: 'audio/pron/walillah.mp3?v=3',
-  [FALILLAH]: 'audio/pron/falillah.mp3?v=3',
-  [LILLAH]: 'audio/pron/lillah.mp3?v=3',
-  [ALLAH]: 'audio/pron/allah.mp3?v=3',
-};
-const ALLAH_AUDIO_KEYS = Object.keys(ALLAH_AUDIO_CLIPS);
-const ALLAH_AUDIO_RE = new RegExp(
-  `(^|[^\\u0621-\\u064A\\u0671])(${ALLAH_AUDIO_KEYS.join('|')})(?=[^\\u0621-\\u064A\\u0671]|$)`,
-  'g'
-);
-
 /**
- * Spoken SSML body.
- * Hamed misreads الله — inject short Quran WBW clips via <audio> inside the same
- * Azure synthesis stream so the sentence stays one continuous file (no client chop).
+ * Spoken SSML body — plain Hamed text only.
+ * Do NOT inject Quran <audio> clips: that made answers sound like a second voice
+ * whenever الله/لله/بالله appeared. Hamed still misreads الله; same-voice is preferred.
  */
-function textToSsmlBody(text, publicBase) {
+function textToSsmlBody(text) {
   const clean = String(text || '')
     .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  const base = String(publicBase || '').replace(/\/$/, '');
-  if (!base) return escapeXml(clean);
-
-  let out = '';
-  let last = 0;
-  ALLAH_AUDIO_RE.lastIndex = 0;
-  let m;
-  while ((m = ALLAH_AUDIO_RE.exec(clean))) {
-    const pre = m[1] || '';
-    const tok = m[2];
-    const tokStart = m.index + pre.length;
-    if (tokStart > last) out += escapeXml(clean.slice(last, tokStart));
-    const src = escapeXml(`${base}/${ALLAH_AUDIO_CLIPS[tok]}`);
-    out += `<audio src="${src}">${escapeXml(tok)}</audio>`;
-    last = tokStart + tok.length;
-  }
-  if (last < clean.length) out += escapeXml(clean.slice(last));
-  return out || escapeXml(clean);
+  return escapeXml(clean);
 }
 
 /**
@@ -252,14 +217,10 @@ function normalizeForAzure(text) {
   return normalizeAllahForTts(s);
 }
 
-/** Public base for Azure to fetch our PLS lexicon (must be absolute HTTPS). */
-const DEFAULT_PUBLIC_BASE = 'https://alhuda.ryodan71.workers.dev';
-
-function buildSsml(text, voice, { publicBase, useAllahAudio = true } = {}) {
+function buildSsml(text, voice) {
   const lang = String(voice).startsWith('ar-EG') ? 'ar-EG' : 'ar-SA';
   const rate = '-8%';
-  const base = useAllahAudio ? (publicBase || DEFAULT_PUBLIC_BASE) : '';
-  const body = textToSsmlBody(normalizeForAzure(text), base);
+  const body = textToSsmlBody(normalizeForAzure(text));
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +
     `<voice name="${escapeXml(voice)}">` +
@@ -277,7 +238,6 @@ export async function synthesizeAzureArabicSpeech(text, voiceShortName, env) {
     throw new Error('Azure Speech not configured (missing AZURE_SPEECH_KEY / AZURE_SPEECH_REGION)');
   }
   const voice = (voiceShortName || DEFAULT_AZURE_ARABIC_VOICE).trim() || DEFAULT_AZURE_ARABIC_VOICE;
-  const publicBase = String(env?.PUBLIC_BASE_URL || DEFAULT_PUBLIC_BASE).replace(/\/$/, '');
   const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
 
   async function post(ssml, format = OUTPUT_FORMAT) {
@@ -293,11 +253,9 @@ export async function synthesizeAzureArabicSpeech(text, voiceShortName, env) {
     });
   }
 
-  // Inline <audio> clips for الله — Hamed alone cannot say it correctly.
-  let res = await post(buildSsml(text, voice, { publicBase, useAllahAudio: true }));
+  let res = await post(buildSsml(text, voice));
   if (!res.ok && res.status === 400) {
-    console.warn('[tts] Allah audio SSML rejected, retrying plain Hamed');
-    res = await post(buildSsml(text, voice, { useAllahAudio: false }), 'audio-24khz-160kbitrate-mono-mp3');
+    res = await post(buildSsml(text, voice), 'audio-24khz-160kbitrate-mono-mp3');
   }
   if (!res.ok) {
     const detail = await res.text().catch(() => '');
