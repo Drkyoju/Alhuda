@@ -2,6 +2,11 @@ const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
 import { DEFAULT_ARABIC_VOICE, synthesizeArabicSpeech } from './edge-tts.js';
 import {
+  DEFAULT_GOOGLE_ARABIC_VOICE,
+  googleTtsConfigured,
+  synthesizeGoogleArabicSpeech,
+} from './google-tts.js';
+import {
   DEFAULT_AZURE_ARABIC_VOICE,
   azureSpeechConfigured,
   synthesizeAzureArabicSpeech,
@@ -61,12 +66,14 @@ function verseKeyToGlobalAyahNumW(surah, ayah) {
 async function handleTtsStatus(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
+  const google = googleTtsConfigured(env);
   const azure = azureSpeechConfigured(env);
   return new Response(JSON.stringify({
     ok: true,
+    googleConfigured: google,
     azureConfigured: azure,
-    provider: azure ? 'azure' : 'edge',
-    voice: azure ? DEFAULT_AZURE_ARABIC_VOICE : DEFAULT_ARABIC_VOICE,
+    provider: google ? 'google' : azure ? 'azure' : 'edge',
+    voice: google ? DEFAULT_GOOGLE_ARABIC_VOICE : azure ? DEFAULT_AZURE_ARABIC_VOICE : DEFAULT_ARABIC_VOICE,
     errors: apiErrorCounters,
     isolateAzureChars,
     azureF0SoftLimit: 450000,
@@ -362,12 +369,31 @@ async function handleTts(request, env) {
 
   const voice = typeof body?.voice === 'string' && body.voice.trim()
     ? body.voice.trim()
-    : (azureSpeechConfigured(env) ? DEFAULT_AZURE_ARABIC_VOICE : DEFAULT_ARABIC_VOICE);
+    : (googleTtsConfigured(env)
+      ? DEFAULT_GOOGLE_ARABIC_VOICE
+      : azureSpeechConfigured(env)
+        ? DEFAULT_AZURE_ARABIC_VOICE
+        : DEFAULT_ARABIC_VOICE);
 
   try {
     let stream;
     let provider = 'edge';
-    if (azureSpeechConfigured(env)) {
+    if (googleTtsConfigured(env)) {
+      try {
+        stream = await synthesizeGoogleArabicSpeech(text, voice, env);
+        provider = 'google';
+      } catch (googleErr) {
+        console.warn('[tts] google failed, falling back:', googleErr);
+        if (azureSpeechConfigured(env)) {
+          stream = await synthesizeAzureArabicSpeech(text, DEFAULT_AZURE_ARABIC_VOICE, env);
+          provider = 'azure-fallback';
+          isolateAzureChars += text.length;
+        } else {
+          stream = await synthesizeArabicSpeech(text, DEFAULT_ARABIC_VOICE);
+          provider = 'edge-fallback';
+        }
+      }
+    } else if (azureSpeechConfigured(env)) {
       try {
         stream = await synthesizeAzureArabicSpeech(text, voice, env);
         provider = 'azure';
