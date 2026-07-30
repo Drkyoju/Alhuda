@@ -5,6 +5,7 @@ import {
   DEFAULT_ELEVENLABS_VOICE_ID,
   elevenLabsConfigured,
   synthesizeElevenLabsArabicSpeech,
+  normalizeForElevenLabs,
 } from './elevenlabs-tts.js';
 import {
   DEFAULT_GOOGLE_ARABIC_VOICE,
@@ -373,13 +374,15 @@ async function handleTts(request, env) {
     });
   }
 
-  const text = typeof body?.text === 'string' ? body.text.trim() : '';
-  if (!text) {
+  const textRaw = typeof body?.text === 'string' ? body.text.trim() : '';
+  if (!textRaw) {
     return new Response(JSON.stringify({ ok: false, error: 'Missing text' }), {
       status: 400,
       headers: { ...cors, ...JSON_HEADERS },
     });
   }
+  // Align with bake keys + client prepareTtsPayload (keep اللَّهُ/ِ/َ).
+  const text = normalizeForElevenLabs(textRaw) || textRaw;
   if (text.length > TTS_MAX_CHARS) {
     return new Response(JSON.stringify({ ok: false, error: 'Text too long' }), {
       status: 400,

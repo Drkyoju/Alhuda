@@ -1318,24 +1318,24 @@ function toggleSound() {
   if (soundOn) playSound('correct');
 }
 
-/* ── Voice reading (Azure Hamed — best Arabic pronunciation; Zariyah fallback) ── */
+/* ── Voice reading (Yousef baked MP3s; no browser/Edge fallback for lesson TTS) ── */
 /** Yousef (ElevenLabs) — primary Arabic TTS; baked MP3s use this voice id in cache keys. */
 const TTS_VOICE = 'ZCXYdzd5Evtsll2EdoCi';
 const TTS_VOICE_FALLBACK = 'ar-SA-HamedNeural';
-/** Bump to invalidate IndexedDB/memory TTS blobs after quality pipeline changes. */
+/** Must match baked-tts.js / collect_tts_strings.mjs (file hashes use this ver). */
 const TTS_CACHE_VER = 'v29';
+/** Bump to drop stale IndexedDB blobs that may predate baked Yousef. */
+const TTS_IDB_NAME = 'alhudaTtsCache_v2';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
 const ttsPreloadedAudio = new Map(); // key -> HTMLAudioElement (decoded ahead of play)
-const TTS_IDB_NAME = 'alhudaTtsCache';
 const TTS_IDB_STORE = 'audio';
 
 /**
  * Quran word-by-word clips for الله-family.
- * OFF by default: we now force Hamed via Azure custom lexicon (same voice).
- * Set true only if lexicon fails and mixed-voice clips are preferred.
+ * OFF by default (Yousef baked TTS keeps case-aware اللَّهُ/ِ/َ).
  */
 const USE_ALLAH_QURAN_CLIPS = false;
 const ALLAH_PRON_CLIPS = {
@@ -1501,7 +1501,11 @@ function rememberTtsObjectUrl(key, objectUrl) {
 }
 
 async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
-  const key = ttsCacheKey(text, voice);
+  const lookupVoice =
+    voice === TTS_VOICE || /Neural|google|Wavenet/i.test(String(voice || ''))
+      ? TTS_VOICE
+      : voice;
+  const key = ttsCacheKey(text, lookupVoice);
   if (ttsBlobMemoryCache.has(key)) {
     // Object URL already warmed — avoid a second round-trip through fetch().
     try {
@@ -1509,16 +1513,10 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
       if (res.ok) return res.blob();
     } catch { /* fall through and re-fetch */ }
   }
-  const cached = await getTtsBlobFromIdb(key);
-  if (cached?.size) {
-    const objectUrl = URL.createObjectURL(cached);
-    rememberTtsObjectUrl(key, objectUrl);
-    return cached;
-  }
-  // Static baked MP3s (free — no ElevenLabs / paid API).
+  // Prefer static baked Yousef MP3s over IndexedDB (IDB may hold older wrong-provider audio).
   if (typeof bakedTtsAssetPath === 'function') {
     try {
-      const bakedUrl = await bakedTtsAssetPath(text, voice);
+      const bakedUrl = await bakedTtsAssetPath(text, lookupVoice);
       const bakedRes = await fetch(bakedUrl, { signal, cache: 'force-cache' });
       if (bakedRes.ok) {
         const blob = await bakedRes.blob();
@@ -1529,8 +1527,14 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
         }
       }
     } catch {
-      /* fall through to live TTS */
+      /* fall through */
     }
+  }
+  const cached = await getTtsBlobFromIdb(key);
+  if (cached?.size) {
+    const objectUrl = URL.createObjectURL(cached);
+    rememberTtsObjectUrl(key, objectUrl);
+    return cached;
   }
   // Offline: play from memory/IDB only — never turn voice off globally.
   if (navigator.onLine === false) {
@@ -1546,7 +1550,7 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
         const res = await fetch('/api/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, voice }),
+          body: JSON.stringify({ text, voice: lookupVoice }),
           signal,
         });
         if (res.status === 429 || res.status === 503) {
@@ -1557,8 +1561,12 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
         if (!res.ok) throw new Error(`tts failed:${res.status}`);
         const blob = await res.blob();
         if (!blob.size) throw new Error('empty audio');
+        // Only cache known-good baked/elevenlabs responses under the Yousef key.
+        const provider = (res.headers.get('X-TTS-Provider') || '').toLowerCase();
         rememberTtsObjectUrl(key, URL.createObjectURL(blob));
-        void putTtsBlobInIdb(key, blob);
+        if (provider === 'baked' || provider === 'elevenlabs') {
+          void putTtsBlobInIdb(key, blob);
+        }
         recordAzureTtsUsage(text.length, res.headers.get('X-TTS-Provider'));
         return blob;
       } catch (e) {
@@ -1604,7 +1612,10 @@ function prepareTtsPayload(text) {
   if (!cleaned) return '';
   // Hadith: speak the curated wording as-is — do not rewrite tokens via word map.
   if (isHadithPassage(cleaned)) {
-    return sanitizeTtsText(prepareArabicForSpeech(applyPronunciationLexicon(cleaned)));
+    const hadith = prepareArabicForSpeech(applyPronunciationLexicon(cleaned));
+    return sanitizeTtsText(
+      typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(hadith) : hadith
+    );
   }
   // Normal Q&A / explanation: full diacritics + curated lexicon + word map fill.
   let forTts = hasWellFormedTashkeel(cleaned)
@@ -1837,17 +1848,17 @@ async function refreshTtsProviderBadge() {
   }
 }
 
-/** Strip punctuation/symbols the neural voice vocalizes (e.g. ":" → "نقطتان"). Keeps Arabic harakat. */
+/** Strip punctuation/symbols the neural voice vocalizes (e.g. ":" → "نقطتان"). Keeps Arabic harakat.
+ *  Keep case-aware اللَّهُ/ِ/َ — collapsing to bare الله broke baked Yousef keys and fell
+ *  through to browser SpeechSynthesis (wrong voice, «اللاه»). */
 function sanitizeTtsText(text) {
-  return normalizeAllahForTts(
+  return scrubFakeAllahSpellings(
     (text || '')
       .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
-      .replace(/ﷺ/g, ' صلى الله عليه وسلم ')
-      .replace(/ﷻ/g, ' جل جلاله ')
+      // Keep ﷺ/ﷻ as-is — bake keys use the symbol, not expanded phrases.
       .replace(/رضي الله عنهما/g, ' رضي الله عنهما ')
       .replace(/رضي الله عنها/g, ' رضي الله عنها ')
       .replace(/رضي الله عنه/g, ' رضي الله عنه ')
-      // Skip punctuation entirely — never send to TTS (Arabic voices say «نقطة» etc.).
       .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
       .replace(/\s+/g, ' ')
       .trim()
@@ -1855,9 +1866,31 @@ function sanitizeTtsText(text) {
 }
 
 /**
- * Collapse الله-family to bare orthography for Azure TTS.
- * Heavy tashkeel + SSML chopping made Hamed say «اللاه» awkwardly.
- * Never use fake «اللاه» spellings. Sync with azure-tts.js.
+ * Remove only fake «اللاه» spellings. Do NOT strip harakat from اللَّهُ/اللَّهِ/اللَّهَ —
+ * Yousef baked MP3s are keyed on the iʿrāb forms.
+ */
+function scrubFakeAllahSpellings(text) {
+  let s = String(text || '');
+  s = s.replace(/\uFDF2/g, 'الله');
+  const scrubHack = (hack, repl) => {
+    s = s.replace(
+      new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
+      (_, p) => `${p}${repl}`
+    );
+  };
+  scrubHack('اللاه', 'الله');
+  scrubHack('للاه', 'لله');
+  scrubHack('باللاه', 'بالله');
+  scrubHack('واللاه', 'والله');
+  scrubHack('فاللاه', 'فالله');
+  scrubHack('تاللاه', 'تالله');
+  scrubHack('كاللاه', 'كالله');
+  return s;
+}
+
+/**
+ * Legacy bare-orthography normalize for Azure/Hamed only (not used for Yousef/baked).
+ * Kept for reference / emergency Hamed path.
  */
 function normalizeAllahForTts(text) {
   const H = '[\u064B-\u065F\u0670]*';
@@ -1897,20 +1930,7 @@ function normalizeAllahForTts(text) {
     ),
     (_, pre) => `${pre}${ALLAH}`
   );
-  const scrubHack = (hack, repl) => {
-    s = s.replace(
-      new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
-      (_, p) => `${p}${repl}`
-    );
-  };
-  scrubHack('اللاه', ALLAH);
-  scrubHack('للاه', LILLAH);
-  scrubHack('باللاه', BILLAH);
-  scrubHack('واللاه', WALLAH);
-  scrubHack('فاللاه', FALLAH);
-  scrubHack('تاللاه', TALLAH);
-  scrubHack('كاللاه', KALLAH);
-  return s;
+  return scrubFakeAllahSpellings(s);
 }
 
 const ARABIC_HARAKAT_RE = /[\u064B-\u065F\u0670\u0610-\u061A]/;
@@ -2132,18 +2152,18 @@ function stripForSpeech(text) {
   if (!cleaned) return '';
   // Hadith stays as-is (after dropping any embedded Quran markers).
   if (isHadithPassage(cleaned)) {
+    const hadith = prepareArabicForSpeech(removeQuranicVersesForSpeech(cleaned));
     return sanitizeTtsText(
-      prepareArabicForSpeech(removeQuranicVersesForSpeech(cleaned))
+      typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(hadith) : hadith
     );
   }
-  const forTts = applyWordDiacritics(
+  let forTts = applyWordDiacritics(
     hasWellFormedTashkeel(cleaned) ? cleaned : applyManualSpeechDiacritics(cleaned)
   );
-  return sanitizeTtsText(
-    prepareArabicForSpeech(
-      removeQuranicVersesForSpeech(forTts)
-    )
-  );
+  forTts = removeQuranicVersesForSpeech(forTts);
+  forTts = prepareArabicForSpeech(forTts);
+  forTts = typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(forTts) : forTts;
+  return sanitizeTtsText(forTts);
 }
 
 /** Remove Quranic ayat from TTS — hadith and lesson text stay. */
@@ -3292,14 +3312,10 @@ async function speakTtsSegment(text, btn, { keepBtnState = true, clearAfter = tr
           await speakTextCloud(part.text, btn, TTS_VOICE);
         } catch (e) {
           if (e.name === 'AbortError') throw e;
-          try {
-            await speakTextCloud(part.text, btn, TTS_VOICE_FALLBACK);
-          } catch (e2) {
-            if (e2.name === 'AbortError') throw e2;
-            clearTtsAudio(keepBtnState ? null : btn);
-            const ok = await speakTextBrowser(part.text, btn);
-            if (!ok) throw e2;
-          }
+          // Do NOT fall back to browser SpeechSynthesis — it is a different voice
+          // and commonly mispronounces الله. Soft-fail instead of wrong audio.
+          clearTtsAudio(keepBtnState ? null : btn);
+          throw e;
         }
       }
     }
