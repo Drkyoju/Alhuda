@@ -55,6 +55,15 @@ export function collectTtsStrings() {
   add('الْإِجَابَةُ الصَّحِيحَةُ');
   // Live API smoke (tests/api-live.spec.js) — bake exact raw string too.
   out.add('السلام عليكم');
+  // Standalone الله-family forms (also appear inside longer phrases).
+  for (const form of [
+    'اللَّهُ', 'اللَّهَ', 'اللَّهِ', 'اللَّهُمَّ',
+    'لِلَّهِ', 'بِاللَّهِ', 'وَاللَّهِ', 'فَاللَّهِ', 'تَاللَّهِ', 'كَاللَّهِ',
+    'وَلِلَّهِ', 'فَلِلَّهِ', 'عِنْدَ اللَّهِ',
+    'إِلَّا اللَّهَ', 'لَا إِلَٰهَ إِلَّا اللَّهُ',
+  ]) {
+    out.add(form);
+  }
 
   return [...out].sort((a, b) => a.length - b.length);
 }

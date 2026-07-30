@@ -407,7 +407,9 @@ async function handleTts(request, env) {
   try {
     const bakedPath = await bakedTtsAssetPath(text, lookupVoice);
     const assetRes = await env.ASSETS.fetch(new URL(bakedPath, request.url));
-    if (assetRes.ok) {
+    // SPA not_found can return index.html with 200 — reject non-audio.
+    const ctype = (assetRes.headers.get('content-type') || '').toLowerCase();
+    if (assetRes.ok && ctype.includes('audio')) {
       return new Response(assetRes.body, {
         status: 200,
         headers: {

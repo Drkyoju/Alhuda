@@ -1519,11 +1519,23 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
       const bakedUrl = await bakedTtsAssetPath(text, lookupVoice);
       const bakedRes = await fetch(bakedUrl, { signal, cache: 'force-cache' });
       if (bakedRes.ok) {
-        const blob = await bakedRes.blob();
-        if (blob.size > 500) {
-          rememberTtsObjectUrl(key, URL.createObjectURL(blob));
-          void putTtsBlobInIdb(key, blob);
-          return blob;
+        const ctype = (bakedRes.headers.get('content-type') || '').toLowerCase();
+        // SPA fallback may serve HTML for missing /tts-baked/* — never treat as audio.
+        if (!ctype.includes('audio') && !ctype.includes('mpeg') && !ctype.includes('octet-stream')) {
+          /* miss */
+        } else {
+          const blob = await bakedRes.blob();
+          if (blob.size > 500) {
+            const head = new Uint8Array(await blob.slice(0, 4).arrayBuffer());
+            const isMp3 =
+              (head[0] === 0xff && (head[1] & 0xe0) === 0xe0) ||
+              (head[0] === 0x49 && head[1] === 0x44 && head[2] === 0x33); // ID3
+            if (isMp3) {
+              rememberTtsObjectUrl(key, URL.createObjectURL(blob));
+              void putTtsBlobInIdb(key, blob);
+              return blob;
+            }
+          }
         }
       }
     } catch {
