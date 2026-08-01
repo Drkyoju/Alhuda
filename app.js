@@ -407,6 +407,9 @@ const LEVEL_CAPS = { easy: 80, medium: 100, hard: 120 };
 const ROUND_SIZE_OPTIONS = [10, 20, 30, 40];
 const LEVEL_FLOW = ['easy', 'medium', 'hard'];
 const LEVEL_LABELS_AR = { easy: 'سهل', medium: 'متوسط', hard: 'صعب', all: 'الكل' };
+/** Unlock next tier after this fraction of the current tier is solved (not 100%). */
+const TIER_UNLOCK_RATIO = 0.5;
+let tierCloudPushTimer = null;
 
 function isRealGameLocked() {
   return LOGIN_LOCKED && !state.demoMode;
@@ -664,24 +667,49 @@ function getTierProgress(book, level) {
   const key = stageProgressKey(book, level);
   const prog = ensureStageProgressEntry(key);
   const solved = prog.solvedIds.filter((id) => pool.some((q) => q.id === id)).length;
-  return { pool, prog, solved, total: pool.length, done: pool.length > 0 && solved >= pool.length };
+  const unlockNeed = unlockThreshold(pool.length);
+  return {
+    pool,
+    prog,
+    solved,
+    total: pool.length,
+    done: pool.length > 0 && solved >= pool.length,
+    unlockNeed,
+    unlockReady: pool.length === 0 || solved >= unlockNeed,
+  };
+}
+
+function unlockThreshold(total) {
+  if (!total) return 0;
+  return Math.max(1, Math.ceil(total * TIER_UNLOCK_RATIO));
+}
+
+function isTierReadyToUnlockNext(book, level) {
+  return getTierProgress(book, level).unlockReady;
 }
 
 function isLevelUnlocked(book, level) {
   if (level === 'easy' || level === 'all') return true;
-  if (level === 'medium') return getTierProgress(book, 'easy').done;
-  if (level === 'hard') return getTierProgress(book, 'easy').done && getTierProgress(book, 'medium').done;
+  if (level === 'medium') return isTierReadyToUnlockNext(book, 'easy');
+  if (level === 'hard') return isTierReadyToUnlockNext(book, 'easy') && isTierReadyToUnlockNext(book, 'medium');
   return true;
 }
 
 function nextLockedLevelMessage(book, level) {
   if (level === 'medium') {
     const t = getTierProgress(book, 'easy');
-    return `أكمل/ي السهل أولاً (${arabicNum(t.solved)}/${arabicNum(t.total)}) لفتح المتوسط`;
+    const left = Math.max(0, t.unlockNeed - t.solved);
+    return `افتح المتوسط بعد حل ${arabicNum(t.unlockNeed)} من ${arabicNum(t.total)} سهل (متبقي ${arabicNum(left)})`;
   }
   if (level === 'hard') {
+    if (!isTierReadyToUnlockNext(book, 'easy')) {
+      const t = getTierProgress(book, 'easy');
+      const left = Math.max(0, t.unlockNeed - t.solved);
+      return `أكمل/ي نصف السهل أولاً (متبقي ${arabicNum(left)}) ثم المتوسط`;
+    }
     const t = getTierProgress(book, 'medium');
-    return `أكمل/ي المتوسط أولاً (${arabicNum(t.solved)}/${arabicNum(t.total)}) لفتح الصعب`;
+    const left = Math.max(0, t.unlockNeed - t.solved);
+    return `افتح الصعب بعد حل ${arabicNum(t.unlockNeed)} من ${arabicNum(t.total)} متوسط (متبقي ${arabicNum(left)})`;
   }
   return '';
 }
@@ -731,6 +759,82 @@ function markQuestionSolvedInStage(questionId) {
   if (!prog.solvedIds.includes(questionId)) {
     prog.solvedIds.push(questionId);
     saveProgress(ensureProgress());
+    scheduleTierProgressCloudPush();
+  }
+}
+
+function mergeRemoteStageProgress(remote) {
+  if (!remote || typeof remote !== 'object') return false;
+  const p = ensureProgress();
+  if (!p.stageProgress) p.stageProgress = {};
+  let changed = false;
+  for (const [key, entry] of Object.entries(remote)) {
+    if (!entry || typeof entry !== 'object') continue;
+    const local = p.stageProgress[key] || { solvedIds: [], completedStages: [], currentStage: 1 };
+    const solvedIds = [...new Set([...(local.solvedIds || []), ...(entry.solvedIds || [])])];
+    const completedStages = [...new Set([...(local.completedStages || []), ...(entry.completedStages || [])])]
+      .map(Number)
+      .filter((n) => Number.isFinite(n))
+      .sort((a, b) => a - b);
+    const currentStage = Math.max(Number(local.currentStage) || 1, Number(entry.currentStage) || 1);
+    const same =
+      solvedIds.length === (local.solvedIds || []).length
+      && solvedIds.every((id) => (local.solvedIds || []).includes(id))
+      && currentStage === (local.currentStage || 1);
+    if (!same) changed = true;
+    p.stageProgress[key] = { solvedIds, completedStages, currentStage };
+  }
+  if (changed) saveProgress(p);
+  return changed;
+}
+
+function scheduleTierProgressCloudPush() {
+  if (!state.user) return;
+  clearTimeout(tierCloudPushTimer);
+  tierCloudPushTimer = setTimeout(() => {
+    void pushTierProgressToCloud();
+  }, 1800);
+}
+
+async function pushTierProgressToCloud() {
+  if (!state.user) return;
+  const client = typeof getDb === 'function' ? getDb() : null;
+  if (!client?.auth?.updateUser) return;
+  const p = ensureProgress();
+  const payload = p.stageProgress || {};
+  try {
+    const { error } = await client.auth.updateUser({
+      data: {
+        alhuda_tier_v1: payload,
+        alhuda_tier_v1_at: new Date().toISOString(),
+      },
+    });
+    if (error) console.warn('tier cloud push:', error.message);
+  } catch (e) {
+    console.warn('tier cloud push:', e);
+  }
+}
+
+async function pullTierProgressFromCloud() {
+  if (!state.user) return false;
+  const client = typeof getDb === 'function' ? getDb() : null;
+  if (!client?.auth?.getUser) return false;
+  try {
+    const { data, error } = await client.auth.getUser();
+    if (error) return false;
+    const remote = data?.user?.user_metadata?.alhuda_tier_v1;
+    const changed = mergeRemoteStageProgress(remote);
+    if (changed) {
+      updateLevelCounts();
+      if (typeof updateStagePickerUI === 'function') updateStagePickerUI();
+      if (window.AlhudaPlatform?.onWelcomeHome) AlhudaPlatform.onWelcomeHome();
+    }
+    // Always push merged local∪remote so the other device gets newer local solves.
+    scheduleTierProgressCloudPush();
+    return changed;
+  } catch (e) {
+    console.warn('tier cloud pull:', e);
+    return false;
   }
 }
 
@@ -835,10 +939,19 @@ function updateStagePickerUI() {
   if (hint) {
     const label = LEVEL_LABELS_AR[state.level] || state.level;
     const round = Math.min(state.roundSize || 20, done ? total : (remaining || total));
+    const t = getTierProgress(state.book, state.level);
     if (state.useManualRange) {
       hint.textContent = 'وضع النطاق اليدوي مفعّل — مسار التدرّج معطّل لهذه الجولة';
     } else if (done) {
       hint.textContent = `🎉 أنهيت مستوى ${label} (${arabicNum(total)} سؤال)! يمكنك المراجعة أو الانتقال للمستوى التالي`;
+    } else if (t.unlockReady && state.level === 'easy') {
+      hint.textContent = `مستوى ${label}: ${arabicNum(solved)}/${arabicNum(total)} — 🔓 المتوسط مفتوح! أكمل السهل أو انتقل للمتوسط`;
+    } else if (t.unlockReady && state.level === 'medium') {
+      hint.textContent = `مستوى ${label}: ${arabicNum(solved)}/${arabicNum(total)} — 🔓 الصعب مفتوح! أكمل المتوسط أو انتقل للصعب`;
+    } else if (!t.unlockReady && state.level !== 'hard') {
+      const left = Math.max(0, t.unlockNeed - solved);
+      const nextLabel = state.level === 'easy' ? 'المتوسط' : 'الصعب';
+      hint.textContent = `مستوى ${label}: ${arabicNum(solved)}/${arabicNum(total)} — متبقي ${arabicNum(left)} لفتح ${nextLabel} — الجولة: ${arabicNum(round)}`;
     } else {
       hint.textContent = `مستوى ${label}: ${arabicNum(solved)}/${arabicNum(total)} — متبقي ${arabicNum(remaining)} — الجولة: ${arabicNum(round)} سؤال`;
     }
@@ -1372,12 +1485,17 @@ function updateBookProgress() {
   for (const [book, id] of Object.entries(map)) {
     const btn = document.getElementById(id);
     if (!btn) continue;
-    let counts;
-    if (book === 'merge3') {
-      const t = getBookQuestionCounts('tawheed'), u = getBookQuestionCounts('usool'), n = getBookQuestionCounts('nawawi');
-      counts = { easy: t.easy + u.easy + n.easy, medium: t.medium + u.medium + n.medium, hard: t.hard + u.hard + n.hard, all: t.all + u.all + n.all };
-    } else {
-      counts = getBookQuestionCounts(book);
+    let easy = 0, medium = 0, hard = 0, solved = 0, total = 0;
+    const books = book === 'merge3' ? ['tawheed', 'usool', 'nawawi'] : [book];
+    for (const b of books) {
+      for (const lvl of LEVEL_FLOW) {
+        const t = getTierProgress(b, lvl);
+        if (lvl === 'easy') easy += t.solved;
+        if (lvl === 'medium') medium += t.solved;
+        if (lvl === 'hard') hard += t.solved;
+        solved += t.solved;
+        total += t.total;
+      }
     }
     let prog = btn.querySelector('.book-progress');
     if (!prog) {
@@ -1385,7 +1503,9 @@ function updateBookProgress() {
       prog.className = 'book-progress';
       btn.appendChild(prog);
     }
-    prog.textContent = `${counts.all} سؤال`;
+    prog.textContent = total
+      ? `${arabicNum(solved)}/${arabicNum(total)} · س${arabicNum(easy)} م${arabicNum(medium)} ص${arabicNum(hard)}`
+      : '٠ سؤال';
   }
 }
 function updateDailyMission() {
@@ -1942,6 +2062,35 @@ function warmDemoSessionAudio({ force = false } = {}) {
     ? requestIdleCallback
     : (fn) => setTimeout(fn, 1200);
   idle(() => warmPopularQuranAyahs());
+}
+
+/** Prefetch full round TTS + Quran into IDB/SW while online so replay works offline. */
+async function warmRoundAudioForOffline(questions, { notify = true } = {}) {
+  if (!questions?.length || navigator.onLine === false) return;
+  const list = questions.slice(0, 40);
+  await ensureSpeechMapsLoaded();
+  let cursor = 0;
+  const workers = Math.min(3, list.length);
+  const run = async () => {
+    while (cursor < list.length) {
+      const q = list[cursor++];
+      if (!q) continue;
+      try {
+        await warmQuestionSpeech(q);
+      } catch { /* ignore */ }
+      try {
+        await prefetchHybridSpeechForQuestion(q);
+      } catch { /* ignore */ }
+      const verseKey = getPrimaryVerseKeyForQuestion(q);
+      if (verseKey) {
+        try { await fetchQuranAudioObjectUrl(verseKey); } catch { /* ignore */ }
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: workers }, () => run()));
+  if (notify && list.length >= 5 && typeof showToast === 'function' && document.getElementById('game')?.classList.contains('active')) {
+    showToast('الصوت جاهز لهذه الجولة (يعمل أوفلاين) ✓', 'ok');
+  }
 }
 
 function azureUsageMonthKey() {
@@ -5351,6 +5500,7 @@ function goHome() {
   document.getElementById('welcome-greeting').textContent = 'مرحباً يا ' + state.userName + '! 👋';
   updateBookButtons();
   updateLevelCounts();
+  updateBookProgress();
   updateQuestionRangeUI();
   updateStagePickerUI();
   updateWelcomeStats();
@@ -5430,6 +5580,7 @@ async function doLogin() {
     if (typeof trackEvent === 'function') trackEvent('login', { role: 'student' });
     if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
     if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
+    if (typeof pullTierProgressFromCloud === 'function') await pullTierProgressFromCloud();
     void syncPendingScores();
     // Always pull the full bank after login so hard/medium are available.
     await refreshFullQuestionBank({ quiet: true });
@@ -5476,12 +5627,21 @@ async function wipeMyProgress() {
   }
   const name = state.userName || localStorage.getItem('savedName') || '';
   const ok = window.confirm(
-    `حذف كل التقدّم المحلي للاسم «${name}» والبدء من جديد؟\n(النقاط السحابية القديمة تبقى مرتبطة بالحساب إن وُجدت)`
+    `حذف كل التقدّم المحلي للاسم «${name}» والبدء من جديد؟\n(يُصفَّر أيضاً تقدّم المستويات السحابي إن وُجد حساب)`
   );
   if (!ok) return;
   wipeLocalProgressForName(name);
+  if (state.user) {
+    const client = typeof getDb === 'function' ? getDb() : null;
+    if (client?.auth?.updateUser) {
+      void client.auth.updateUser({
+        data: { alhuda_tier_v1: {}, alhuda_tier_v1_at: new Date().toISOString() },
+      }).catch(() => {});
+    }
+  }
   updateTopbarStats();
   updateBookProgress?.();
+  updateLevelCounts();
   if (typeof showToast === 'function') showToast('تم تصفير التقدّم — يمكنك البدء من جديد بنفس الاسم', 'ok');
   goHome();
 }
@@ -5637,6 +5797,12 @@ function startGame() {
   updateStageGameBadge();
   show('game');
   renderQ();
+  // Warm the whole round into IDB + SW cache so audio survives going offline mid-game.
+  if (!state.demoMode && navigator.onLine !== false) {
+    void warmRoundAudioForOffline(state.questions);
+  } else if (state.demoMode) {
+    warmDemoSessionAudio();
+  }
 }
 
 function renderQ() {
@@ -6059,20 +6225,29 @@ async function endGame() {
     if (!isTraining && !state.useManualRange && !state.challengeMode && !state.homeworkId && LEVEL_FLOW.includes(state.level)) {
       // Keep legacy stage markers in sync for older progress blobs.
       syncStageCompletion(state.activeStageNum);
-      const { solved, total, done } = getTierProgress(state.book, state.level);
+      const { solved, total, done, unlockReady, unlockNeed } = getTierProgress(state.book, state.level);
       const label = LEVEL_LABELS_AR[state.level] || state.level;
       if (done) {
         if (state.level === 'easy') {
-          resSub = `🎉 أنهيت المستوى السهل (${arabicNum(total)})! المتوسط مفتوح الآن`;
+          resSub = `🎉 أنهيت المستوى السهل (${arabicNum(total)})! المتوسط مفتوح`;
         } else if (state.level === 'medium') {
-          resSub = `🎉 أنهيت المستوى المتوسط (${arabicNum(total)})! الصعب مفتوح الآن`;
+          resSub = `🎉 أنهيت المستوى المتوسط (${arabicNum(total)})! الصعب مفتوح`;
         } else {
           resSub = `🎉 أنهيت المستوى الصعب (${arabicNum(total)})! أحسنت — المسار مكتمل`;
         }
         state.stageReviewMode = false;
+      } else if (unlockReady && state.level === 'easy' && isLevelUnlocked(state.book, 'medium')) {
+        resSub = `🔓 فُتح المتوسط! (حللتَ/ِ ${arabicNum(solved)} من ${arabicNum(total)} في السهل)`;
+      } else if (unlockReady && state.level === 'medium' && isLevelUnlocked(state.book, 'hard')) {
+        resSub = `🔓 فُتح الصعب! (حللتَ/ِ ${arabicNum(solved)} من ${arabicNum(total)} في المتوسط)`;
       } else if (!state.stageReviewMode) {
-        resSub = `✅ تقدّم ${label}: ${arabicNum(solved)}/${arabicNum(total)} — واصل/ي الجولات`;
+        const left = Math.max(0, unlockNeed - solved);
+        const nextHint = state.level === 'hard' || unlockReady
+          ? ''
+          : ` — متبقي ${arabicNum(left)} لفتح المستوى التالي`;
+        resSub = `✅ تقدّم ${label}: ${arabicNum(solved)}/${arabicNum(total)}${nextHint}`;
       }
+      scheduleTierProgressCloudPush();
     }
     document.getElementById('res-sub').textContent = resSub;
     document.getElementById('fin-score').textContent = state.score;
@@ -6535,6 +6710,7 @@ async function restoreSession() {
   adoptProgressForName(state.userName);
   if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
   if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
+  if (typeof pullTierProgressFromCloud === 'function') await pullTierProgressFromCloud();
   void syncPendingScores();
   void refreshFullQuestionBank({ quiet: true });
   const progress = ensureProgress();

@@ -195,21 +195,45 @@
   function renderBookProgress() {
     const el = document.getElementById('book-progress-grid');
     if (!el) return;
-    const p = ensureProgressExt();
-    const counts = {
-      tawheed: (QUESTIONS.tawheed || []).length,
-      usool: (QUESTIONS.usool || []).length,
-      nawawi: (QUESTIONS.nawawi || []).length,
-    };
+    const tierFn = typeof getTierProgress === 'function' ? getTierProgress : null;
+    const unlockFn = typeof isLevelUnlocked === 'function' ? isLevelUnlocked : null;
     el.innerHTML = BOOK_KEYS.map((b) => {
-      const prog = p.bookProgress[b] || { answered: 0, correct: 0 };
-      const total = counts[b] || 1;
-      const pct = Math.min(100, Math.round((prog.answered / total) * 100));
-      const acc = prog.answered ? Math.round((prog.correct / prog.answered) * 100) : 0;
+      if (!tierFn) {
+        const p = ensureProgressExt();
+        const prog = p.bookProgress[b] || { answered: 0, correct: 0 };
+        const total = (QUESTIONS[b] || []).length || 1;
+        const pct = Math.min(100, Math.round((prog.answered / total) * 100));
+        return `<div class="book-progress-item">
+          <div class="bp-head"><span>${BOOK_LABELS_LOCAL[b]}</span><span>${prog.answered}/${total}</span></div>
+          <div class="bp-bar"><div class="bp-fill" style="width:${pct}%"></div></div>
+        </div>`;
+      }
+      const easy = tierFn(b, 'easy');
+      const medium = tierFn(b, 'medium');
+      const hard = tierFn(b, 'hard');
+      const solved = easy.solved + medium.solved + hard.solved;
+      const total = Math.max(1, easy.total + medium.total + hard.total);
+      const pct = Math.min(100, Math.round((solved / total) * 100));
+      const medOpen = unlockFn ? unlockFn(b, 'medium') : false;
+      const hardOpen = unlockFn ? unlockFn(b, 'hard') : false;
+      const row = (lvl, t, open) => {
+        const label = lvl === 'easy' ? 'سهل' : lvl === 'medium' ? 'متوسط' : 'صعب';
+        const w = t.total ? Math.min(100, Math.round((t.solved / t.total) * 100)) : 0;
+        const lock = open ? '' : ' bp-tier-locked';
+        const mark = open ? '' : ' 🔒';
+        return `<div class="bp-tier${lock}">
+          <div class="bp-tier-head"><span>${label}${mark}</span><span>${t.solved}/${t.total}</span></div>
+          <div class="bp-bar bp-bar-sm"><div class="bp-fill bp-fill-${lvl}" style="width:${w}%"></div></div>
+        </div>`;
+      };
       return `<div class="book-progress-item">
-        <div class="bp-head"><span>${BOOK_LABELS_LOCAL[b]}</span><span>${prog.answered}/${total}</span></div>
+        <div class="bp-head"><span>${BOOK_LABELS_LOCAL[b]}</span><span>${solved}/${easy.total + medium.total + hard.total} · ${pct}%</span></div>
         <div class="bp-bar"><div class="bp-fill" style="width:${pct}%"></div></div>
-        <div class="bp-meta">دقة: ${acc}%</div>
+        <div class="bp-tiers">
+          ${row('easy', easy, true)}
+          ${row('medium', medium, medOpen)}
+          ${row('hard', hard, hardOpen)}
+        </div>
       </div>`;
     }).join('');
   }
@@ -597,6 +621,7 @@
       updateDailyMissionUI,
       syncUserClassFromDb,
       syncWrongQuestionsFromDb,
+      pullTierProgressFromCloud: () => (typeof pullTierProgressFromCloud === 'function' ? pullTierProgressFromCloud() : Promise.resolve(false)),
       openAdmin: () => {
         if (typeof showLeaderboard === 'function') showLeaderboard();
       },

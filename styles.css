@@ -2326,6 +2326,16 @@
     .bp-bar { height: 8px; background: var(--emerald-light); border-radius: 8px; overflow: hidden; }
     .bp-fill { height: 100%; background: linear-gradient(90deg, var(--emerald), var(--gold)); border-radius: 8px; }
     .bp-meta { font-size: 0.72em; color: var(--text-soft); margin-top: 4px; font-weight: 700; }
+    .bp-tiers { display: grid; gap: 6px; margin-top: 10px; }
+    .bp-tier-head {
+      display: flex; justify-content: space-between;
+      font-size: 0.72em; font-weight: 800; color: var(--text-soft); margin-bottom: 3px;
+    }
+    .bp-bar-sm { height: 6px; }
+    .bp-fill-easy { background: var(--emerald); }
+    .bp-fill-medium { background: var(--gold); }
+    .bp-fill-hard { background: var(--coral); }
+    .bp-tier-locked { opacity: 0.55; }
     .class-join-row {
       display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; align-items: center;
       background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 12px;
