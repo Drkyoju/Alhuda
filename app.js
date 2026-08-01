@@ -1028,6 +1028,12 @@ function applyFeedbackSheetHeight(px) {
   feedbackSheetHeightPx = h;
   fb.style.maxHeight = h + 'px';
   fb.style.height = h + 'px';
+  const handle = document.getElementById('fb-sheet-handle');
+  if (handle) {
+    const { min, max } = feedbackSheetHeightBounds();
+    const pct = Math.round(((h - min) / Math.max(1, max - min)) * 100);
+    handle.setAttribute('aria-valuenow', String(Math.max(0, Math.min(100, pct))));
+  }
   // Keep question area clear of the sheet
   const qArea = document.querySelector('#game .q-area');
   if (qArea && document.getElementById('game')?.classList.contains('feedback-open')) {
