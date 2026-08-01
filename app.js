@@ -535,8 +535,34 @@ async function notifyFeedbackEmail(payload) {
 function getProgress() {
   try { return JSON.parse(localStorage.getItem('playerProgress') || '{}'); } catch { return {}; }
 }
+function progressNameKey(name) {
+  return String(name || '').trim().normalize('NFC').toLowerCase();
+}
+function getProgressStore() {
+  try { return JSON.parse(localStorage.getItem('alhudaProgressByNameV1') || '{}'); } catch { return {}; }
+}
+function saveProgressStore(store) {
+  localStorage.setItem('alhudaProgressByNameV1', JSON.stringify(store || {}));
+}
+function loadProgressForName(name) {
+  const key = progressNameKey(name);
+  if (!key) return getDefaultProgress();
+  const store = getProgressStore();
+  if (store[key]) return { ...getDefaultProgress(), ...store[key] };
+  // Migrate legacy single blob once for this name.
+  const legacy = getProgress();
+  if (legacy && (legacy.xp || legacy.totalGames)) return { ...getDefaultProgress(), ...legacy };
+  return getDefaultProgress();
+}
 function saveProgress(p) {
   localStorage.setItem('playerProgress', JSON.stringify(p));
+  const name = state.userName || localStorage.getItem('savedName') || '';
+  const key = progressNameKey(name);
+  if (key) {
+    const store = getProgressStore();
+    store[key] = p;
+    saveProgressStore(store);
+  }
 }
 function getDefaultProgress() {
   return { xp: 0, dailyStreak: 0, lastPlayDate: '', totalGames: 0, totalCorrect: 0, bestStreak: 0, bestScore: 0, completedStages: {}, stageProgress: {}, badges: [], bookProgress: { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } }, wrongQuestionIds: [], gameHistory: [], classId: null, classCode: '', className: '', dailyMissionDate: '', dailyMissionDone: false };
@@ -545,6 +571,31 @@ function ensureProgress() {
   const p = { ...getDefaultProgress(), ...getProgress() };
   saveProgress(p);
   return p;
+}
+function adoptProgressForName(name) {
+  const p = loadProgressForName(name);
+  localStorage.setItem('playerProgress', JSON.stringify(p));
+  return p;
+}
+function getPrimaryName() {
+  return localStorage.getItem('alhudaPrimaryName') || localStorage.getItem('savedName') || '';
+}
+function setPrimaryName(name) {
+  const n = String(name || '').trim();
+  if (n) localStorage.setItem('alhudaPrimaryName', n);
+}
+function wipeLocalProgressForName(name) {
+  const key = progressNameKey(name);
+  const store = getProgressStore();
+  if (key) delete store[key];
+  saveProgressStore(store);
+  const fresh = getDefaultProgress();
+  localStorage.setItem('playerProgress', JSON.stringify(fresh));
+  localStorage.removeItem('demoDone');
+  localStorage.removeItem('lastStats');
+  localStorage.removeItem('gameResume');
+  try { localStorage.removeItem(GAME_RESUME_KEY); } catch { /* ignore */ }
+  return fresh;
 }
 function getBookQuestionCounts(book) {
   const all = getAllQuestions(book);
@@ -4772,9 +4823,11 @@ function updateLoginQuestionHint() {
   const total = QUESTION_BOOKS.reduce((n, b) => n + (QUESTIONS[b]?.length || 0), 0);
   if (total <= 0) return;
   const allLoaded = QUESTION_BOOKS.every((b) => bookLoadState[b]);
-  hint.textContent = allLoaded
-    ? '📚 ' + total + ' سؤال في انتظارك!'
-    : '📚 ' + total + '+ سؤال — جاري تحميل الباقي...';
+  if (allLoaded) {
+    hint.textContent = '📚 ' + arabicNum(total) + ' سؤال في انتظارك!';
+  } else {
+    hint.textContent = '📚 جاري تحميل البنك الكامل… (حالياً ' + arabicNum(total) + ' — تجريبي)';
+  }
 }
 
 function refreshBookFromNetwork(book) {
@@ -4790,6 +4843,7 @@ function refreshBookFromNetwork(book) {
       updateLevelCounts();
       updateDemoBookPicker();
       updateLoginQuestionHint();
+      updateBookProgress?.();
     } catch (e) {
       console.warn('background refresh', book, e);
     }
@@ -4798,13 +4852,9 @@ function refreshBookFromNetwork(book) {
 
 async function loadBookQuestions(book) {
   if (!QUESTION_BOOKS.includes(book)) return [];
+  // Only trust cache when the full bank was loaded from network/offline — not demo seed.
   if (bookLoadState[book] && QUESTIONS[book]?.length) {
     if (navigator.onLine !== false && getDb()) refreshBookFromNetwork(book);
-    return QUESTIONS[book];
-  }
-  if (QUESTIONS[book]?.length) {
-    bookLoadState[book] = true;
-    refreshBookFromNetwork(book);
     return QUESTIONS[book];
   }
   if (bookLoadPromises[book]) return bookLoadPromises[book];
@@ -4818,18 +4868,18 @@ async function loadBookQuestions(book) {
     } catch (netErr) {
       const offline = await loadQuestionsOffline();
       const cached = offline?.books?.[book];
-      if (cached?.length) {
+      if (cached?.length && cached.length > 30) {
+        // Offline full-ish cache only
         QUESTIONS[book] = dedupeQuestionList(cached);
         bookLoadState[book] = true;
         console.info(`[questions] loaded ${book} from offline cache`);
-      } else {
+      } else if (!QUESTIONS[book]?.length) {
         seedQuestionsFromBundle();
-        if (QUESTIONS[book]?.length) {
-          bookLoadState[book] = true;
-          console.info(`[questions] loaded ${book} from demo bundle`);
-        } else {
-          throw netErr;
-        }
+        console.info(`[questions] provisional ${book} from demo bundle`);
+        throw netErr;
+      } else {
+        // Keep provisional demo rows; mark not fully loaded.
+        bookLoadState[book] = false;
       }
     }
     updateLevelCounts();
@@ -4841,6 +4891,8 @@ async function loadBookQuestions(book) {
     return await bookLoadPromises[book];
   } catch (e) {
     delete bookLoadPromises[book];
+    // Still return provisional demo if present.
+    if (QUESTIONS[book]?.length) return QUESTIONS[book];
     throw e;
   }
 }
@@ -4863,14 +4915,11 @@ function seedQuestionsFromBundle() {
   if (!bundle) return false;
   let seeded = false;
   for (const book of QUESTION_BOOKS) {
-    if (QUESTIONS[book]?.length) {
-      bookLoadState[book] = true;
-      continue;
-    }
+    if (QUESTIONS[book]?.length) continue;
     const rows = bundle[book];
     if (rows?.length) {
       QUESTIONS[book] = dedupeQuestionList(rows);
-      bookLoadState[book] = true;
+      // Provisional only — do NOT set bookLoadState (full bank still loading).
       seeded = true;
     }
   }
@@ -4878,36 +4927,51 @@ function seedQuestionsFromBundle() {
   return QUESTION_BOOKS.some((b) => QUESTIONS[b]?.length);
 }
 
+async function refreshFullQuestionBank({ quiet = false } = {}) {
+  if (LOGIN_LOCKED) return false;
+  if (navigator.onLine === false || !getDb()) return false;
+  if (!quiet && typeof showToast === 'function') showToast('جاري تحميل الأسئلة الكاملة…', 'ok');
+  try {
+    if (window.AlhudaPlatform?.loadQuestionsCached) {
+      const data = await AlhudaPlatform.loadQuestionsCached(true);
+      const fmt = { tawheed: [], usool: [], nawawi: [] };
+      (data || []).forEach((q) => { if (fmt[q.book]) fmt[q.book].push(q); });
+      for (const book of QUESTION_BOOKS) {
+        if (fmt[book]?.length) {
+          ingestBookQuestions(book, fmt[book]);
+          bookLoadState[book] = true;
+          delete bookLoadPromises[book];
+        }
+      }
+    } else {
+      for (const b of QUESTION_BOOKS) bookLoadState[b] = false;
+      await ensureBooksLoaded(QUESTION_BOOKS);
+    }
+    updateLoginQuestionHint();
+    updateLevelCounts();
+    updateBookButtons();
+    updateBookProgress?.();
+    const total = QUESTION_BOOKS.reduce((n, b) => n + (QUESTIONS[b]?.length || 0), 0);
+    if (!quiet && typeof showToast === 'function') {
+      showToast(`تم تحميل ${arabicNum(total)} سؤال ✓`, 'ok');
+    }
+    return QUESTION_BOOKS.every((b) => bookLoadState[b]);
+  } catch (e) {
+    console.warn('refreshFullQuestionBank', e);
+    if (!quiet && typeof showToast === 'function') showToast('تعذّر تحميل البنك الكامل', 'err');
+    return false;
+  }
+}
+
 async function loadQuestions() {
-  // Bundle-first: unlock UI without waiting for network.
+  // Bundle-first: unlock UI without waiting for network (provisional counts).
   const hasBundle = seedQuestionsFromBundle();
   if (hasBundle) {
     updateLoginQuestionHint();
     updateLevelCounts();
     updateDemoBookPicker();
-    // While login is locked, demo uses the local bundle — skip heavy Supabase pulls.
     if (!LOGIN_LOCKED && navigator.onLine !== false) {
-      void (async () => {
-        try {
-          if (window.AlhudaPlatform?.loadQuestionsCached) {
-            const data = await AlhudaPlatform.loadQuestionsCached();
-            const fmt = { tawheed: [], usool: [], nawawi: [] };
-            (data || []).forEach((q) => { if (fmt[q.book]) fmt[q.book].push(q); });
-            for (const book of QUESTION_BOOKS) {
-              if (fmt[book]?.length) {
-                ingestBookQuestions(book, fmt[book]);
-                bookLoadState[book] = true;
-              }
-            }
-          } else {
-            loadRemainingBooksInBackground();
-          }
-          updateLoginQuestionHint();
-          updateLevelCounts();
-        } catch (e) {
-          console.warn('background question refresh:', e);
-        }
-      })();
+      void refreshFullQuestionBank({ quiet: true });
     }
     return;
   }
@@ -4915,18 +4979,10 @@ async function loadQuestions() {
   setAppLoading(true, 'جاري تحميل الأسئلة...');
   try {
     seedQuestionsFromBundle();
-    if (window.AlhudaPlatform?.loadQuestionsCached) {
-      try {
-        const data = await AlhudaPlatform.loadQuestionsCached();
-        const fmt = { tawheed: [], usool: [], nawawi: [] };
-        (data || []).forEach((q) => { if (fmt[q.book]) fmt[q.book].push(q); });
-        for (const book of QUESTION_BOOKS) {
-          ingestBookQuestions(book, fmt[book]);
-          bookLoadState[book] = true;
-        }
-        updateLoginQuestionHint();
-        return;
-      } catch (e) { /* cache miss — try offline then lazy load */ }
+    const ok = await refreshFullQuestionBank({ quiet: true });
+    if (ok) {
+      updateLoginQuestionHint();
+      return;
     }
     const offline = await loadQuestionsOffline();
     if (offline?.books) {
@@ -4935,7 +4991,7 @@ async function loadQuestions() {
         const rows = offline.books[book];
         if (rows?.length) {
           QUESTIONS[book] = dedupeQuestionList(rows);
-          bookLoadState[book] = true;
+          bookLoadState[book] = rows.length > 30;
           any = true;
         }
       }
@@ -4943,7 +4999,7 @@ async function loadQuestions() {
         updateLoginQuestionHint();
         updateLevelCounts();
         updateDemoBookPicker();
-        if (navigator.onLine !== false) loadRemainingBooksInBackground();
+        if (navigator.onLine !== false) void refreshFullQuestionBank({ quiet: true });
         return;
       }
     }
@@ -4953,31 +5009,8 @@ async function loadQuestions() {
   } catch (e) {
     console.error(e);
     seedQuestionsFromBundle();
-    const offline = await loadQuestionsOffline();
-    if (offline?.books) {
-      for (const book of QUESTION_BOOKS) {
-        const rows = offline.books[book];
-        if (rows?.length) {
-          QUESTIONS[book] = dedupeQuestionList(rows);
-          bookLoadState[book] = true;
-        }
-      }
-      updateLoginQuestionHint();
-      updateDemoBookPicker();
-      if (typeof showToast === 'function') showToast('وضع دون اتصال — أسئلة محفوظة محلياً', 'ok');
-      return;
-    }
-    if (QUESTION_BOOKS.some((b) => QUESTIONS[b]?.length)) {
-      updateLoginQuestionHint();
-      updateDemoBookPicker();
-      return;
-    }
-    const hint = document.getElementById('login-hint');
-    if (hint) {
-      hint.textContent = navigator.onLine === false
-        ? '⚠️ لا يوجد اتصال — يمكن تجربة النموذج بالأسئلة المحفوظة'
-        : '⚠️ تعذّر تحميل الأسئلة — تحقق من الاتصال';
-    }
+    updateLoginQuestionHint();
+    updateDemoBookPicker();
     if (typeof showToast === 'function') {
       showToast(
         navigator.onLine === false ? 'لا يوجد اتصال بالإنترنت' : 'تعذّر تحميل الأسئلة — تحقق من الاتصال',
@@ -5051,19 +5084,23 @@ function seededShuffle(arr, seed) {
 }
 
 function refreshQuestions() {
-  sessionStorage.removeItem('questionsCacheV3');
-  QUESTION_BOOKS.forEach((b) => {
-    bookLoadState[b] = false;
-    delete bookLoadPromises[b];
-    QUESTIONS[b] = [];
-  });
   const btn = document.getElementById('btn-start-game');
   if (btn) btn.textContent = 'جاري التحديث...';
-  ensureBooksLoaded(booksForState(state.book)).then(() => {
+  refreshFullQuestionBank({ quiet: false }).then((ok) => {
+    if (!ok) {
+      sessionStorage.removeItem('questionsCacheV3');
+      QUESTION_BOOKS.forEach((b) => {
+        bookLoadState[b] = false;
+        delete bookLoadPromises[b];
+      });
+      return ensureBooksLoaded(booksForState(state.book));
+    }
+  }).then(() => {
     state.bankVersion++;
     updateQuestionRangeUI();
     updateStagePickerUI();
     updateLoginQuestionHint();
+    updateLevelCounts();
     if (btn) {
       btn.textContent = '✅ تم التحديث!';
       setTimeout(() => { btn.textContent = 'ابدأ اللعبة 🎮'; }, 2000);
@@ -5204,8 +5241,14 @@ function logout() {
   trainingMode = false;
   updateTopbarStats();
   const loginName = document.getElementById('login-name');
-  if (loginName) loginName.value = '';
+  const primary = getPrimaryName();
+  if (loginName) loginName.value = primary || '';
   document.getElementById('login-err').textContent = '';
+  const switchHint = document.getElementById('login-switch-hint');
+  if (switchHint && primary) {
+    switchHint.hidden = false;
+    switchHint.textContent = `الاسم المحفوظ: ${primary} — يمكنك الدخول به أو كتابة اسم آخر`;
+  }
   show('login-screen');
 }
 
@@ -5237,7 +5280,7 @@ async function doLogin() {
     const { data, error } = await studentSignIn(name);
     if (error) {
       setFormError(document.getElementById('login-err'), error.message || 'تعذّر الدخول');
-      if (typeof showToast === 'function') showToast('تعذّر الدخول — تحقق/ي من الاسم', 'err');
+      if (typeof showToast === 'function') showToast('تعذّر الدخول — تحقق/ي من الاسم والإنترنت', 'err');
       return;
     }
     const { data: existing } = await db.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
@@ -5253,10 +5296,14 @@ async function doLogin() {
     }
     state.user = data.user; state.userType = 'student'; state.userName = name; state.userEmail = '';
     localStorage.setItem('savedName', name);
+    if (!getPrimaryName()) setPrimaryName(name);
+    adoptProgressForName(name);
     if (typeof trackEvent === 'function') trackEvent('login', { role: 'student' });
     if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
     if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
     void syncPendingScores();
+    // Always pull the full bank after login so hard/medium are available.
+    await refreshFullQuestionBank({ quiet: true });
     if (!localStorage.getItem('demoDone')) {
       pendingLoginAfterDemo = false;
       showDemoIntro(name);
@@ -5267,6 +5314,53 @@ async function doLogin() {
     loginInProgress = false;
     if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
   }
+}
+
+async function switchLoginName() {
+  const primary = getPrimaryName();
+  await logout();
+  const loginName = document.getElementById('login-name');
+  if (loginName) {
+    loginName.value = '';
+    loginName.focus();
+  }
+  if (typeof showToast === 'function') {
+    showToast(primary ? `الاسم الأساسي محفوظ (${primary}) — اكتب اسماً آخر للدخول` : 'اكتب اسماً جديداً للدخول', 'ok');
+  }
+}
+
+async function usePrimaryNameLogin() {
+  const primary = getPrimaryName();
+  if (!primary) {
+    if (typeof showToast === 'function') showToast('لا يوجد اسم أساسي محفوظ بعد', 'err');
+    return;
+  }
+  const loginName = document.getElementById('login-name');
+  if (loginName) loginName.value = primary;
+  await doLogin();
+}
+
+async function wipeMyProgress() {
+  if (!state.userName && !state.user) {
+    show('login-screen');
+    return;
+  }
+  const name = state.userName || localStorage.getItem('savedName') || '';
+  const ok = window.confirm(
+    `حذف كل التقدّم المحلي للاسم «${name}» والبدء من جديد؟\n(النقاط السحابية القديمة تبقى مرتبطة بالحساب إن وُجدت)`
+  );
+  if (!ok) return;
+  wipeLocalProgressForName(name);
+  updateTopbarStats();
+  updateBookProgress?.();
+  if (typeof showToast === 'function') showToast('تم تصفير التقدّم — يمكنك البدء من جديد بنفس الاسم', 'ok');
+  goHome();
+}
+
+function setAsPrimaryName() {
+  if (!state.userName) return;
+  setPrimaryName(state.userName);
+  if (typeof showToast === 'function') showToast(`تم حفظ «${state.userName}» كاسم أساسي ✓`, 'ok');
 }
 
 /* ── Book / Level selection ── */
@@ -5327,6 +5421,24 @@ async function startCountdown() {
     }
     const qs = getQuestionsForGame();
     if (!qs.length) {
+      const counts = getBookQuestionCounts(state.book);
+      const needFull = !QUESTION_BOOKS.every((b) => bookLoadState[b])
+        || ((state.level === 'hard' || state.level === 'medium') && (counts[state.level] || 0) === 0);
+      if (needFull) {
+        if (typeof showToast === 'function') showToast('جاري تحميل الأسئلة الكاملة…', 'ok');
+        const ok = await refreshFullQuestionBank({ quiet: true });
+        updateLevelCounts();
+        const qs2 = getQuestionsForGame();
+        if (qs2.length) {
+          clearCountdown();
+          startGame();
+          return;
+        }
+        if (!ok) {
+          showAlert('البنك الكامل لم يكتمل بعد. اضغط/ي «تحديث» ثم حاول مجدداً.');
+          return;
+        }
+      }
       if (!state.useManualRange && !state.stageReviewMode) {
         showAlert('لا توجد أسئلة متبقية في المرحلة الحالية. اختر/ي مرحلة للمراجعة أو كتاباً آخر.');
       } else {
@@ -5929,12 +6041,12 @@ function toggleTrainingMode() {
 
 /* ── Leaderboard & Profile ── */
 let lbPeriod = 'week';
-let lbCache = { day: null, week: null };
+let lbCache = { day: null, week: null, month: null };
 let topLeaderLoading = false;
 const LB_CACHE_MS = 45000;
 
 function invalidateLbCache() {
-  lbCache = { day: null, week: null };
+  lbCache = { day: null, week: null, month: null };
 }
 
 async function fetchLeaderboardRankings(period, forceRefresh) {
@@ -5946,10 +6058,10 @@ async function fetchLeaderboardRankings(period, forceRefresh) {
   const { data: scores, error } = await db.from('scores')
     .select('user_id,score')
     .gte('played_at', start.toISOString())
-    .limit(300);
+    .limit(1000);
   if (error) return cached?.ranked || [];
   const ranked = aggregateTotalPoints(scores);
-  const userIds = [...new Set(ranked.map(s => s.user_id).filter(Boolean))].slice(0, 80);
+  const userIds = [...new Set(ranked.map(s => s.user_id).filter(Boolean))].slice(0, 120);
   const nameMap = await fetchNameMap(userIds);
   const withNames = ranked.map(r => ({ ...r, name: nameMap[r.user_id] || 'مجهول' }));
   lbCache[period] = { at: Date.now(), ranked: withNames, scores, nameMap };
@@ -5963,6 +6075,9 @@ function getLbPeriodStart(period) {
     d.setHours(0, 0, 0, 0);
     return d;
   }
+  if (period === 'month') {
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  }
   const d = new Date(now);
   d.setHours(0, 0, 0, 0);
   d.setDate(d.getDate() - d.getDay());
@@ -5973,6 +6088,7 @@ function getLbPeriodEnd(period) {
   const start = getLbPeriodStart(period);
   const end = new Date(start);
   if (period === 'day') end.setDate(end.getDate() + 1);
+  else if (period === 'month') end.setMonth(end.getMonth() + 1);
   else end.setDate(end.getDate() + 7);
   return end;
 }
@@ -5986,6 +6102,10 @@ function formatLbCountdown(period) {
   if (period === 'day') {
     if (hours > 0) return `يتجدد لوحة اليوم خلال ${hours} ساعة و ${mins} دقيقة`;
     return `يتجدد لوحة اليوم خلال ${mins} دقيقة`;
+  }
+  if (period === 'month') {
+    if (days > 0) return `يتجدد لوحة الشهر خلال ${days} يوم`;
+    return `يتجدد لوحة الشهر خلال ${hours} ساعة`;
   }
   if (days > 0) return `يتجدد لوحة الأسبوع خلال ${days} يوم و ${hours} ساعة`;
   return `يتجدد لوحة الأسبوع خلال ${hours} ساعة و ${mins} دقيقة`;
@@ -6017,24 +6137,29 @@ function formatTopLeaderLine(entry) {
 async function updateTopLeaderPreview(forceRefresh) {
   const dayEl = document.getElementById('top-leader-day');
   const weekEl = document.getElementById('top-leader-week');
+  const monthEl = document.getElementById('top-leader-month');
   if (!dayEl || !weekEl) return;
   if (topLeaderLoading) return;
   topLeaderLoading = true;
-  const hadCache = lbCache.day && lbCache.week && !forceRefresh;
+  const hadCache = lbCache.day && lbCache.week && (!monthEl || lbCache.month) && !forceRefresh;
   if (!hadCache) {
     dayEl.textContent = 'جاري التحميل...';
     weekEl.textContent = 'جاري التحميل...';
+    if (monthEl) monthEl.textContent = 'جاري التحميل...';
   }
   try {
-    const [dayRank, weekRank] = await Promise.all([
+    const [dayRank, weekRank, monthRank] = await Promise.all([
       fetchLeaderboardRankings('day', forceRefresh),
       fetchLeaderboardRankings('week', forceRefresh),
+      monthEl ? fetchLeaderboardRankings('month', forceRefresh) : Promise.resolve([]),
     ]);
     dayEl.textContent = formatTopLeaderLine(dayRank[0]);
     weekEl.textContent = formatTopLeaderLine(weekRank[0]);
+    if (monthEl) monthEl.textContent = formatTopLeaderLine(monthRank[0]);
   } catch (e) {
     dayEl.textContent = 'تعذّر التحميل';
     weekEl.textContent = 'تعذّر التحميل';
+    if (monthEl) monthEl.textContent = 'تعذّر التحميل';
   } finally {
     topLeaderLoading = false;
   }
@@ -6046,7 +6171,9 @@ function renderLeaderboardList(ranked, nameMap) {
   if (!ranked.length) {
     const emptyMsg = lbPeriod === 'day'
       ? 'لا توجد نتائج اليوم بعد. كن/ي أول/ة! 🌟'
-      : 'لا توجد نتائج هذا الأسبوع بعد. كن/ي أول/ة! 🌟';
+      : lbPeriod === 'month'
+        ? 'لا توجد نتائج هذا الشهر بعد. كن/ي أول/ة! 🌟'
+        : 'لا توجد نتائج هذا الأسبوع بعد. كن/ي أول/ة! 🌟';
     list.innerHTML = `<p style="text-align:center;color:var(--text-soft);padding:20px 0;">${emptyMsg}</p>`;
     return;
   }
@@ -6069,11 +6196,18 @@ async function loadLeaderboard(period, forceRefresh) {
   if (heroSub) {
     heroSub.textContent = period === 'day'
       ? 'مجموع نقاط اليوم — تُصفّر عند منتصف الليل'
-      : 'مجموع نقاط الأسبوع — تُصفّر كل أحد';
+      : period === 'month'
+        ? 'مجموع نقاط الشهر — تُصفّر مع بداية كل شهر'
+        : 'مجموع نقاط الأسبوع — تُصفّر كل أحد';
   }
 
   const list = document.getElementById('lb-list');
   if (!list) return;
+
+  if (!state.user && !LOGIN_LOCKED) {
+    list.innerHTML = '<p style="text-align:center;color:var(--text-soft);padding:20px 0;">ادخل/ي باسمك لعرض لوحة المتصدرين 🔐</p>';
+    return;
+  }
 
   const cached = lbCache[period];
   if (!forceRefresh && cached && Date.now() - cached.at < LB_CACHE_MS) {
@@ -6085,7 +6219,7 @@ async function loadLeaderboard(period, forceRefresh) {
 
   const ranked = await fetchLeaderboardRankings(period, forceRefresh);
   if (!ranked.length && !lbCache[period]) {
-    list.innerHTML = '<p style="text-align:center;color:var(--coral);padding:20px 0;">تعذّر تحميل اللوحة</p>';
+    list.innerHTML = '<p style="text-align:center;color:var(--coral);padding:20px 0;">تعذّر تحميل اللوحة — تأكد/ي من الدخول بالاسم</p>';
     return;
   }
   const nameMap = lbCache[period]?.nameMap || Object.fromEntries(ranked.map(r => [r.user_id, r.name]));
@@ -6130,10 +6264,17 @@ async function showProfile() {
     <h3 style="text-align:center;margin-bottom:4px;">${escapeHtml(state.userName)}</h3>
     <p style="text-align:center;color:var(--emerald);font-weight:800;font-size:0.9em;">${info.title}</p>
     <p style="text-align:center;color:var(--text-soft);font-size:0.85em;">متعلم/ة · 🏅 ${(p.badges||[]).length} / ${Object.keys(BADGES).length} شارة</p>
+    <p style="text-align:center;color:var(--text-soft);font-size:0.8em;margin-top:4px;">الاسم الأساسي: ${escapeHtml(getPrimaryName() || state.userName)}</p>
     <div class="profile-stat-row">
       <div class="profile-stat"><div class="val">${totalGames}</div><div class="lbl">ألعاب</div></div>
       <div class="profile-stat"><div class="val">${bestScore}</div><div class="lbl">أفضل نتيجة</div></div>
       <div class="profile-stat"><div class="val">${p.xp||0}</div><div class="lbl">خبرة</div></div>
+    </div>
+    <div style="display:grid;gap:8px;margin:12px 0;">
+      <button type="button" class="btn btn-white btn-sm" onclick="setAsPrimaryName()">⭐ اجعل هذا الاسم الأساسي</button>
+      <button type="button" class="btn btn-white btn-sm" onclick="switchLoginName()">🔄 الدخول باسم آخر</button>
+      <button type="button" class="btn btn-white btn-sm" onclick="wipeMyProgress()">🧹 تصفير التقدّم والبدء من جديد</button>
+      <button type="button" class="btn btn-white btn-sm" onclick="logout()">🚪 خروج</button>
     </div>
     <p style="text-align:center;font-weight:900;color:var(--emerald-dark);margin-bottom:4px;">🏅 الإنجازات</p>
     ${badgesHtml}`;
@@ -6244,9 +6385,12 @@ async function restoreSession() {
     return false;
   }
   localStorage.setItem('savedName', state.userName);
+  if (!getPrimaryName()) setPrimaryName(state.userName);
+  adoptProgressForName(state.userName);
   if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
   if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
   void syncPendingScores();
+  void refreshFullQuestionBank({ quiet: true });
   const progress = ensureProgress();
   if (!localStorage.getItem('demoDone') && !(progress.totalGames > 0)) {
     showDemoIntro(state.userName);
@@ -6277,9 +6421,14 @@ async function restoreSession() {
   // on a ~670 KB script download after the question is already on screen.
   void ensureSpeechMapsLoaded();
   void warmAllahPronClips();
-  const savedName = localStorage.getItem('savedName');
+  const savedName = getPrimaryName() || localStorage.getItem('savedName');
   const loginScreenActive = document.getElementById('login-screen')?.classList.contains('active');
   if (savedName && loginScreenActive && !LOGIN_LOCKED) document.getElementById('login-name').value = savedName;
+  const switchHint = document.getElementById('login-switch-hint');
+  if (switchHint && getPrimaryName()) {
+    switchHint.hidden = false;
+    switchHint.textContent = `الاسم الأساسي: ${getPrimaryName()}`;
+  }
   applyLoginLockUI();
   refreshLoginAnalyticsPanel();
   void refreshTtsProviderBadge();

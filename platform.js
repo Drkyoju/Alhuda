@@ -547,19 +547,23 @@
     }
   }
 
-  async function loadQuestionsCached() {
+  async function loadQuestionsCached(forceRefresh = false) {
     const cacheKey = 'questionsCacheV3';
     const ttl = state.userType === 'teacher' ? 60000 : 900000;
     // Guard against corrupted sessionStorage: a JSON.parse throw used to
     // hard-crash the whole game; now it's treated as a cache miss.
     let cached = null;
-    try {
-      cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
-    } catch (e) {
-      try { sessionStorage.removeItem(cacheKey); } catch (e2) {}
-    }
-    if (cached?.ts && Date.now() - cached.ts < ttl && cached.data?.length) {
-      return cached.data;
+    if (!forceRefresh) {
+      try {
+        cached = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+      } catch (e) {
+        try { sessionStorage.removeItem(cacheKey); } catch (e2) {}
+      }
+      if (cached?.ts && Date.now() - cached.ts < ttl && cached.data?.length) {
+        return cached.data;
+      }
+    } else {
+      try { sessionStorage.removeItem(cacheKey); } catch (e) {}
     }
     const { data, error } = await safeQuery(async () => {
       const books = ['tawheed', 'usool', 'nawawi'];

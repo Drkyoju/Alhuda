@@ -1,10 +1,10 @@
-/* Student login: name + anonymous Supabase session.
- * Legacy name-hash credentials are derived on the Worker (/api/student-creds)
- * so the auth pepper is not shipped to every browser.
+/* Student login: name only (no PIN). Stable account via Worker-derived credentials
+ * so the same name always maps to the same Supabase user across devices/sessions.
+ * Anonymous is a last-resort guest fallback only.
  */
 (function () {
   const CONFIRM_MSG =
-    'فعّل Anonymous sign-ins في Supabase: Authentication → Providers → Anonymous = ON';
+    'تعذّر إنشاء الحساب — تأكد/ي من الإنترنت أو فعّل تأكيد البريد في Supabase للمستخدمين الجدد';
 
   function normalizeName(name) {
     return String(name || '').trim().normalize('NFC');
@@ -29,7 +29,7 @@
     return /already|registered|exists/i.test(err?.message || '');
   }
 
-  async function legacyNameAccountSignIn(name) {
+  async function nameAccountSignIn(name) {
     let creds = null;
     try {
       creds = await fetchServerCredentials(name);
@@ -39,7 +39,7 @@
     if (!creds) {
       return {
         error: {
-          message: 'تعذّر تجهيز بيانات الدخول — استخدم/ي الوضع التجريبي أو فعّل Anonymous في Supabase',
+          message: 'تعذّر تجهيز الدخول بالاسم — تحقّق/ي من الإنترنت وحاول مجدداً',
         },
       };
     }
@@ -62,24 +62,35 @@
   }
 
   async function studentSignIn(name) {
-    if (!normalizeName(name)) return { error: { message: 'اكتب/ي اسمك أولاً' } };
+    const norm = normalizeName(name);
+    if (!norm) return { error: { message: 'اكتب/ي اسمك أولاً' } };
 
     try {
       const { data: { session } } = await db.auth.getSession();
       if (session?.user) {
-        return { data: { user: session.user, session }, error: null };
+        const { data: profile } = await db.from('profiles').select('name').eq('id', session.user.id).maybeSingle();
+        if (profile?.name && profile.name === norm) {
+          return { data: { user: session.user, session }, error: null };
+        }
+        // Different name → leave this session and sign in under the new name identity.
+        await db.auth.signOut().catch(() => {});
       }
 
+      const named = await nameAccountSignIn(norm);
+      if (!named.error) return named;
+
+      // Last resort guest (progress will not follow the name across devices).
       const anon = await db.auth.signInAnonymously();
       if (!anon.error && anon.data?.user) {
         return { data: anon.data, error: null };
       }
 
-      return legacyNameAccountSignIn(name);
+      return named;
     } catch (e) {
       return { error: { message: 'تعذّر الاتصال — تحقّق/ي من الإنترنت وحاول مجدداً' } };
     }
   }
 
   window.studentSignIn = studentSignIn;
+  window.normalizeStudentName = normalizeName;
 })();
