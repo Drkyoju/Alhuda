@@ -94,7 +94,7 @@ const TIMER_SAND_TOP_H = 18;
 const TIMER_SAND_BOTTOM_H = 22;
 const TIMER_SAND_TOP_Y = 12;
 const TIMER_SAND_BOTTOM_Y = 56;
-const LOGIN_LOCKED = true;
+const LOGIN_LOCKED = false;
 const FEEDBACK_NOTIFY_EMAIL = 'hd.hk1444920@gmail.com';
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
@@ -1748,10 +1748,10 @@ function warmDemoSessionAudio({ force = false } = {}) {
   if (demoAudioWarmStarted && !force) return;
   demoAudioWarmStarted = true;
   void ensureSpeechMapsLoaded();
-  const slice = (state.questions || []).slice(0, 2);
+  // Prefetch the full demo round so SW can cache baked MP3s for offline replay.
+  const slice = (state.questions || []).slice(0, 8);
   for (const q of slice) void prefetchHybridSpeechForQuestion(q);
   prefetchUpcomingQuran(0);
-  // Popular ayah warm runs once per session, idle — don't compete with Q0 TTS.
   const idle = typeof requestIdleCallback === 'function'
     ? requestIdleCallback
     : (fn) => setTimeout(fn, 1200);
@@ -6137,6 +6137,23 @@ async function showProfile() {
   show('profile-screen');
 }
 
+function finishDemoToRealGame() {
+  if (LOGIN_LOCKED) {
+    showToast?.('الأسئلة الكاملة مغلقة مؤقتاً', 'err');
+    return;
+  }
+  localStorage.setItem('demoDone', '1');
+  state.demoMode = false;
+  document.getElementById('demo-bar') && (document.getElementById('demo-bar').style.display = 'none');
+  if (state.user) {
+    goHome();
+    return;
+  }
+  show('login-screen');
+  const nameInput = document.getElementById('login-name');
+  nameInput?.focus();
+}
+
 function applyLoginLockUI() {
   const nameInput = document.getElementById('login-name');
   const loginBtn = document.getElementById('btn-login');
@@ -6159,6 +6176,14 @@ function applyLoginLockUI() {
     if (notice) { notice.hidden = false; notice.style.display = ''; notice.textContent = 'الأسئلة الكاملة مغلقة — النموذج التجريبي فقط (٨ أسئلة لكل كتاب)'; }
     const demoOnlyNotice = document.getElementById('login-demo-only-notice');
     if (demoOnlyNotice) demoOnlyNotice.hidden = false;
+    const ctaNote = document.getElementById('real-game-cta-note');
+    const ctaBtn = document.getElementById('real-game-cta-btn');
+    if (ctaNote) ctaNote.textContent = '🔒 الأسئلة الكاملة مغلقة حالياً — شكراً لمشاركتك!';
+    if (ctaBtn) {
+      ctaBtn.disabled = true;
+      ctaBtn.setAttribute('aria-disabled', 'true');
+      ctaBtn.textContent = '📚 الدخول للأسئلة الحقيقية — مغلق 🔒';
+    }
     updateLoginQuestionHint();
     refreshLoginAnalyticsPanel();
   } else {
@@ -6176,6 +6201,14 @@ function applyLoginLockUI() {
     block?.classList.remove('is-locked');
     if (title) title.textContent = 'ادخل/ي باسمك وابدأ/ي 🎮';
     if (notice) { notice.hidden = true; notice.style.display = 'none'; }
+    const ctaNote = document.getElementById('real-game-cta-note');
+    const ctaBtn = document.getElementById('real-game-cta-btn');
+    if (ctaNote) ctaNote.textContent = 'سجّل/ي دخولك للأسئلة الكاملة والتقدّم!';
+    if (ctaBtn) {
+      ctaBtn.disabled = false;
+      ctaBtn.removeAttribute('aria-disabled');
+      ctaBtn.textContent = '📚 الدخول للأسئلة الحقيقية';
+    }
   }
 }
 

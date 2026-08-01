@@ -33,11 +33,12 @@ test('demo flow shows question and answers', async ({ page }) => {
   expect((qText || '').length).toBeGreaterThan(5);
 });
 
-test('login is locked — demo only', async ({ page }) => {
+test('login is unlocked — name entry enabled', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#login-name')).toBeDisabled({ timeout: 5000 });
-  await expect(page.locator('#btn-login')).toBeDisabled();
-  await expect(page.locator('#login-demo-only-notice')).toBeVisible();
+  await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
+  await expect(page.locator('#login-name')).toBeEnabled({ timeout: 5000 });
+  await expect(page.locator('#btn-login')).toBeEnabled();
+  await expect(page.locator('#login-demo-only-notice')).toBeHidden();
   await expect(page.getByRole('button', { name: /نموذج أسئلة تجريبي/ })).toBeEnabled();
 });
 

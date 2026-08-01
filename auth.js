@@ -1,32 +1,25 @@
-/* Student login: name only — no lockouts, no rate-limit blocking messages.
- * Uses one anonymous Supabase session per device visit (fast, no password auth storm).
- * Falls back to legacy name-hash account only if anonymous sign-in is disabled in Supabase.
+/* Student login: name + anonymous Supabase session.
+ * Legacy name-hash credentials are derived on the Worker (/api/student-creds)
+ * so the auth pepper is not shipped to every browser.
  */
 (function () {
-  const PRIMARY_DOMAIN = 'alhuda.students.internal';
-  const PEPPER = 'alhuda-integrity-v2-name';
   const CONFIRM_MSG =
     'فعّل Anonymous sign-ins في Supabase: Authentication → Providers → Anonymous = ON';
-
-  async function sha256Hex(input) {
-    const data = new TextEncoder().encode(input);
-    const buf = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(buf))
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
-  }
 
   function normalizeName(name) {
     return String(name || '').trim().normalize('NFC');
   }
 
-  async function nameOnlyCredentials(name) {
-    const norm = normalizeName(name);
-    const id = (await sha256Hex(`alhuda|${norm}|name-only|${PEPPER}`)).slice(0, 24);
-    return {
-      email: `alhuda.student.${id}@${PRIMARY_DOMAIN}`,
-      password: `Ah!Nm#${id.slice(0, 14)}`,
-    };
+  async function fetchServerCredentials(name) {
+    const res = await fetch('/api/student-creds', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json().catch(() => null);
+    if (!json?.email || !json?.password) return null;
+    return { email: json.email, password: json.password };
   }
 
   function isConfirmError(err) {
@@ -37,7 +30,20 @@
   }
 
   async function legacyNameAccountSignIn(name) {
-    const creds = await nameOnlyCredentials(name);
+    let creds = null;
+    try {
+      creds = await fetchServerCredentials(name);
+    } catch {
+      creds = null;
+    }
+    if (!creds) {
+      return {
+        error: {
+          message: 'تعذّر تجهيز بيانات الدخول — استخدم/ي الوضع التجريبي أو فعّل Anonymous في Supabase',
+        },
+      };
+    }
+
     let res = await db.auth.signInWithPassword({ email: creds.email, password: creds.password });
     if (!res.error) return res;
 

@@ -329,8 +329,7 @@
     const ov = document.getElementById('onboarding-overlay');
     if (!ov) return;
     ov.classList.add('open');
-    ov.setAttribute('role', 'dialog');
-    ov.setAttribute('aria-modal', 'true');
+    ov.setAttribute('aria-hidden', 'false');
     if (typeof trapFocusInOverlay === 'function') trapFocusInOverlay(ov);
   }
 
@@ -355,8 +354,7 @@
     const ov = document.getElementById('onboarding-overlay');
     if (ov) {
       ov.classList.remove('open');
-      ov.removeAttribute('role');
-      ov.removeAttribute('aria-modal');
+      ov.setAttribute('aria-hidden', 'true');
       if (typeof releaseFocusTrap === 'function') releaseFocusTrap(ov);
     }
   }

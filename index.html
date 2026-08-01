@@ -117,11 +117,11 @@
   </div>
 
   <!-- Onboarding -->
-  <div id="onboarding-overlay">
+  <div id="onboarding-overlay" role="dialog" aria-modal="true" aria-labelledby="onboarding-title" aria-hidden="true">
     <div class="onb-card">
       <div class="onb-slide active">
         <div class="onb-icon">📚</div>
-        <h3>مرحباً في المكتبة الثلاثية</h3>
+        <h3 id="onboarding-title">مرحباً في المكتبة الثلاثية</h3>
         <p style="color:var(--text-soft);line-height:1.7;font-weight:700;font-size:0.9em;">اختار/ي كتاباً، حدّد/ي مستوى الصعوبة، والعب/ي!</p>
       </div>
       <div class="onb-slide">
@@ -275,8 +275,8 @@
 
       <button class="btn btn-green btn-xl" onclick="submitFeedback()" id="btn-submit-feedback">إرسال وحفظ رأيي 📨</button>
       <div class="real-game-locked-cta" id="real-game-locked-cta">
-        <p class="real-game-locked-note">🔒 الأسئلة الكاملة مغلقة حالياً — شكراً لمشاركتك!</p>
-        <button type="button" class="btn btn-xl real-game-locked-btn" disabled aria-disabled="true">📚 الدخول للأسئلة الحقيقية — مغلق 🔒</button>
+        <p class="real-game-locked-note" id="real-game-cta-note">سجّل/ي دخولك للأسئلة الكاملة والتقدّم!</p>
+        <button type="button" class="btn btn-xl real-game-locked-btn btn-gold" id="real-game-cta-btn" onclick="finishDemoToRealGame()">📚 الدخول للأسئلة الحقيقية</button>
       </div>
       <button class="btn btn-blue btn-sm" id="btn-review-demo" onclick="startReview('feedback-screen')" style="display:none;width:100%;">📋 مراجعة أخطاء النموذج</button>
       <p id="feedback-msg" class="feedback-status-msg" role="alert" aria-live="polite"></p>
@@ -635,14 +635,14 @@
   <script src="speech-pronunciation-lexicon.js"></script>
   <script src="allah-irab.browser.js"></script>
   <script src="baked-tts.browser.js"></script>
-  <script src="speech-diacritics-core.js?v=172"></script>
+  <script src="speech-diacritics-core.js?v=179"></script>
   <script src="demo-questions-bundle.js"></script>
   <script src="version.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="app.js?v=149" defer></script>
-<script src="auth.js?v=11" defer></script>
+  <script src="app.js?v=150" defer></script>
+<script src="auth.js?v=12" defer></script>
 <script src="enhancements.js?v=14" defer></script>
-<script src="platform.js?v=13" defer></script>
+<script src="platform.js?v=14" defer></script>
 <script defer>
 document.addEventListener('DOMContentLoaded', () => {
   (async function boot() {

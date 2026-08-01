@@ -19,6 +19,9 @@ test.describe('Live Worker APIs', () => {
     const json = await res.json();
     expect(json.ok).toBeTruthy();
     expect(['baked', 'elevenlabs', 'google', 'azure', 'edge']).toContain(json.provider);
+    if (json.bakedTtsOnly) {
+      expect(json.provider).toBe('baked');
+    }
     if (json.errors) {
       expect(json.errors.tts).toBeTruthy();
       expect(json.errors.quran).toBeTruthy();

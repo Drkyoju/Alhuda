@@ -496,11 +496,62 @@ async function handleTts(request, env) {
   }
 }
 
+async function handleStudentCreds(request, env) {
+  const cors = corsHeaders(request);
+  if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
+  if (!rateLimit(request, 'student-creds', 20, 60000)) {
+    return rateLimitedResponse(cors);
+  }
+  if (request.method !== 'POST') {
+    return new Response(JSON.stringify({ ok: false, error: 'Method not allowed' }), {
+      status: 405,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+  const pepper = String(env?.AUTH_NAME_PEPPER || '').trim();
+  if (!pepper) {
+    return new Response(JSON.stringify({ ok: false, error: 'Auth pepper not configured' }), {
+      status: 503,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return new Response(JSON.stringify({ ok: false, error: 'Invalid JSON' }), {
+      status: 400,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+  const name = String(body?.name || '').trim().normalize('NFC');
+  if (!name || name.length > 80) {
+    return new Response(JSON.stringify({ ok: false, error: 'Invalid name' }), {
+      status: 400,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
+  const data = new TextEncoder().encode(`alhuda|${name}|name-only|${pepper}`);
+  const buf = await crypto.subtle.digest('SHA-256', data);
+  const id = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('').slice(0, 24);
+  return new Response(
+    JSON.stringify({
+      ok: true,
+      email: `alhuda.student.${id}@alhuda.students.internal`,
+      password: `Ah!Nm#${id.slice(0, 14)}`,
+    }),
+    { status: 200, headers: { ...cors, ...JSON_HEADERS } }
+  );
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/api/feedback-notify') {
       return handleFeedbackNotify(request, env);
+    }
+    if (url.pathname === '/api/student-creds') {
+      return handleStudentCreds(request, env);
     }
     if (url.pathname === '/api/tts') {
       return handleTts(request, env);

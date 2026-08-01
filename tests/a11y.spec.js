@@ -9,24 +9,36 @@ async function runAxe(page) {
   expect(serious, JSON.stringify(serious, null, 2)).toEqual([]);
 }
 
-const PAGES = [
-  { name: 'login', path: '/', ready: '#login-screen.active' },
-  { name: 'demo-intro', path: '/', ready: '#login-screen.active', action: async (page) => {
+test.describe('accessibility', () => {
+  test('login has no serious axe violations', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
+    await expect(page.locator('#login-screen.active')).toBeVisible();
+    await runAxe(page);
+  });
+
+  test('demo-intro has no serious axe violations', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
     await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
     await expect(page.locator('#demo-intro')).toHaveClass(/active/);
-  }},
-];
+    await runAxe(page);
+  });
 
-test.describe('accessibility', () => {
-  for (const pg of PAGES) {
-    test(`${pg.name} has no serious axe violations`, async ({ page }) => {
-      await page.goto(pg.path);
-      await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
-      if (pg.action) await pg.action(page);
-      else await expect(page.locator(pg.ready)).toBeVisible();
-      await runAxe(page);
+  test('game has no serious axe violations', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('alhudaTutorialV2', '1');
+      localStorage.setItem('gameTutorialDone', '1');
+      localStorage.setItem('onboardingDone', '1');
+      localStorage.setItem('voiceOn', 'false');
     });
-  }
+    await page.goto('/');
+    await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
+    await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
+    await page.locator('.demo-book-pick').first().click();
+    await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
+    await runAxe(page);
+  });
 
   test('settings overlay has dialog semantics', async ({ page }) => {
     await page.goto('/');
@@ -58,5 +70,21 @@ test.describe('accessibility', () => {
     await expect(confirm).toHaveAttribute('role', 'dialog');
     await page.locator('#confirm-cancel').click();
     await expect(confirm).not.toHaveClass(/open/);
+  });
+
+  test('onboarding overlay has dialog semantics when open', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
+    await page.evaluate(() => {
+      localStorage.removeItem('onboardingDone');
+      document.getElementById('welcome')?.classList.add('active');
+      document.getElementById('login-screen')?.classList.remove('active');
+      const ov = document.getElementById('onboarding-overlay');
+      ov?.classList.add('open');
+      ov?.setAttribute('aria-hidden', 'false');
+    });
+    const ov = page.locator('#onboarding-overlay');
+    await expect(ov).toHaveAttribute('role', 'dialog');
+    await expect(ov).toHaveAttribute('aria-modal', 'true');
   });
 });

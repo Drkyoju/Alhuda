@@ -4,7 +4,8 @@
 // On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
 // without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v178';
+const CACHE = 'alhuda-v179';
+// Keep install precache lean — large speech-diacritics-map.js loads on demand.
 const ASSETS = [
   './',
   './index.html',
@@ -14,8 +15,8 @@ const ASSETS = [
   './ayah-snippet-map.js',
   './speech-pronunciation-lexicon.js',
   './allah-irab.browser.js',
+  './baked-tts.browser.js',
   './speech-diacritics-core.js',
-  './speech-diacritics-map.js',
   './demo-questions-bundle.js',
   './version.js',
   './app.js',
@@ -27,16 +28,10 @@ const ASSETS = [
   './kids-ui.css',
   './enhancements.css',
   './icons/icon.svg',
-  './icons/org-logo.png',
   './icons/org-logo-96.webp',
-  './icons/org-logo-220.webp',
   './icons/icon-192.png',
-  './icons/icon-512.png',
   './fonts/tajawal-arabic-400-normal.woff2',
   './fonts/tajawal-arabic-700-normal.woff2',
-  './fonts/tajawal-arabic-800-normal.woff2',
-  './fonts/amiri-arabic-400-normal.woff2',
-  './fonts/amiri-arabic-700-normal.woff2',
 ];
 
 const VERSION = 'v15';
@@ -141,6 +136,27 @@ self.addEventListener('fetch', (e) => {
   if (url.origin === self.origin && /\.js$/i.test(url.pathname)) {
     e.respondWith(
       staleWhileRevalidate(e.request).catch(() => caches.match(e.request).then((r) => r || fetch(e.request)))
+    );
+    return;
+  }
+
+  // Cache baked Yousef MP3s (and Quran audio) for offline demo / revisit.
+  if (url.origin === self.origin && /\/tts-baked\/.+\.mp3$/i.test(url.pathname)) {
+    e.respondWith(
+      caches.open(CACHE).then(async (cache) => {
+        const hit = await cache.match(e.request);
+        if (hit) return hit;
+        try {
+          const res = await fetch(e.request);
+          const ctype = (res.headers.get('content-type') || '').toLowerCase();
+          if (res.ok && ctype.includes('audio')) {
+            cache.put(e.request, res.clone());
+          }
+          return res;
+        } catch {
+          return hit || Response.error();
+        }
+      })
     );
     return;
   }

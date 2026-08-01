@@ -9,6 +9,9 @@
     "test:a11y": "playwright test tests/a11y.spec.js",
     "test:e2e": "playwright test tests/e2e-login.spec.js",
     "test:api": "LIVE_API_BASE=https://alhuda.ryodan71.workers.dev playwright test tests/api-live.spec.js",
+    "test:tts-order": "playwright test tests/tts-order.spec.js",
+    "check:baked-tts": "node scripts/check_baked_tts_coverage.mjs",
+    "bump:version": "node scripts/bump_version.mjs --all",
     "serve": "python3 -m http.server 8765",
     "icons": "node scripts/generate-icons.mjs",
     "bake:tts": "node scripts/bake_tts_audio.mjs",
@@ -19,6 +22,6 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.49.0",
-    "sharp": "^0.34.3"
+    "sharp": "^0.35.3"
   }
 }

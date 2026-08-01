@@ -5,17 +5,17 @@ test.beforeEach(async ({ page }) => {
     localStorage.setItem('voiceOn', 'false');
     localStorage.setItem('soundOn', 'false');
     localStorage.setItem('gameTutorialDone', '1');
+    localStorage.setItem('onboardingDone', '1');
   });
 });
 
-test('demo-only mode: login locked, demo playable', async ({ page }) => {
+test('full login unlocked: name entry visible, demo still playable', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 45000 });
 
-  await expect(page.locator('#login-demo-only-notice')).toBeVisible();
-  await expect(page.locator('#login-name')).toBeDisabled();
-  await expect(page.locator('#btn-login')).toBeDisabled();
-  await expect(page.locator('#login-or-divider')).toBeHidden();
+  await expect(page.locator('#login-demo-only-notice')).toBeHidden();
+  await expect(page.locator('#login-name')).toBeEnabled();
+  await expect(page.locator('#btn-login')).toBeEnabled();
 
   await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
   await expect(page.locator('#demo-intro')).toHaveClass(/active/);
@@ -27,7 +27,7 @@ test('demo-only mode: login locked, demo playable', async ({ page }) => {
   await expect(page.locator('.ans-btn').first()).toBeVisible();
 });
 
-test('feedback screen shows locked real-game CTA', async ({ page }) => {
+test('feedback screen offers real-game CTA', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 45000 });
   await page.evaluate(() => {
@@ -35,5 +35,5 @@ test('feedback screen shows locked real-game CTA', async ({ page }) => {
     else document.getElementById('feedback-screen')?.classList.add('active');
   });
   await expect(page.locator('#real-game-locked-cta')).toBeVisible();
-  await expect(page.locator('.real-game-locked-btn')).toBeDisabled();
+  await expect(page.locator('#real-game-cta-btn')).toBeEnabled();
 });
