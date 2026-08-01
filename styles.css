@@ -1458,6 +1458,31 @@
       font-weight: 700;
       color: var(--text-soft);
     }
+    .round-size-wrap {
+      width: 100%;
+      text-align: center;
+    }
+    .round-size-row {
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+    .round-size-btn {
+      min-width: 56px;
+      font-weight: 900;
+    }
+    .round-size-btn.sel {
+      background: var(--emerald);
+      color: #fff;
+      border-color: transparent;
+    }
+    .level-btn.locked {
+      opacity: 0.45;
+      cursor: not-allowed;
+      filter: grayscale(0.35);
+    }
+    .level-btn.locked.sel {
+      box-shadow: none;
+    }
     .stage-game-badge {
       font-size: 0.72em;
       font-weight: 800;

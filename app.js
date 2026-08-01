@@ -111,7 +111,7 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:20 };
 let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
@@ -401,7 +401,12 @@ const BADGES = {
 const ENCOURAGE_OK = ['ممتاز! 🌟', 'أحسنت! 🎉', 'رائع! ⭐', 'مبدع/ة! 💫', 'بارك الله فيك! 🤲'];
 const ENCOURAGE_BAD = ['لا بأس! حاول/ي مرة أخرى 💪', 'تعلّمنا من الخطأ 📖', 'واصل/ي! أنت قادر/ة 🌱'];
 const DEFAULT_PLAYER = 'بطل/ة';
-const STAGE_SIZE = 20;
+const STAGE_SIZE = 20; // legacy fallback only
+/** Max questions per difficulty tier (rebalanced by real easy→hard order). */
+const LEVEL_CAPS = { easy: 80, medium: 100, hard: 120 };
+const ROUND_SIZE_OPTIONS = [10, 20, 30, 40];
+const LEVEL_FLOW = ['easy', 'medium', 'hard'];
+const LEVEL_LABELS_AR = { easy: 'سهل', medium: 'متوسط', hard: 'صعب', all: 'الكل' };
 
 function isRealGameLocked() {
   return LOGIN_LOCKED && !state.demoMode;
@@ -598,30 +603,87 @@ function wipeLocalProgressForName(name) {
   return fresh;
 }
 function getBookQuestionCounts(book) {
-  const all = getAllQuestions(book);
+  const pools = buildDifficultyPools(book);
   return {
-    easy: all.filter(q => q.level === 'easy').length,
-    medium: all.filter(q => q.level === 'medium').length,
-    hard: all.filter(q => q.level === 'hard').length,
-    all: all.length
+    easy: pools.easy.length,
+    medium: pools.medium.length,
+    hard: pools.hard.length,
+    all: pools.easy.length + pools.medium.length + pools.hard.length,
   };
 }
 
+function difficultyRank(q) {
+  const lvl = { easy: 0, medium: 1, hard: 2 };
+  return lvl[q?.level] ?? 1;
+}
+
+/** Cap + redistribute book questions into easy→medium→hard by real difficulty order. */
+function buildDifficultyPools(book) {
+  const all = getAllQuestions(book).slice().sort((a, b) => {
+    const d = difficultyRank(a) - difficultyRank(b);
+    if (d !== 0) return d;
+    const c = chapterSortIndex(a.book, a.cat) - chapterSortIndex(b.book, b.cat);
+    if (c !== 0) return c;
+    return String(a.id || '').localeCompare(String(b.id || ''));
+  });
+  const total = all.length;
+  if (!total) return { easy: [], medium: [], hard: [] };
+
+  let easyCap = LEVEL_CAPS.easy;
+  let mediumCap = LEVEL_CAPS.medium;
+  let hardCap = LEVEL_CAPS.hard;
+  // Small books: keep ~30/35/35 with ceilings.
+  if (total < easyCap + mediumCap + hardCap) {
+    easyCap = Math.min(LEVEL_CAPS.easy, Math.max(8, Math.round(total * 0.30)));
+    mediumCap = Math.min(LEVEL_CAPS.medium, Math.max(8, Math.round(total * 0.35)));
+    hardCap = Math.max(0, total - easyCap - mediumCap);
+  }
+
+  const easy = all.slice(0, Math.min(easyCap, total));
+  const medium = all.slice(easy.length, Math.min(easy.length + mediumCap, total));
+  const hard = all.slice(easy.length + medium.length, Math.min(easy.length + medium.length + hardCap, total));
+  return { easy, medium, hard };
+}
+
 function getOrderedPool(book, level) {
+  if (level === 'all') {
+    const p = buildDifficultyPools(book);
+    return [...p.easy, ...p.medium, ...p.hard];
+  }
+  if (LEVEL_FLOW.includes(level)) {
+    return buildDifficultyPools(book)[level] || [];
+  }
+  // Fallback: raw filter
   let pool = getAllQuestions(book);
   if (level !== 'all') pool = pool.filter(q => q.level === level);
-  if (book === 'merge3') {
-    const bookOrder = { tawheed: 0, usool: 1, nawawi: 2 };
-    pool.sort((a, b) => {
-      const bb = (bookOrder[a.book] ?? 9) - (bookOrder[b.book] ?? 9);
-      if (bb !== 0) return bb;
-      const ca = chapterSortIndex(a.book, a.cat) - chapterSortIndex(b.book, b.cat);
-      if (ca !== 0) return ca;
-      const lvl = { easy: 0, medium: 1, hard: 2 };
-      return (lvl[a.level] || 1) - (lvl[b.level] || 1);
-    });
-  }
   return pool;
+}
+
+function getTierProgress(book, level) {
+  const pool = getOrderedPool(book, level);
+  const key = stageProgressKey(book, level);
+  const prog = ensureStageProgressEntry(key);
+  const solved = prog.solvedIds.filter((id) => pool.some((q) => q.id === id)).length;
+  return { pool, prog, solved, total: pool.length, done: pool.length > 0 && solved >= pool.length };
+}
+
+function isLevelUnlocked(book, level) {
+  if (level === 'easy' || level === 'all') return true;
+  if (level === 'medium') return getTierProgress(book, 'easy').done;
+  if (level === 'hard') return getTierProgress(book, 'easy').done && getTierProgress(book, 'medium').done;
+  return true;
+}
+
+function nextLockedLevelMessage(book, level) {
+  if (level === 'medium') {
+    const t = getTierProgress(book, 'easy');
+    return `أكمل/ي السهل أولاً (${arabicNum(t.solved)}/${arabicNum(t.total)}) لفتح المتوسط`;
+  }
+  if (level === 'hard') {
+    const t = getTierProgress(book, 'medium');
+    return `أكمل/ي المتوسط أولاً (${arabicNum(t.solved)}/${arabicNum(t.total)}) لفتح الصعب`;
+  }
+  return '';
 }
 
 function stageProgressKey(book, level) {
@@ -691,92 +753,152 @@ function syncStageCompletion(stageNum) {
 }
 
 function getQuestionsForStageGame() {
+  // Pick up to roundSize unsolved questions from the capped difficulty tier.
   if (state.useManualRange || state.homeworkId || state.challengeMode || trainingMode) return null;
-  const { stages, prog } = getStageMeta(state.book, state.level);
-  if (!stages.length) return [];
+  if (state.level === 'all' || !LEVEL_FLOW.includes(state.level)) return null;
+  if (!isLevelUnlocked(state.book, state.level)) return [];
 
-  if (state.stageReviewMode) {
-    const stageNum = Math.max(1, Math.min(state.activeStageNum || 1, stages.length));
-    const stage = stages[stageNum - 1];
-    state.activeStageNum = stageNum;
-    state.qFrom = stage.from;
-    return dedupeGameQuestions([...stage.questions]);
+  const { pool, prog, done } = getTierProgress(state.book, state.level);
+  if (!pool.length) return [];
+
+  const round = Math.max(1, state.roundSize || 20);
+
+  if (state.stageReviewMode || done) {
+    state.stageReviewMode = true;
+    const size = Math.min(round, pool.length);
+    // Rotate through the tier so review rounds feel fresh.
+    const start = ((state.activeStageNum || 1) - 1) * size % Math.max(1, pool.length);
+    const slice = [];
+    for (let i = 0; i < size; i++) slice.push(pool[(start + i) % pool.length]);
+    state.qFrom = start + 1;
+    return dedupeGameQuestions(slice);
   }
 
-  for (let s = Math.max(1, prog.currentStage || 1); s <= stages.length; s++) {
-    const stage = stages[s - 1];
-    const unsolved = stage.questions.filter((q) => !prog.solvedIds.includes(q.id));
-    if (unsolved.length) {
-      state.activeStageNum = s;
-      state.qFrom = stage.from;
-      return dedupeGameQuestions(unsolved);
-    }
-    syncStageCompletion(s);
+  const unsolved = pool.filter((q) => !prog.solvedIds.includes(q.id));
+  if (!unsolved.length) {
+    state.stageReviewMode = true;
+    return getQuestionsForStageGame();
   }
 
-  state.activeStageNum = stages.length;
-  return [];
+  const size = Math.min(round, unsolved.length);
+  const next = unsolved.slice(0, size);
+  const firstIdx = pool.findIndex((q) => q.id === next[0]?.id);
+  state.qFrom = firstIdx >= 0 ? firstIdx + 1 : 1;
+  const solvedBefore = pool.length - unsolved.length;
+  state.activeStageNum = Math.max(1, Math.floor(solvedBefore / round) + 1);
+  return dedupeGameQuestions(next);
 }
 
 function updateStagePickerUI() {
   const el = document.getElementById('stage-picker');
   const hint = document.getElementById('stage-hint');
   if (!el) return;
-  const { stages, prog, pool } = getStageMeta(state.book, state.level);
-  if (!stages.length) {
-    el.innerHTML = '<p class="stage-empty">لا توجد أسئلة لهذا الاختيار</p>';
-    if (hint) hint.textContent = '';
+
+  if (!LEVEL_FLOW.includes(state.level)) {
+    el.innerHTML = '<p class="stage-empty">اختَر/ي مستوى سهل أو متوسط أو صعب — أو استخدم/ي النطاق اليدوي من الخيارات المتقدمة</p>';
+    if (hint) hint.textContent = state.level === 'all' ? 'وضع «الكل»: مراجعة مختلطة بدون مسار التدرّج' : '';
+    updateStartButtonLabel();
+    updateLevelLockUI();
     return;
   }
-  if (!state.stageReviewMode) state.activeStageNum = prog.currentStage || 1;
 
-  el.innerHTML = stages.map((st) => {
-    const solved = st.questions.filter((q) => prog.solvedIds.includes(q.id)).length;
-    const total = st.questions.length;
-    const done = prog.completedStages.includes(st.num) || solved >= total;
-    const current = st.num === (prog.currentStage || 1) && !done;
-    const locked = !done && !current;
-    const selected = st.num === state.activeStageNum;
-    const cls = ['stage-chip', done ? 'done' : '', current ? 'current' : '', selected ? 'selected' : '', locked ? 'locked' : ''].filter(Boolean).join(' ');
-    return `<button type="button" class="${cls}" data-stage="${st.num}" ${locked ? 'disabled' : ''} onclick="selectStage(${st.num}, ${done ? 'true' : 'false'})">
-      <span class="stage-chip-top">${done ? '✓' : `مرحلة ${arabicNum(st.num)}`}</span>
-      <span class="stage-chip-meta">${arabicNum(solved)}/${arabicNum(total)}</span>
-    </button>`;
+  const unlocked = isLevelUnlocked(state.book, state.level);
+  if (!unlocked) {
+    el.innerHTML = `<p class="stage-empty">🔒 ${escapeHtml(nextLockedLevelMessage(state.book, state.level))}</p>`;
+    if (hint) hint.textContent = '';
+    updateStartButtonLabel();
+    updateLevelLockUI();
+    return;
+  }
+
+  const { pool, solved, total, done } = getTierProgress(state.book, state.level);
+  if (!total) {
+    el.innerHTML = '<p class="stage-empty">لا توجد أسئلة لهذا المستوى</p>';
+    if (hint) hint.textContent = '';
+    updateStartButtonLabel();
+    updateLevelLockUI();
+    return;
+  }
+
+  const remaining = Math.max(0, total - solved);
+  const roundBtns = ROUND_SIZE_OPTIONS.map((n) => {
+    const on = (state.roundSize || 20) === n ? 'sel' : '';
+    return `<button type="button" class="level-btn round-size-btn ${on}" data-round="${n}" onclick="selectRoundSize(${n})">${arabicNum(n)}</button>`;
   }).join('');
 
-  const totalSolved = prog.solvedIds.filter((id) => pool.some((q) => q.id === id)).length;
-  const allDone = prog.completedStages.length >= stages.length;
+  el.innerHTML = `
+    <div class="round-size-wrap">
+      <p class="section-label" style="margin:0 0 6px;">كم سؤال في هذه الجولة؟</p>
+      <div class="level-row round-size-row">${roundBtns}</div>
+    </div>`;
+
   if (hint) {
-    let text = allDone
-      ? `🎉 أنهيت كل المراحل (${arabicNum(totalSolved)} سؤالاً)! اضغط/ي أي مرحلة للمراجعة`
-      : `المرحلة الحالية: ${arabicNum(prog.currentStage || 1)} من ${arabicNum(stages.length)} — ${arabicNum(totalSolved)} من ${arabicNum(pool.length)} سؤالاً محلولاً`;
-    if (state.useManualRange) text += ' — وضع النطاق اليدوي مفعّل (المراحل معطّلة)';
-    hint.textContent = text;
+    const label = LEVEL_LABELS_AR[state.level] || state.level;
+    const round = Math.min(state.roundSize || 20, done ? total : (remaining || total));
+    if (state.useManualRange) {
+      hint.textContent = 'وضع النطاق اليدوي مفعّل — مسار التدرّج معطّل لهذه الجولة';
+    } else if (done) {
+      hint.textContent = `🎉 أنهيت مستوى ${label} (${arabicNum(total)} سؤال)! يمكنك المراجعة أو الانتقال للمستوى التالي`;
+    } else {
+      hint.textContent = `مستوى ${label}: ${arabicNum(solved)}/${arabicNum(total)} — متبقي ${arabicNum(remaining)} — الجولة: ${arabicNum(round)} سؤال`;
+    }
   }
   updateStartButtonLabel();
+  updateLevelLockUI();
+}
+
+function selectRoundSize(n) {
+  if (!ROUND_SIZE_OPTIONS.includes(n)) return;
+  state.roundSize = n;
+  state.useManualRange = false;
+  state.stageReviewMode = false;
+  updateStagePickerUI();
 }
 
 function selectStage(num, isDone) {
-  state.activeStageNum = num;
+  // Legacy hook kept for any old UI; map to review offset within tier.
+  state.activeStageNum = Math.max(1, num || 1);
   state.stageReviewMode = !!isDone;
   updateStagePickerUI();
+}
+
+function updateLevelLockUI() {
+  for (const lvl of LEVEL_FLOW) {
+    const btn = document.getElementById('btn-' + lvl);
+    if (!btn) continue;
+    const unlocked = isLevelUnlocked(state.book, lvl);
+    btn.classList.toggle('locked', !unlocked);
+    btn.toggleAttribute('disabled', !unlocked);
+    btn.title = unlocked ? '' : nextLockedLevelMessage(state.book, lvl);
+    const lockMark = unlocked ? '' : ' 🔒';
+    const label = LEVEL_LABELS_AR[lvl] || lvl;
+    const textNode = [...btn.childNodes].find((n) => n.nodeType === 3);
+    if (textNode) textNode.textContent = label + lockMark;
+  }
 }
 
 function updateStartButtonLabel() {
   const btn = document.getElementById('btn-start-game');
   if (!btn) return;
-  const { stages, prog } = getStageMeta(state.book, state.level);
-  if (!stages.length) {
+  if (!LEVEL_FLOW.includes(state.level)) {
     btn.textContent = 'ابدأ اللعبة 🎮';
     return;
   }
-  const num = state.stageReviewMode ? state.activeStageNum : (prog.currentStage || 1);
-  if (state.stageReviewMode) {
-    btn.textContent = `مراجعة المرحلة ${arabicNum(num)} 🔁`;
-  } else if (prog.completedStages.length >= stages.length) {
-    btn.textContent = 'مراجعة مرحلة 🔄';
+  if (!isLevelUnlocked(state.book, state.level)) {
+    btn.textContent = '🔒 المستوى مقفل';
+    return;
+  }
+  const { solved, total, done, pool } = getTierProgress(state.book, state.level);
+  if (!pool.length) {
+    btn.textContent = 'ابدأ اللعبة 🎮';
+    return;
+  }
+  const remaining = Math.max(0, total - solved);
+  const n = Math.min(state.roundSize || 20, done ? total : (remaining || total));
+  if (done || state.stageReviewMode) {
+    btn.textContent = `مراجعة ${arabicNum(n)} سؤال 🔁`;
   } else {
-    btn.textContent = `ابدأ المرحلة ${arabicNum(num)} 🎮`;
+    btn.textContent = `ابدأ ${arabicNum(n)} سؤال 🎮`;
   }
 }
 
@@ -786,26 +908,33 @@ function updateStageGameBadge() {
     if (el) el.style.display = 'none';
     return;
   }
-  const { stages, prog } = getStageMeta(state.book, state.level);
-  const num = state.activeStageNum || prog.currentStage || 1;
-  const stage = stages[num - 1];
-  if (!stage) {
+  if (!LEVEL_FLOW.includes(state.level)) {
     el.style.display = 'none';
     return;
   }
-  const solved = stage.questions.filter((q) => prog.solvedIds.includes(q.id)).length;
-  const mode = state.stageReviewMode ? 'مراجعة' : 'مرحلة';
+  const { solved, total } = getTierProgress(state.book, state.level);
+  const label = LEVEL_LABELS_AR[state.level] || '';
   el.style.display = '';
-  el.textContent = `🏁 ${mode} ${arabicNum(num)} — ${arabicNum(solved)}/${arabicNum(stage.questions.length)} مكتمل`;
+  el.textContent = `📊 ${label}: ${arabicNum(solved)}/${arabicNum(total)} — جولة ${arabicNum(state.roundSize || 20)}`;
 }
 
 function updateLevelCounts() {
   const c = getBookQuestionCounts(state.book);
-  const set = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n ? `(${n})` : '(٠)'; };
-  set('cnt-easy', c.easy);
-  set('cnt-medium', c.medium);
-  set('cnt-hard', c.hard);
-  set('cnt-all', c.all);
+  const setProg = (id, level) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (LEVEL_FLOW.includes(level)) {
+      const { solved, total } = getTierProgress(state.book, level);
+      el.textContent = total ? `(${arabicNum(solved)}/${arabicNum(total)})` : '(٠)';
+    } else {
+      el.textContent = c[level] ? `(${arabicNum(c[level])})` : '(٠)';
+    }
+  };
+  setProg('cnt-easy', 'easy');
+  setProg('cnt-medium', 'medium');
+  setProg('cnt-hard', 'hard');
+  setProg('cnt-all', 'all');
+  updateLevelLockUI();
 }
 
 function updateQuestionRangeUI() {
@@ -5377,11 +5506,18 @@ function selectBook(b) {
   toLoad.forEach((book) => loadBookQuestions(book).catch(() => {}));
 }
 function selectLevel(l) {
+  if (LEVEL_FLOW.includes(l) && !isLevelUnlocked(state.book, l)) {
+    const msg = nextLockedLevelMessage(state.book, l);
+    if (typeof showToast === 'function') showToast(msg || 'المستوى مقفل', 'err');
+    else showAlert(msg || 'المستوى مقفل');
+    updateLevelLockUI();
+    return;
+  }
   state.level = l;
   state.bankVersion = 0;
   state.useManualRange = false;
   state.stageReviewMode = false;
-  document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('sel'));
+  document.querySelectorAll('.level-btn[data-level]').forEach((b) => b.classList.remove('sel'));
   const el = document.getElementById('btn-' + l);
   if (el) el.classList.add('sel');
   const pool = getOrderedPool(state.book, l);
@@ -5389,9 +5525,10 @@ function selectLevel(l) {
   const toEl = document.getElementById('q-to-input');
   const fromEl = document.getElementById('q-from-input');
   if (fromEl) fromEl.value = 1;
-  if (toEl) toEl.value = max ? Math.min(20, max) : 1;
+  if (toEl) toEl.value = max ? Math.min(state.roundSize || 20, max) : 1;
   updateQuestionRangeUI();
   updateStagePickerUI();
+  updateLevelCounts();
 }
 function updateBookButtons() {
   document.querySelectorAll('.book-btn').forEach(b => b.classList.remove('sel'));
@@ -5413,9 +5550,8 @@ async function startCountdown() {
       return;
     }
     if (!state.useManualRange && !state.stageReviewMode && !state.challengeMode && !state.homeworkId) {
-      const { stages, prog } = getStageMeta(state.book, state.level);
-      if (stages.length && prog.completedStages.length >= stages.length) {
-        showAlert('أنهيت كل المراحل! اختر/ي مرحلة مكتملة (✓) للمراجعة ثم اضغط/ي الزر.');
+      if (LEVEL_FLOW.includes(state.level) && !isLevelUnlocked(state.book, state.level)) {
+        showAlert(nextLockedLevelMessage(state.book, state.level) || 'المستوى مقفل');
         return;
       }
     }
@@ -5439,8 +5575,15 @@ async function startCountdown() {
           return;
         }
       }
-      if (!state.useManualRange && !state.stageReviewMode) {
-        showAlert('لا توجد أسئلة متبقية في المرحلة الحالية. اختر/ي مرحلة للمراجعة أو كتاباً آخر.');
+      if (!state.useManualRange && LEVEL_FLOW.includes(state.level)) {
+        const { done, total } = getTierProgress(state.book, state.level);
+        if (done) {
+          showAlert('أنهيت هذا المستوى! يمكنك المراجعة أو الانتقال للمستوى التالي.');
+        } else if (!total) {
+          showAlert('لا توجد أسئلة لهذا المستوى. جرّب/ي كتاباً آخر.');
+        } else {
+          showAlert('لا توجد أسئلة متبقية. جرّب/ي حجم جولة أصغر أو حدّث/ي البنك.');
+        }
       } else {
         showAlert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر.');
       }
@@ -5504,8 +5647,8 @@ function renderQ() {
   const prior = state.answerLog?.[state.idx] || null;
   state.answered = !!prior;
   document.getElementById('show-answer-btn').style.display = 'none';
-  const stagePrefix = (!state.demoMode && !state.challengeMode && !state.homeworkId && !state.useManualRange)
-    ? `مرحلة ${arabicNum(state.activeStageNum || 1)} — `
+  const stagePrefix = (!state.demoMode && !state.challengeMode && !state.homeworkId && !state.useManualRange && LEVEL_FLOW.includes(state.level))
+    ? `${LEVEL_LABELS_AR[state.level] || ''} — `
     : '';
   document.getElementById('q-num').textContent = (state.demoMode || state.challengeMode)
     ? `السؤال ${state.idx + 1} من ${state.total}`
@@ -5913,19 +6056,22 @@ async function endGame() {
     document.getElementById('res-icon').textContent = isTraining ? '🏋️' : (stars === 3 ? '🏆' : stars >= 2 ? '🎉' : '📚');
     document.getElementById('res-title').textContent = isTraining ? 'انتهى التدريب' : (stars === 3 ? 'مذهلة!' : stars >= 2 ? 'أحسنت!' : 'جيد!');
     let resSub = isTraining ? 'وضع التدريب — لا يُحسب في النقاط أو اللوحة' : (stars === 3 ? 'نتيجة ذهبية! أنت بطل/ة! 🌟' : stars >= 2 ? 'نتيجة رائعة! واصل/ي التعلّم 🌟' : 'واصل/ي المحاولة، أنت قادر/ة! 💪');
-    if (!isTraining && !state.useManualRange && !state.challengeMode && !state.homeworkId) {
-      const stageDone = syncStageCompletion(state.activeStageNum);
-      const { stages, prog } = getStageMeta(state.book, state.level);
-      if (stageDone) {
-        if (prog.completedStages.length >= stages.length) {
-          resSub = '🎉 أنهيت كل المراحل! يمكنك مراجعة أي مرحلة من الشاشة الرئيسية';
-          state.stageReviewMode = false;
+    if (!isTraining && !state.useManualRange && !state.challengeMode && !state.homeworkId && LEVEL_FLOW.includes(state.level)) {
+      // Keep legacy stage markers in sync for older progress blobs.
+      syncStageCompletion(state.activeStageNum);
+      const { solved, total, done } = getTierProgress(state.book, state.level);
+      const label = LEVEL_LABELS_AR[state.level] || state.level;
+      if (done) {
+        if (state.level === 'easy') {
+          resSub = `🎉 أنهيت المستوى السهل (${arabicNum(total)})! المتوسط مفتوح الآن`;
+        } else if (state.level === 'medium') {
+          resSub = `🎉 أنهيت المستوى المتوسط (${arabicNum(total)})! الصعب مفتوح الآن`;
         } else {
-          resSub = `✅ أتممت المرحلة ${arabicNum(state.activeStageNum)}! المرحلة التالية: ${arabicNum(prog.currentStage)}`;
-          state.stageReviewMode = false;
+          resSub = `🎉 أنهيت المستوى الصعب (${arabicNum(total)})! أحسنت — المسار مكتمل`;
         }
-      } else if (!state.stageReviewMode && state.correct >= state.total) {
-        resSub = `✅ أنهيت أسئلة هذه الجولة — واصل/ي المرحلة ${arabicNum(prog.currentStage || state.activeStageNum)}`;
+        state.stageReviewMode = false;
+      } else if (!state.stageReviewMode) {
+        resSub = `✅ تقدّم ${label}: ${arabicNum(solved)}/${arabicNum(total)} — واصل/ي الجولات`;
       }
     }
     document.getElementById('res-sub').textContent = resSub;
