@@ -1,0 +1,52 @@
+name: Bake missing Yousef TTS
+
+# Bakes new /tts-baked/*.mp3 for strings in the speech maps that are not yet on disk.
+# Uses the repo ELEVENLABS_API_KEY secret (Yousef voice). Commits MP3s back to the branch.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: bake-tts
+  cancel-in-progress: false
+
+jobs:
+  bake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Bake missing TTS (ElevenLabs Yousef)
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          if [ -z "$ELEVENLABS_API_KEY" ]; then
+            echo "Missing ELEVENLABS_API_KEY secret"
+            exit 1
+          fi
+          # ~1.3k clips · ~100k chars — keep under ElevenLabs rate limits
+          node scripts/bake_tts_audio.mjs --provider elevenlabs
+
+      - name: Coverage check
+        run: npm run check:baked-tts
+
+      - name: Commit baked audio if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A tts-baked
+          if git diff --staged --quiet; then
+            echo "No new baked files"
+          else
+            git commit -m "Bake missing Yousef TTS for full bank speech coverage"
+            git push origin HEAD
+          fi
