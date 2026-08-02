@@ -112,7 +112,7 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:20 };
-let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
+let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
 let questionShownAt = 0;
@@ -6907,9 +6907,14 @@ async function restoreSession() {
   soundOn = localStorage.getItem('soundOn') !== 'false';
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   voiceOn = localStorage.getItem('voiceOn') !== 'false';
-  voiceReadAnswers = localStorage.getItem('voiceReadAnswers') === 'true';
+  // One-time: turn answer read-aloud on for everyone (was default-off).
+  if (localStorage.getItem('voiceReadAnswersMigratedV2') !== '1') {
+    localStorage.setItem('voiceReadAnswers', 'true');
+    localStorage.setItem('voiceReadAnswersMigratedV2', '1');
+  }
+  voiceReadAnswers = localStorage.getItem('voiceReadAnswers') !== 'false';
   if (localStorage.getItem('voiceOn') == null) localStorage.setItem('voiceOn', 'true');
-  if (localStorage.getItem('voiceReadAnswers') == null) localStorage.setItem('voiceReadAnswers', 'false');
+  if (localStorage.getItem('voiceReadAnswers') == null) localStorage.setItem('voiceReadAnswers', 'true');
   updateVoiceUI();
   if ('speechSynthesis' in window) {
     loadArabicVoice();

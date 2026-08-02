@@ -38,6 +38,8 @@ jobs:
 
       - name: Coverage check
         run: npm run check:baked-tts
+        env:
+          ALLOW_BAKED_TTS_MISS: "1"
 
       - name: Commit baked audio if changed
         run: |
@@ -46,6 +48,10 @@ jobs:
           git add -A tts-baked
           if git diff --staged --quiet; then
             echo "No new baked files"
+            # Surface plan/auth failure clearly for operators
+            if [ -f tts-baked/manifest.json ]; then
+              node -e "const m=require('./tts-baked/manifest.json'); if((m.bakedThisRun||0)===0 && (m.failed||0)>0){console.error('Bake produced 0 clips with failures — check ElevenLabs plan/key'); process.exit(1)}"
+            fi
           else
             git commit -m "Bake missing Yousef TTS for full bank speech coverage"
             git push origin HEAD

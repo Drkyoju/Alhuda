@@ -167,3 +167,7 @@ if (exportDir) console.log(`Copied to: ${exportDir}`);
 if (provider === 'elevenlabs' || provider === 'worker') {
   console.log('Deploy tts-baked/ with the site + set BAKED_TTS_ONLY=1 → Yousef offline, no more API billing.');
 }
+if (done === 0 && failed > 0) {
+  console.error('No new clips baked — aborting (check ElevenLabs plan/key for Yousef library voice).');
+  process.exit(1);
+}
