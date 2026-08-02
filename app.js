@@ -112,7 +112,7 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:20 };
-let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
+let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = false, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
 let questionShownAt = 0;
@@ -1640,6 +1640,11 @@ let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
+const ttsKnownMissCache = new Set(); // avoid /api/tts storms for known baked misses
+if (typeof window !== 'undefined' && window.__alhudaBakedTtsOnly == null) {
+  // Match wrangler BAKED_TTS_ONLY=1 — refined by /api/tts-status on boot.
+  window.__alhudaBakedTtsOnly = true;
+}
 const ttsPreloadedAudio = new Map(); // key -> HTMLAudioElement (decoded ahead of play)
 const TTS_IDB_STORE = 'audio';
 
@@ -1823,6 +1828,9 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
       if (res.ok) return res.blob();
     } catch { /* fall through and re-fetch */ }
   }
+  if (ttsKnownMissCache.has(key)) {
+    throw new Error('tts baked miss');
+  }
   // Prefer static baked Yousef MP3s over IndexedDB (IDB may hold older wrong-provider audio).
   if (typeof bakedTtsAssetPath === 'function') {
     try {
@@ -1862,6 +1870,11 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
   if (navigator.onLine === false) {
     throw new Error('tts offline cache miss');
   }
+  // Baked-only deploy: skip /api/tts after a static miss — POSTs only 404 and burn the rate limit.
+  if (window.__alhudaBakedTtsOnly === true) {
+    ttsKnownMissCache.add(key);
+    throw new Error('tts baked miss');
+  }
   if (ttsPrefetchInFlight.has(key)) return ttsPrefetchInFlight.get(key);
 
   const work = (async () => {
@@ -1892,6 +1905,10 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
           lastErr = new Error(`tts failed:${res.status}`);
           await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
           continue;
+        }
+        if (res.status === 404) {
+          ttsKnownMissCache.add(key);
+          throw new Error('tts baked miss');
         }
         if (!res.ok) throw new Error(`tts failed:${res.status}`);
         const blob = await res.blob();
@@ -1951,17 +1968,16 @@ function prepareTtsPayload(text) {
   if (!cleaned) return '';
   // Hadith: speak the curated wording as-is — do not rewrite tokens via word map.
   if (isHadithPassage(cleaned)) {
-    const hadith = prepareArabicForSpeech(applyPronunciationLexicon(cleaned));
+    const hadith = prepareArabicForSpeech(cleaned);
     return sanitizeTtsText(
       typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(hadith) : hadith
     );
   }
-  // Normal Q&A / explanation: full diacritics + curated lexicon + word map fill.
+  // Speech-map / already-tashkeeled text: keep mark order for baked TTS keys.
+  // Only fill bare words when the chunk lacks well-formed harakat.
   let forTts = hasWellFormedTashkeel(cleaned)
     ? cleaned
-    : applyManualSpeechDiacritics(cleaned);
-  forTts = applyWordDiacritics(forTts);
-  forTts = applyPronunciationLexicon(forTts);
+    : applyPronunciationLexicon(applyWordDiacritics(applyManualSpeechDiacritics(cleaned)));
   forTts = typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(forTts) : forTts;
   return sanitizeTtsText(prepareArabicForSpeech(forTts));
 }
@@ -1997,7 +2013,10 @@ async function warmQuestionSpeech(q) {
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => null);
     const opts = optionList?.length ? optionList : [];
-    for (const opt of opts) prefetchTtsText(opt);
+    // Only warm answer clips when the player opted into reading answers.
+    if (voiceReadAnswers) {
+      for (const opt of opts) prefetchTtsText(opt);
+    }
     const qClean = prepareTtsPayload(questionText);
     try {
       void warmAllahPronClips();
@@ -2010,19 +2029,20 @@ async function warmQuestionSpeech(q) {
             .map((part) => fetchTtsBlob(part.text).catch(() => null))
         );
       }
-      // Best-effort: resolve option blobs so answers play without lag.
-      await Promise.all(
-        opts.map(async (opt) => {
-          const clean = prepareTtsPayload(opt);
-          if (!clean || clean.length < 2) return;
-          const parts = splitTtsWithAllahPron(clean);
-          await Promise.all(
-            parts
-              .filter((part) => part.type === 'tts' && part.text?.length >= 2)
-              .map((part) => fetchTtsBlob(part.text).catch(() => null))
-          );
-        })
-      );
+      if (voiceReadAnswers && opts.length) {
+        await Promise.all(
+          opts.map(async (opt) => {
+            const clean = prepareTtsPayload(opt);
+            if (!clean || clean.length < 2) return;
+            const parts = splitTtsWithAllahPron(clean);
+            await Promise.all(
+              parts
+                .filter((part) => part.type === 'tts' && part.text?.length >= 2)
+                .map((part) => fetchTtsBlob(part.text).catch(() => null))
+            );
+          })
+        );
+      }
       return null;
     } catch {
       return null;
@@ -2045,7 +2065,9 @@ async function prefetchHybridSpeechForQuestion(q) {
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
     const { questionText, optionList } = buildQuestionSpeechParts(q);
     if (questionText?.trim()) prefetchTtsText(questionText);
-    for (const opt of (optionList || [])) prefetchTtsText(opt);
+    if (voiceReadAnswers) {
+      for (const opt of (optionList || [])) prefetchTtsText(opt);
+    }
   } catch (e) {
     console.warn('hybrid prefetch:', e);
     if (q.q) prefetchTtsText(q.q);
@@ -2191,6 +2213,13 @@ function maybeRemindAzureKeyRotation(hint) {
 
 async function refreshTtsProviderBadge() {
   const badge = document.getElementById('tts-provider-badge');
+  try {
+    const res = await fetch('/api/tts-status', { cache: 'no-store' });
+    const data = await res.json();
+    if (typeof data?.bakedTtsOnly === 'boolean') {
+      window.__alhudaBakedTtsOnly = data.bakedTtsOnly;
+    }
+  } catch { /* ignore */ }
   if (!badge) return;
   const showDiag = localStorage.getItem('showTtsDiag') === '1'
     || /[?&]diag=1(?:&|$)/.test(location.search);
@@ -2201,6 +2230,9 @@ async function refreshTtsProviderBadge() {
   try {
     const res = await fetch('/api/tts-status', { cache: 'no-store' });
     const data = await res.json();
+    if (typeof data?.bakedTtsOnly === 'boolean') {
+      window.__alhudaBakedTtsOnly = data.bakedTtsOnly;
+    }
     const usage = getAzureTtsUsage();
     const pct = Math.min(100, Math.round((usage.chars / 500000) * 100));
     const errStats = getTtsErrorStats();
@@ -2453,11 +2485,13 @@ function loadSpeechScript(src, marker) {
   });
 }
 
-/** Curated lexicon wins over auto word-map for problem words (الله، التوحيد…). */
+/** Lexicon fills bare words only — never rewrite curated/speech-map harakat
+ *  (wrong shadda/kasra order breaks baked Yousef MP3 keys). */
 function applyPronunciationLexicon(text) {
   const lex = (typeof window !== 'undefined' && window.SPEECH_PRON_LEXICON) || null;
   if (!lex) return text;
   return String(text).replace(SPEECH_WORD_RE, (tok) => {
+    if (ARABIC_HARAKAT_RE.test(tok)) return tok;
     const bare = stripHarakat(tok);
     return lex[bare] || tok;
   });
@@ -2469,16 +2503,16 @@ function stripHarakat(s) {
 
 /** Word-level diacritization fallback — covers every word using the generated map.
  *  Never overwrite a token that already has harakat: Gemini / per-question fields
- *  are authoritative (e.g. عُبِدَ must not become عَبْد from the bare-word map).
- *  Lexicon is applied separately and may override. */
+ *  are authoritative (e.g. عُبِدَ must not become عَبْد from the bare-word map). */
 function applyWordDiacritics(text) {
   const wordMap = (typeof window !== 'undefined' && window.SPEECH_WORD_MAP) || null;
   const lex = (typeof window !== 'undefined' && window.SPEECH_PRON_LEXICON) || null;
   if (!wordMap && !lex) return text;
   return String(text).replace(SPEECH_WORD_RE, (tok) => {
+    // Curated tashkeel wins — lexicon/word-map must not reorder marks.
+    if (ARABIC_HARAKAT_RE.test(tok)) return tok;
     const bare = stripHarakat(tok);
     if (lex?.[bare]) return lex[bare];
-    if (ARABIC_HARAKAT_RE.test(tok)) return tok;
     return (wordMap && wordMap[bare]) || tok;
   });
 }
@@ -2533,9 +2567,9 @@ function stripForSpeech(text) {
       typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(hadith) : hadith
     );
   }
-  let forTts = applyWordDiacritics(
-    hasWellFormedTashkeel(cleaned) ? cleaned : applyManualSpeechDiacritics(cleaned)
-  );
+  let forTts = hasWellFormedTashkeel(cleaned)
+    ? cleaned
+    : applyWordDiacritics(applyManualSpeechDiacritics(cleaned));
   forTts = removeQuranicVersesForSpeech(forTts);
   forTts = prepareArabicForSpeech(forTts);
   forTts = typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(forTts) : forTts;
@@ -3771,6 +3805,10 @@ async function speakHybrid(text, q, btn, { allowAnswers = false } = {}) {
 
 function toastTtsFail() {
   const stats = getTtsErrorStats();
+  // Soft baked misses are expected for uncovered bank strings — don't alarm the student.
+  if (String(ttsLastErrorMsg || '').includes('baked miss') && ttsSessionFailCount < 3 && stats.fails < 5) {
+    return;
+  }
   const msg = ttsSessionFailCount >= 3 || stats.fails >= 5
     ? 'تعذّر الصوت عدة مرات — تحقق من الاتصال أو جرّب لاحقاً'
     : 'تعذّر تشغيل الصوت — تحقق من الاتصال';
@@ -3836,7 +3874,9 @@ function speakQuestion() {
       const verseKey = getPrimaryVerseKeyForQuestion(q);
 
       if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
-      for (const opt of opts) prefetchTtsText(opt);
+      if (voiceReadAnswers) {
+        for (const opt of opts) prefetchTtsText(opt);
+      }
       const next = state.questions[askIdx + 1];
       if (next) {
         void prefetchHybridSpeechForQuestion(next);
@@ -3865,7 +3905,7 @@ function speakQuestion() {
           } catch (e) {
             if (e?.name === 'AbortError') return;
             console.warn('question tts:', e);
-            toastTtsFail();
+            if (!String(e?.message || '').includes('baked miss')) toastTtsFail();
           }
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
@@ -3914,7 +3954,7 @@ function speakQuestion() {
       if (e?.name !== 'AbortError') {
         recordTtsError(e, 'speakQuestion');
         console.warn('speakQuestion:', e);
-        toastTtsFail();
+        if (!String(e?.message || '').includes('baked miss')) toastTtsFail();
       }
     }
   })();
@@ -6867,9 +6907,9 @@ async function restoreSession() {
   soundOn = localStorage.getItem('soundOn') !== 'false';
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   voiceOn = localStorage.getItem('voiceOn') !== 'false';
-  voiceReadAnswers = localStorage.getItem('voiceReadAnswers') !== 'false';
+  voiceReadAnswers = localStorage.getItem('voiceReadAnswers') === 'true';
   if (localStorage.getItem('voiceOn') == null) localStorage.setItem('voiceOn', 'true');
-  if (localStorage.getItem('voiceReadAnswers') == null) localStorage.setItem('voiceReadAnswers', 'true');
+  if (localStorage.getItem('voiceReadAnswers') == null) localStorage.setItem('voiceReadAnswers', 'false');
   updateVoiceUI();
   if ('speechSynthesis' in window) {
     loadArabicVoice();

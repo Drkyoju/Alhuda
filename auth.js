@@ -5,6 +5,9 @@
 (function () {
   const CONFIRM_MSG =
     'تعذّر إنشاء الحساب — تأكد/ي من الإنترنت أو فعّل تأكيد البريد في Supabase للمستخدمين الجدد';
+  /** Keep cloud waits short — dead Supabase must not block local play. */
+  const CLOUD_MS = 2500;
+  const CREDS_MS = 4000;
 
   function normalizeName(name) {
     return String(name || '').trim().normalize('NFC');
@@ -26,7 +29,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name }),
       }),
-      8000,
+      CREDS_MS,
       'student-creds timeout'
     );
     if (!res.ok) return null;
@@ -61,7 +64,7 @@
     try {
       res = await withTimeout(
         db.auth.signInWithPassword({ email: creds.email, password: creds.password }),
-        8000,
+        CLOUD_MS,
         'signIn timeout'
       );
     } catch (e) {
@@ -73,7 +76,7 @@
     try {
       signUp = await withTimeout(
         db.auth.signUp({ email: creds.email, password: creds.password }),
-        8000,
+        CLOUD_MS,
         'signUp timeout'
       );
     } catch (e) {
@@ -85,7 +88,7 @@
       try {
         res = await withTimeout(
           db.auth.signInWithPassword({ email: creds.email, password: creds.password }),
-          8000,
+          CLOUD_MS,
           'signIn after signup timeout'
         );
       } catch (e) {
@@ -97,7 +100,7 @@
       try {
         res = await withTimeout(
           db.auth.signInWithPassword({ email: creds.email, password: creds.password }),
-          8000,
+          CLOUD_MS,
           'signIn existing timeout'
         );
       } catch (e) {
@@ -135,7 +138,7 @@
 
       let session = null;
       try {
-        const sessRes = await withTimeout(db.auth.getSession(), 4000, 'getSession timeout');
+        const sessRes = await withTimeout(db.auth.getSession(), CLOUD_MS, 'getSession timeout');
         session = sessRes?.data?.session || null;
       } catch {
         session = null;
@@ -144,7 +147,7 @@
         try {
           const { data: profile } = await withTimeout(
             db.from('profiles').select('name').eq('id', session.user.id).maybeSingle(),
-            4000,
+            CLOUD_MS,
             'profile timeout'
           );
           if (profile?.name && profile.name === norm) {
@@ -158,7 +161,7 @@
       if (!named.error) return named;
 
       try {
-        const anon = await withTimeout(db.auth.signInAnonymously(), 5000, 'anon timeout');
+        const anon = await withTimeout(db.auth.signInAnonymously(), CLOUD_MS, 'anon timeout');
         if (!anon.error && anon.data?.user) {
           return { data: anon.data, error: null };
         }
