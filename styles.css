@@ -46,7 +46,7 @@
       --radius-lg: 22px;
       --radius-md: 16px;
       --radius-sm: 12px;
-      --app-header-h: calc(56px + env(safe-area-inset-top, 0px));
+      --app-header-h: calc(72px + env(safe-area-inset-top, 0px));
     }
 
     body.login-mode { --app-header-h: 0px; }
@@ -302,12 +302,12 @@
       }
     }
     .site-logo {
-      max-width: 96px;
-      max-height: 96px;
+      max-width: 118px;
+      max-height: 118px;
       height: auto;
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--white);
-      padding: 4px;
+      padding: 5px;
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--border);
       object-fit: contain;
@@ -323,9 +323,9 @@
     }
     .logo-img {
       width: auto;
-      max-width: 200px;
+      max-width: 268px;
       height: auto;
-      max-height: 158px;
+      max-height: 212px;
       border-radius: 16px;
       background: var(--white);
       padding: 12px;
@@ -2546,8 +2546,8 @@
       border-radius: 12px;
       border: 1px solid var(--border-gold);
       box-shadow: var(--shadow-sm);
-      max-width: 96px;
-      max-height: 96px;
+      max-width: 118px;
+      max-height: 118px;
       object-fit: contain;
     }
     .topbar-btn {
@@ -3874,7 +3874,7 @@
     @media (max-width: 480px) {
       .login-hero { width: 100%; padding: 0 4px; }
       .card { padding: 16px 12px; border-radius: 12px; }
-      .logo-img { max-width: 160px; max-height: 124px; }
+      .logo-img { max-width: 210px; max-height: 166px; }
       .brand-title { font-size: 1.35em; }
       .book-select-row { gap: 10px; }
       .book-btn { min-height: 104px; padding: 14px 8px; font-size: 0.95em; border-radius: 14px; }
@@ -4777,7 +4777,7 @@
 
     /* ── Brand welcome ── */
     .login-brand-hero .logo-img {
-      width: min(220px, 52vw);
+      width: min(268px, 62vw);
       height: auto;
       filter: drop-shadow(0 12px 28px rgba(22, 56, 40, 0.18));
     }
@@ -5165,7 +5165,7 @@
     }
     @media (min-width: 1024px) {
       #login-screen .login-hero { max-width: 640px; }
-      .login-brand-hero .logo-img { width: 240px; }
+      .login-brand-hero .logo-img { width: 300px; }
     }
 
     .fb-explanation {
