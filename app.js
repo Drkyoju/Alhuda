@@ -1866,15 +1866,28 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
 
   const work = (async () => {
     let lastErr = null;
-    for (let attempt = 0; attempt < 3; attempt++) {
+    for (let attempt = 0; attempt < 2; attempt++) {
       if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
       try {
-        const res = await fetch('/api/tts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text, voice: lookupVoice }),
-          signal,
-        });
+        const ctrl = new AbortController();
+        const onAbort = () => ctrl.abort();
+        if (signal) {
+          if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
+          signal.addEventListener('abort', onAbort, { once: true });
+        }
+        const timer = setTimeout(() => ctrl.abort(), 7000);
+        let res;
+        try {
+          res = await fetch('/api/tts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, voice: lookupVoice }),
+            signal: ctrl.signal,
+          });
+        } finally {
+          clearTimeout(timer);
+          if (signal) signal.removeEventListener('abort', onAbort);
+        }
         if (res.status === 429 || res.status === 503) {
           lastErr = new Error(`tts failed:${res.status}`);
           await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
@@ -1883,7 +1896,6 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
         if (!res.ok) throw new Error(`tts failed:${res.status}`);
         const blob = await res.blob();
         if (!blob.size) throw new Error('empty audio');
-        // Only cache known-good baked/elevenlabs responses under the Yousef key.
         const provider = (res.headers.get('X-TTS-Provider') || '').toLowerCase();
         rememberTtsObjectUrl(key, URL.createObjectURL(blob));
         if (provider === 'baked' || provider === 'elevenlabs') {
@@ -1892,9 +1904,14 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
         recordAzureTtsUsage(text.length, res.headers.get('X-TTS-Provider'));
         return blob;
       } catch (e) {
-        if (e?.name === 'AbortError') throw e;
+        if (e?.name === 'AbortError') {
+          // Prefer treating long hangs as miss so the next segment can play.
+          lastErr = e;
+          if (signal?.aborted) throw e;
+          break;
+        }
         lastErr = e;
-        if (attempt < 2) await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
+        if (attempt < 1) await new Promise((r) => setTimeout(r, 250 * (attempt + 1)));
       }
     }
     throw lastErr || new Error('tts failed');
@@ -1966,32 +1983,25 @@ function prefetchTtsText(text, voice = TTS_VOICE) {
 
 const questionSpeechWarmPromises = new WeakMap();
 
-/** Prefetch question audio first (resolves ASAP); options/quran warm in background. */
+/** Prefetch question audio first (resolves ASAP); options warm in parallel. */
 async function warmQuestionSpeech(q) {
-  if (!q || navigator.onLine === false) return null;
+  if (!q) return null;
   const existing = questionSpeechWarmPromises.get(q);
   if (existing) return existing;
   const work = (async () => {
-    await ensureSpeechMapsLoaded();
-    const { questionText, optionsText } = buildQuestionSpeechParts(q);
+    await Promise.race([
+      ensureSpeechMapsLoaded(),
+      new Promise((r) => setTimeout(r, 500)),
+    ]);
+    const { questionText, optionList } = buildQuestionSpeechParts(q);
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
-    // Options + ayah: fire-and-forget — never block question start.
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => null);
-    if (q.type === 'mc' && Array.isArray(q.a)) {
-      q.a.forEach((opt, i) => {
-        if (opt == null || opt === '') return;
-        prefetchTtsText(speechPart(q, `a${i}`, opt));
-      });
-    } else if (q.type === 'tf') {
-      prefetchTtsText('صَحّ');
-      prefetchTtsText('خَطَأٌ');
-    }
+    const opts = optionList?.length ? optionList : [];
+    for (const opt of opts) prefetchTtsText(opt);
     const qClean = prepareTtsPayload(questionText);
-    const oClean = optionsText?.trim() ? prepareTtsPayload(optionsText) : '';
     try {
       void warmAllahPronClips();
-      if (oClean) prefetchTtsText(oClean);
-      // Only await question TTS — that is what speakQuestion needs to start.
+      // Await question blobs only — options continue in background via prefetch.
       if (qClean) {
         const parts = splitTtsWithAllahPron(qClean);
         await Promise.all(
@@ -2000,6 +2010,19 @@ async function warmQuestionSpeech(q) {
             .map((part) => fetchTtsBlob(part.text).catch(() => null))
         );
       }
+      // Best-effort: resolve option blobs so answers play without lag.
+      await Promise.all(
+        opts.map(async (opt) => {
+          const clean = prepareTtsPayload(opt);
+          if (!clean || clean.length < 2) return;
+          const parts = splitTtsWithAllahPron(clean);
+          await Promise.all(
+            parts
+              .filter((part) => part.type === 'tts' && part.text?.length >= 2)
+              .map((part) => fetchTtsBlob(part.text).catch(() => null))
+          );
+        })
+      );
       return null;
     } catch {
       return null;
@@ -2014,13 +2037,15 @@ async function warmQuestionSpeech(q) {
 async function prefetchHybridSpeechForQuestion(q) {
   if (!q) return;
   try {
-    await ensureSpeechMapsLoaded();
+    await Promise.race([
+      ensureSpeechMapsLoaded(),
+      new Promise((r) => setTimeout(r, 400)),
+    ]);
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
-    const { questionText, optionsText } = buildQuestionSpeechParts(q);
-    // Warm the exact clips speakQuestion needs (works offline from IDB too).
+    const { questionText, optionList } = buildQuestionSpeechParts(q);
     if (questionText?.trim()) prefetchTtsText(questionText);
-    if (optionsText?.trim()) prefetchTtsText(optionsText);
+    for (const opt of (optionList || [])) prefetchTtsText(opt);
   } catch (e) {
     console.warn('hybrid prefetch:', e);
     if (q.q) prefetchTtsText(q.q);
@@ -2642,24 +2667,29 @@ function speechPart(q, field, raw) {
  *  سؤال → آية (Hudhaify إن وُجدت) → إجابات. */
 function buildQuestionSpeechParts(q) {
   const questionText = speechPart(q, 'q', q?.q) || '';
-  const optionParts = [];
+  const optionList = buildQuestionOptionSpeechList(q);
+  return { questionText, optionsText: optionList.join('، '), optionList };
+}
+
+/** One speech string per answer — baked TTS keys match single fields, not joined blobs. */
+function buildQuestionOptionSpeechList(q) {
+  const items = [];
   if (q?.type === 'mc' && Array.isArray(q.a) && q.a.length) {
     const order = Array.isArray(state.displayAnswerOrder) && state.displayAnswerOrder.length
       ? state.displayAnswerOrder
       : q.a.map((_, i) => i);
-    const ordinals = ['أَوَّلًا', 'ثَانِيًا', 'ثَالِثًا', 'رَابِعًا'];
-    order.forEach((origIdx, displayIdx) => {
+    order.forEach((origIdx) => {
       const opt = q.a[origIdx];
       if (opt == null || opt === '') return;
       const t = speechPart(q, `a${origIdx}`, opt);
-      if (t) optionParts.push(`${ordinals[displayIdx] || ''}، ${t}`.trim());
+      if (t) items.push(t);
     });
   } else if (q?.type === 'tf') {
-    // Matches renderQ order: صح ثم خطأ
-    optionParts.push('أولاً، صح');
-    optionParts.push('ثانياً، خطأ');
+    // Must match baked clips (not "أولاً، صح" composites).
+    items.push('صَحّ');
+    items.push('خَطَأٌ');
   }
-  return { questionText, optionsText: optionParts.join('، ') };
+  return items;
 }
 
 function buildQuestionSpeechText(q) {
@@ -3786,27 +3816,27 @@ function speakQuestion() {
   if (!q?.q || !voiceOn) return;
   if (navigator.onLine === false) {
     applyOfflineVoicePolicy();
-    // Continue — play from memory/IDB cache when available.
   }
   const btn = document.getElementById('btn-speak-question');
   const askIdx = state.idx;
+  unlockTtsAudio();
   void (async () => {
     try {
-      const warmP = questionSpeechWarmPromises.get(q) || warmQuestionSpeech(q);
-      // Maps + audio blob in parallel — join warm so play() hits cache, not cold network.
-      await Promise.all([
+      // Warm in background — do NOT block first audio on the whole warm pipeline.
+      void (questionSpeechWarmPromises.get(q) || warmQuestionSpeech(q));
+      await Promise.race([
         ensureSpeechMapsLoaded(),
-        warmP.catch(() => null),
+        new Promise((r) => setTimeout(r, 350)),
       ]);
       if (!voiceOn || state.idx !== askIdx) return;
 
-      const { questionText, optionsText } = buildQuestionSpeechParts(q);
+      const { questionText, optionList } = buildQuestionSpeechParts(q);
       const qClean = prepareTtsPayload(questionText);
-      const oClean = optionsText.trim() ? prepareTtsPayload(optionsText) : '';
+      const opts = optionList || [];
       const verseKey = getPrimaryVerseKeyForQuestion(q);
 
       if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
-      if (oClean) prefetchTtsText(oClean);
+      for (const opt of opts) prefetchTtsText(opt);
       const next = state.questions[askIdx + 1];
       if (next) {
         void prefetchHybridSpeechForQuestion(next);
@@ -3820,10 +3850,15 @@ function speakQuestion() {
         void warmAllahPronClips();
         const recited = new Set();
 
-        // 1) Question text — join in-flight warm; start as soon as blob is ready.
+        // 1) Question — start ASAP; soft-fail and continue to answers.
         if (qClean && textMayHaveQuranAyah(questionText, q)) {
-          const fromQ = await playSpeechForText(questionText, q, btn, token);
-          fromQ.forEach((k) => recited.add(k));
+          try {
+            const fromQ = await playSpeechForText(questionText, q, btn, token);
+            fromQ.forEach((k) => recited.add(k));
+          } catch (e) {
+            if (e?.name === 'AbortError') return;
+            console.warn('question hybrid tts:', e);
+          }
         } else if (qClean) {
           try {
             await speakTtsSegment(qClean, btn, { clearAfter: false, alreadyPrepared: true });
@@ -3831,24 +3866,44 @@ function speakQuestion() {
             if (e?.name === 'AbortError') return;
             console.warn('question tts:', e);
             toastTtsFail();
-            return;
           }
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 2) Mapped / linked ayah right after the question — before answers.
+        // 2) Ayah — timeboxed so a slow Quran fetch never blocks answers.
         if (verseKey && !recited.has(verseKey)) {
           recited.add(verseKey);
-          await playQuranRecitation(verseKey, btn, { interruptAll: false });
+          try {
+            await Promise.race([
+              playQuranRecitation(verseKey, btn, { interruptAll: false }),
+              new Promise((_, rej) => setTimeout(() => rej(new Error('quran timeout')), 5000)),
+            ]);
+          } catch (e) {
+            console.warn('quran skip:', e?.message || e);
+          }
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 3) Answer options last — mix Quran Allah clips into TTS.
-        if (oClean) {
-          try {
-            await speakTtsSegment(oClean, btn, { clearAfter: false, alreadyPrepared: true });
-          } catch (e) {
-            if (e?.name !== 'AbortError') console.warn('options tts:', e);
+        // 3) Answers one-by-one (baked keys are per-option, not joined strings).
+        if (voiceReadAnswers && opts.length) {
+          for (const opt of opts) {
+            if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+            const oClean = prepareTtsPayload(opt);
+            if (!oClean) continue;
+            try {
+              await speakTtsSegment(oClean, btn, { clearAfter: false, alreadyPrepared: true });
+            } catch (e) {
+              if (e?.name === 'AbortError') return;
+              // Fallback: try the raw option text (may match a different bake key).
+              try {
+                const raw = String(opt || '').trim();
+                if (raw && raw !== oClean) {
+                  await speakTtsSegment(raw, btn, { clearAfter: false, alreadyPrepared: true });
+                }
+              } catch (e2) {
+                console.warn('option tts miss:', e2?.message || e2);
+              }
+            }
           }
         }
       } finally {
@@ -5776,6 +5831,7 @@ function updateBookButtons() {
 }
 async function startCountdown() {
   if (countdownTimer) return;
+  unlockTtsAudio();
   if (isRealGameLocked()) {
     showRealGameLockedAlert();
     return;
@@ -5873,11 +5929,12 @@ function startGame() {
   document.getElementById('show-answer-btn').style.display = 'none';
   document.getElementById('res-xp-earned').style.display = 'none';
   updateStageGameBadge();
+  unlockTtsAudio();
   show('game');
   renderQ();
   // Warm the whole round into IDB + SW cache so audio survives going offline mid-game.
   if (!state.demoMode && navigator.onLine !== false) {
-    void warmRoundAudioForOffline(state.questions);
+    void warmRoundAudioForOffline(state.questions, { notify: false });
   } else if (state.demoMode) {
     warmDemoSessionAudio();
   }
