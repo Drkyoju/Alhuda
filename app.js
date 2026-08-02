@@ -1838,12 +1838,10 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
       ? TTS_VOICE
       : voice;
   const key = ttsCacheKey(text, lookupVoice);
+  // Memory hit = already playable via object URL — do not re-materialize a Blob
+  // (that was an extra await tick before every warm/prefetch join).
   if (ttsBlobMemoryCache.has(key)) {
-    // Object URL already warmed — avoid a second round-trip through fetch().
-    try {
-      const res = await fetch(ttsBlobMemoryCache.get(key));
-      if (res.ok) return res.blob();
-    } catch { /* fall through and re-fetch */ }
+    return null;
   }
   if (ttsKnownMissCache.has(key)) {
     throw new Error('tts baked miss');
@@ -1969,8 +1967,10 @@ async function ensureTtsObjectUrl(text, voice = TTS_VOICE, signal) {
   const key = ttsCacheKey(clean, voice);
   if (ttsBlobMemoryCache.has(key)) return ttsBlobMemoryCache.get(key);
   const blob = await fetchTtsBlob(clean, voice, signal);
-  const url = ttsBlobMemoryCache.get(key) || URL.createObjectURL(blob);
-  if (!ttsBlobMemoryCache.has(key)) rememberTtsObjectUrl(key, url);
+  if (ttsBlobMemoryCache.has(key)) return ttsBlobMemoryCache.get(key);
+  if (!blob) throw new Error('empty audio');
+  const url = URL.createObjectURL(blob);
+  rememberTtsObjectUrl(key, url);
   return url;
 }
 
@@ -2017,47 +2017,47 @@ function prefetchTtsText(text, voice = TTS_VOICE) {
 const questionSpeechWarmPromises = new WeakMap();
 
 /** Prefetch question audio first (resolves ASAP); options warm in parallel. */
+function ttsPayloadReadyInMemory(preparedText, voice = TTS_VOICE) {
+  const clean = String(preparedText || '').trim();
+  if (!clean) return true;
+  const parts = splitTtsWithAllahPron(clean);
+  const need = parts.filter((part) => part.type === 'tts' && part.text?.length >= 2);
+  if (!need.length) return true;
+  return need.every((part) => ttsBlobMemoryCache.has(ttsCacheKey(part.text, voice)));
+}
+
 async function warmQuestionSpeech(q) {
   if (!q) return null;
   const existing = questionSpeechWarmPromises.get(q);
   if (existing) return existing;
   const work = (async () => {
-    await Promise.race([
-      ensureSpeechMapsLoaded(),
-      new Promise((r) => setTimeout(r, 500)),
-    ]);
+    if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID) {
+      await Promise.race([
+        ensureSpeechMapsLoaded(),
+        new Promise((r) => setTimeout(r, 80)),
+      ]);
+    }
     const { questionText, optionList } = buildQuestionSpeechParts(q);
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => null);
     const opts = optionList?.length ? optionList : [];
-    // Only warm answer clips when the player opted into reading answers.
+    // Options warm in background — never block "question ready" on them.
     if (voiceReadAnswers) {
       for (const opt of opts) prefetchTtsText(opt);
     }
     const qClean = prepareTtsPayload(questionText);
     try {
       void warmAllahPronClips();
-      // Await question blobs only — options continue in background via prefetch.
       if (qClean) {
         const parts = splitTtsWithAllahPron(qClean);
         await Promise.all(
           parts
             .filter((part) => part.type === 'tts' && part.text?.length >= 2)
-            .map((part) => fetchTtsBlob(part.text).catch(() => null))
-        );
-      }
-      if (voiceReadAnswers && opts.length) {
-        await Promise.all(
-          opts.map(async (opt) => {
-            const clean = prepareTtsPayload(opt);
-            if (!clean || clean.length < 2) return;
-            const parts = splitTtsWithAllahPron(clean);
-            await Promise.all(
-              parts
-                .filter((part) => part.type === 'tts' && part.text?.length >= 2)
-                .map((part) => fetchTtsBlob(part.text).catch(() => null))
-            );
-          })
+            .map((part) => {
+              const key = ttsCacheKey(part.text);
+              if (ttsBlobMemoryCache.has(key)) return null;
+              return fetchTtsBlob(part.text).catch(() => null);
+            })
         );
       }
       return null;
@@ -2859,7 +2859,13 @@ function shouldReciteHudhaifyForQuestion(q, questionText = '') {
 
 async function speakFeedbackOnce(q, wrongText, btn) {
   if (!q) return;
-  await ensureSpeechMapsLoaded();
+  // Don't block feedback audio on full map load — core map is enough.
+  if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID) {
+    await Promise.race([
+      ensureSpeechMapsLoaded(),
+      new Promise((r) => setTimeout(r, 80)),
+    ]);
+  }
   stopSpeaking();
   const token = hybridSpeechToken;
   if (btn) btn.classList.add('speaking');
@@ -3377,7 +3383,15 @@ async function buildSpeechPlan(text, q) {
     const ayahText = (match[3] || match[4] || match[5] || '').trim();
     let verseKey = null;
     if (ayahText && !isHadithQudsiText(ayahText)) {
-      verseKey = lookupKnownVerseKey(ayahText) || await searchVerseKey(ayahText);
+      // Local map / pool first — never stall question start on Quran.com search.
+      verseKey = lookupKnownVerseKey(ayahText);
+      if (!verseKey && pool.length) verseKey = pool.shift();
+      if (!verseKey) {
+        verseKey = await Promise.race([
+          searchVerseKey(ayahText),
+          new Promise((r) => setTimeout(() => r(null), 200)),
+        ]);
+      }
     }
     if (!verseKey && pool.length) verseKey = pool.shift();
     if (verseKey) {
@@ -3906,15 +3920,19 @@ function speakQuestion() {
   }
   const btn = document.getElementById('btn-speak-question');
   const askIdx = state.idx;
+  // Cut previous audio instantly so the new question never waits behind feedback.
+  stopSpeaking();
   unlockTtsAudio();
   void (async () => {
     try {
-      // Warm in background — do NOT block first audio on the whole warm pipeline.
-      void (questionSpeechWarmPromises.get(q) || warmQuestionSpeech(q));
-      await Promise.race([
-        ensureSpeechMapsLoaded(),
-        new Promise((r) => setTimeout(r, 350)),
-      ]);
+      const warmP = questionSpeechWarmPromises.get(q) || warmQuestionSpeech(q);
+      // Core speech map is inline — only wait briefly on cold boot.
+      if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID) {
+        await Promise.race([
+          ensureSpeechMapsLoaded(),
+          new Promise((r) => setTimeout(r, 50)),
+        ]);
+      }
       if (!voiceOn || state.idx !== askIdx) return;
 
       const { questionText, optionList } = buildQuestionSpeechParts(q);
@@ -3932,7 +3950,15 @@ function speakQuestion() {
         void warmQuestionSpeech(next);
       }
 
-      stopSpeaking();
+      // Join in-flight question warm only — tiny cap so we never hang on start.
+      if (qClean && !ttsPayloadReadyInMemory(qClean)) {
+        await Promise.race([
+          warmP,
+          new Promise((r) => setTimeout(r, 160)),
+        ]);
+      }
+      if (!voiceOn || state.idx !== askIdx) return;
+
       const token = hybridSpeechToken;
       if (btn) btn.classList.add('speaking');
       try {
@@ -3942,8 +3968,31 @@ function speakQuestion() {
         // 1) Question — start ASAP; soft-fail and continue to answers.
         if (qClean && textMayHaveQuranAyah(questionText, q)) {
           try {
-            const fromQ = await playSpeechForText(questionText, q, btn, token);
-            fromQ.forEach((k) => recited.add(k));
+            // Prefer mapped Hudhaify + TTS prose; avoid network search stalls.
+            const mappedKey = getPrimaryVerseKeyForQuestion(q);
+            if (mappedKey && shouldReciteHudhaifyForQuestion(q, questionText)) {
+              const prose = prepareTtsPayload(
+                String(questionText || '')
+                  .replace(/﴿[^﴾]*﴾/g, ' ')
+                  .replace(/「[^」]*」/g, ' ')
+              );
+              if (prose) {
+                await speakTtsSegment(prose, btn, { clearAfter: false, alreadyPrepared: true });
+              }
+              if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+              recited.add(mappedKey);
+              try {
+                await Promise.race([
+                  playQuranRecitation(mappedKey, btn, { interruptAll: false }),
+                  new Promise((_, rej) => setTimeout(() => rej(new Error('quran timeout')), 5000)),
+                ]);
+              } catch (e) {
+                console.warn('quran skip:', e?.message || e);
+              }
+            } else {
+              const fromQ = await playSpeechForText(questionText, q, btn, token);
+              fromQ.forEach((k) => recited.add(k));
+            }
           } catch (e) {
             if (e?.name === 'AbortError') return;
             console.warn('question hybrid tts:', e);
