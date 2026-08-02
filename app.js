@@ -1642,8 +1642,8 @@ const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
 const ttsKnownMissCache = new Set(); // avoid /api/tts storms for known baked misses
 if (typeof window !== 'undefined' && window.__alhudaBakedTtsOnly == null) {
-  // Match wrangler BAKED_TTS_ONLY=1 — refined by /api/tts-status on boot.
-  window.__alhudaBakedTtsOnly = true;
+  // Refined by /api/tts-status on boot (wrangler BAKED_TTS_ONLY).
+  window.__alhudaBakedTtsOnly = false;
 }
 const ttsPreloadedAudio = new Map(); // key -> HTMLAudioElement (decoded ahead of play)
 const TTS_IDB_STORE = 'audio';

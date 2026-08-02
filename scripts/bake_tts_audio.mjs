@@ -127,8 +127,10 @@ for (const text of todo) {
       }
       failed += 1;
       console.warn('FAIL:', text.slice(0, 60), msg);
-      if (msg.includes('401')) {
-        console.error('ElevenLabs auth failed — fix key or use --provider worker, then re-run.');
+      if (msg.includes('401') || msg.includes('402') || msg.includes('payment_required') || msg.includes('paid_plan')) {
+        console.error(
+          'ElevenLabs cannot bake Yousef (auth/plan). Upgrade to a paid plan that allows library voices, then re-run.'
+        );
         attempts = 99;
         break;
       }
