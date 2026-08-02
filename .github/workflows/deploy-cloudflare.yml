@@ -25,7 +25,8 @@ jobs:
         run: npm run test:smoke && npm run test:a11y && npm run test:e2e && npm run check:baked-tts
         env:
           CI: true
-          ALLOW_BAKED_TTS_MISS: "1"
+          # Full bank baked (Fish + prior Yousef) — fail deploy on any miss.
+          ALLOW_BAKED_TTS_MISS: "0"
   deploy:
     needs: smoke
     runs-on: ubuntu-latest
@@ -45,12 +46,16 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
           secrets: |
+            FISH_API_KEY
+            FISH_VOICE_ID
             ELEVENLABS_API_KEY
             GOOGLE_TTS_API_KEY
             AZURE_SPEECH_KEY
             AZURE_SPEECH_REGION
             AUTH_NAME_PEPPER
         env:
+          FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
+          FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
           AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}

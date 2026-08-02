@@ -18,6 +18,11 @@ import {
   synthesizeAzureArabicSpeech,
 } from './azure-tts.js';
 import { bakedTtsAssetPath, BAKED_TTS_VOICE } from './baked-tts.js';
+import {
+  DEFAULT_FISH_VOICE_ID,
+  fishAudioConfigured,
+  synthesizeFishArabicSpeech,
+} from './fish-audio-tts.js';
 
 /** Lightweight in-isolate error counters (reset when isolate recycles). */
 const apiErrorCounters = {
@@ -74,20 +79,24 @@ async function handleTtsStatus(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
   const bakedOnly = String(env?.BAKED_TTS_ONLY || '').trim() === '1';
+  const fish = fishAudioConfigured(env);
   const eleven = elevenLabsConfigured(env);
   const google = googleTtsConfigured(env);
   const azure = azureSpeechConfigured(env);
   return new Response(JSON.stringify({
     ok: true,
     bakedTtsOnly: bakedOnly,
+    fishConfigured: fish,
     elevenLabsConfigured: eleven,
     googleConfigured: google,
     azureConfigured: azure,
     provider: bakedOnly
       ? 'baked'
-      : eleven ? 'elevenlabs' : google ? 'google' : azure ? 'azure' : 'edge',
+      : fish ? 'fish' : eleven ? 'elevenlabs' : google ? 'google' : azure ? 'azure' : 'edge',
     voice: bakedOnly
       ? BAKED_TTS_VOICE
+      : fish
+      ? (String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim() || DEFAULT_FISH_VOICE_ID)
       : eleven
       ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
       : google
@@ -392,7 +401,9 @@ async function handleTts(request, env) {
 
   const voice = typeof body?.voice === 'string' && body.voice.trim()
     ? body.voice.trim()
-    : (elevenLabsConfigured(env)
+    : (fishAudioConfigured(env)
+      ? (String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim() || DEFAULT_FISH_VOICE_ID)
+      : elevenLabsConfigured(env)
       ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
       : googleTtsConfigured(env)
       ? DEFAULT_GOOGLE_ARABIC_VOICE
@@ -430,7 +441,45 @@ async function handleTts(request, env) {
 
     let stream;
     let provider = 'edge';
-    if (elevenLabsConfigured(env)) {
+    // Prefer Fish Audio for live Arabic (ElevenLabs Yousef is blocked on free plans).
+    if (fishAudioConfigured(env)) {
+      try {
+        const fishVoice = String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim() || DEFAULT_FISH_VOICE_ID;
+        stream = await synthesizeFishArabicSpeech(text, fishVoice, env);
+        provider = 'fish';
+      } catch (fishErr) {
+        console.warn('[tts] fish failed, falling back:', fishErr);
+        if (elevenLabsConfigured(env)) {
+          try {
+            stream = await synthesizeElevenLabsArabicSpeech(text, voice, env);
+            provider = 'elevenlabs-fallback';
+          } catch (elevenErr) {
+            console.warn('[tts] elevenlabs failed, falling back:', elevenErr);
+            if (googleTtsConfigured(env)) {
+              stream = await synthesizeGoogleArabicSpeech(text, DEFAULT_GOOGLE_ARABIC_VOICE, env);
+              provider = 'google-fallback';
+            } else if (azureSpeechConfigured(env)) {
+              stream = await synthesizeAzureArabicSpeech(text, DEFAULT_AZURE_ARABIC_VOICE, env);
+              provider = 'azure-fallback';
+              isolateAzureChars += text.length;
+            } else {
+              stream = await synthesizeArabicSpeech(text, DEFAULT_ARABIC_VOICE);
+              provider = 'edge-fallback';
+            }
+          }
+        } else if (googleTtsConfigured(env)) {
+          stream = await synthesizeGoogleArabicSpeech(text, DEFAULT_GOOGLE_ARABIC_VOICE, env);
+          provider = 'google-fallback';
+        } else if (azureSpeechConfigured(env)) {
+          stream = await synthesizeAzureArabicSpeech(text, DEFAULT_AZURE_ARABIC_VOICE, env);
+          provider = 'azure-fallback';
+          isolateAzureChars += text.length;
+        } else {
+          stream = await synthesizeArabicSpeech(text, DEFAULT_ARABIC_VOICE);
+          provider = 'edge-fallback';
+        }
+      }
+    } else if (elevenLabsConfigured(env)) {
       try {
         stream = await synthesizeElevenLabsArabicSpeech(text, voice, env);
         provider = 'elevenlabs';

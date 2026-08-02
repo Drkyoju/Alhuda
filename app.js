@@ -3910,7 +3910,8 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 2) Ayah — timeboxed so a slow Quran fetch never blocks answers.
+        // 2) Ayah — الحذيفي فقط (never TTS the ayah text).
+        // Timeboxed so a slow Quran fetch never blocks answers.
         if (verseKey && !recited.has(verseKey)) {
           recited.add(verseKey);
           try {
@@ -3924,7 +3925,8 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 3) Answers one-by-one (baked keys are per-option, not joined strings).
+        // 3) Answers — every option via baked TTS (ayah phrases in options stay TTS;
+        //    full mapped verses in the question/citation use Hudhaify above).
         if (voiceReadAnswers && opts.length) {
           for (const opt of opts) {
             if (token !== hybridSpeechToken || state.idx !== askIdx) return;
@@ -6908,8 +6910,10 @@ async function restoreSession() {
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   voiceOn = localStorage.getItem('voiceOn') !== 'false';
   // One-time: turn answer read-aloud on for everyone (was default-off).
-  if (localStorage.getItem('voiceReadAnswersMigratedV2') !== '1') {
+  // V3: re-enable after Fish full-bank bake so every option is spoken again.
+  if (localStorage.getItem('voiceReadAnswersMigratedV3') !== '1') {
     localStorage.setItem('voiceReadAnswers', 'true');
+    localStorage.setItem('voiceReadAnswersMigratedV3', '1');
     localStorage.setItem('voiceReadAnswersMigratedV2', '1');
   }
   voiceReadAnswers = localStorage.getItem('voiceReadAnswers') !== 'false';

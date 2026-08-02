@@ -1,13 +1,12 @@
 {
   "version": "v29",
   "voice": "ZCXYdzd5Evtsll2EdoCi",
-  "voiceLabel": "Yousef (ElevenLabs)",
-  "provider": "elevenlabs-baked",
-  "totalStrings": 2865,
-  "bakedThisRun": 2822,
-  "skippedExisting": 42,
+  "voiceLabel": "Fish Audio Arabic narrator (راوي عربي)",
+  "provider": "fish-audio-baked",
+  "totalStrings": 4224,
+  "bakedThisRun": 1363,
+  "skippedExisting": 2861,
   "failed": 0,
-  "approxChars": 109095,
-  "generatedAt": "2026-07-28T16:31:26.871Z",
-  "note": "Yousef MSA via live worker bake; includes smoke phrase السلام عليكم"
+  "approxChars": 207365,
+  "generatedAt": "2026-08-02T06:12:44.172Z"
 }

@@ -1,7 +1,7 @@
-name: Bake missing Yousef TTS
+name: Bake missing TTS (Fish Audio)
 
 # Bakes new /tts-baked/*.mp3 for strings in the speech maps that are not yet on disk.
-# Uses the repo ELEVENLABS_API_KEY secret (Yousef voice). Commits MP3s back to the branch.
+# Uses FISH_API_KEY (Arabic narrator voice). Commits MP3s back to the branch.
 on:
   workflow_dispatch:
 
@@ -25,16 +25,17 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Bake missing TTS (ElevenLabs Yousef)
+      - name: Bake missing TTS (Fish Audio)
         env:
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
+          FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
         run: |
-          if [ -z "$ELEVENLABS_API_KEY" ]; then
-            echo "Missing ELEVENLABS_API_KEY secret"
+          if [ -z "$FISH_API_KEY" ]; then
+            echo "Missing FISH_API_KEY secret — add it in repo Settings → Secrets"
             exit 1
           fi
-          # ~1.3k clips · ~100k chars — keep under ElevenLabs rate limits
-          node scripts/bake_tts_audio.mjs --provider elevenlabs
+          # Fill gaps under existing v29/Yousef hash keys so the client finds clips.
+          node scripts/bake_tts_audio.mjs --provider fish
 
       - name: Coverage check
         run: npm run check:baked-tts
@@ -48,11 +49,10 @@ jobs:
           git add -A tts-baked
           if git diff --staged --quiet; then
             echo "No new baked files"
-            # Surface plan/auth failure clearly for operators
             if [ -f tts-baked/manifest.json ]; then
-              node -e "const m=require('./tts-baked/manifest.json'); if((m.bakedThisRun||0)===0 && (m.failed||0)>0){console.error('Bake produced 0 clips with failures — check ElevenLabs plan/key'); process.exit(1)}"
+              node -e "const m=require('./tts-baked/manifest.json'); if((m.bakedThisRun||0)===0 && (m.failed||0)>0){console.error('Bake produced 0 clips with failures — check Fish API credit/key'); process.exit(1)}"
             fi
           else
-            git commit -m "Bake missing Yousef TTS for full bank speech coverage"
+            git commit -m "Bake missing Fish Audio TTS for full bank speech coverage"
             git push origin HEAD
           fi

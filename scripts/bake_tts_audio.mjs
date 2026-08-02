@@ -4,9 +4,10 @@
  * Pay once (~111k chars), deploy MP3s, then set BAKED_TTS_ONLY=1 → zero ongoing API cost.
  *
  * Usage:
- *   ELEVENLABS_API_KEY=sk_... node scripts/bake_tts_audio.mjs
+ *   FISH_API_KEY=... node scripts/bake_tts_audio.mjs --provider fish
+ *   ELEVENLABS_API_KEY=sk_... node scripts/bake_tts_audio.mjs --provider elevenlabs
  *   node scripts/bake_tts_audio.mjs --provider edge          # free fallback voice
- *   node scripts/bake_tts_audio.mjs --limit 10 --export ~/Desktop/alhuda-tts-yousef
+ *   node scripts/bake_tts_audio.mjs --limit 10 --export ~/Desktop/alhuda-tts
  */
 import { mkdirSync, writeFileSync, existsSync, copyFileSync, statSync } from 'fs';
 import { join, dirname } from 'path';
@@ -27,7 +28,7 @@ const limit = limitIdx >= 0 ? parseInt(args[limitIdx + 1], 10) : Infinity;
 const exportIdx = args.indexOf('--export');
 const exportDir = exportIdx >= 0 ? args[exportIdx + 1] : null;
 const providerArg = args.includes('--provider') ? args[args.indexOf('--provider') + 1] : 'worker';
-const provider = ['edge', 'elevenlabs', 'worker'].includes(providerArg) ? providerArg : 'worker';
+const provider = ['edge', 'elevenlabs', 'worker', 'fish'].includes(providerArg) ? providerArg : 'worker';
 const ttsUrl = (process.env.TTS_URL || 'https://alhuda.ryodan71.workers.dev').replace(/\/$/, '');
 const delayArg = args.indexOf('--delay');
 const delayMs =
@@ -37,6 +38,10 @@ const delayMs =
       ? args.includes('--fast')
         ? 1500
         : 1600 // worker TTS rate limit: 40/min
+      : provider === 'fish'
+        ? args.includes('--fast')
+          ? 150
+          : 250
       : provider === 'elevenlabs'
         ? args.includes('--fast')
           ? 120
@@ -47,6 +52,10 @@ const delayMs =
 
 if (provider === 'elevenlabs' && !String(process.env.ELEVENLABS_API_KEY || '').trim()) {
   console.error('Set ELEVENLABS_API_KEY for local elevenlabs bake, or use --provider worker (default)');
+  process.exit(1);
+}
+if (provider === 'fish' && !String(process.env.FISH_API_KEY || '').trim()) {
+  console.error('Set FISH_API_KEY for Fish Audio bake (https://fish.audio/app/developers)');
   process.exit(1);
 }
 
@@ -60,7 +69,9 @@ for (const t of todo) chars += t.length;
 console.log(`Baking ${todo.length}/${all.length} strings → ${outDir}`);
 console.log(
   provider === 'worker'
-    ? `Voice: Yousef via live site (${ttsUrl}/api/tts) — uses deployed paid ElevenLabs`
+    ? `Voice: via live site (${ttsUrl}/api/tts)`
+    : provider === 'fish'
+      ? `Voice: Fish Audio Arabic narrator — ~${chars} chars (files keyed as ${BAKE_TTS_VOICE_LABEL})`
     : provider === 'elevenlabs'
       ? `Voice: ${BAKE_TTS_VOICE_LABEL} (${BAKE_TTS_VOICE}) — ~${chars} chars one-time`
       : `Voice: ar-SA-HamedNeural (free Edge)`
@@ -80,6 +91,9 @@ async function synthesize(text, path) {
     const buf = Buffer.from(await res.arrayBuffer());
     if (buf.length < 500) throw new Error('empty audio');
     writeFileSync(path, buf);
+  } else if (provider === 'fish') {
+    const { fishAudioTtsSave } = await import('./fish_audio_tts_save.mjs');
+    await fishAudioTtsSave(text, path);
   } else if (provider === 'elevenlabs') {
     const { elevenLabsTtsSave } = await import('./elevenlabs_tts_save.mjs');
     await elevenLabsTtsSave(text, path);
@@ -127,9 +141,17 @@ for (const text of todo) {
       }
       failed += 1;
       console.warn('FAIL:', text.slice(0, 60), msg);
-      if (msg.includes('401') || msg.includes('402') || msg.includes('payment_required') || msg.includes('paid_plan')) {
+      if (
+        msg.includes('401') ||
+        msg.includes('402') ||
+        msg.includes('payment_required') ||
+        msg.includes('paid_plan') ||
+        msg.includes('Insufficient API credit')
+      ) {
         console.error(
-          'ElevenLabs cannot bake Yousef (auth/plan). Upgrade to a paid plan that allows library voices, then re-run.'
+          provider === 'fish'
+            ? 'Fish Audio rejected the request (credit/auth). For free tier use model s2.1-pro-free (default). See https://fish.audio/blog/s2-1-pro-free-api/'
+            : 'ElevenLabs cannot bake Yousef (auth/plan). Upgrade to a paid plan that allows library voices, then re-run.'
         );
         attempts = 99;
         break;
@@ -140,12 +162,22 @@ for (const text of todo) {
   if (attempts >= 99) break;
 }
 
-const yousefBake = provider === 'elevenlabs' || provider === 'worker';
+const yousefBake = provider === 'elevenlabs' || provider === 'worker' || provider === 'fish';
 const manifest = {
   version: BAKE_TTS_CACHE_VER,
   voice: yousefBake ? BAKE_TTS_VOICE : 'ar-SA-HamedNeural',
-  voiceLabel: yousefBake ? BAKE_TTS_VOICE_LABEL : 'Hamed (Edge)',
-  provider: yousefBake ? 'elevenlabs-baked' : 'edge-baked',
+  voiceLabel:
+    provider === 'fish'
+      ? 'Fish Audio Arabic narrator (راوي عربي)'
+      : yousefBake
+        ? BAKE_TTS_VOICE_LABEL
+        : 'Hamed (Edge)',
+  provider:
+    provider === 'fish'
+      ? 'fish-audio-baked'
+      : yousefBake
+        ? 'elevenlabs-baked'
+        : 'edge-baked',
   totalStrings: all.length,
   bakedThisRun: done,
   skippedExisting: skipped,
