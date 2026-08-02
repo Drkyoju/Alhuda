@@ -5232,11 +5232,46 @@ async function refreshFullQuestionBank({ quiet = false } = {}) {
   if (LOGIN_LOCKED) return false;
   // Static bank already loaded — treat as complete; still try cloud refresh if available.
   const staticReady = QUESTION_BOOKS.every((b) => bookLoadState[b] && (QUESTIONS[b]?.length || 0) > 30);
-  if (navigator.onLine === false || !getDb()) return staticReady;
-  if (!quiet && typeof showToast === 'function' && !staticReady) showToast('جاري تحميل الأسئلة الكاملة…', 'ok');
+  if (staticReady) {
+    updateLoginQuestionHint();
+    updateLevelCounts();
+    // Optional background cloud refresh — never block login/play.
+    if (navigator.onLine !== false && getDb()) {
+      void (async () => {
+        try {
+          if (!window.AlhudaPlatform?.loadQuestionsCached) return;
+          const data = await Promise.race([
+            AlhudaPlatform.loadQuestionsCached(true),
+            new Promise((_, rej) => setTimeout(() => rej(new Error('bank refresh timeout')), 6000)),
+          ]);
+          const fmt = { tawheed: [], usool: [], nawawi: [] };
+          (data || []).forEach((q) => { if (fmt[q.book]) fmt[q.book].push(q); });
+          for (const book of QUESTION_BOOKS) {
+            if (fmt[book]?.length > 30) {
+              ingestBookQuestions(book, fmt[book]);
+              bookLoadState[book] = true;
+            }
+          }
+          updateLoginQuestionHint();
+          updateLevelCounts();
+        } catch (e) {
+          console.warn('background bank refresh skipped', e?.message || e);
+        }
+      })();
+    }
+    return true;
+  }
+  if (navigator.onLine === false || !getDb()) {
+    seedQuestionsFromBundle();
+    return QUESTION_BOOKS.every((b) => bookLoadState[b]);
+  }
+  if (!quiet && typeof showToast === 'function') showToast('جاري تحميل الأسئلة الكاملة…', 'ok');
   try {
     if (window.AlhudaPlatform?.loadQuestionsCached) {
-      const data = await AlhudaPlatform.loadQuestionsCached(true);
+      const data = await Promise.race([
+        AlhudaPlatform.loadQuestionsCached(true),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('bank refresh timeout')), 8000)),
+      ]);
       const fmt = { tawheed: [], usool: [], nawawi: [] };
       (data || []).forEach((q) => { if (fmt[q.book]) fmt[q.book].push(q); });
       let got = false;
@@ -5248,26 +5283,23 @@ async function refreshFullQuestionBank({ quiet = false } = {}) {
           got = true;
         }
       }
-      if (!got && !staticReady) {
-        seedQuestionsFromBundle();
-      }
-    } else if (!staticReady) {
-      for (const b of QUESTION_BOOKS) bookLoadState[b] = false;
-      await ensureBooksLoaded(QUESTION_BOOKS);
+      if (!got) seedQuestionsFromBundle();
+    } else {
+      seedQuestionsFromBundle();
     }
     updateLoginQuestionHint();
     updateLevelCounts();
     updateBookButtons();
     updateBookProgress?.();
     const total = QUESTION_BOOKS.reduce((n, b) => n + (QUESTIONS[b]?.length || 0), 0);
-    if (!quiet && typeof showToast === 'function' && !staticReady) {
+    if (!quiet && typeof showToast === 'function') {
       showToast(`تم تحميل ${arabicNum(total)} سؤال ✓`, 'ok');
     }
     return QUESTION_BOOKS.every((b) => bookLoadState[b]);
   } catch (e) {
     console.warn('refreshFullQuestionBank', e);
-    if (!staticReady) seedQuestionsFromBundle();
-    if (!quiet && typeof showToast === 'function' && !staticReady) showToast('تعذّر تحميل البنك الكامل', 'err');
+    seedQuestionsFromBundle();
+    if (!quiet && typeof showToast === 'function') showToast('تعذّر تحميل البنك الكامل', 'err');
     return QUESTION_BOOKS.every((b) => bookLoadState[b]);
   }
 }
@@ -5581,11 +5613,17 @@ async function doLogin() {
     if (name.length > 40) { setFormError(document.getElementById('login-err'), 'الاسم طويل جداً (٤٠ حرفاً كحد أقصى)'); return; }
 
     try {
-      const { data: { session: existingSession } } = await db.auth.getSession();
+      const { data: { session: existingSession } } = await Promise.race([
+        db.auth.getSession(),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('session timeout')), 4000)),
+      ]);
       if (existingSession?.user) {
-        const { data: profile } = await db.from('profiles').select('name,role').eq('id', existingSession.user.id).maybeSingle();
+        const { data: profile } = await Promise.race([
+          db.from('profiles').select('name,role').eq('id', existingSession.user.id).maybeSingle(),
+          new Promise((_, rej) => setTimeout(() => rej(new Error('profile timeout')), 4000)),
+        ]);
         if (profile?.name && profile.name !== name) {
-          await db.auth.signOut();
+          await db.auth.signOut().catch(() => {});
         }
       }
     } catch {

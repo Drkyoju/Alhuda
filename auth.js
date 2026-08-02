@@ -10,12 +10,25 @@
     return String(name || '').trim().normalize('NFC');
   }
 
+  function withTimeout(promise, ms, label) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error(label || 'timeout')), ms);
+      }),
+    ]);
+  }
+
   async function fetchServerCredentials(name) {
-    const res = await fetch('/api/student-creds', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name }),
-    });
+    const res = await withTimeout(
+      fetch('/api/student-creds', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      }),
+      8000,
+      'student-creds timeout'
+    );
     if (!res.ok) return null;
     const json = await res.json().catch(() => null);
     if (!json?.email || !json?.password) return null;
@@ -44,18 +57,52 @@
       };
     }
 
-    let res = await db.auth.signInWithPassword({ email: creds.email, password: creds.password });
+    let res;
+    try {
+      res = await withTimeout(
+        db.auth.signInWithPassword({ email: creds.email, password: creds.password }),
+        8000,
+        'signIn timeout'
+      );
+    } catch (e) {
+      return { error: { message: e?.message || 'signIn failed' } };
+    }
     if (!res.error) return res;
 
-    let signUp = await db.auth.signUp({ email: creds.email, password: creds.password });
+    let signUp;
+    try {
+      signUp = await withTimeout(
+        db.auth.signUp({ email: creds.email, password: creds.password }),
+        8000,
+        'signUp timeout'
+      );
+    } catch (e) {
+      return { error: { message: e?.message || 'signUp failed' } };
+    }
     if (signUp.error && isConfirmError(signUp.error)) return { error: { message: CONFIRM_MSG } };
     if (!signUp.error) {
       if (signUp.data?.session) return { data: signUp.data, error: null };
-      res = await db.auth.signInWithPassword({ email: creds.email, password: creds.password });
+      try {
+        res = await withTimeout(
+          db.auth.signInWithPassword({ email: creds.email, password: creds.password }),
+          8000,
+          'signIn after signup timeout'
+        );
+      } catch (e) {
+        return { error: { message: e?.message || 'signIn failed' } };
+      }
       if (!res.error) return res;
     }
     if (signUp.error && isAlreadyRegistered(signUp.error)) {
-      res = await db.auth.signInWithPassword({ email: creds.email, password: creds.password });
+      try {
+        res = await withTimeout(
+          db.auth.signInWithPassword({ email: creds.email, password: creds.password }),
+          8000,
+          'signIn existing timeout'
+        );
+      } catch (e) {
+        return { error: { message: e?.message || 'signIn failed' } };
+      }
       if (!res.error) return res;
     }
     return { error: { message: signUp.error?.message || res.error?.message || 'تعذّر الدخول' } };
@@ -86,22 +133,36 @@
     try {
       if (typeof db === 'undefined' || !db?.auth) return localFallback();
 
-      const { data: { session } } = await db.auth.getSession();
+      let session = null;
+      try {
+        const sessRes = await withTimeout(db.auth.getSession(), 4000, 'getSession timeout');
+        session = sessRes?.data?.session || null;
+      } catch {
+        session = null;
+      }
       if (session?.user) {
-        const { data: profile } = await db.from('profiles').select('name').eq('id', session.user.id).maybeSingle();
-        if (profile?.name && profile.name === norm) {
-          return { data: { user: session.user, session }, error: null };
-        }
+        try {
+          const { data: profile } = await withTimeout(
+            db.from('profiles').select('name').eq('id', session.user.id).maybeSingle(),
+            4000,
+            'profile timeout'
+          );
+          if (profile?.name && profile.name === norm) {
+            return { data: { user: session.user, session }, error: null };
+          }
+        } catch { /* ignore */ }
         await db.auth.signOut().catch(() => {});
       }
 
       const named = await nameAccountSignIn(norm);
       if (!named.error) return named;
 
-      const anon = await db.auth.signInAnonymously();
-      if (!anon.error && anon.data?.user) {
-        return { data: anon.data, error: null };
-      }
+      try {
+        const anon = await withTimeout(db.auth.signInAnonymously(), 5000, 'anon timeout');
+        if (!anon.error && anon.data?.user) {
+          return { data: anon.data, error: null };
+        }
+      } catch { /* ignore */ }
 
       // Cloud auth unavailable — continue locally so the student can still play.
       console.warn('cloud login failed, using local session', named.error?.message);
