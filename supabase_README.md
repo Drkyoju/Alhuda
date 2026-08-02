@@ -3,7 +3,7 @@
 This directory contains the Supabase schema, RLS policies, security hardening,
 and one-shot maintenance scripts for the Alhuda project.
 
-> **Project URL:** `https://smcyaqwxbmhshhhhdece.supabase.co`
+> **Project URL:** `https://smcyaqwxbmhshhhhdece.supabase.co` (حي ✅ — انظر `SUPABASE_SETUP.md`)
 > All scripts target the Supabase SQL Editor. They are Postgres-compatible.
 
 ## Canonical apply order
@@ -14,11 +14,12 @@ For a **fresh project** (or to bring an existing project up to date):
 |---|------|------|---------|
 | 1 | `supabase_scores.sql` | Schema (idempotent) | Creates the `scores` table + indexes + RLS. |
 | 2 | `supabase_challenges.sql` | Schema (idempotent) | Creates `challenges`, `challenge_results` + RLS. |
-| 3 | `supabase_feedback.sql` | Schema (idempotent) | Creates `feedback` + RLS. |
-| 4 | `supabase_platform.sql` | Schema (idempotent) | Creates `classes`, `class_members`, `book_progress`, `user_wrong_questions`, `question_stats`, `homework`, `homework_completions`, two RPC functions + RLS + indexes. **The de-facto main schema.** |
-| 5 | `supabase_security_fixes.sql` | Hardening (idempotent) | Tightens RPC grants, profile role-change protection, challenge_results INSERT policy. |
-| 6 | **`supabase_security_fixes_v2.sql`** | Hardening (idempotent) | Replaces public `using (true)` policies on `profiles`, `scores`, `challenge_results`, `challenges`, `feedback` with auth-gated ones. **Run after a fresh deploy.** See banner inside the file for impact. |
-| 7 | **`supabase_constraints_v1.sql`** | Hardening (idempotent, additive) | Adds `ON DELETE SET NULL` to FKs, CHECK constraints for book/level/range enums, supporting indexes. Run the pre-probes at the bottom first. |
+| 3 | `supabase_platform.sql` | Schema (idempotent) | Creates `classes`, `class_members`, `book_progress`, `user_wrong_questions`, `question_stats`, `homework`, `homework_completions`, two RPC functions + RLS + indexes. **The de-facto main schema.** |
+| 4 | `supabase_security_fixes.sql` | Hardening (idempotent) | Tightens RPC grants, profile role-change protection, challenge_results INSERT policy. |
+| 5 | **`supabase_security_fixes_v2.sql`** | Hardening (idempotent) | Replaces public `using (true)` policies with auth-gated ones. Skip/`feedback` policies if that table was never created. |
+| 6 | **`supabase_constraints_v1.sql`** | Hardening (idempotent, additive) | Adds `ON DELETE SET NULL` to FKs, CHECK constraints for book/level/range enums, supporting indexes. |
+
+**Removed:** `supabase_feedback.sql` — student opinion form deleted from the app. Do not create the `feedback` table.
 
 ## One-shot scripts (run once, then forget)
 

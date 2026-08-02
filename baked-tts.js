@@ -1,8 +1,8 @@
 /** Static baked TTS paths — must match scripts/collect_tts_strings.mjs + app.js TTS_CACHE_VER. */
 
-export const BAKED_TTS_CACHE_VER = 'v29';
-/** Yousef — ElevenLabs MSA voice id (must match app.js TTS_VOICE). */
-export const BAKED_TTS_VOICE = 'ZCXYdzd5Evtsll2EdoCi';
+export const BAKED_TTS_CACHE_VER = 'v30';
+/** Fish Audio Arabic narrator (راوي). */
+export const BAKED_TTS_VOICE = 'c3e5d81d807f4cbc9a0c2872a4dea9ea';
 
 export function bakedTtsCacheKey(text, voice = BAKED_TTS_VOICE, cacheVer = BAKED_TTS_CACHE_VER) {
   return `${cacheVer}::${voice}::${String(text || '').slice(0, 600)}`;

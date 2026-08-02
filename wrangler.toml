@@ -4,8 +4,7 @@ compatibility_date = "2024-06-01"
 main = "worker.js"
 
 [vars]
-FEEDBACK_NOTIFY_EMAIL = "hd.hk1444920@gmail.com"
-BAKED_TTS_ONLY = "1"
+BAKED_TTS_ONLY = "0"
 
 [assets]
 directory = "."

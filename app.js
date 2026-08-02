@@ -95,7 +95,6 @@ const TIMER_SAND_BOTTOM_H = 22;
 const TIMER_SAND_TOP_Y = 12;
 const TIMER_SAND_BOTTOM_Y = 56;
 const LOGIN_LOCKED = false;
-const FEEDBACK_NOTIFY_EMAIL = 'hd.hk1444920@gmail.com';
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
   usool: ['👤 المؤلف','📖 الكتاب','📚 المسائل الأربع','📚 العلم','🕌 الرب','🙏 العبادة','👤 النبي','📿 الدين','🤲 الدعاء','🛡️ التوكل','🆘 الاستعانة','📿 الاستعاذة']
@@ -112,7 +111,7 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:20 };
-let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, feedbackRating = 0, feedbackWantProgram = null, pendingLoginAfterDemo = false, loginInProgress = false;
+let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, pendingLoginAfterDemo = false, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
 let questionShownAt = 0;
@@ -123,11 +122,6 @@ const TTS_ERROR_STATS_KEY = 'ttsErrorStatsV1';
 let ttsSessionFailCount = 0;
 let ttsLastErrorMsg = '';
 
-const FEEDBACK_RATING_LABELS = {
-  3: { emoji: '😍', label: 'أعجبني' },
-  2: { emoji: '😐', label: 'عادي' },
-  1: { emoji: '😞', label: 'ما أعجبني' },
-};
 const DEMO_FALLBACK = [
   { id:'demo1', book:'tawheed', type:'tf', q:'التوحيد هو إفراد الله تعالى بالعبادة.', tf:true, exp:'نعم! التوحيد هو إفراد الله في الربوبية والألوهية والأسماء والصفات.', quote:'«العبادة هي التوحيد»', page:12, cat:'🕌 حق الله' },
   { id:'demo4', book:'tawheed', type:'tf', q:'الشرك الأكبر يُخرج من الملة.', tf:true, exp:'الشرك الأكبر من أعظم الكبائر ويُبقي صاحبه في النار إن مات عليه.' },
@@ -472,72 +466,6 @@ function closeGameTutorial() {
     ov.setAttribute('aria-hidden', 'true');
     releaseFocusTrap(ov);
   }
-}
-
-function feedbackRatingLabel(rating) {
-  const r = FEEDBACK_RATING_LABELS[rating];
-  return r ? `${r.emoji} ${r.label}` : `💬 ${rating}`;
-}
-
-async function syncPendingFeedback() {
-  let backup;
-  try { backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]'); } catch { return []; }
-  let changed = false;
-  for (const item of backup) {
-    if (item.cloudSaved) continue;
-    const result = await saveFeedbackToCloud(buildFeedbackInsertRow(item));
-    if (result.ok) {
-      item.cloudSaved = true;
-      changed = true;
-    }
-  }
-  if (changed) localStorage.setItem('feedbackBackup', JSON.stringify(backup.slice(0, 200)));
-  return backup;
-}
-
-function buildFeedbackInsertRow(item) {
-  const demoGuest = (item.source || 'demo') === 'demo';
-  return {
-    user_name: item.user_name,
-    user_email: item.user_email || null,
-    user_id: demoGuest ? null : (item.user_id || null),
-    rating: item.rating,
-    message: item.message,
-    source: item.source || 'demo',
-  };
-}
-async function saveFeedbackToCloud(row) {
-  const { error } = await db.from('feedback').insert(row, { returning: 'minimal' });
-  if (error) {
-    console.warn('feedback insert:', error.message, error);
-    return { ok: false, error: error.message };
-  }
-  return { ok: true };
-}
-
-async function notifyFeedbackEmail(payload) {
-  const emailBody = {
-    user_name: payload.user_name,
-    rating: payload.rating,
-    ratingLabel: feedbackRatingLabel(payload.rating),
-    message: payload.message,
-    source: payload.source || 'demo',
-  };
-
-  try {
-    const res = await fetch('/api/feedback-notify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(emailBody),
-    });
-    if (res.ok) {
-      const data = await res.json().catch(() => ({}));
-      if (data.ok) return true;
-    }
-  } catch (e) {
-    console.warn('feedback email worker:', e);
-  }
-  return false;
 }
 
 function getProgress() {
@@ -1629,13 +1557,13 @@ function toggleSound() {
 }
 
 /* ── Voice reading (Yousef baked MP3s; no browser/Edge fallback for lesson TTS) ── */
-/** Yousef (ElevenLabs) — primary Arabic TTS; baked MP3s use this voice id in cache keys. */
-const TTS_VOICE = 'ZCXYdzd5Evtsll2EdoCi';
+/** Fish Audio Arabic narrator (راوي) — all bank clips baked under this id. */
+const TTS_VOICE = 'c3e5d81d807f4cbc9a0c2872a4dea9ea';
 const TTS_VOICE_FALLBACK = 'ar-SA-HamedNeural';
 /** Must match baked-tts.js / collect_tts_strings.mjs (file hashes use this ver). */
-const TTS_CACHE_VER = 'v29';
-/** Bump to drop stale IndexedDB blobs that may predate baked Yousef. */
-const TTS_IDB_NAME = 'alhudaTtsCache_v2';
+const TTS_CACHE_VER = 'v30';
+/** Bump to drop stale IndexedDB blobs from prior Yousef/v29 bake. */
+const TTS_IDB_NAME = 'alhudaTtsCache_v3';
 let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
@@ -4068,10 +3996,8 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
 }
 
 async function shareScore() {
-  const text = state.demoMode || document.getElementById('feedback-screen')?.classList.contains('active')
-    ? `📝 أنهيتُ نموذجاً تجريبياً في المكتبة الثلاثية — صحيح: ${arabicNum(state.correct)} / ${arabicNum(state.total)}\nجمعية الهدى والحكمة\nhttps://alhuda.ryodan71.workers.dev/`
-    : '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجرّب/ي أنت أيضاً!\nhttps://alhuda.ryodan71.workers.dev/';
-  const shareBtn = document.getElementById('share-btn') || document.getElementById('btn-share-demo');
+  const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجرّب/ي أنت أيضاً!\nhttps://alhuda.ryodan71.workers.dev/';
+  const shareBtn = document.getElementById('share-btn');
   if (navigator.share) {
     try { await navigator.share({ title: 'المكتبة الثلاثية', text }); return; } catch (e) {}
   }
@@ -4671,270 +4597,27 @@ function highlightCorrectAnswer(q) {
     if (btn.dataset.correct === '1') btn.classList.add('reveal-correct');
   });
 }
-function startDemoFromLogin() {
-  document.getElementById('login-err').textContent = '';
-  state.userName = '';
-  state.demoMode = false;
-  pendingLoginAfterDemo = true;
-  void ensureSpeechMapsLoaded();
-  updateDemoBookPicker();
-  show('demo-intro');
-}
-function showDemoIntro(name) {
-  const demoName = document.getElementById('demo-name');
-  if (demoName) demoName.textContent = name || DEFAULT_PLAYER;
-  void ensureSpeechMapsLoaded();
-  updateDemoBookPicker();
-  show('demo-intro');
-}
-async function beginDemo(book) {
-  if (!book) book = state.demoBook || 'tawheed';
-  unlockTtsAudio();
-  const demoBtns = document.querySelectorAll('.demo-book-pick');
-  demoBtns.forEach((b) => { b.disabled = true; });
-  try {
-    await loadBookQuestions(book);
-  } catch (e) {
-    // Offline fallback still allows demo via DEMO_FALLBACK.
-    console.warn('demo load:', e);
-  } finally {
-    demoBtns.forEach((b) => { b.disabled = false; });
-  }
-  state.demoBook = book;
-  state.demoMode = true;
-  state.wrongLog = [];
-  state.questions = buildDemoQuestions(book);
-  if (!state.questions.length) {
-    showAlert('لا توجد أسئلة لهذا الكتاب — حاول/ي لاحقاً');
-    show('demo-intro');
-    return;
-  }
-  state.idx = 0; state.score = 0; state.hearts = 5; state.streak = 0;
-  state.maxStreak = 0; state.correct = 0; state.wrong = 0; state.answered = false;
-  state.total = state.questions.length;
-  state.answerLog = [];
-  const bookLabel = BOOK_LABELS[book] || book;
-  document.getElementById('demo-bar').textContent = `📝 نموذج تجريبي — ${bookLabel} — ${arabicNum(state.total)} أسئلة`;
-  document.getElementById('demo-bar').style.display = 'block';
-  document.getElementById('training-bar').style.display = 'none';
-  document.getElementById('feedback').classList.remove('show', 'ok', 'bad');
-  document.getElementById('fb-self-correct').style.display = 'none';
-  // Prefetch hybrid speech for Q0/Q1 during countdown (once).
-  demoAudioWarmStarted = false;
-  warmDemoSessionAudio({ force: true });
-  // Ensure diacritics map is ready so the first question paints with tashkeel.
-  await ensureSpeechMapsLoaded();
-  // Warm Q0 in background — do NOT block entering the game (iOS autoplay
-  // breaks if we await multi-second TTS before the first play()).
-  void warmQuestionSpeech(state.questions[0]);
-  startDemoCountdown();
-}
+/** Demo quiz removed — keep stubs so leftover callers stay safe. */
+function startDemoFromLogin() { show('login-screen'); }
+function showDemoIntro() { show('login-screen'); }
+async function beginDemo() { show('login-screen'); }
+function startDemoCountdown() {}
+function finishDemoCountdownEnter() {}
+async function skipDemo() { show('login-screen'); }
+function endDemo() { state.demoMode = false; show('login-screen'); }
+async function finishDemoFlow() { show('login-screen'); }
+function updateDemoBookPicker() {}
+function renderDemoResultSummary() {}
+function renderDemoAnalyticsSummary() {}
+function recordDemoAnalytics() {}
+function buildLastDemoSessionStats() { return { total: 0, correct: 0, wrong: 0, avgMs: 0, book: '' }; }
+function buildDemoQuestions() { return []; }
+function warmDemoSessionAudio() {}
+function markDemoBookTried() {}
+function countDemoBooksTried() { return 0; }
+function finishDemoToRealGame() { show('login-screen'); }
+async function shareDemoResult() { return shareScore(); }
 
-function startDemoCountdown() {
-  // Skip 3-2-1 overlay — enter the demo immediately.
-  clearCountdown();
-  warmDemoSessionAudio();
-  finishDemoCountdownEnter();
-}
-
-function finishDemoCountdownEnter() {
-  renderHearts(); updateScore(); updateProgress();
-  show('game');
-  renderQ();
-  prefetchUpcomingQuran(0);
-  prefetchUpcomingTts(0);
-}
-async function skipDemo() {
-  localStorage.setItem('demoDone', '1');
-  if (LOGIN_LOCKED) {
-    pendingLoginAfterDemo = false;
-    show('login-screen');
-    return;
-  }
-  if (pendingLoginAfterDemo && !state.user) {
-    pendingLoginAfterDemo = false;
-    const name = (document.getElementById('login-name')?.value || '').trim();
-    if (name) {
-      await doLogin();
-      return;
-    }
-    show('login-screen');
-    return;
-  }
-  goHome();
-}
-function endDemo() {
-  clearGameSession();
-  lastDemoSessionStats = buildLastDemoSessionStats();
-  const finishedBook = state.demoBook || lastDemoSessionStats?.book || '';
-  if (finishedBook) markDemoBookTried(finishedBook);
-  state.demoMode = false;
-  document.getElementById('demo-bar').style.display = 'none';
-  feedbackRating = 0;
-  feedbackWantProgram = null;
-  document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('sel'));
-  document.querySelectorAll('.want-program-btn').forEach(b => b.classList.remove('sel'));
-  const fbName = document.getElementById('feedback-name');
-  const fbAge = document.getElementById('feedback-age');
-  if (fbName) fbName.value = state.user ? (state.userName || '') : '';
-  if (fbAge) fbAge.value = '';
-  const fbLike = document.getElementById('feedback-like');
-  const fbImprove = document.getElementById('feedback-improve');
-  if (fbLike) fbLike.value = '';
-  if (fbImprove) fbImprove.value = '';
-  document.getElementById('feedback-msg').textContent = '';
-  const rd = document.getElementById('btn-review-demo');
-  if (rd) rd.style.display = state.wrongLog.length ? 'block' : 'none';
-  renderDemoResultSummary();
-  renderDemoAnalyticsSummary();
-  const shareDemo = document.getElementById('btn-share-demo');
-  if (shareDemo) shareDemo.style.display = 'block';
-  const finishBtn = document.getElementById('btn-finish-demo');
-  if (finishBtn) {
-    finishBtn.style.display = '';
-    const n = countDemoBooksTried();
-    if (n === 2) {
-      finishBtn.classList.add('demo-finish-nudge');
-      finishBtn.textContent = '🌟 باقي كتاب واحد — جرّب/يه الآن!';
-    } else {
-      finishBtn.classList.remove('demo-finish-nudge');
-      finishBtn.textContent = n < 3
-        ? `📚 جرّب/ي كتاباً آخر (${arabicNum(n)}/٣)`
-        : '📚 جرّب/ي كتاباً آخر';
-    }
-  }
-  show('feedback-screen');
-}
-function setRating(r, el) {
-  feedbackRating = r;
-  document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('sel'));
-  el.classList.add('sel');
-}
-function setWantProgram(want, el) {
-  feedbackWantProgram = want;
-  document.querySelectorAll('.want-program-btn').forEach(b => b.classList.remove('sel'));
-  el.classList.add('sel');
-}
-async function submitFeedback() {
-  const name = (document.getElementById('feedback-name')?.value || '').trim();
-  const age = (document.getElementById('feedback-age')?.value || '').trim();
-  const likeText = (document.getElementById('feedback-like')?.value || '').trim();
-  const improveText = (document.getElementById('feedback-improve')?.value || '').trim();
-  const msgEl = document.getElementById('feedback-msg');
-  const btn = document.getElementById('btn-submit-feedback');
-  if (!FEEDBACK_RATING_LABELS[feedbackRating]) { setFormError(msgEl, 'اختار/ي: هل أعجبك البرنامج؟'); return; }
-  if (!name) { setFormError(msgEl, 'اكتب/ي اسمك من فضلك'); return; }
-  if (!age) { setFormError(msgEl, 'اكتب/ي عمرك من فضلك'); return; }
-  btn.disabled = true;
-  btn.textContent = 'جاري الإرسال...';
-  try {
-  const parts = [];
-  parts.push(`العمر: ${age}`);
-  if (feedbackWantProgram !== null) {
-    parts.push(`هل تريد/ين البرنامج؟ ${feedbackWantProgram ? 'نعم ✅' : 'لا ❌'}`);
-  }
-  parts.push(`التقييم: ${feedbackRatingLabel(feedbackRating)}`);
-  if (state.demoBook) parts.push(`الكتاب: ${BOOK_LABELS[state.demoBook] || state.demoBook}`);
-  if (improveText) parts.push(`اقتراحات وتحسينات:\n${improveText}`);
-  if (likeText) parts.push(`ملاحظات إضافية:\n${likeText}`);
-  if (state.total) parts.push(`نتيجة النموذج: ${state.correct}/${state.total} صحيحة`);
-  const stats = lastDemoSessionStats || buildLastDemoSessionStats();
-  if (stats?.avgMs) parts.push(`متوسط زمن الإجابة: ${Math.round(stats.avgMs / 1000)} ث`);
-  const hard = getDemoHardQuestionsSummary(5);
-  if (hard.length) {
-    parts.push(
-      'تحليلات التجربة (أصعب الأسئلة محلياً):\n' +
-      hard.map((h) => `- ${h.q || h.id} (خطأ ${h.wrong}/${h.total})`).join('\n')
-    );
-  }
-  try {
-    const analytics = JSON.parse(localStorage.getItem(DEMO_ANALYTICS_KEY) || '[]');
-    const sessionRows = Array.isArray(analytics)
-      ? analytics.filter((r) => r && r.book === state.demoBook).slice(-DEMO_COUNT)
-      : [];
-    if (sessionRows.length) {
-      const wrongIds = sessionRows.filter((r) => !r.correct).map((r) => r.questionId).filter(Boolean);
-      if (wrongIds.length) parts.push(`معرّفات الأسئلة الخاطئة: ${wrongIds.join(', ')}`);
-    }
-  } catch (e) {}
-  const fullMsg = parts.join('\n\n');
-  const payload = {
-    user_name: name || state.userName || 'مجهول',
-    user_email: state.userEmail || null,
-    user_id: state.user?.id || null,
-    rating: feedbackRating,
-    message: fullMsg,
-    source: 'demo',
-    created_at: new Date().toISOString(),
-    localId: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
-    cloudSaved: false,
-  };
-  const saveResult = await saveFeedbackToCloud(buildFeedbackInsertRow(payload));
-  payload.cloudSaved = saveResult.ok;
-  payload.cloudError = saveResult.error || '';
-  const emailSent = await notifyFeedbackEmail(payload);
-  payload.emailSent = emailSent;
-  const backup = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
-  backup.unshift(payload);
-  localStorage.setItem('feedbackBackup', JSON.stringify(backup.slice(0, 200)));
-  if (!payload.cloudSaved) {
-    await syncPendingFeedback();
-    const refreshed = JSON.parse(localStorage.getItem('feedbackBackup') || '[]');
-    if (refreshed.find(x => x.localId === payload.localId)?.cloudSaved) payload.cloudSaved = true;
-  }
-  if (payload.cloudSaved && emailSent) {
-    msgEl.style.color = 'var(--emerald)';
-    msgEl.textContent = '✅ شكراً! وصل رأيك/ِ بنجاح 💚';
-    if (typeof showToast === 'function') showToast('تم إرسال رأيك بنجاح', 'info');
-  } else if (payload.cloudSaved) {
-    msgEl.style.color = 'var(--emerald)';
-    msgEl.textContent = '✅ شكراً! تم حفظ رأيك/ِ 💚';
-    if (typeof showToast === 'function') showToast('تم حفظ رأيك', 'info');
-  } else if (emailSent) {
-    msgEl.style.color = 'var(--orange)';
-    msgEl.textContent = '⚠️ وصل رأيك/ِ — شكراً! حاول/ي لاحقاً إن لم يظهر في السجل';
-    if (typeof showToast === 'function') showToast('تم الإرسال جزئياً', 'err');
-  } else {
-    msgEl.style.color = 'var(--orange)';
-    msgEl.textContent = '⚠️ تعذّر الإرسال — تحقق/ي من الاتصال وحاول/ي مرة أخرى';
-    if (typeof showToast === 'function') showToast('تعذّر الإرسال — حاول/ي لاحقاً', 'err');
-  }
-  state.userName = name;
-  localStorage.setItem('savedName', name);
-  const loginName = document.getElementById('login-name');
-  if (loginName) loginName.value = name;
-  localStorage.setItem('demoDone', '1');
-  localStorage.setItem('demoFeedbackSubmitted', '1');
-  const finishBtn = document.getElementById('btn-finish-demo');
-  if (finishBtn) finishBtn.style.display = '';
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'إرسال وحفظ رأيي 📨';
-  }
-}
-async function finishDemoFlow() {
-  // Feedback is encouraged but not a gate — allow trying another book immediately.
-  localStorage.setItem('demoDone', '1');
-  if (LOGIN_LOCKED) {
-    pendingLoginAfterDemo = true;
-    updateDemoBookPicker();
-    show('demo-intro');
-    return;
-  }
-  if (!state.user) {
-    if (pendingLoginAfterDemo) {
-      pendingLoginAfterDemo = false;
-      const name = (document.getElementById('login-name')?.value || '').trim();
-      if (name) {
-        await doLogin();
-        return;
-      }
-    }
-    show('login-screen');
-    return;
-  }
-  goHome();
-}
 function getFocusable(root) {
   if (!root) return [];
   return [...root.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
@@ -5034,8 +4717,8 @@ async function tryRestoreGameSession() {
     return false;
   }
   state.questions = qs;
-  state.demoMode = !!data.demoMode;
-  state.demoBook = data.demoBook || '';
+  state.demoMode = false; // demo removed
+  state.demoBook = '';
   state.book = data.book || 'tawheed';
   state.level = data.level || 'easy';
   state.qFrom = data.qFrom || 1;
@@ -5771,6 +5454,29 @@ async function doLogin() {
   }
 }
 
+/** Auto-login with saved / typed name — returns true if login started successfully to home. */
+async function tryAutoLoginByName() {
+  if (LOGIN_LOCKED || loginInProgress || state.user) return false;
+  const input = document.getElementById('login-name');
+  const saved = getPrimaryName() || localStorage.getItem('savedName') || '';
+  const typed = (input?.value || '').trim();
+  const name = typed || saved;
+  if (!name || name.length < 2) return false;
+  if (input && !typed) input.value = name;
+  await doLogin();
+  return !!state.user;
+}
+
+let loginNameDebounceTimer = null;
+function scheduleAutoLoginFromNameInput() {
+  if (LOGIN_LOCKED || loginInProgress || state.user) return;
+  clearTimeout(loginNameDebounceTimer);
+  loginNameDebounceTimer = setTimeout(() => {
+    const name = (document.getElementById('login-name')?.value || '').trim();
+    if (name.length >= 2) void doLogin();
+  }, 700);
+}
+
 async function switchLoginName() {
   const primary = getPrimaryName();
   await logout();
@@ -6278,8 +5984,6 @@ function startReview(from) {
     state.reviewReturn = from;
   } else if (document.getElementById('game')?.classList.contains('active')) {
     state.reviewReturn = 'game';
-  } else if (document.getElementById('feedback-screen')?.classList.contains('active')) {
-    state.reviewReturn = 'feedback-screen';
   } else {
     state.reviewReturn = document.getElementById('gameover')?.classList.contains('active') ? 'gameover' : 'results';
   }
@@ -6782,22 +6486,6 @@ async function showProfile() {
   show('profile-screen');
 }
 
-function finishDemoToRealGame() {
-  if (LOGIN_LOCKED) {
-    showToast?.('الأسئلة الكاملة مغلقة مؤقتاً', 'err');
-    return;
-  }
-  localStorage.setItem('demoDone', '1');
-  state.demoMode = false;
-  document.getElementById('demo-bar') && (document.getElementById('demo-bar').style.display = 'none');
-  if (state.user) {
-    goHome();
-    return;
-  }
-  show('login-screen');
-  const nameInput = document.getElementById('login-name');
-  nameInput?.focus();
-}
 
 function applyLoginLockUI() {
   const nameInput = document.getElementById('login-name');
@@ -6818,22 +6506,10 @@ function applyLoginLockUI() {
     if (divider) divider.style.display = 'none';
     if (features) features.style.display = 'none';
     if (title) title.textContent = '🔒 الدخول مغلق مؤقتاً';
-    if (notice) { notice.hidden = false; notice.style.display = ''; notice.textContent = 'الأسئلة الكاملة مغلقة — النموذج التجريبي فقط (٨ أسئلة لكل كتاب)'; }
-    const demoOnlyNotice = document.getElementById('login-demo-only-notice');
-    if (demoOnlyNotice) demoOnlyNotice.hidden = false;
-    const ctaNote = document.getElementById('real-game-cta-note');
-    const ctaBtn = document.getElementById('real-game-cta-btn');
-    if (ctaNote) ctaNote.textContent = '🔒 الأسئلة الكاملة مغلقة حالياً — شكراً لمشاركتك!';
-    if (ctaBtn) {
-      ctaBtn.disabled = true;
-      ctaBtn.setAttribute('aria-disabled', 'true');
-      ctaBtn.textContent = '📚 الدخول للأسئلة الحقيقية — مغلق 🔒';
-    }
+    if (notice) { notice.hidden = false; notice.style.display = ''; notice.textContent = 'الدخول مغلق مؤقتاً'; }
     updateLoginQuestionHint();
     refreshLoginAnalyticsPanel();
   } else {
-    const demoOnlyNotice = document.getElementById('login-demo-only-notice');
-    if (demoOnlyNotice) demoOnlyNotice.hidden = true;
     if (block) block.style.display = '';
     if (divider) divider.style.display = '';
     if (features) features.style.display = '';
@@ -6844,16 +6520,9 @@ function applyLoginLockUI() {
     loginBtn.removeAttribute('aria-disabled');
     loginBtn.textContent = 'دخول 🎮';
     block?.classList.remove('is-locked');
-    if (title) title.textContent = 'ادخل/ي باسمك وابدأ/ي 🎮';
+    if (title) title.textContent = 'اكتب/ي اسمك للدخول 🎮';
     if (notice) { notice.hidden = true; notice.style.display = 'none'; }
-    const ctaNote = document.getElementById('real-game-cta-note');
-    const ctaBtn = document.getElementById('real-game-cta-btn');
-    if (ctaNote) ctaNote.textContent = 'سجّل/ي دخولك للأسئلة الكاملة والتقدّم!';
-    if (ctaBtn) {
-      ctaBtn.disabled = false;
-      ctaBtn.removeAttribute('aria-disabled');
-      ctaBtn.textContent = '📚 الدخول للأسئلة الحقيقية';
-    }
+    if (loginBtn) loginBtn.style.display = 'none';
   }
 }
 
@@ -6943,7 +6612,13 @@ async function restoreSession() {
   window.addEventListener('offline', () => applyOfflineVoicePolicy());
   if (navigator.onLine === false) applyOfflineVoicePolicy();
   document.getElementById('login-name')?.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !LOGIN_LOCKED) doLogin();
+    if (e.key === 'Enter' && !LOGIN_LOCKED) {
+      clearTimeout(loginNameDebounceTimer);
+      doLogin();
+    }
+  });
+  document.getElementById('login-name')?.addEventListener('input', () => {
+    scheduleAutoLoginFromNameInput();
   });
   document.getElementById('btn-login')?.addEventListener('click', () => {
     if (!LOGIN_LOCKED) doLogin();

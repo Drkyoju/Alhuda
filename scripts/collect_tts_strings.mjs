@@ -10,10 +10,10 @@ import { normalizeForElevenLabs } from '../elevenlabs-tts.js';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 /** Must match app.js TTS_VOICE + TTS_CACHE_VER when baking. */
-export const BAKE_TTS_CACHE_VER = 'v29';
-/** Yousef — ElevenLabs MSA (same as elevenlabs-tts.js). */
-export const BAKE_TTS_VOICE = 'ZCXYdzd5Evtsll2EdoCi';
-export const BAKE_TTS_VOICE_LABEL = 'Yousef (ElevenLabs)';
+export const BAKE_TTS_CACHE_VER = 'v30';
+/** Fish Audio Arabic narrator (راوي). */
+export const BAKE_TTS_VOICE = 'c3e5d81d807f4cbc9a0c2872a4dea9ea';
+export const BAKE_TTS_VOICE_LABEL = 'Fish Audio Arabic narrator (راوي)';
 
 export function loadSpeechMaps() {
   const window = {};

@@ -54,8 +54,8 @@
 
   function syncBottomNav(screenId) {
     const hide = [
-      'login-screen', 'game', 'results', 'gameover', 'countdown-overlay', 'demo-intro',
-      'review-screen', 'feedback-screen', 'onboarding-overlay', 'game-tutorial-overlay', 'levels-preview-screen',
+      'login-screen', 'game', 'results', 'gameover', 'countdown-overlay', 
+      'review-screen',  'onboarding-overlay', 'game-tutorial-overlay', 'levels-preview-screen',
     ];
     const immersive = hide.includes(screenId);
     setBottomNavVisible(!immersive && !!state?.user);
