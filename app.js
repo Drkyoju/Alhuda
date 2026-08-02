@@ -4733,7 +4733,8 @@ async function tryRestoreGameSession() {
   state.wrongLog = data.wrongLog || [];
   state.answered = false;
   trainingMode = !!data.trainingMode;
-  document.getElementById('demo-bar').style.display = state.demoMode ? 'block' : 'none';
+  const demoBar = document.getElementById('demo-bar');
+  if (demoBar) demoBar.style.display = state.demoMode ? 'block' : 'none';
   document.getElementById('training-bar').style.display = trainingMode ? 'block' : 'none';
   show('game');
   renderQ();
@@ -5673,7 +5674,8 @@ function startGame() {
   setFeedbackPanelOpen(false);
   setFeedbackContinueVisible(true);
   document.getElementById('training-bar').style.display = trainingMode ? 'block' : 'none';
-  document.getElementById('demo-bar').style.display = state.demoMode ? 'block' : 'none';
+  const demoBar = document.getElementById('demo-bar');
+  if (demoBar) demoBar.style.display = state.demoMode ? 'block' : 'none';
   document.getElementById('show-answer-btn').style.display = 'none';
   document.getElementById('res-xp-earned').style.display = 'none';
   updateStageGameBadge();
