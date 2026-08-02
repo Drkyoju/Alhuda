@@ -764,14 +764,36 @@
     }
     .play-zone {
       width: 100%;
-      padding: 20px 18px 18px;
+      padding: 22px 18px 20px;
       text-align: center;
     }
     .play-zone .section-label {
-      margin: 14px 0 10px;
-      font-size: 0.82em;
+      margin: 18px 0 12px;
+      font-size: 0.98em;
     }
     .play-zone .section-label:first-child { margin-top: 0; }
+    .play-zone .section-label::before,
+    .play-zone .section-label::after {
+      max-width: 36px;
+      opacity: 0.65;
+    }
+    .play-zone-start {
+      margin-top: 18px;
+      width: 100%;
+    }
+    .play-zone-start #btn-start-game {
+      width: 100%;
+      min-height: 54px;
+      font-size: 1.08em;
+    }
+    .play-zone-refresh {
+      margin-top: 12px;
+    }
+    .welcome-hero-sub {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.95em;
+      font-weight: 700;
+    }
     .top-leader-card {
       width: 100%;
       margin-bottom: 10px;
@@ -813,12 +835,12 @@
     }
     .welcome-inner {
       width: 100%;
-      max-width: 640px;
+      max-width: 680px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
+      gap: 22px;
     }
     .welcome-header {
       text-align: center;
@@ -861,9 +883,13 @@
       border: 2px solid var(--border);
       min-width: 90px;
     }
-    .stat-pill .stat-icon { font-size: 1.3em; }
-    .stat-pill .stat-val { font-size: 1.2em; font-weight: 900; color: var(--emerald-dark); }
-    .stat-pill .stat-lbl { font-size: 0.65em; color: var(--text-soft); font-weight: 700; }
+    .stat-pill .stat-icon { font-size: 1.35em; }
+    .stat-pill .stat-val { font-size: 1.25em; font-weight: 900; color: var(--emerald-dark); }
+    .stat-pill .stat-lbl { font-size: 0.78em; color: var(--text-soft); font-weight: 700; }
+    .welcome-stats-below {
+      max-width: 100%;
+      opacity: 0.96;
+    }
 
     /* Level & XP bar */
     .level-card {
@@ -1211,10 +1237,10 @@
     .book-select-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
     }
-    @media (min-width: 768px) {
+    @media (min-width: 900px) {
       .book-select-row { grid-template-columns: repeat(4, 1fr); }
     }
     /* Book cards — أنيق */
@@ -1222,8 +1248,8 @@
       background: var(--ivory);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 14px 10px;
-      font-size: 0.8em;
+      padding: 16px 12px;
+      font-size: 0.95em;
       font-weight: 800;
       font-family: 'Tajawal', sans-serif;
       cursor: pointer;
@@ -1232,11 +1258,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
-      min-height: 96px;
+      gap: 10px;
+      min-height: 108px;
       box-shadow: var(--shadow-sm);
     }
-    .book-btn .book-icon { font-size: 1.75em; line-height: 1; }
+    .book-btn .book-icon { font-size: 1.9em; line-height: 1; }
     .book-btn:hover { transform: translateY(-2px); border-color: var(--border-gold); box-shadow: var(--shadow); }
     .book-btn:active { transform: translateY(0); }
     .book-btn.sel {
@@ -1264,21 +1290,21 @@
     }
     .level-btn {
       flex: 1;
-      min-width: 68px;
+      min-width: 72px;
       background: var(--ivory);
       border: 1px solid var(--border);
       border-radius: 999px;
-      padding: 10px 12px;
-      font-size: 0.85em;
+      padding: 12px 14px;
+      font-size: 0.95em;
       font-weight: 800;
       font-family: 'Tajawal', sans-serif;
       cursor: pointer;
       color: var(--text);
       transition: all 0.2s ease;
-      min-height: 44px;
+      min-height: 52px;
       box-shadow: none;
     }
-    .level-btn .lvl-count { display: block; font-size: 0.72em; opacity: 0.75; margin-top: 2px; }
+    .level-btn .lvl-count { display: block; font-size: 0.78em; opacity: 0.75; margin-top: 2px; }
     .level-btn.sel { color: white; border-color: transparent; box-shadow: 0 4px 16px rgba(22, 56, 40, 0.15); }
     .level-btn[data-level="easy"].sel { background: var(--emerald); }
     .level-btn[data-level="medium"].sel { background: var(--gold); color: var(--emerald-dark); }
@@ -1414,7 +1440,7 @@
     .stage-picker {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
       justify-content: center;
       margin-bottom: 14px;
     }
@@ -1422,9 +1448,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2px;
-      min-width: 72px;
-      padding: 8px 10px;
+      gap: 3px;
+      min-width: 78px;
+      padding: 12px 12px;
       border-radius: var(--radius-sm);
       border: 2px solid var(--border);
       background: var(--ivory);
@@ -1450,11 +1476,11 @@
       cursor: not-allowed;
     }
     .stage-chip-top {
-      font-size: 0.78em;
+      font-size: 0.92em;
       font-weight: 900;
     }
     .stage-chip-meta {
-      font-size: 0.68em;
+      font-size: 0.75em;
       font-weight: 700;
       color: var(--text-soft);
     }
@@ -2831,7 +2857,7 @@
     }
 
     /* ── Book & level selectors (تكميلي) ── */
-    .book-btn .book-progress { font-size: 0.62em; opacity: 0.75; }
+    .book-btn .book-progress { font-size: 0.78em; opacity: 0.8; }
     .book-btn.sel .book-progress { opacity: 1; }
 
     .level-btn.sel { box-shadow: 0 4px 16px rgba(22, 56, 40, 0.15); }
@@ -3850,8 +3876,12 @@
       .card { padding: 16px 12px; border-radius: 12px; }
       .logo-img { max-width: 160px; max-height: 124px; }
       .brand-title { font-size: 1.35em; }
-      .book-select-row { gap: 6px; }
-      .book-btn { min-height: 78px; padding: 10px 6px; font-size: 0.72em; border-radius: 12px; }
+      .book-select-row { gap: 10px; }
+      .book-btn { min-height: 104px; padding: 14px 8px; font-size: 0.95em; border-radius: 14px; }
+      .book-btn .book-icon { font-size: 1.85em; }
+      .level-btn { font-size: 0.92em; min-height: 50px; padding: 11px 10px; }
+      .stage-chip { min-width: 74px; padding: 11px 10px; }
+      .play-zone { padding: 18px 14px 18px; }
       .nav-dock { padding: 8px 6px; }
       .nav-dock .icon-action-circle { width: 42px; height: 42px; }
       .q-with-timer { gap: 5px; align-items: flex-start; }
@@ -4890,6 +4920,11 @@
     .demo-analytics-summary li span { opacity: 0.75; font-size: 0.92em; }
 
     /* Mobile game screen: less paint / smoother scroll */
+    #welcome.active ~ .float-deco,
+    body:has(#welcome.active) .float-deco {
+      opacity: 0.08;
+      pointer-events: none;
+    }
     #game.active ~ .float-deco,
     body:has(#game.active) .float-deco,
     body:has(#game.active) .glow-orb {
@@ -5122,8 +5157,10 @@
         gap: 12px;
       }
       .page-shell { max-width: 720px; }
-      .welcome-inner { max-width: 760px; margin-inline: auto; }
-      .book-select-row { grid-template-columns: 1fr 1fr; }
+      .welcome-inner { max-width: 760px; margin-inline: auto; gap: 24px; }
+      .book-select-row { grid-template-columns: 1fr 1fr; gap: 14px; }
+      .book-btn { min-height: 118px; font-size: 1em; padding: 18px 14px; }
+      .book-btn .book-icon { font-size: 2.05em; }
       .demo-book-pick-list { max-width: 520px; margin-inline: auto; }
     }
     @media (min-width: 1024px) {

@@ -130,10 +130,9 @@
   background: linear-gradient(180deg, #F5F3FF, #EDE9FE);
 }
 .kids-theme .book-btn .book-icon {
-  animation: kidIconBounce 2.5s ease-in-out infinite;
+  /* No bounce on hub — keeps book tiles readable and calm */
+  animation: none;
 }
-.kids-theme .book-btn:nth-child(2) .book-icon { animation-delay: 0.4s; }
-.kids-theme .book-btn:nth-child(3) .book-icon { animation-delay: 0.8s; }
 @keyframes kidIconBounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
@@ -395,7 +394,9 @@
 }
 
 @media (max-width: 768px) {
-  .kids-theme .float-deco-kids { opacity: 0.28; font-size: 1.35em; }
+  .kids-theme .float-deco-kids { opacity: 0.12; font-size: 1.2em; }
+  body:has(#welcome.active) .kids-theme .float-deco-kids,
+  .kids-theme:has(#welcome.active) .float-deco-kids { opacity: 0.1; }
   .kid-bubble { opacity: 0.16; }
 }
 
