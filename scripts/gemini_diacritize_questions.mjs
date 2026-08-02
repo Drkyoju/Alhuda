@@ -65,6 +65,18 @@ function loadQuestions() {
     }
   }
 
+  // Full static bank (primary playable set).
+  if (!DEMO_ONLY && existsSync(join(root, 'questions-bank.json'))) {
+    const bank = JSON.parse(readFileSync(join(root, 'questions-bank.json'), 'utf8'));
+    const rows = Array.isArray(bank) ? bank : Object.values(bank).flat();
+    for (const row of rows) {
+      put(row.id, 'q', row.question_text);
+      put(row.id, 'exp', row.explanation);
+      put(row.id, 'quote', row.source_quote);
+      (row.options || []).forEach((opt, i) => put(row.id, `a${i}`, opt));
+    }
+  }
+
   if (!DEMO_ONLY && existsSync(join(root, 'extracted/db_questions_live.json'))) {
     const db = JSON.parse(readFileSync(join(root, 'extracted/db_questions_live.json'), 'utf8'));
     for (const row of db) {
