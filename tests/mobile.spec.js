@@ -33,7 +33,7 @@ test('mobile play: readable question and compact citation UI', async ({ page }) 
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
 
   await page.locator('#login-name').fill('Mobile User');
-  await page.locator('#btn-login').click();
+  await page.locator('#login-name').press('Enter');
   await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
   await page.locator('#btn-start-game').click();
   await dismissOverlays(page);

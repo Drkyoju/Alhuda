@@ -22,7 +22,7 @@ async function loginAndStart(page, name = 'Smoke Tester') {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
   await page.locator('#login-name').fill(name);
-  await page.locator('#btn-login').click();
+  await page.locator('#login-name').press('Enter');
   await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
   await page.locator('#btn-start-game').click();
   await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
@@ -41,7 +41,7 @@ test('login is unlocked — name entry enabled, no demo button', async ({ page }
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
   await expect(page.locator('#login-name')).toBeEnabled({ timeout: 5000 });
-  await expect(page.locator('#btn-login')).toBeEnabled();
+  await expect(page.locator('#login-name')).toBeVisible();
   await expect(page.getByRole('button', { name: /نموذج أسئلة تجريبي/ })).toHaveCount(0);
 });
 
@@ -87,7 +87,7 @@ test('offline name login still starts a round', async ({ page, context }) => {
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
   await context.setOffline(true);
   await page.locator('#login-name').fill('Offline Player');
-  await page.locator('#btn-login').click();
+  await page.locator('#login-name').press('Enter');
   await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
   await page.locator('#btn-start-game').click();
   await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });

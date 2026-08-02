@@ -25,7 +25,7 @@ test.describe('accessibility', () => {
     await page.goto('/');
     await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
     await page.locator('#login-name').fill('A11y User');
-    await page.locator('#btn-login').click();
+  await page.locator('#login-name').press('Enter');
     await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
     await runAxe(page);
   });
@@ -41,7 +41,7 @@ test.describe('accessibility', () => {
     await page.goto('/');
     await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
     await page.locator('#login-name').fill('A11y Gamer');
-    await page.locator('#btn-login').click();
+  await page.locator('#login-name').press('Enter');
     await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
     await page.locator('#btn-start-game').click();
     await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
@@ -71,7 +71,7 @@ test.describe('accessibility', () => {
     await page.goto('/');
     await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
     await page.locator('#login-name').fill('Confirm User');
-    await page.locator('#btn-login').click();
+  await page.locator('#login-name').press('Enter');
     await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
     await page.locator('#btn-start-game').click();
     await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });

@@ -15,11 +15,11 @@ test('name login enters welcome without demo', async ({ page }) => {
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 45000 });
 
   await expect(page.locator('#login-name')).toBeEnabled();
-  await expect(page.locator('#btn-login')).toBeEnabled();
+  await expect(page.locator('#login-name')).toBeVisible();
   await expect(page.getByRole('button', { name: /نموذج أسئلة تجريبي/ })).toHaveCount(0);
 
   await page.locator('#login-name').fill('Ahmed Test');
-  await page.locator('#btn-login').click();
+  await page.locator('#login-name').press('Enter');
 
   await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
   await expect(page.locator('#btn-start-game')).toBeVisible();
@@ -29,6 +29,6 @@ test('arabic name login also reaches welcome', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 45000 });
   await page.locator('#login-name').fill('أحمد');
-  await page.locator('#btn-login').click();
+  await page.locator('#login-name').press('Enter');
   await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
 });
