@@ -69,6 +69,10 @@ for (const phrase of KEY_PHRASES) {
 }
 
 if (misses.length || keyMiss) {
+  if (String(process.env.ALLOW_BAKED_TTS_MISS || '').trim() === '1') {
+    console.log('\nALLOW_BAKED_TTS_MISS=1 — treating gaps as warning (live TTS fallback).');
+    process.exit(0);
+  }
   process.exit(1);
 }
 
