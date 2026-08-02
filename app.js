@@ -548,38 +548,58 @@ function difficultyRank(q) {
   return lvl[q?.level] ?? 1;
 }
 
-/** Cap + redistribute book questions into easy→medium→hard by real difficulty order. */
+/**
+ * Build playable pools from each question's stored level (easy|medium|hard).
+ * Caps limit how long a tier feels (80/100/120); leftover of that same label
+ * stays out of other tiers (still available via «الكل»).
+ */
 function buildDifficultyPools(book) {
-  const all = getAllQuestions(book).slice().sort((a, b) => {
-    const d = difficultyRank(a) - difficultyRank(b);
-    if (d !== 0) return d;
-    const c = chapterSortIndex(a.book, a.cat) - chapterSortIndex(b.book, b.cat);
-    if (c !== 0) return c;
-    return String(a.id || '').localeCompare(String(b.id || ''));
-  });
-  const total = all.length;
+  const sortTier = (list) =>
+    list.slice().sort((a, b) => {
+      const c = chapterSortIndex(a.book, a.cat) - chapterSortIndex(b.book, b.cat);
+      if (c !== 0) return c;
+      return String(a.id || '').localeCompare(String(b.id || ''));
+    });
+
+  const buckets = { easy: [], medium: [], hard: [] };
+  for (const q of getAllQuestions(book)) {
+    const lvl = q?.level === 'easy' || q?.level === 'hard' ? q.level : 'medium';
+    buckets[lvl].push(q);
+  }
+  buckets.easy = sortTier(buckets.easy);
+  buckets.medium = sortTier(buckets.medium);
+  buckets.hard = sortTier(buckets.hard);
+
+  const total = buckets.easy.length + buckets.medium.length + buckets.hard.length;
   if (!total) return { easy: [], medium: [], hard: [] };
 
   let easyCap = LEVEL_CAPS.easy;
   let mediumCap = LEVEL_CAPS.medium;
   let hardCap = LEVEL_CAPS.hard;
-  // Small books: keep ~30/35/35 with ceilings.
+  // Small books: ~30/35/35 of that book's total, still ceilings.
   if (total < easyCap + mediumCap + hardCap) {
     easyCap = Math.min(LEVEL_CAPS.easy, Math.max(8, Math.round(total * 0.30)));
     mediumCap = Math.min(LEVEL_CAPS.medium, Math.max(8, Math.round(total * 0.35)));
     hardCap = Math.max(0, total - easyCap - mediumCap);
   }
 
-  const easy = all.slice(0, Math.min(easyCap, total));
-  const medium = all.slice(easy.length, Math.min(easy.length + mediumCap, total));
-  const hard = all.slice(easy.length + medium.length, Math.min(easy.length + medium.length + hardCap, total));
-  return { easy, medium, hard };
+  return {
+    easy: buckets.easy.slice(0, Math.min(easyCap, buckets.easy.length)),
+    medium: buckets.medium.slice(0, Math.min(mediumCap, buckets.medium.length)),
+    hard: buckets.hard.slice(0, Math.min(hardCap, buckets.hard.length)),
+  };
 }
 
 function getOrderedPool(book, level) {
   if (level === 'all') {
-    const p = buildDifficultyPools(book);
-    return [...p.easy, ...p.medium, ...p.hard];
+    // Full bank — not capped (tiers alone use LEVEL_CAPS).
+    return getAllQuestions(book).slice().sort((a, b) => {
+      const d = difficultyRank(a) - difficultyRank(b);
+      if (d !== 0) return d;
+      const c = chapterSortIndex(a.book, a.cat) - chapterSortIndex(b.book, b.cat);
+      if (c !== 0) return c;
+      return String(a.id || '').localeCompare(String(b.id || ''));
+    });
   }
   if (LEVEL_FLOW.includes(level)) {
     return buildDifficultyPools(book)[level] || [];
