@@ -398,7 +398,8 @@ const DEFAULT_PLAYER = 'بطل/ة';
 const STAGE_SIZE = 20; // legacy fallback only
 /** Max questions per difficulty tier (rebalanced by real easy→hard order). */
 const LEVEL_CAPS = { easy: 80, medium: 100, hard: 120 };
-const ROUND_SIZE_OPTIONS = [10, 20, 30, 40];
+const ROUND_SIZE_OPTIONS = [5, 10, 15, 20, 30, 40];
+const ROUND_SIZE_MAX = 80;
 const LEVEL_FLOW = ['easy', 'medium', 'hard'];
 const LEVEL_LABELS_AR = { easy: 'سهل', medium: 'متوسط', hard: 'صعب', all: 'الكل' };
 /** Unlock next tier after this fraction of the current tier is solved (not 100%). */
@@ -806,6 +807,7 @@ function syncStageCompletion(stageNum) {
 
 function getQuestionsForStageGame() {
   // Pick up to roundSize unsolved questions from the capped difficulty tier.
+  // Solved questions stay out until the learner explicitly starts review.
   if (state.useManualRange || state.homeworkId || state.challengeMode || trainingMode) return null;
   if (state.level === 'all' || !LEVEL_FLOW.includes(state.level)) return null;
   if (!isLevelUnlocked(state.book, state.level)) return [];
@@ -813,12 +815,10 @@ function getQuestionsForStageGame() {
   const { pool, prog, done } = getTierProgress(state.book, state.level);
   if (!pool.length) return [];
 
-  const round = Math.max(1, state.roundSize || 20);
+  const round = Math.max(1, Math.min(ROUND_SIZE_MAX, state.roundSize || 20));
 
-  if (state.stageReviewMode || done) {
-    state.stageReviewMode = true;
+  if (state.stageReviewMode) {
     const size = Math.min(round, pool.length);
-    // Rotate through the tier so review rounds feel fresh.
     const start = ((state.activeStageNum || 1) - 1) * size % Math.max(1, pool.length);
     const slice = [];
     for (let i = 0; i < size; i++) slice.push(pool[(start + i) % pool.length]);
@@ -826,11 +826,11 @@ function getQuestionsForStageGame() {
     return dedupeGameQuestions(slice);
   }
 
+  // Finished the tier — do not auto-recycle into review.
+  if (done) return [];
+
   const unsolved = pool.filter((q) => !prog.solvedIds.includes(q.id));
-  if (!unsolved.length) {
-    state.stageReviewMode = true;
-    return getQuestionsForStageGame();
-  }
+  if (!unsolved.length) return [];
 
   const size = Math.min(round, unsolved.length);
   const next = unsolved.slice(0, size);
@@ -844,11 +844,13 @@ function getQuestionsForStageGame() {
 function updateStagePickerUI() {
   const el = document.getElementById('stage-picker');
   const hint = document.getElementById('stage-hint');
+  const note = document.getElementById('round-progress-note');
   if (!el) return;
 
   if (!LEVEL_FLOW.includes(state.level)) {
     el.innerHTML = '<p class="stage-empty">اختَر/ي مستوى سهل أو متوسط أو صعب — أو استخدم/ي النطاق اليدوي من الخيارات المتقدمة</p>';
     if (hint) hint.textContent = state.level === 'all' ? 'وضع «الكل»: مراجعة مختلطة بدون مسار التدرّج' : '';
+    if (note) note.textContent = '';
     updateStartButtonLabel();
     updateLevelLockUI();
     return;
@@ -858,6 +860,7 @@ function updateStagePickerUI() {
   if (!unlocked) {
     el.innerHTML = `<p class="stage-empty">🔒 ${escapeHtml(nextLockedLevelMessage(state.book, state.level))}</p>`;
     if (hint) hint.textContent = '';
+    if (note) note.textContent = '';
     updateStartButtonLabel();
     updateLevelLockUI();
     return;
@@ -867,53 +870,110 @@ function updateStagePickerUI() {
   if (!total) {
     el.innerHTML = '<p class="stage-empty">لا توجد أسئلة لهذا المستوى</p>';
     if (hint) hint.textContent = '';
+    if (note) note.textContent = '';
     updateStartButtonLabel();
     updateLevelLockUI();
     return;
   }
 
   const remaining = Math.max(0, total - solved);
-  const roundBtns = ROUND_SIZE_OPTIONS.map((n) => {
+  const maxPick = Math.max(1, Math.min(ROUND_SIZE_MAX, done ? total : (remaining || total)));
+  if ((state.roundSize || 20) > maxPick) state.roundSize = maxPick;
+
+  const roundBtns = ROUND_SIZE_OPTIONS.filter((n) => n <= maxPick).map((n) => {
     const on = (state.roundSize || 20) === n ? 'sel' : '';
     return `<button type="button" class="level-btn round-size-btn ${on}" data-round="${n}" onclick="selectRoundSize(${n})">${arabicNum(n)}</button>`;
   }).join('');
 
+  const reviewBtn = solved > 0
+    ? `<button type="button" class="btn btn-white btn-sm review-tier-btn" onclick="startTierReview()">🔁 مراجعة ما حلّيته (${arabicNum(solved)})</button>`
+    : '';
+
   el.innerHTML = `
     <div class="round-size-wrap">
-      <p class="section-label" style="margin:0 0 6px;">كم سؤال في هذه الجولة؟</p>
       <div class="level-row round-size-row">${roundBtns}</div>
+      <div class="round-custom-row">
+        <label for="round-custom-input">أو اكتب العدد بالضبط</label>
+        <input type="number" id="round-custom-input" class="q-range-input round-custom-input" min="1" max="${maxPick}" value="${state.roundSize || 20}" inputmode="numeric" onchange="onRoundCustomInput()" oninput="onRoundCustomInput()">
+        <span class="round-custom-max">إلى ${arabicNum(maxPick)}</span>
+      </div>
+      ${reviewBtn}
     </div>`;
 
   if (hint) {
     const label = LEVEL_LABELS_AR[state.level] || state.level;
-    const round = Math.min(state.roundSize || 20, done ? total : (remaining || total));
+    const round = Math.min(state.roundSize || 20, maxPick);
     const t = getTierProgress(state.book, state.level);
     if (state.useManualRange) {
       hint.textContent = 'وضع النطاق اليدوي مفعّل — مسار التدرّج معطّل لهذه الجولة';
     } else if (done) {
-      hint.textContent = `🎉 أنهيت مستوى ${label} (${arabicNum(total)} سؤال)! يمكنك المراجعة أو الانتقال للمستوى التالي`;
+      hint.textContent = `🎉 أنهيت ${label} بالكامل (${arabicNum(total)} سؤال). الأسئلة المحلولة لن تظهر إلا إذا ضغطت مراجعة.`;
     } else if (t.unlockReady && state.level === 'easy') {
-      hint.textContent = `مستوى ${label}: ${arabicNum(solved)}/${arabicNum(total)} — 🔓 المتوسط مفتوح! أكمل السهل أو انتقل للمتوسط`;
+      hint.textContent = `${label}: حلّيت ${arabicNum(solved)} من ${arabicNum(total)} — متبقي ${arabicNum(remaining)} — الجولة القادمة ${arabicNum(round)} سؤال · 🔓 المتوسط مفتوح`;
     } else if (t.unlockReady && state.level === 'medium') {
-      hint.textContent = `مستوى ${label}: ${arabicNum(solved)}/${arabicNum(total)} — 🔓 الصعب مفتوح! أكمل المتوسط أو انتقل للصعب`;
+      hint.textContent = `${label}: حلّيت ${arabicNum(solved)} من ${arabicNum(total)} — متبقي ${arabicNum(remaining)} — الجولة ${arabicNum(round)} · 🔓 الصعب مفتوح`;
     } else if (!t.unlockReady && state.level !== 'hard') {
       const left = Math.max(0, t.unlockNeed - solved);
       const nextLabel = state.level === 'easy' ? 'المتوسط' : 'الصعب';
-      hint.textContent = `مستوى ${label}: ${arabicNum(solved)}/${arabicNum(total)} — متبقي ${arabicNum(left)} لفتح ${nextLabel} — الجولة: ${arabicNum(round)}`;
+      hint.textContent = `${label}: حلّيت ${arabicNum(solved)} من ${arabicNum(total)} — متبقي ${arabicNum(remaining)} في المستوى · الجولة ${arabicNum(round)} · لفتح ${nextLabel} متبقي ${arabicNum(left)}`;
     } else {
-      hint.textContent = `مستوى ${label}: ${arabicNum(solved)}/${arabicNum(total)} — متبقي ${arabicNum(remaining)} — الجولة: ${arabicNum(round)} سؤال`;
+      hint.textContent = `${label}: حلّيت ${arabicNum(solved)} من ${arabicNum(total)} — متبقي ${arabicNum(remaining)} · اختر ${arabicNum(round)} سؤال لهذه الجولة`;
     }
+  }
+  if (note) {
+    note.textContent = done
+      ? '✅ كل أسئلة هذا المستوى محلولة — استخدم المراجعة إذا أردت إعادة التدريب'
+      : `📌 السؤال الذي تجيب عليه صح يُحفظ ولن يعود في الجولات التالية (إلا بالمراجعة)`;
   }
   updateStartButtonLabel();
   updateLevelLockUI();
 }
 
 function selectRoundSize(n) {
-  if (!ROUND_SIZE_OPTIONS.includes(n)) return;
+  const num = Math.max(1, Math.min(ROUND_SIZE_MAX, Number(n) || 20));
+  state.roundSize = num;
+  state.useManualRange = false;
+  state.stageReviewMode = false;
+  const custom = document.getElementById('round-custom-input');
+  if (custom && Number(custom.value) !== num) custom.value = String(num);
+  updateStagePickerUI();
+}
+
+function onRoundCustomInput() {
+  const el = document.getElementById('round-custom-input');
+  if (!el) return;
+  let n = parseInt(el.value, 10);
+  if (!Number.isFinite(n)) return;
+  const { solved, total, done } = getTierProgress(state.book, state.level);
+  const remaining = Math.max(0, total - solved);
+  const maxPick = Math.max(1, Math.min(ROUND_SIZE_MAX, done ? total : (remaining || total || ROUND_SIZE_MAX)));
+  n = Math.max(1, Math.min(maxPick, n));
+  el.value = String(n);
   state.roundSize = n;
   state.useManualRange = false;
   state.stageReviewMode = false;
+  document.querySelectorAll('.round-size-btn').forEach((b) => {
+    b.classList.toggle('sel', Number(b.dataset.round) === n);
+  });
+  updateStartButtonLabel();
+  const hint = document.getElementById('stage-hint');
+  if (hint && LEVEL_FLOW.includes(state.level)) {
+    const label = LEVEL_LABELS_AR[state.level] || state.level;
+    hint.textContent = `${label}: الجولة = ${arabicNum(n)} سؤال` + (done ? ' (مراجعة)' : ` — متبقي ${arabicNum(remaining)}`);
+  }
+}
+
+function startTierReview() {
+  const { solved, total } = getTierProgress(state.book, state.level);
+  if (!solved || !total) {
+    if (typeof showToast === 'function') showToast('لا يوجد محلول بعد للمراجعة', 'err');
+    else showAlert('لا يوجد محلول بعد للمراجعة');
+    return;
+  }
+  state.stageReviewMode = true;
+  state.useManualRange = false;
   updateStagePickerUI();
+  void startCountdown();
 }
 
 function selectStage(num, isDone) {
@@ -955,9 +1015,11 @@ function updateStartButtonLabel() {
     return;
   }
   const remaining = Math.max(0, total - solved);
-  const n = Math.min(state.roundSize || 20, done ? total : (remaining || total));
-  if (done || state.stageReviewMode) {
+  const n = Math.min(state.roundSize || 20, state.stageReviewMode || done ? total : (remaining || total));
+  if (state.stageReviewMode) {
     btn.textContent = `مراجعة ${arabicNum(n)} سؤال 🔁`;
+  } else if (done) {
+    btn.textContent = 'أنهيت المستوى — اختر مراجعة أو مستوى آخر';
   } else {
     btn.textContent = `ابدأ ${arabicNum(n)} سؤال 🎮`;
   }
@@ -986,9 +1048,16 @@ function updateLevelCounts() {
     if (!el) return;
     if (LEVEL_FLOW.includes(level)) {
       const { solved, total } = getTierProgress(state.book, level);
-      el.textContent = total ? `(${arabicNum(solved)}/${arabicNum(total)})` : '(٠)';
+      if (!total) {
+        el.textContent = '(٠)';
+        return;
+      }
+      const left = Math.max(0, total - solved);
+      el.textContent = left ? `(متبقي ${arabicNum(left)})` : '(مكتمل ✓)';
+      el.title = `حلّيت ${arabicNum(solved)} من ${arabicNum(total)} في هذا المستوى`;
     } else {
       el.textContent = c[level] ? `(${arabicNum(c[level])})` : '(٠)';
+      el.title = '';
     }
   };
   setProg('cnt-easy', 'easy');
@@ -5360,8 +5429,8 @@ function goHome() {
     show('login-screen');
     return;
   }
-  document.getElementById('welcome-user').textContent = '🎓 متعلم/ة · ' + state.userName;
-  document.getElementById('welcome-greeting').textContent = 'مرحباً يا ' + state.userName + '! 👋';
+  document.getElementById('welcome-user').textContent = '🎓 متعلم/ة';
+  document.getElementById('welcome-greeting').textContent = 'مرحباً يا ' + state.userName + '!';
   updateBookButtons();
   updateLevelCounts();
   updateBookProgress();
@@ -5639,13 +5708,15 @@ async function startCountdown() {
         }
       }
       if (!state.useManualRange && LEVEL_FLOW.includes(state.level)) {
-        const { done, total } = getTierProgress(state.book, state.level);
+        const { done, total, solved } = getTierProgress(state.book, state.level);
         if (done) {
-          showAlert('أنهيت هذا المستوى! يمكنك المراجعة أو الانتقال للمستوى التالي.');
+          showAlert('أنهيت أسئلة هذا المستوى! الأسئلة المحلولة لن تعود تلقائياً. اضغط «مراجعة ما حلّيته» إذا أردت التدريب عليها، أو انتقل لمستوى آخر.');
         } else if (!total) {
           showAlert('لا توجد أسئلة لهذا المستوى. جرّب/ي كتاباً آخر.');
+        } else if (solved > 0 && total - solved === 0) {
+          showAlert('لا توجد أسئلة متبقية. اضغط مراجعة أو غيّر المستوى.');
         } else {
-          showAlert('لا توجد أسئلة متبقية. جرّب/ي حجم جولة أصغر أو حدّث/ي البنك.');
+          showAlert('لا توجد أسئلة متبقية لهذه الجولة. صغّر العدد أو حدّث/ي البنك.');
         }
       } else {
         showAlert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر.');
