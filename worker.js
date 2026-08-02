@@ -401,10 +401,10 @@ async function handleTts(request, env) {
 
   const voice = typeof body?.voice === 'string' && body.voice.trim()
     ? body.voice.trim()
-    : (fishAudioConfigured(env)
-      ? (String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim() || DEFAULT_FISH_VOICE_ID)
-      : elevenLabsConfigured(env)
+    : (elevenLabsConfigured(env)
       ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
+      : fishAudioConfigured(env)
+      ? (String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim() || DEFAULT_FISH_VOICE_ID)
       : googleTtsConfigured(env)
       ? DEFAULT_GOOGLE_ARABIC_VOICE
       : azureSpeechConfigured(env)
@@ -412,15 +412,21 @@ async function handleTts(request, env) {
         : DEFAULT_ARABIC_VOICE);
 
   const bakedOnly = String(env?.BAKED_TTS_ONLY || '').trim() === '1';
-  const lookupVoice =
-    voice === BAKED_TTS_VOICE || voice.includes('Neural') ? BAKED_TTS_VOICE : voice;
+  // All baked MP3s are keyed under BAKED_TTS_VOICE (Yousef hash namespace), even
+  // when Fish fills gaps or serves live fallback.
+  const lookupVoice = BAKED_TTS_VOICE;
 
   try {
     const bakedPath = await bakedTtsAssetPath(text, lookupVoice);
     const assetRes = await env.ASSETS.fetch(new URL(bakedPath, request.url));
     // SPA not_found can return index.html with 200 — reject non-audio.
     const ctype = (assetRes.headers.get('content-type') || '').toLowerCase();
-    if (assetRes.ok && ctype.includes('audio')) {
+    const looksAudio =
+      ctype.includes('audio') ||
+      ctype.includes('mpeg') ||
+      ctype.includes('octet-stream') ||
+      (!ctype.includes('html') && !ctype.includes('json') && !ctype.includes('text/'));
+    if (assetRes.ok && looksAudio) {
       return new Response(assetRes.body, {
         status: 200,
         headers: {
