@@ -8,7 +8,10 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const irabSource = join(root, 'elevenlabs-irab-source.js');
 const sourceFile = existsSync(irabSource) ? irabSource : join(root, 'elevenlabs-tts.js');
 const lines = readFileSync(sourceFile, 'utf8').split('\n');
-let chunk = lines.slice(7, 170).join('\n');
+// Through end of applyWordLexicon (before normalizeForElevenLabs / exports).
+let end = lines.findIndex((l) => /^function normalizeForElevenLabs/.test(l));
+if (end < 0) end = 174;
+let chunk = lines.slice(7, end).join('\n');
 
 chunk = chunk
   .replace(/const ELEVENLABS_HARAKAT_RE/g, 'const HARAKAT_RE')

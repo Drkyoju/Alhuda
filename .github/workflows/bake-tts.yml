@@ -40,7 +40,7 @@ jobs:
       - name: Coverage check
         run: npm run check:baked-tts
         env:
-          ALLOW_BAKED_TTS_MISS: "1"
+          ALLOW_BAKED_TTS_MISS: "0"
 
       - name: Commit baked audio if changed
         run: |

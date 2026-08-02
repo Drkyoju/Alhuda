@@ -100,6 +100,8 @@ function applyPhraseRules(text) {
 
 function allahFormForContext(before) {
   const bare = stripHarakat(before || '').replace(/\s+/g, ' ');
+  // شهادة: لا إله إلا الله — الله مرفوع (لا تُعامل كـ «إلا الله» المنصوب)
+  if (/(?:إله|اله)\s+(?:إلا|الا)\s*$/u.test(bare)) return ALLAH_NOM;
   if (ALLAH_GEN_BEFORE_RE.test(bare)) return ALLAH_GEN;
   if (ALLAH_ACC_BEFORE_RE.test(bare)) return ALLAH_ACC;
   return ALLAH_NOM;
@@ -110,10 +112,15 @@ function normalizeAllahTokens(text) {
   let s = String(text || '');
   s = s.replace(/\uFDF2/g, ALLAH_NOM);
   s = s.replace(new RegExp(`ل${H}ا${H}\\s+إ${H}ل${H}ه${H}\\s+إ${H}ل${H}[اأإآٱ]?${H}\\s+[اأإآٱ]${H}ل${H}ل${H}ه`, 'g'), LA_ILAHA_ILLA_ALLAH);
-  s = s.replace(new RegExp(`إ${H}ل${H}[اأإآٱ]?${H}\\s+[اأإآٱ]${H}ل${H}ل${H}ه`, 'g'), ILLA_ALLAH);
+  // لا تُفسِد «لا إله إلا اللَّهُ» بتحويلها إلى «إلا اللَّهَ»
+  s = s.replace(new RegExp(`إ${H}ل${H}[اأإآٱ]?${H}\\s+[اأإآٱ]${H}ل${H}ل${H}ه`, 'g'), (match, offset, full) => {
+    const before = stripHarakat(full.slice(Math.max(0, offset - 16), offset)).trimEnd();
+    if (/(?:إله|اله)$/u.test(before)) return match;
+    return ILLA_ALLAH;
+  });
   s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);
 
-  s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
+  s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'), (_, p) => {
     if (p === 'ب') return BILLAH;
     if (p === 'و') return WALLAH;
     if (p === 'ف') return FALLAH;
@@ -181,9 +188,6 @@ function applyWordLexicon(text) {
   });
 }
 
-function normalizeForElevenLabs(text) {
-  return applyWordLexicon(normalizeAllahForElevenLabs(applyPhraseRules(stripTtsPunctuation(text))));
-}
 /** Fix الله-family i'rab in any Arabic TTS string. */
 function fixAllahIrabInText(text) {
   return applyWordLexicon(normalizeAllahTokens(applyPhraseRules(String(text || ''))));
