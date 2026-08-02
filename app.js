@@ -2824,14 +2824,37 @@ function buildFeedbackSpeechPlan(q, wrongText) {
   const quoteIsAyah = typeof citationLooksLikeAyah === 'function'
     ? citationLooksLikeAyah(citeBody, verseKey)
     : false;
-  if (isHadithPassage(citeBody)) {
+  // Hadith / book prose → TTS. Quran ayah only → Hudhaify (never TTS the ayah wording).
+  if (isHadithPassage(citeBody) || (citeBody && !quoteIsAyah && !fieldHasEmbeddedAyah(citeBody))) {
     plan.push({ type: 'tts', text: diacritizeFieldText(q, citeBody) });
-  } else if (verseKey && (quoteIsAyah || !citeBody)) {
+  } else if (verseKey && quoteIsAyah) {
     plan.push({ type: 'quran', verseKey });
   } else if (citeBody) {
+    // Mixed or unresolved — TTS the prose (ayah markers stripped in prepareTtsPayload path).
     plan.push({ type: 'tts', text: diacritizeFieldText(q, citeBody) });
+  } else if (verseKey) {
+    plan.push({ type: 'quran', verseKey });
   }
   return plan;
+}
+
+/** After answering: read correct answer + hadith (TTS) or ayah (Hudhaify only). */
+function maybeSpeakFeedbackAfterAnswer(q, wrongText) {
+  if (!voiceOn || !q || state.gameEnding || state.gameEnded) return;
+  const btn = document.getElementById('btn-speak-question');
+  void speakFeedbackOnce(q, wrongText || '', btn);
+}
+
+/** True when this question should play Hudhaify (ayah), not when the citation is a hadith. */
+function shouldReciteHudhaifyForQuestion(q, questionText = '') {
+  if (!q) return false;
+  const verseKey = getPrimaryVerseKeyForQuestion(q);
+  if (!verseKey) return false;
+  const cite = (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '') || String(q?.quote || '');
+  if (isHadithPassage(cite) || isHadithPassage(q?.q)) return false;
+  if (typeof citationLooksLikeAyah === 'function' && citationLooksLikeAyah(cite, verseKey)) return true;
+  const blob = `${questionText || ''} ${cite}`;
+  return /قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿/.test(blob) || fieldHasEmbeddedAyah(blob);
 }
 
 async function speakFeedbackOnce(q, wrongText, btn) {
@@ -2847,8 +2870,8 @@ async function speakFeedbackOnce(q, wrongText, btn) {
       if (seg.type === 'quran' && seg.verseKey) {
         await playQuranRecitation(seg.verseKey, btn, { interruptAll: false });
       } else if (seg.type === 'tts' && seg.text?.trim()) {
-        const clean = stripForSpeech(seg.text);
-        if (clean) await speakTtsSegment(clean, btn);
+        const clean = prepareTtsPayload(seg.text) || stripForSpeech(seg.text);
+        if (clean) await speakTtsSegment(clean, btn, { alreadyPrepared: true });
       }
     }
   } catch (e) {
@@ -2863,11 +2886,20 @@ async function speakFeedbackOnce(q, wrongText, btn) {
 }
 
 function onFeedbackSpeakerClick() {
-  // Feedback speak button removed — keep stub for any leftover onclick refs.
+  replayFeedbackSpeech();
 }
 
-function updateFeedbackSpeakBtn(_show) {
-  // no-op: feedback panel no longer has a speak button
+function replayFeedbackSpeech() {
+  const q = state.questions?.[state.idx];
+  if (!q) return;
+  const btn = document.getElementById('btn-fb-speak') || document.getElementById('btn-speak-question');
+  void speakFeedbackOnce(q, state.lastFeedbackWrong || '', btn);
+}
+
+function updateFeedbackSpeakBtn(show) {
+  const btn = document.getElementById('btn-fb-speak');
+  if (!btn) return;
+  btn.style.display = show === false ? 'none' : '';
 }
 
 /* ── Quran recitation (الحذيفي فقط — عبر بروكسي Cloudflare + prefetch) ── */
@@ -3927,13 +3959,17 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 2) Ayah — الحذيفي فقط (never TTS the ayah text).
-        // Timeboxed so a slow Quran fetch never blocks answers.
-        if (verseKey && !recited.has(verseKey)) {
-          recited.add(verseKey);
+        // 2) Ayah — الحذيفي فقط (never TTS ayah text; never Hudhaify a hadith).
+        const verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
+        if (
+          verseKeyForRecite
+          && !recited.has(verseKeyForRecite)
+          && shouldReciteHudhaifyForQuestion(q, questionText)
+        ) {
+          recited.add(verseKeyForRecite);
           try {
             await Promise.race([
-              playQuranRecitation(verseKey, btn, { interruptAll: false }),
+              playQuranRecitation(verseKeyForRecite, btn, { interruptAll: false }),
               new Promise((_, rej) => setTimeout(() => rej(new Error('quran timeout')), 5000)),
             ]);
           } catch (e) {
@@ -3942,8 +3978,8 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 3) Answers — every option via baked TTS (ayah phrases in options stay TTS;
-        //    full mapped verses in the question/citation use Hudhaify above).
+        // 3) Answers — every option via baked TTS.
+        //    Hadith wording in options/questions stays TTS; mapped Quran ayahs use Hudhaify above.
         if (voiceReadAnswers && opts.length) {
           for (const opt of opts) {
             if (token !== hybridSpeechToken || state.idx !== askIdx) return;
@@ -6002,6 +6038,7 @@ function pick(btn, isOk) {
     updateFeedbackSpeakBtn(true);
     updateInRoundReviewBtn(false);
     updatePrevQBtn();
+    maybeSpeakFeedbackAfterAnswer(q, '');
   } else {
     btn.classList.add('wrong');
     btn.setAttribute('aria-pressed', 'true');
@@ -6050,6 +6087,7 @@ function pick(btn, isOk) {
     updateFeedbackSpeakBtn(true);
     updateInRoundReviewBtn(true);
     updatePrevQBtn();
+    maybeSpeakFeedbackAfterAnswer(q, picked);
   }
   persistGameSession();
 }
