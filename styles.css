@@ -46,7 +46,7 @@
       --radius-lg: 22px;
       --radius-md: 16px;
       --radius-sm: 12px;
-      --app-header-h: calc(72px + env(safe-area-inset-top, 0px));
+      --app-header-h: calc(88px + env(safe-area-inset-top, 0px));
     }
 
     body.login-mode { --app-header-h: 0px; }
@@ -302,12 +302,12 @@
       }
     }
     .site-logo {
-      max-width: 118px;
-      max-height: 118px;
+      max-width: 70px;
+      max-height: 70px;
       height: auto;
       border-radius: 12px;
       background: var(--white);
-      padding: 5px;
+      padding: 4px;
       box-shadow: var(--shadow-sm);
       border: 1px solid var(--border);
       object-fit: contain;
@@ -464,7 +464,7 @@
       padding: 14px 16px;
       border: 2px solid var(--border);
       border-radius: 14px;
-      font-size: 1em;
+      font-size: max(16px, 1em);
       font-family: 'Tajawal', sans-serif;
       direction: rtl;
       margin-bottom: 12px;
@@ -757,7 +757,7 @@
     /* ── Welcome screen ── */
     #welcome {
       justify-content: flex-start;
-      padding: calc(var(--app-header-h) + 12px) 16px max(56px, env(safe-area-inset-bottom));
+      padding: calc(var(--app-header-h) + 16px) 16px max(56px, env(safe-area-inset-bottom));
       width: 100%;
       max-width: 720px;
       margin: 0 auto;
@@ -1540,7 +1540,7 @@
       text-align: center;
       font-family: 'Tajawal', sans-serif;
       font-weight: 800;
-      font-size: 1em;
+      font-size: max(16px, 1em);
       min-height: 44px;
       background: var(--ivory);
     }
@@ -2151,18 +2151,18 @@
       gap: 3px;
     }
     #game .q-controls-cluster .quran-recite-btn {
-      font-size: 0.65em;
-      padding: 2px 7px;
-      min-height: 26px;
+      font-size: 0.78em;
+      padding: 8px 10px;
+      min-height: 40px;
       box-shadow: 0 1px 0 #c9a84c;
     }
     #game .q-controls-cluster .voice-btn,
     #game .q-controls-cluster #btn-speak-question {
-      width: 30px !important;
-      height: 30px !important;
-      min-height: 30px !important;
-      min-width: 30px !important;
-      font-size: 0.85em !important;
+      width: 44px !important;
+      height: 44px !important;
+      min-height: 44px !important;
+      min-width: 44px !important;
+      font-size: 1em !important;
       box-shadow: 0 2px 0 var(--emerald-dark);
       position: static !important;
     }
@@ -2546,8 +2546,8 @@
       border-radius: 12px;
       border: 1px solid var(--border-gold);
       box-shadow: var(--shadow-sm);
-      max-width: 118px;
-      max-height: 118px;
+      max-width: 70px;
+      max-height: 70px;
       object-fit: contain;
     }
     .topbar-btn {
@@ -2925,9 +2925,9 @@
       background: transparent;
       border-bottom: none;
       box-shadow: none;
-      padding-top: max(4px, env(safe-area-inset-top));
-      padding-bottom: 0;
-      padding-inline: 8px;
+      padding-top: max(8px, env(safe-area-inset-top, 0px));
+      padding-bottom: 8px;
+      padding-inline: 12px;
       gap: 8px;
       top: 0;
       width: 100%;
@@ -2940,22 +2940,24 @@
       border: 1px solid rgba(255,255,255,0.25);
       color: white;
       border-radius: 12px;
-      width: 34px;
-      height: 34px;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
       flex-shrink: 0;
       order: 0;
       box-shadow: 0 4px 12px rgba(15, 36, 25, 0.22);
-      margin-top: 2px;
+      margin-top: 0;
     }
     .top-bar-cluster {
       order: 1;
       flex: 0 1 auto;
       width: fit-content;
-      max-width: min(72vw, 420px);
+      max-width: min(78vw, 420px);
       background: var(--grad-emerald);
       border-radius: 0 0 14px 14px;
-      padding: 5px 10px 6px;
-      gap: 6px;
+      padding: 8px 12px;
+      gap: 8px;
       box-shadow: 0 8px 20px rgba(15, 36, 25, 0.22);
     }
     .top-bar .score-badge {
@@ -2984,8 +2986,8 @@
       flex-shrink: 1;
       min-width: 0;
       max-width: 100%;
-      min-height: 34px;
-      padding: 5px 8px;
+      min-height: 44px;
+      padding: 8px 10px;
       border-radius: 10px;
       border: 1px solid rgba(255,255,255,0.4);
       background: rgba(255,255,255,0.2);
@@ -3393,11 +3395,11 @@
     #game .q-area {
       max-width: 640px;
       margin: 0 auto;
-      padding: 2px 10px 16px;
+      padding: 8px 14px 20px;
       transition: padding-bottom 0.25s ease;
     }
     #game.feedback-open .q-area {
-      padding-bottom: max(52dvh, 120px);
+      padding-bottom: max(48dvh, 160px);
     }
     #game .q-meta .badge {
       border-radius: 999px;
@@ -3434,8 +3436,8 @@
       padding: 0;
       margin-bottom: 0;
       font-family: 'Tajawal', sans-serif;
-      font-size: 0.92rem;
-      line-height: 1.5;
+      font-size: 1rem;
+      line-height: 1.65;
       font-weight: 800;
       white-space: normal;
       word-break: normal;
@@ -3443,24 +3445,24 @@
       display: inline;
     }
     #game .q-with-timer {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       align-items: flex-start;
     }
     #game .ans-grid {
-      gap: 7px;
+      gap: 10px;
     }
     #game .ans-btn {
-      min-height: 46px;
-      padding: 9px 11px;
+      min-height: 48px;
+      padding: 12px 14px;
     }
     #game .feedback {
       max-width: 640px;
-      max-height: min(50dvh, 50vh);
-      height: min(50dvh, 50vh);
+      max-height: min(55dvh, 520px);
+      height: min(52dvh, 50vh);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      padding: 2px 14px max(10px, env(safe-area-inset-bottom));
+      padding: 8px 14px max(14px, env(safe-area-inset-bottom, 0px));
       background: rgba(255, 255, 255, 0.97);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -3520,12 +3522,12 @@
       max-width: none !important;
       flex: 0 0 auto;
       margin: 0 !important;
-      padding: 6px 12px !important;
-      font-size: 0.78em !important;
+      padding: 10px 14px !important;
+      font-size: 0.88em !important;
       font-weight: 800 !important;
-      min-height: 34px !important;
+      min-height: 44px !important;
       height: auto !important;
-      border-radius: 10px !important;
+      border-radius: 12px !important;
       line-height: 1.2 !important;
     }
     #game .q-prev-link {
@@ -3533,12 +3535,12 @@
       background: rgba(232, 241, 236, 0.9);
       color: var(--emerald-dark);
       font-family: var(--font-display);
-      font-size: 0.72em;
+      font-size: 0.82em;
       font-weight: 800;
-      padding: 4px 10px;
+      padding: 8px 12px;
       border-radius: 999px;
       cursor: pointer;
-      min-height: 28px;
+      min-height: 44px;
       line-height: 1.2;
     }
     #game .q-prev-link:active {
@@ -3883,14 +3885,14 @@
       .stage-chip { min-width: 74px; padding: 11px 10px; }
       .play-zone { padding: 18px 14px 18px; }
       .nav-dock { padding: 8px 6px; }
-      .nav-dock .icon-action-circle { width: 42px; height: 42px; }
-      .q-with-timer { gap: 5px; align-items: flex-start; }
-      .top-bar { gap: 5px; padding-left: 8px; padding-right: 8px; }
-      .score-badge { font-size: 0.68em; padding: 2px 7px; border-radius: 10px; }
-      #game .q-area { padding: 4px 10px 16px; }
-      #game.feedback-open .q-area { padding: 4px 10px max(50dvh, 100px); }
+      .nav-dock .icon-action-circle { width: 44px; height: 44px; }
+      .q-with-timer { gap: 8px; align-items: flex-start; }
+      .top-bar { gap: 8px; padding-left: 10px; padding-right: 10px; }
+      .score-badge { font-size: 0.78em; padding: 4px 8px; border-radius: 10px; }
+      #game .q-area { padding: 8px 12px 20px; }
+      #game.feedback-open .q-area { padding: 8px 12px max(48dvh, 160px); }
       #game .feedback #fb-title {
-        font-size: 0.95em !important;
+        font-size: 1rem !important;
       }
       #game .feedback .why-correct-box {
         font-size: 0.9em !important;
@@ -4161,8 +4163,8 @@
 
     /* ── وضوح القراءة على الجوال / آيفون ── */
     #game .q-box {
-      font-size: 0.9rem !important;
-      line-height: 1.5 !important;
+      font-size: 1rem !important;
+      line-height: 1.65 !important;
       font-weight: 800;
       font-family: 'Tajawal', sans-serif !important;
       word-break: normal;
@@ -4177,17 +4179,17 @@
       display: inline;
     }
     #game .ans-btn {
-      font-size: clamp(0.8rem, calc(var(--base-font-size, 18px) * 0.82), 0.94rem) !important;
-      line-height: 1.45;
+      font-size: clamp(0.88rem, calc(var(--base-font-size, 18px) * 0.88), 1rem) !important;
+      line-height: 1.5;
       word-break: normal;
       overflow-wrap: break-word;
       white-space: normal;
       overflow: visible;
       height: auto;
       text-align: center;
-      min-height: 42px;
-      padding: 8px 12px !important;
-      border-radius: 11px;
+      min-height: 48px;
+      padding: 12px 14px !important;
+      border-radius: 12px;
     }
     #game .ans-row {
       display: flex;
@@ -4223,8 +4225,8 @@
         min-width: 0;
         padding: 0 !important;
         padding-inline-end: 0 !important;
-        font-size: 0.9rem !important;
-        line-height: 1.5 !important;
+        font-size: 1rem !important;
+        line-height: 1.65 !important;
         word-break: normal;
         overflow-wrap: break-word;
         white-space: normal;
@@ -4232,12 +4234,12 @@
       }
       #game .q-ayah-inline,
       #game .q-ayah-inline.q-ayah-text {
-        font-size: 0.92rem !important;
-        line-height: 1.55 !important;
+        font-size: 0.98rem !important;
+        line-height: 1.6 !important;
       }
       #game .q-controls-cluster {
         flex-direction: column;
-        gap: 3px;
+        gap: 6px;
         align-items: center;
       }
       #game .q-box-row .voice-btn,
@@ -4246,47 +4248,47 @@
         position: static !important;
         top: auto;
         inset-inline-end: auto;
-        width: 28px !important;
-        height: 28px !important;
-        min-height: 28px !important;
-        min-width: 28px !important;
-        font-size: 0.8em !important;
+        width: 44px !important;
+        height: 44px !important;
+        min-height: 44px !important;
+        min-width: 44px !important;
+        font-size: 1em !important;
         box-shadow: 0 1px 0 var(--emerald-dark);
         z-index: 2;
       }
       #game .q-controls-cluster .quran-recite-btn {
-        font-size: 0.62em !important;
-        padding: 2px 6px !important;
-        min-height: 24px !important;
+        font-size: 0.75em !important;
+        padding: 8px 10px !important;
+        min-height: 40px !important;
       }
     }
     @media (max-width: 480px) {
       #game .ans-btn {
-        font-size: clamp(13px, calc(var(--base-font-size, 18px) * 0.8), 15px) !important;
-        padding: 7px 10px !important;
-        min-height: 38px;
-        border-radius: 9px;
+        font-size: clamp(15px, calc(var(--base-font-size, 18px) * 0.88), 17px) !important;
+        padding: 12px 14px !important;
+        min-height: 48px;
+        border-radius: 12px;
         border-width: 2px;
       }
       #game .ans-grid {
         grid-template-columns: 1fr !important;
-        gap: 6px;
+        gap: 10px;
       }
       #game .q-meta {
-        gap: 5px;
-        line-height: 1.3;
-        margin-bottom: 5px;
+        gap: 6px;
+        line-height: 1.35;
+        margin-bottom: 8px;
       }
       #game .q-num,
       #game .q-meta .badge {
-        font-size: clamp(11px, calc(var(--base-font-size, 18px) * 0.7), 12px) !important;
+        font-size: clamp(13px, calc(var(--base-font-size, 18px) * 0.78), 14px) !important;
       }
       #game .feedback {
-        padding: 6px 8px max(6px, env(safe-area-inset-bottom));
-        max-height: min(50dvh, 50vh);
+        padding: 10px 12px max(16px, env(safe-area-inset-bottom, 0px));
+        max-height: min(55dvh, 520px);
       }
       #game .feedback #fb-title {
-        font-size: clamp(11px, calc(var(--base-font-size, 18px) * 0.72), 13px) !important;
+        font-size: 1rem !important;
       }
       #game .feedback .fb-icon-wrap {
         font-size: 0.95em;
@@ -4294,10 +4296,10 @@
         height: 1.1em;
       }
       #game .feedback .fb-speak-btn {
-        min-width: 0 !important;
-        min-height: 28px !important;
-        padding: 4px 8px !important;
-        font-size: 0.7em !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        padding: 8px 10px !important;
+        font-size: 0.85em !important;
       }
       #game .feedback .why-correct-box {
         font-size: 0.9em !important;
@@ -4359,12 +4361,12 @@
       }
       #game .feedback .quran-recite-btn,
       #game .quran-recite-slot .quran-recite-btn {
-        font-size: 10px !important;
-        padding: 2px 7px !important;
-        min-height: 24px !important;
-        border-radius: 6px;
+        font-size: 12px !important;
+        padding: 8px 10px !important;
+        min-height: 40px !important;
+        border-radius: 8px;
         box-shadow: 0 1px 0 #c9a84c;
-        gap: 2px;
+        gap: 4px;
       }
       #game .quran-recite-slot {
         margin: 0;
@@ -4373,15 +4375,15 @@
       }
       #game .q-ayah-inline.q-ayah-text,
       #game .q-text-flow .q-ayah-text {
-        font-size: 0.9rem !important;
-        line-height: 1.5 !important;
+        font-size: 0.98rem !important;
+        line-height: 1.6 !important;
       }
       #game .q-ayah-block--compact .q-ayah-text {
-        font-size: 0.7rem !important;
-        line-height: 1.45 !important;
+        font-size: 0.92rem !important;
+        line-height: 1.55 !important;
       }
       #game.feedback-open .q-area {
-        padding-bottom: max(46dvh, 90px);
+        padding-bottom: max(48dvh, 160px);
       }
       .demo-intro-card,
       .login-hero .card {
@@ -4395,8 +4397,8 @@
       }
       .q-timer-hourglass .q-timer-svg { width: 32px; height: 40px; }
       .q-timer-hourglass .q-timer-num { font-size: 0.85em; }
-      #game .q-area { padding: 4px 8px 16px; }
-      #game.feedback-open .q-area { padding: 4px 8px max(48dvh, 90px); }
+      #game .q-area { padding: 8px 12px 20px; }
+      #game.feedback-open .q-area { padding: 8px 12px max(48dvh, 160px); }
     }
     @media (orientation: landscape) and (max-height: 500px) {
       #game .top-bar {
@@ -4429,10 +4431,10 @@
         line-height: 1.55;
       }
       #game .ans-btn {
-        min-height: 40px;
-        padding: 6px 10px;
+        min-height: 44px;
+        padding: 10px 12px;
       }
-      #game .ans-grid { gap: 6px; }
+      #game .ans-grid { gap: 8px; }
     }
     @media (max-width: 360px) {
       .q-with-timer {
@@ -5055,9 +5057,9 @@
       #game .feedback #btn-review-in-round,
       #game .feedback #btn-prev-q {
         white-space: nowrap !important;
-        font-size: 0.72em !important;
-        padding: 6px 10px !important;
-        min-height: 32px !important;
+        font-size: 0.85em !important;
+        padding: 10px 12px !important;
+        min-height: 44px !important;
       }
 
       /* إعدادات الخط — أزرار على سطر مرتب */

@@ -113,7 +113,7 @@
 body.has-bottom-nav .mobile-bottom-nav { display: flex; }
 body.has-bottom-nav #welcome .welcome-inner,
 body.has-bottom-nav .page-shell {
-  padding-bottom: calc(var(--nav-h) + 20px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(var(--nav-h) + 28px + env(safe-area-inset-bottom, 0px));
 }
 .mobile-bottom-nav button {
   flex: 1;

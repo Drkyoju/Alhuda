@@ -1278,7 +1278,7 @@ function applyFeedbackSheetHeight(px) {
   // Keep question area clear of the sheet
   const qArea = document.querySelector('#game .q-area');
   if (qArea && document.getElementById('game')?.classList.contains('feedback-open')) {
-    qArea.style.paddingBottom = Math.max(h + 16, 80) + 'px';
+    qArea.style.paddingBottom = Math.max(h + 24, 100) + 'px';
   }
 }
 
