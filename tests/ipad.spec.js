@@ -11,6 +11,10 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('voiceOn', 'false');
     localStorage.setItem('soundOn', 'false');
+    localStorage.setItem('demoDone', '1');
+    localStorage.setItem('alhudaTutorialV2', '1');
+    localStorage.setItem('gameTutorialDone', '1');
+    localStorage.setItem('onboardingDone', '1');
   });
 });
 
@@ -25,12 +29,14 @@ async function dismissOverlays(page) {
   await expect(tutorial).toBeHidden({ timeout: 3000 });
 }
 
-test('iPad demo: two-column answers and readable voice layout', async ({ page }) => {
+test('iPad play: two-column answers and readable voice layout', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
 
-  await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
-  await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
+  await page.locator('#login-name').fill('iPad User');
+  await page.locator('#btn-login').click();
+  await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
+  await page.locator('#btn-start-game').click();
   await dismissOverlays(page);
 
   const qBox = page.locator('#game .q-box');

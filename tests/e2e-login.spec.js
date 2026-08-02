@@ -6,34 +6,29 @@ test.beforeEach(async ({ page }) => {
     localStorage.setItem('soundOn', 'false');
     localStorage.setItem('gameTutorialDone', '1');
     localStorage.setItem('onboardingDone', '1');
+    localStorage.setItem('demoDone', '1');
   });
 });
 
-test('full login unlocked: name entry visible, demo still playable', async ({ page }) => {
+test('name login enters welcome without demo', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 45000 });
 
-  await expect(page.locator('#login-demo-only-notice')).toBeHidden();
   await expect(page.locator('#login-name')).toBeEnabled();
   await expect(page.locator('#btn-login')).toBeEnabled();
+  await expect(page.getByRole('button', { name: /نموذج أسئلة تجريبي/ })).toHaveCount(0);
 
-  await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
-  await expect(page.locator('#demo-intro')).toHaveClass(/active/);
-  await expect(page.locator('#demo-pick-count-tawheed')).toContainText('٨');
+  await page.locator('#login-name').fill('Ahmed Test');
+  await page.locator('#btn-login').click();
 
-  await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
-  await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 25000 });
-  await expect(page.locator('#demo-bar')).toContainText('٨');
-  await expect(page.locator('.ans-btn').first()).toBeVisible();
+  await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
+  await expect(page.locator('#btn-start-game')).toBeVisible();
 });
 
-test('feedback screen offers real-game CTA', async ({ page }) => {
+test('arabic name login also reaches welcome', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 45000 });
-  await page.evaluate(() => {
-    if (typeof endDemo === 'function') endDemo();
-    else document.getElementById('feedback-screen')?.classList.add('active');
-  });
-  await expect(page.locator('#real-game-locked-cta')).toBeVisible();
-  await expect(page.locator('#real-game-cta-btn')).toBeEnabled();
+  await page.locator('#login-name').fill('أحمد');
+  await page.locator('#btn-login').click();
+  await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
 });

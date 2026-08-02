@@ -17,11 +17,16 @@ test.describe('accessibility', () => {
     await runAxe(page);
   });
 
-  test('demo-intro has no serious axe violations', async ({ page }) => {
+  test('welcome has no serious axe violations after login', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem('onboardingDone', '1');
+      localStorage.setItem('demoDone', '1');
+    });
     await page.goto('/');
     await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
-    await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
-    await expect(page.locator('#demo-intro')).toHaveClass(/active/);
+    await page.locator('#login-name').fill('A11y User');
+    await page.locator('#btn-login').click();
+    await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
     await runAxe(page);
   });
 
@@ -30,12 +35,15 @@ test.describe('accessibility', () => {
       localStorage.setItem('alhudaTutorialV2', '1');
       localStorage.setItem('gameTutorialDone', '1');
       localStorage.setItem('onboardingDone', '1');
+      localStorage.setItem('demoDone', '1');
       localStorage.setItem('voiceOn', 'false');
     });
     await page.goto('/');
     await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
-    await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
-    await page.locator('.demo-book-pick').first().click();
+    await page.locator('#login-name').fill('A11y Gamer');
+    await page.locator('#btn-login').click();
+    await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
+    await page.locator('#btn-start-game').click();
     await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
     await runAxe(page);
   });
@@ -57,12 +65,15 @@ test.describe('accessibility', () => {
       localStorage.setItem('alhudaTutorialV2', '1');
       localStorage.setItem('gameTutorialDone', '1');
       localStorage.setItem('onboardingDone', '1');
+      localStorage.setItem('demoDone', '1');
       localStorage.setItem('voiceOn', 'false');
     });
     await page.goto('/');
     await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
-    await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
-    await page.locator('.demo-book-pick').first().click();
+    await page.locator('#login-name').fill('Confirm User');
+    await page.locator('#btn-login').click();
+    await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
+    await page.locator('#btn-start-game').click();
     await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
     await page.locator('#game .close-btn').first().click();
     const confirm = page.locator('#confirm-overlay');

@@ -1419,6 +1419,10 @@ function scheduleEndGame(delay = 1800) {
 }
 
 async function saveGameScore(gamePoints, qFrom) {
+  if (!state.user?.id || String(state.user.id).startsWith('local-')) {
+    document.body.dataset.scoreSave = 'local';
+    return;
+  }
   const row = {
     user_id: state.user.id,
     book: state.book,
@@ -5104,7 +5108,7 @@ function updateLoginQuestionHint() {
   if (allLoaded) {
     hint.textContent = '📚 ' + arabicNum(total) + ' سؤال في انتظارك!';
   } else {
-    hint.textContent = '📚 جاري تحميل البنك الكامل… (حالياً ' + arabicNum(total) + ' — تجريبي)';
+    hint.textContent = '📚 جاري تجهيز الأسئلة… (حالياً ' + arabicNum(total) + ')';
   }
 }
 
@@ -5189,6 +5193,25 @@ function loadRemainingBooksInBackground() {
 }
 
 function seedQuestionsFromBundle() {
+  // Prefer static full bank (works offline / without Supabase).
+  const bank = (typeof window !== 'undefined' && window.QUESTIONS_BANK) || null;
+  if (bank) {
+    let seeded = false;
+    for (const book of QUESTION_BOOKS) {
+      const rows = bank[book];
+      if (rows?.length) {
+        ingestBookQuestions(book, rows);
+        bookLoadState[book] = true;
+        delete bookLoadPromises[book];
+        seeded = true;
+      }
+    }
+    if (seeded) {
+      updateLoginQuestionHint();
+      updateLevelCounts();
+      return true;
+    }
+  }
   const bundle = (typeof window !== 'undefined' && window.DEMO_QUESTIONS_BUNDLE) || null;
   if (!bundle) return false;
   let seeded = false;
@@ -5207,21 +5230,28 @@ function seedQuestionsFromBundle() {
 
 async function refreshFullQuestionBank({ quiet = false } = {}) {
   if (LOGIN_LOCKED) return false;
-  if (navigator.onLine === false || !getDb()) return false;
-  if (!quiet && typeof showToast === 'function') showToast('جاري تحميل الأسئلة الكاملة…', 'ok');
+  // Static bank already loaded — treat as complete; still try cloud refresh if available.
+  const staticReady = QUESTION_BOOKS.every((b) => bookLoadState[b] && (QUESTIONS[b]?.length || 0) > 30);
+  if (navigator.onLine === false || !getDb()) return staticReady;
+  if (!quiet && typeof showToast === 'function' && !staticReady) showToast('جاري تحميل الأسئلة الكاملة…', 'ok');
   try {
     if (window.AlhudaPlatform?.loadQuestionsCached) {
       const data = await AlhudaPlatform.loadQuestionsCached(true);
       const fmt = { tawheed: [], usool: [], nawawi: [] };
       (data || []).forEach((q) => { if (fmt[q.book]) fmt[q.book].push(q); });
+      let got = false;
       for (const book of QUESTION_BOOKS) {
-        if (fmt[book]?.length) {
+        if (fmt[book]?.length > 30) {
           ingestBookQuestions(book, fmt[book]);
           bookLoadState[book] = true;
           delete bookLoadPromises[book];
+          got = true;
         }
       }
-    } else {
+      if (!got && !staticReady) {
+        seedQuestionsFromBundle();
+      }
+    } else if (!staticReady) {
       for (const b of QUESTION_BOOKS) bookLoadState[b] = false;
       await ensureBooksLoaded(QUESTION_BOOKS);
     }
@@ -5230,14 +5260,15 @@ async function refreshFullQuestionBank({ quiet = false } = {}) {
     updateBookButtons();
     updateBookProgress?.();
     const total = QUESTION_BOOKS.reduce((n, b) => n + (QUESTIONS[b]?.length || 0), 0);
-    if (!quiet && typeof showToast === 'function') {
+    if (!quiet && typeof showToast === 'function' && !staticReady) {
       showToast(`تم تحميل ${arabicNum(total)} سؤال ✓`, 'ok');
     }
     return QUESTION_BOOKS.every((b) => bookLoadState[b]);
   } catch (e) {
     console.warn('refreshFullQuestionBank', e);
-    if (!quiet && typeof showToast === 'function') showToast('تعذّر تحميل البنك الكامل', 'err');
-    return false;
+    if (!staticReady) seedQuestionsFromBundle();
+    if (!quiet && typeof showToast === 'function' && !staticReady) showToast('تعذّر تحميل البنك الكامل', 'err');
+    return QUESTION_BOOKS.every((b) => bookLoadState[b]);
   }
 }
 
@@ -5533,7 +5564,7 @@ function logout() {
 
 async function doLogin() {
   if (LOGIN_LOCKED) {
-    document.getElementById('login-err').textContent = '🔒 الدخول مغلق مؤقتاً — جرّب/ي النموذج التجريبي';
+    document.getElementById('login-err').textContent = '🔒 الدخول مغلق مؤقتاً';
     return;
   }
   if (loginInProgress) return;
@@ -5543,53 +5574,62 @@ async function doLogin() {
   loginInProgress = true;
   if (btn) { btn.disabled = true; btn.textContent = 'جاري الدخول...'; }
   try {
-    const name = document.getElementById('login-name').value.trim();
+    const rawName = document.getElementById('login-name').value.trim();
+    const name = (typeof normalizeStudentName === 'function' ? normalizeStudentName(rawName) : rawName);
     if (!name) { setFormError(document.getElementById('login-err'), 'اكتب/ي اسمك من فضلك'); return; }
     if (name.length < 2) { setFormError(document.getElementById('login-err'), 'الاسم قصير جداً (حرفان على الأقل)'); return; }
     if (name.length > 40) { setFormError(document.getElementById('login-err'), 'الاسم طويل جداً (٤٠ حرفاً كحد أقصى)'); return; }
 
-    const { data: { session: existingSession } } = await db.auth.getSession();
-    if (existingSession?.user) {
-      const { data: profile } = await db.from('profiles').select('name,role').eq('id', existingSession.user.id).maybeSingle();
-      if (profile?.name && profile.name !== name) {
-        await db.auth.signOut();
+    try {
+      const { data: { session: existingSession } } = await db.auth.getSession();
+      if (existingSession?.user) {
+        const { data: profile } = await db.from('profiles').select('name,role').eq('id', existingSession.user.id).maybeSingle();
+        if (profile?.name && profile.name !== name) {
+          await db.auth.signOut();
+        }
       }
+    } catch {
+      /* cloud optional */
     }
 
     const { data, error } = await studentSignIn(name);
-    if (error) {
-      setFormError(document.getElementById('login-err'), error.message || 'تعذّر الدخول');
-      if (typeof showToast === 'function') showToast('تعذّر الدخول — تحقق/ي من الاسم والإنترنت', 'err');
+    if (error || !data?.user) {
+      setFormError(document.getElementById('login-err'), error?.message || 'تعذّر الدخول');
+      if (typeof showToast === 'function') showToast('تعذّر الدخول — حاول/ي مجدداً', 'err');
       return;
     }
-    const { data: existing } = await db.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
-    let profileErr;
-    if (existing) {
-      ({ error: profileErr } = await db.from('profiles').update({ name, role: 'student' }).eq('id', data.user.id));
-    } else {
-      ({ error: profileErr } = await db.from('profiles').upsert({ id: data.user.id, name, role: 'student' }));
+
+    const isLocal = !!data.local || String(data.user.id || '').startsWith('local-');
+    if (!isLocal) {
+      try {
+        const { data: existing } = await db.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
+        let profileErr;
+        if (existing) {
+          ({ error: profileErr } = await db.from('profiles').update({ name, role: 'student' }).eq('id', data.user.id));
+        } else {
+          ({ error: profileErr } = await db.from('profiles').upsert({ id: data.user.id, name, role: 'student' }));
+        }
+        if (profileErr) console.warn('profile save:', profileErr.message);
+      } catch (e) {
+        console.warn('profile save skipped:', e);
+      }
     }
-    if (profileErr) {
-      setFormError(document.getElementById('login-err'), 'تعذّر حفظ الملف — حاول/ي مرة أخرى');
-      return;
-    }
-    state.user = data.user; state.userType = 'student'; state.userName = name; state.userEmail = '';
+
+    state.user = data.user;
+    state.userType = 'student';
+    state.userName = name;
+    state.userEmail = '';
     localStorage.setItem('savedName', name);
+    localStorage.setItem('demoDone', '1');
     if (!getPrimaryName()) setPrimaryName(name);
     adoptProgressForName(name);
-    if (typeof trackEvent === 'function') trackEvent('login', { role: 'student' });
-    if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
-    if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
-    if (typeof pullTierProgressFromCloud === 'function') await pullTierProgressFromCloud();
+    if (typeof trackEvent === 'function') trackEvent('login', { role: 'student', local: isLocal });
+    if (!isLocal && window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
+    if (!isLocal && window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
+    if (!isLocal && typeof pullTierProgressFromCloud === 'function') await pullTierProgressFromCloud();
     void syncPendingScores();
-    // Always pull the full bank after login so hard/medium are available.
     await refreshFullQuestionBank({ quiet: true });
-    if (!localStorage.getItem('demoDone')) {
-      pendingLoginAfterDemo = false;
-      showDemoIntro(name);
-    } else {
-      goHome();
-    }
+    goHome();
   } finally {
     loginInProgress = false;
     if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
@@ -6662,7 +6702,7 @@ function applyLoginLockUI() {
     if (features) features.style.display = '';
     nameInput.disabled = false;
     nameInput.removeAttribute('aria-disabled');
-    nameInput.placeholder = 'اكتب/ي اسمك هنا...';
+    nameInput.placeholder = 'اكتب/ي اسمك هنا (عربي أو إنجليزي)...';
     loginBtn.disabled = false;
     loginBtn.removeAttribute('aria-disabled');
     loginBtn.textContent = 'دخول 🎮';
@@ -6690,36 +6730,37 @@ async function restoreSession() {
     return false;
   }
   if (!client) return false;
-  const { data: { session } } = await client.auth.getSession();
-  if (!session?.user) return false;
-  const { data: profile, error } = await client.from('profiles').select('name,role').eq('id', session.user.id).maybeSingle();
-  if (error || !profile || profile.role !== 'student') {
-    await client.auth.signOut();
-    return false;
-  }
-  state.user = session.user;
-  state.userType = 'student';
-  state.userName = profile.name || localStorage.getItem('savedName') || DEFAULT_PLAYER;
-  const savedName = localStorage.getItem('savedName');
-  if (savedName && profile.name && profile.name !== savedName) {
-    await client.auth.signOut();
-    return false;
-  }
-  localStorage.setItem('savedName', state.userName);
-  if (!getPrimaryName()) setPrimaryName(state.userName);
-  adoptProgressForName(state.userName);
-  if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
-  if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
-  if (typeof pullTierProgressFromCloud === 'function') await pullTierProgressFromCloud();
-  void syncPendingScores();
-  void refreshFullQuestionBank({ quiet: true });
-  const progress = ensureProgress();
-  if (!localStorage.getItem('demoDone') && !(progress.totalGames > 0)) {
-    showDemoIntro(state.userName);
+  try {
+    const { data: { session } } = await client.auth.getSession();
+    if (!session?.user) return false;
+    const { data: profile, error } = await client.from('profiles').select('name,role').eq('id', session.user.id).maybeSingle();
+    if (error || !profile || profile.role !== 'student') {
+      await client.auth.signOut().catch(() => {});
+      return false;
+    }
+    state.user = session.user;
+    state.userType = 'student';
+    state.userName = profile.name || localStorage.getItem('savedName') || DEFAULT_PLAYER;
+    const savedName = localStorage.getItem('savedName');
+    if (savedName && profile.name && profile.name !== savedName) {
+      await client.auth.signOut().catch(() => {});
+      return false;
+    }
+    localStorage.setItem('savedName', state.userName);
+    localStorage.setItem('demoDone', '1');
+    if (!getPrimaryName()) setPrimaryName(state.userName);
+    adoptProgressForName(state.userName);
+    if (window.AlhudaPlatform?.syncUserClassFromDb) await AlhudaPlatform.syncUserClassFromDb();
+    if (window.AlhudaPlatform?.syncWrongQuestionsFromDb) await AlhudaPlatform.syncWrongQuestionsFromDb();
+    if (typeof pullTierProgressFromCloud === 'function') await pullTierProgressFromCloud();
+    void syncPendingScores();
+    void refreshFullQuestionBank({ quiet: true });
+    goHome();
     return true;
+  } catch (e) {
+    console.warn('restoreSession skipped (cloud unavailable):', e);
+    return false;
   }
-  goHome();
-  return true;
 }
 
 /* ── Init ── */

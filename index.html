@@ -183,16 +183,11 @@
         </div>
       </div>
       <div class="card login-card">
-        <button type="button" class="btn btn-gold btn-xl btn-demo-login" onclick="startDemoFromLogin()">📝 نموذج أسئلة تجريبي</button>
-        <p class="login-demo-hint">اختار/ي كتاباً — ٨ أسئلة لكل كتاب</p>
-        <div id="login-analytics-summary" class="demo-analytics-summary login-analytics" hidden></div>
-        <p class="login-demo-only-notice" id="login-demo-only-notice" hidden>🔒 الأسئلة الكاملة مغلقة — النموذج التجريبي فقط</p>
-        <p class="login-or-divider" id="login-or-divider">أو</p>
         <div class="login-locked-block" id="login-locked-block">
           <h2 id="login-title">ادخل/ي باسمك وابدأ/ي 🎮</h2>
           <label class="sr-only" for="login-name">اسمك</label>
-          <input type="text" class="input login-input-locked" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name" aria-describedby="login-err">
-          <p class="login-name-hint login-lock-notice" hidden>الدخول العادي مغلق الآن — جرّب/ي النموذج التجريبي أولاً</p>
+          <input type="text" class="input login-input-locked" id="login-name" placeholder="اكتب/ي اسمك هنا (عربي أو إنجليزي)..." autocomplete="name" aria-describedby="login-err">
+          <p class="login-name-hint login-lock-notice" hidden>الدخول مغلق مؤقتاً</p>
           <p id="login-switch-hint" class="login-name-hint" hidden style="color:var(--text-soft);font-size:0.82em;margin:6px 0;"></p>
           <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err" role="alert" aria-live="polite"></p>
           <button type="button" class="btn btn-green btn-xl btn-login-main" id="btn-login" aria-label="دخول">دخول 🎮</button>
@@ -355,7 +350,6 @@
         </div>
         <div class="secondary-actions" style="margin-top:10px;">
           <button class="btn btn-white btn-sm" onclick="refreshQuestions()">تحديث</button>
-          <button class="btn btn-white btn-sm" onclick="showDemoIntro(state.userName)">نموذج تجريبي</button>
         </div>
       </div>
 
@@ -643,12 +637,13 @@
   <script src="speech-pronunciation-lexicon.js"></script>
   <script src="allah-irab.browser.js"></script>
   <script src="baked-tts.browser.js"></script>
-  <script src="speech-diacritics-core.js?v=182"></script>
+  <script src="speech-diacritics-core.js?v=183"></script>
   <script src="demo-questions-bundle.js"></script>
+  <script src="questions-bank.js"></script>
   <script src="version.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="app.js?v=153" defer></script>
-<script src="auth.js?v=13" defer></script>
+  <script src="app.js?v=154" defer></script>
+<script src="auth.js?v=14" defer></script>
 <script src="enhancements.js?v=14" defer></script>
 <script src="platform.js?v=16" defer></script>
 <script defer>

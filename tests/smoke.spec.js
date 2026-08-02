@@ -4,6 +4,10 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('voiceOn', 'false');
     localStorage.setItem('soundOn', 'false');
+    localStorage.setItem('demoDone', '1');
+    localStorage.setItem('alhudaTutorialV2', '1');
+    localStorage.setItem('gameTutorialDone', '1');
+    localStorage.setItem('onboardingDone', '1');
   });
 });
 
@@ -14,32 +18,31 @@ async function dismissOverlays(page) {
   }
 }
 
-test('demo flow shows question and answers', async ({ page }) => {
+async function loginAndStart(page, name = 'Smoke Tester') {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
-
-  await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
-  await expect(page.locator('#demo-pick-count-tawheed')).toContainText('٨');
-  await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
-
+  await page.locator('#login-name').fill(name);
+  await page.locator('#btn-login').click();
+  await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
+  await page.locator('#btn-start-game').click();
   await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
   await dismissOverlays(page);
+}
 
+test('login then play shows question and answers', async ({ page }) => {
+  await loginAndStart(page);
   await expect(page.locator('#q-text')).not.toHaveText('...');
   await expect(page.locator('.ans-btn').first()).toBeVisible();
-  await expect(page.locator('#demo-bar')).toContainText('٨');
-
   const qText = await page.locator('#q-text').textContent();
   expect((qText || '').length).toBeGreaterThan(5);
 });
 
-test('login is unlocked — name entry enabled', async ({ page }) => {
+test('login is unlocked — name entry enabled, no demo button', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
   await expect(page.locator('#login-name')).toBeEnabled({ timeout: 5000 });
   await expect(page.locator('#btn-login')).toBeEnabled();
-  await expect(page.locator('#login-demo-only-notice')).toBeHidden();
-  await expect(page.getByRole('button', { name: /نموذج أسئلة تجريبي/ })).toBeEnabled();
+  await expect(page.getByRole('button', { name: /نموذج أسئلة تجريبي/ })).toHaveCount(0);
 });
 
 test('offline banner hidden when online', async ({ page }) => {
@@ -56,14 +59,7 @@ test('offline banner shows when network is off', async ({ page, context }) => {
 });
 
 test('game exit asks before leaving mid-round', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
-
-  await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
-  await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
-  await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
-  await dismissOverlays(page);
-
+  await loginAndStart(page);
   page.once('dialog', (d) => d.dismiss());
   await page.locator('#game .close-btn').first().click();
   await expect(page.locator('#confirm-overlay.open')).toBeVisible();
@@ -86,12 +82,14 @@ test('settings has dark mode and Hudhaify default', async ({ page }) => {
   await expect(page.locator('body')).toHaveClass(/dark-mode/);
 });
 
-test('demo offline seed still starts a round', async ({ page, context }) => {
+test('offline name login still starts a round', async ({ page, context }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
   await context.setOffline(true);
-  await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
-  await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
+  await page.locator('#login-name').fill('Offline Player');
+  await page.locator('#btn-login').click();
+  await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
+  await page.locator('#btn-start-game').click();
   await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
   await dismissOverlays(page);
   await expect(page.locator('#q-text')).not.toHaveText('...');

@@ -65,29 +65,50 @@
     const norm = normalizeName(name);
     if (!norm) return { error: { message: 'اكتب/ي اسمك أولاً' } };
 
+    const localFallback = () => {
+      // Stable local identity when Supabase is unreachable — play + progress still work on-device.
+      let h = 2166136261;
+      for (let i = 0; i < norm.length; i++) {
+        h ^= norm.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      const id = `local-${(h >>> 0).toString(16)}`;
+      return {
+        data: {
+          user: { id, email: null, is_anonymous: true, app_metadata: { provider: 'local' } },
+          session: null,
+          local: true,
+        },
+        error: null,
+      };
+    };
+
     try {
+      if (typeof db === 'undefined' || !db?.auth) return localFallback();
+
       const { data: { session } } = await db.auth.getSession();
       if (session?.user) {
         const { data: profile } = await db.from('profiles').select('name').eq('id', session.user.id).maybeSingle();
         if (profile?.name && profile.name === norm) {
           return { data: { user: session.user, session }, error: null };
         }
-        // Different name → leave this session and sign in under the new name identity.
         await db.auth.signOut().catch(() => {});
       }
 
       const named = await nameAccountSignIn(norm);
       if (!named.error) return named;
 
-      // Last resort guest (progress will not follow the name across devices).
       const anon = await db.auth.signInAnonymously();
       if (!anon.error && anon.data?.user) {
         return { data: anon.data, error: null };
       }
 
-      return named;
+      // Cloud auth unavailable — continue locally so the student can still play.
+      console.warn('cloud login failed, using local session', named.error?.message);
+      return localFallback();
     } catch (e) {
-      return { error: { message: 'تعذّر الاتصال — تحقّق/ي من الإنترنت وحاول مجدداً' } };
+      console.warn('studentSignIn fallback local', e);
+      return localFallback();
     }
   }
 

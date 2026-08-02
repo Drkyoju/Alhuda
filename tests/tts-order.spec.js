@@ -4,6 +4,10 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('voiceOn', 'false');
     localStorage.setItem('soundOn', 'false');
+    localStorage.setItem('demoDone', '1');
+    localStorage.setItem('alhudaTutorialV2', '1');
+    localStorage.setItem('gameTutorialDone', '1');
+    localStorage.setItem('onboardingDone', '1');
   });
 });
 
@@ -17,8 +21,10 @@ async function dismissOverlays(page) {
 test('question speech uses on-screen answer order', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
-  await page.getByRole('button', { name: /نموذج أسئلة تجريبي/ }).click();
-  await page.getByRole('button', { name: /كتاب التوحيد/ }).click();
+  await page.locator('#login-name').fill('TTS Tester');
+  await page.locator('#btn-login').click();
+  await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
+  await page.locator('#btn-start-game').click();
   await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
   await dismissOverlays(page);
 
@@ -33,7 +39,7 @@ test('question speech uses on-screen answer order', async ({ page }) => {
   }
 
   const typeBadgeHidden = await page.locator('#q-type-badge').evaluate((el) => getComputedStyle(el).display === 'none');
-  test.skip(!typeBadgeHidden, 'no MC question in this demo round');
+  test.skip(!typeBadgeHidden, 'no MC question in this round');
 
   const onScreen = await page.locator('.ans-btn').allTextContents();
   expect(onScreen.length).toBeGreaterThanOrEqual(2);
