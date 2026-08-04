@@ -48,9 +48,6 @@
     state.answered = false;
     state.total = state.questions.length;
     state.wrongLog = [];
-    state.demoMode = false;
-    state.challengeMode = false;
-    state.challengeCode = '';
     state.book = book || state.book || 'merge3';
   }
 
@@ -99,7 +96,7 @@
 
   
   async function recordQuestionAttempt(questionId, wasCorrect) {
-    if (!questionId || state.demoMode || trainingMode) return;
+    if (!questionId || trainingMode) return;
     try {
       await db.rpc('increment_question_stat', { qid: questionId, was_correct: wasCorrect });
     } catch (e) {
@@ -475,7 +472,7 @@
     // regardless of score. The previous gate (`correct > 0 || score > 0`)
     // meant a zero-score attempt was silently dropped and the homework kept
     // reappearing as "pending" forever.
-    if (state.homeworkId && state.user && !trainingMode && !state.demoMode) {
+    if (state.homeworkId && state.user && !trainingMode) {
       const { error } = await safeQuery(
         () => db.from('homework_completions').upsert({
           homework_id: state.homeworkId,
@@ -495,11 +492,10 @@
       score: state.score,
       correct: state.correct,
       total: state.total,
-      demo: state.demoMode,
       training: trainingMode,
       at: new Date().toISOString(),
     });
-    if (!trainingMode && !state.demoMode) {
+    if (!trainingMode) {
       await syncBookProgress(state.book, state.correct, state.total);
     }
   }

@@ -27,14 +27,19 @@ function loadQuestions() {
     if (!byId.has(id)) byId.set(id, { id, fields: {} });
     if (!byId.get(id).fields[field]) byId.get(id).fields[field] = v;
   };
-  const bs = readFileSync(join(root, 'demo-questions-bundle.js'), 'utf8');
-  const bj = JSON.parse(bs.slice(bs.indexOf('{'), bs.lastIndexOf('}') + 1));
-  for (const book of Object.values(bj)) for (const q of book) {
-    put(q.id, 'q', q.q); put(q.id, 'exp', q.exp); put(q.id, 'quote', q.quote);
-    (q.a || []).forEach((o, i) => put(q.id, `a${i}`, o));
+  const bankSrc = readFileSync(join(root, 'questions-bank.js'), 'utf8');
+  const bank = JSON.parse(bankSrc.slice(bankSrc.indexOf('{'), bankSrc.lastIndexOf('}') + 1));
+  for (const q of Object.values(bank).flat()) {
+    put(q.id, 'q', q.question_text || q.q);
+    put(q.id, 'exp', q.explanation || q.exp);
+    put(q.id, 'quote', q.source_quote || q.quote);
+    (q.options || q.a || []).forEach((o, i) => put(q.id, `a${i}`, o));
   }
-  const db = JSON.parse(readFileSync(join(root, 'extracted/db_questions_live.json'), 'utf8'));
-  for (const r of db) { put(r.id, 'q', r.question_text); (r.options || []).forEach((o, i) => put(r.id, `a${i}`, o)); }
+  const dbPath = join(root, 'extracted/db_questions_live.json');
+  if (existsSync(dbPath)) {
+    const db = JSON.parse(readFileSync(dbPath, 'utf8'));
+    for (const r of db) { put(r.id, 'q', r.question_text); (r.options || []).forEach((o, i) => put(r.id, `a${i}`, o)); }
+  }
   const snapP = join(root, 'extracted/questions_live_snapshot.json');
   if (existsSync(snapP)) for (const r of JSON.parse(readFileSync(snapP, 'utf8'))) { put(r.id, 'exp', r.explanation); put(r.id, 'quote', r.source_quote); }
   return byId;

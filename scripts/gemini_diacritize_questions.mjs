@@ -28,7 +28,6 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const API_KEY = process.env.GEMINI_API_KEY;
 const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 const BATCH_SIZE = parseInt(process.env.BATCH_SIZE || '12', 10);
-const DEMO_ONLY = process.argv.includes('--demo-only');
 const OUT_PATH = join(root, 'scripts/verified-questions-speech.json');
 
 if (!API_KEY) {
@@ -49,35 +48,30 @@ function loadQuestions() {
     const v = String(val || '').trim();
     if (!id || !field || !v) return;
     if (!byId.has(id)) byId.set(id, { id, fields: {} });
-    // Prefer the demo bundle's richer text; don't overwrite an existing value.
     if (!byId.get(id).fields[field]) byId.get(id).fields[field] = v;
   };
 
-  // Demo bundle first (has q / options / exp / quote).
-  const bundleSrc = readFileSync(join(root, 'demo-questions-bundle.js'), 'utf8');
-  const bundleJson = JSON.parse(bundleSrc.slice(bundleSrc.indexOf('{'), bundleSrc.lastIndexOf('}') + 1));
-  for (const book of Object.values(bundleJson)) {
-    for (const q of book) {
-      put(q.id, 'q', q.q);
-      put(q.id, 'exp', q.exp);
-      put(q.id, 'quote', q.quote);
-      (q.a || []).forEach((opt, i) => put(q.id, `a${i}`, opt));
+  const ingestBankRows = (rows) => {
+    for (const row of rows || []) {
+      put(row.id, 'q', row.question_text || row.q);
+      put(row.id, 'exp', row.explanation || row.exp);
+      put(row.id, 'quote', row.source_quote || row.quote);
+      const opts = row.options || row.a || [];
+      opts.forEach((opt, i) => put(row.id, `a${i}`, opt));
     }
-  }
+  };
 
   // Full static bank (primary playable set).
-  if (!DEMO_ONLY && existsSync(join(root, 'questions-bank.json'))) {
+  if (existsSync(join(root, 'questions-bank.js'))) {
+    const src = readFileSync(join(root, 'questions-bank.js'), 'utf8');
+    const bank = JSON.parse(src.slice(src.indexOf('{'), src.lastIndexOf('}') + 1));
+    ingestBankRows(Object.values(bank).flat());
+  } else if (existsSync(join(root, 'questions-bank.json'))) {
     const bank = JSON.parse(readFileSync(join(root, 'questions-bank.json'), 'utf8'));
-    const rows = Array.isArray(bank) ? bank : Object.values(bank).flat();
-    for (const row of rows) {
-      put(row.id, 'q', row.question_text);
-      put(row.id, 'exp', row.explanation);
-      put(row.id, 'quote', row.source_quote);
-      (row.options || []).forEach((opt, i) => put(row.id, `a${i}`, opt));
-    }
+    ingestBankRows(Array.isArray(bank) ? bank : Object.values(bank).flat());
   }
 
-  if (!DEMO_ONLY && existsSync(join(root, 'extracted/db_questions_live.json'))) {
+  if (existsSync(join(root, 'extracted/db_questions_live.json'))) {
     const db = JSON.parse(readFileSync(join(root, 'extracted/db_questions_live.json'), 'utf8'));
     for (const row of db) {
       put(row.id, 'q', row.question_text);

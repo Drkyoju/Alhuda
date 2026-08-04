@@ -23,9 +23,12 @@ const isCorrupt = (s) => /(^|\s)[\u064B-\u0652\u0670]/.test(s) || /[\u064B-\u065
 
 function loadQuoteSources() {
   const byId = new Map();
-  const bs = readFileSync(join(root, 'demo-questions-bundle.js'), 'utf8');
-  const bj = JSON.parse(bs.slice(bs.indexOf('{'), bs.lastIndexOf('}') + 1));
-  for (const book of Object.values(bj)) for (const q of book) if (q.quote && !byId.has(q.id)) byId.set(q.id, q.quote);
+  const bankSrc = readFileSync(join(root, 'questions-bank.js'), 'utf8');
+  const bank = JSON.parse(bankSrc.slice(bankSrc.indexOf('{'), bankSrc.lastIndexOf('}') + 1));
+  for (const q of Object.values(bank).flat()) {
+    const quote = q.source_quote || q.quote;
+    if (quote && !byId.has(q.id)) byId.set(q.id, quote);
+  }
   const snapP = join(root, 'extracted/questions_live_snapshot.json');
   if (existsSync(snapP)) for (const r of JSON.parse(readFileSync(snapP, 'utf8'))) {
     if (r.source_quote && !byId.has(r.id)) byId.set(r.id, r.source_quote);

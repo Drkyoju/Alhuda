@@ -50,7 +50,7 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:20 };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:20 };
 let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
@@ -181,7 +181,7 @@ const TIER_UNLOCK_RATIO = 0.5;
 let tierCloudPushTimer = null;
 
 function isRealGameLocked() {
-  return LOGIN_LOCKED && !state.demoMode;
+  return LOGIN_LOCKED;
 }
 
 function showRealGameLockedAlert() {
@@ -489,7 +489,7 @@ function getStageMeta(book, level) {
 }
 
 function markQuestionSolvedInStage(questionId) {
-  if (!questionId || state.demoMode || trainingMode || state.challengeMode || state.homeworkId || state.stageReviewMode) return;
+  if (!questionId || trainingMode || state.homeworkId || state.stageReviewMode) return;
   const q = findQuestionRecord(questionId);
   const tier = LEVEL_FLOW.includes(state.level)
     ? state.level
@@ -713,7 +713,7 @@ function syncStageCompletion(stageNum) {
 function getQuestionsForStageGame() {
   // Pick up to roundSize unsolved questions from the capped difficulty tier.
   // Solved questions stay out until the learner explicitly starts review.
-  if (state.useManualRange || state.homeworkId || state.challengeMode || trainingMode) return null;
+  if (state.useManualRange || state.homeworkId || trainingMode) return null;
   if (state.level === 'all' || !LEVEL_FLOW.includes(state.level)) return null;
   if (!isLevelUnlocked(state.book, state.level)) return [];
 
@@ -910,7 +910,7 @@ function continueToNextLevel() {
 function updateNextLevelButton() {
   const btn = document.getElementById('btn-next-level');
   if (!btn) return;
-  if (state.demoMode || trainingMode || state.challengeMode || state.homeworkId || state.stageReviewMode) {
+  if (trainingMode || state.homeworkId || state.stageReviewMode) {
     btn.style.display = 'none';
     return;
   }
@@ -967,7 +967,7 @@ function updateStartButtonLabel() {
 
 function updateStageGameBadge() {
   const el = document.getElementById('stage-game-badge');
-  if (!el || state.demoMode || state.challengeMode || state.homeworkId || state.useManualRange) {
+  if (!el || state.homeworkId || state.useManualRange) {
     if (el) el.style.display = 'none';
     return;
   }
@@ -2049,21 +2049,6 @@ function warmPopularQuranAyahs() {
     void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
   }
   void fetch('/api/quran-warm', { cache: 'no-store' }).catch(() => {});
-}
-
-let demoAudioWarmStarted = false;
-function warmDemoSessionAudio({ force = false } = {}) {
-  if (demoAudioWarmStarted && !force) return;
-  demoAudioWarmStarted = true;
-  void ensureSpeechMapsLoaded();
-  // Prefetch the full demo round so SW can cache baked MP3s for offline replay.
-  const slice = (state.questions || []).slice(0, 8);
-  for (const q of slice) void prefetchHybridSpeechForQuestion(q);
-  prefetchUpcomingQuran(0);
-  const idle = typeof requestIdleCallback === 'function'
-    ? requestIdleCallback
-    : (fn) => setTimeout(fn, 1200);
-  idle(() => warmPopularQuranAyahs());
 }
 
 /** Prefetch full round TTS + Quran into IDB/SW while online so replay works offline. */
@@ -4018,7 +4003,6 @@ async function shareScore() {
   } catch (e) { showAlert(text); }
 }
 
-/* ── Demo & Feedback ── */
 function getCorrectAnswerText(q) {
   if (q.type === 'tf') return q.tf ? 'صَحّ ✓' : 'خَطَأٌ ✗';
   const raw = q.a && q.c != null ? q.a[q.c] : '';
@@ -4545,7 +4529,7 @@ function onQuestionTimeUp() {
   const expEl = document.getElementById('fb-exp');
   const selfBox = document.getElementById('fb-self-correct');
   if (!trainingMode) state.wrongLog.push({ q, index: state.idx, picked: '—' });
-  if (!trainingMode && !state.demoMode) {
+  if (!trainingMode) {
     state.hearts--; state.streak = 0; state.wrong++;
     renderHearts();
     playSound('wrong');
@@ -4559,10 +4543,6 @@ function onQuestionTimeUp() {
       scheduleEndGame(1800);
       return;
     }
-  } else if (state.demoMode) {
-    state.wrong++;
-    playSound('wrong');
-    recordDemoAnalytics(q, false, '—', getQuestionElapsedMs());
   }
   fb.className = 'feedback show bad';
   document.getElementById('fb-icon').textContent = '⏱️';
@@ -4578,27 +4558,6 @@ function highlightCorrectAnswer(q) {
     if (btn.dataset.correct === '1') btn.classList.add('reveal-correct');
   });
 }
-/** Demo quiz removed — keep stubs so leftover callers stay safe. */
-function startDemoFromLogin() { show('login-screen'); }
-function showDemoIntro() { show('login-screen'); }
-async function beginDemo() { show('login-screen'); }
-function startDemoCountdown() {}
-function finishDemoCountdownEnter() {}
-async function skipDemo() { show('login-screen'); }
-function endDemo() { state.demoMode = false; show('login-screen'); }
-async function finishDemoFlow() { show('login-screen'); }
-function updateDemoBookPicker() {}
-function renderDemoResultSummary() {}
-function renderDemoAnalyticsSummary() {}
-function refreshLoginAnalyticsPanel() {}
-function recordDemoAnalytics() {}
-function buildLastDemoSessionStats() { return { total: 0, correct: 0, wrong: 0, avgMs: 0, book: '' }; }
-function buildDemoQuestions() { return []; }
-function warmDemoSessionAudio() {}
-function markDemoBookTried() {}
-function countDemoBooksTried() { return 0; }
-function finishDemoToRealGame() { show('login-screen'); }
-async function shareDemoResult() { return shareScore(); }
 
 function getFocusable(root) {
   if (!root) return [];
@@ -4643,8 +4602,6 @@ function persistGameSession() {
   try {
     sessionStorage.setItem(GAME_RESUME_KEY, JSON.stringify({
       at: Date.now(),
-      demoMode: !!state.demoMode,
-      demoBook: state.demoBook || '',
       book: state.book,
       level: state.level,
       qFrom: state.qFrom || 1,
@@ -4673,7 +4630,7 @@ async function tryRestoreGameSession() {
     clearGameSession();
     return false;
   }
-  if (LOGIN_LOCKED && !data?.demoMode) {
+  if (LOGIN_LOCKED) {
     clearGameSession();
     return false;
   }
@@ -4699,8 +4656,6 @@ async function tryRestoreGameSession() {
     return false;
   }
   state.questions = qs;
-  state.demoMode = false; // demo removed
-  state.demoBook = '';
   state.book = data.book || 'tawheed';
   state.level = data.level || 'easy';
   state.qFrom = data.qFrom || 1;
@@ -4871,7 +4826,7 @@ function updateLoginQuestionHint() {
 }
 
 function refreshBookFromNetwork(book) {
-  if (LOGIN_LOCKED) return; // Demo-only mode: stay on local bundle.
+  if (LOGIN_LOCKED) return;
   if (!QUESTION_BOOKS.includes(book) || navigator.onLine === false) return;
   if (!getDb()) return;
   void (async () => {
@@ -4881,7 +4836,6 @@ function refreshBookFromNetwork(book) {
       ingestBookQuestions(book, data);
       bookLoadState[book] = true;
       updateLevelCounts();
-      updateDemoBookPicker();
       updateLoginQuestionHint();
       updateBookProgress?.();
     } catch (e) {
@@ -4923,7 +4877,6 @@ async function loadBookQuestions(book) {
       }
     }
     updateLevelCounts();
-    updateDemoBookPicker();
     updateLoginQuestionHint();
     return QUESTIONS[book];
   })();
@@ -5055,7 +5008,6 @@ async function loadQuestions() {
   if (hasBundle) {
     updateLoginQuestionHint();
     updateLevelCounts();
-    updateDemoBookPicker();
     if (!LOGIN_LOCKED && navigator.onLine !== false) {
       void refreshFullQuestionBank({ quiet: true });
     }
@@ -5084,7 +5036,6 @@ async function loadQuestions() {
       if (any) {
         updateLoginQuestionHint();
         updateLevelCounts();
-        updateDemoBookPicker();
         if (navigator.onLine !== false) void refreshFullQuestionBank({ quiet: true });
         return;
       }
@@ -5096,7 +5047,6 @@ async function loadQuestions() {
     console.error(e);
     seedQuestionsFromBundle();
     updateLoginQuestionHint();
-    updateDemoBookPicker();
     if (typeof showToast === 'function') {
       showToast(
         navigator.onLine === false ? 'لا يوجد اتصال بالإنترنت' : 'تعذّر تحميل الأسئلة — تحقق من الاتصال',
@@ -5156,7 +5106,7 @@ function getQuestionsForGame() {
     slice = seededShuffle(slice, seed);
   }
   // Respect solved questions for «الكل» and manual range (same as tier path).
-  if (!state.homeworkId && !state.challengeMode && !trainingMode && !state.demoMode && !state.stageReviewMode) {
+  if (!state.homeworkId && !trainingMode && !state.stageReviewMode) {
     const solved = getSolvedIdSet(state.book);
     if (solved.size) {
       const filtered = slice.filter((q) => !solved.has(q.id));
@@ -5299,9 +5249,6 @@ async function requestLeaveGame() {
 function goHome() {
   clearGameSession();
   state.homeworkId = null;
-  state.challengeMode = false;
-  state.challengeCode = '';
-  state.demoMode = false;
   trainingMode = false;
   const trainingBtn = document.getElementById('training-btn');
   if (trainingBtn) {
@@ -5329,9 +5276,6 @@ function logout() {
   void db.auth.signOut().catch(() => {});
   state.user = null; state.userType = ''; state.userName = '';
   state.homeworkId = null;
-  state.challengeMode = false;
-  state.challengeCode = '';
-  state.demoMode = false;
   trainingMode = false;
   updateTopbarStats();
   const loginName = document.getElementById('login-name');
@@ -5561,55 +5505,53 @@ async function startCountdown() {
     showRealGameLockedAlert();
     return;
   }
-  if (!state.demoMode && !state.challengeMode) {
-    try {
-      await ensureBooksLoaded(booksForState(state.book));
-    } catch (e) {
-      if (typeof showToast === 'function') showToast('تعذّر تحميل أسئلة هذا الكتاب', 'err');
+  try {
+    await ensureBooksLoaded(booksForState(state.book));
+  } catch (e) {
+    if (typeof showToast === 'function') showToast('تعذّر تحميل أسئلة هذا الكتاب', 'err');
+    return;
+  }
+  if (!state.useManualRange && !state.stageReviewMode && !state.homeworkId) {
+    if (LEVEL_FLOW.includes(state.level) && !isLevelUnlocked(state.book, state.level)) {
+      showAlert(nextLockedLevelMessage(state.book, state.level) || 'المستوى مقفل');
       return;
     }
-    if (!state.useManualRange && !state.stageReviewMode && !state.challengeMode && !state.homeworkId) {
-      if (LEVEL_FLOW.includes(state.level) && !isLevelUnlocked(state.book, state.level)) {
-        showAlert(nextLockedLevelMessage(state.book, state.level) || 'المستوى مقفل');
+  }
+  const qs = getQuestionsForGame();
+  if (!qs.length) {
+    const counts = getBookQuestionCounts(state.book);
+    const needFull = !QUESTION_BOOKS.every((b) => bookLoadState[b])
+      || ((state.level === 'hard' || state.level === 'medium') && (counts[state.level] || 0) === 0);
+    if (needFull) {
+      if (typeof showToast === 'function') showToast('جاري تحميل الأسئلة الكاملة…', 'ok');
+      const ok = await refreshFullQuestionBank({ quiet: true });
+      updateLevelCounts();
+      const qs2 = getQuestionsForGame();
+      if (qs2.length) {
+        clearCountdown();
+        startGame();
+        return;
+      }
+      if (!ok) {
+        showAlert('البنك الكامل لم يكتمل بعد. اضغط/ي «تحديث» ثم حاول مجدداً.');
         return;
       }
     }
-    const qs = getQuestionsForGame();
-    if (!qs.length) {
-      const counts = getBookQuestionCounts(state.book);
-      const needFull = !QUESTION_BOOKS.every((b) => bookLoadState[b])
-        || ((state.level === 'hard' || state.level === 'medium') && (counts[state.level] || 0) === 0);
-      if (needFull) {
-        if (typeof showToast === 'function') showToast('جاري تحميل الأسئلة الكاملة…', 'ok');
-        const ok = await refreshFullQuestionBank({ quiet: true });
-        updateLevelCounts();
-        const qs2 = getQuestionsForGame();
-        if (qs2.length) {
-          clearCountdown();
-          startGame();
-          return;
-        }
-        if (!ok) {
-          showAlert('البنك الكامل لم يكتمل بعد. اضغط/ي «تحديث» ثم حاول مجدداً.');
-          return;
-        }
-      }
-      if (!state.useManualRange && LEVEL_FLOW.includes(state.level)) {
-        const { done, total, solved } = getTierProgress(state.book, state.level);
-        if (done) {
-          showAlert('أنهيت أسئلة هذا المستوى! الأسئلة المحلولة لن تعود تلقائياً. اضغط «مراجعة ما حلّيته» إذا أردت التدريب عليها، أو انتقل لمستوى آخر.');
-        } else if (!total) {
-          showAlert('لا توجد أسئلة لهذا المستوى. جرّب/ي كتاباً آخر.');
-        } else if (solved > 0 && total - solved === 0) {
-          showAlert('لا توجد أسئلة متبقية. اضغط مراجعة أو غيّر المستوى.');
-        } else {
-          showAlert('لا توجد أسئلة متبقية لهذه الجولة. صغّر العدد أو حدّث/ي البنك.');
-        }
+    if (!state.useManualRange && LEVEL_FLOW.includes(state.level)) {
+      const { done, total, solved } = getTierProgress(state.book, state.level);
+      if (done) {
+        showAlert('أنهيت أسئلة هذا المستوى! الأسئلة المحلولة لن تعود تلقائياً. اضغط «مراجعة ما حلّيته» إذا أردت التدريب عليها، أو انتقل لمستوى آخر.');
+      } else if (!total) {
+        showAlert('لا توجد أسئلة لهذا المستوى. جرّب/ي كتاباً آخر.');
+      } else if (solved > 0 && total - solved === 0) {
+        showAlert('لا توجد أسئلة متبقية. اضغط مراجعة أو غيّر المستوى.');
       } else {
-        showAlert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر.');
+        showAlert('لا توجد أسئلة متبقية لهذه الجولة. صغّر العدد أو حدّث/ي البنك.');
       }
-      return;
+    } else {
+      showAlert('لا توجد أسئلة لهذا الاختيار. جرّب/ي كتاباً أو مستوى آخر.');
     }
+    return;
   }
   // Skip 3-2-1 overlay — start questions immediately.
   clearCountdown();
@@ -5621,13 +5563,11 @@ function startGame() {
     showRealGameLockedAlert();
     return;
   }
-  if (!state.demoMode) {
-    state.questions = getQuestionsForGame();
-  }
+  state.questions = getQuestionsForGame();
   if (state.questions.length === 0) { showAlert('لا توجد أسئلة لهذا الاختيار.'); return; }
-  if (!state.demoMode && !state.useManualRange && !state.challengeMode && !state.homeworkId) {
+  if (!state.useManualRange && !state.homeworkId) {
     // qFrom set by getQuestionsForStageGame
-  } else if (!state.demoMode) {
+  } else {
     state.qFrom = parseInt(document.getElementById('q-from-input')?.value, 10) || 1;
   }
   if (typeof trackEvent === 'function') trackEvent('game_start', { book: state.book, level: state.level, training: trainingMode, stage: state.activeStageNum, review: state.stageReviewMode });
@@ -5649,7 +5589,7 @@ function startGame() {
   show('game');
   renderQ();
   // Warm the whole round into IDB + SW cache so audio survives going offline mid-game.
-  if (!state.demoMode && navigator.onLine !== false) {
+  if (navigator.onLine !== false) {
     void warmRoundAudioForOffline(state.questions, { notify: false });
   }
 }
@@ -5662,12 +5602,11 @@ function renderQ() {
   const prior = state.answerLog?.[state.idx] || null;
   state.answered = !!prior;
   document.getElementById('show-answer-btn').style.display = 'none';
-  const stagePrefix = (!state.demoMode && !state.challengeMode && !state.homeworkId && !state.useManualRange && LEVEL_FLOW.includes(state.level))
+  const stagePrefix = (!state.homeworkId && !state.useManualRange && LEVEL_FLOW.includes(state.level))
     ? `${LEVEL_LABELS_AR[state.level] || ''} — `
     : '';
-  document.getElementById('q-num').textContent = (state.demoMode || state.challengeMode)
-    ? `السؤال ${state.idx + 1} من ${state.total}`
-    : `${stagePrefix}سؤال ${state.qFrom + state.idx} — ${state.idx + 1}/${state.total}`;
+  document.getElementById('q-num').textContent =
+    `${stagePrefix}سؤال ${state.qFrom + state.idx} — ${state.idx + 1}/${state.total}`;
   updateStageGameBadge();
   // Show diacritized text when the speech map is ready; otherwise paint raw then refresh.
   const qEl = document.getElementById('q-text');
@@ -5821,8 +5760,7 @@ function nextQ() {
   document.getElementById('fb-self-correct').style.display = 'none';
   document.getElementById('fb-exp').textContent = '';
   if (state.idx >= state.questions.length) {
-    if (state.demoMode) endDemo();
-    else void endGame();
+    void endGame();
   } else {
     renderQ();
     prefetchUpcomingQuran(state.idx);
@@ -5844,13 +5782,12 @@ function pick(btn, isOk) {
   const pickedText = btn?.textContent || '';
   rememberAnswer(isOk, isOk ? pickedText : pickedText);
   if (q?.id && typeof recordQuestionAttempt === 'function') recordQuestionAttempt(q.id, isOk);
-  if (state.demoMode) recordDemoAnalytics(q, isOk, isOk ? '' : pickedText, getQuestionElapsedMs());
 
   if (isOk) {
     btn.classList.add('correct');
     btn.setAttribute('aria-pressed', 'true');
     selfBox.style.display = 'none';
-    if (!trainingMode && !state.demoMode) {
+    if (!trainingMode) {
       state.streak++; state.correct++;
       markQuestionSolvedInStage(q?.id);
       const pts = 10 + Math.min(state.streak * 2, 20);
@@ -5860,14 +5797,11 @@ function pick(btn, isOk) {
       showXpFloat(pts, btn);
       if (state.streak >= 3) showCombo(state.streak);
       playSound('correct');
-    } else if (state.demoMode) {
-      state.correct++;
-      playSound('correct');
     }
     launchCorrectBurst();
     fb.className = 'feedback show ok';
     document.getElementById('fb-icon').textContent = '🎉';
-    document.getElementById('fb-title').textContent = state.demoMode ? `أحسنت يا ${n}! 🌟` : ENCOURAGE_OK[Math.floor(Math.random() * ENCOURAGE_OK.length)];
+    document.getElementById('fb-title').textContent = ENCOURAGE_OK[Math.floor(Math.random() * ENCOURAGE_OK.length)];
     mountAnswerFeedback(q, buildAnswerFeedbackHtml(q, true));
     setFeedbackPanelOpen(true);
     setFeedbackContinueVisible(true);
@@ -5883,7 +5817,7 @@ function pick(btn, isOk) {
     if (!trainingMode) {
       state.wrongLog.push({ q, index: state.idx, picked });
     }
-    if (!trainingMode && !state.demoMode) {
+    if (!trainingMode) {
       state.hearts--; state.streak = 0; state.wrong++;
       renderHearts();
       playSound('wrong');
@@ -5898,17 +5832,13 @@ function pick(btn, isOk) {
         updatePrevQBtn();
         return;
       }
-    } else if (state.demoMode) {
-      state.wrong++;
-      playSound('wrong');
     } else if (trainingMode) {
       playSound('wrong');
     }
     fb.className = 'feedback show bad';
     document.getElementById('fb-icon').textContent = '🤔';
-    document.getElementById('fb-title').textContent = state.demoMode
-      ? `${n}، إجابة خاطئة — راجع/ي الاستشهاد أدناه 💡`
-      : `${n}، إجابة خاطئة — راجع/يها لاحقاً في «مراجعة الأخطاء»`;
+    document.getElementById('fb-title').textContent =
+      `${n}، إجابة خاطئة — راجع/يها لاحقاً في «مراجعة الأخطاء»`;
     if (trainingMode) {
       selfBox.style.display = 'block';
       selfBox.innerHTML = '<p style="font-size:0.85em;margin-bottom:8px;color:var(--text-soft);">وضع التدريب — لا يُحسب ضدك</p><button type="button" class="btn btn-blue btn-sm" style="width:100%;" onclick="revealAnswer()">💡 إظهار الإجابة والاستشهاد</button>';
@@ -6026,7 +5956,6 @@ async function endGame() {
   clearTimeout(gameEndTimer);
   setFeedbackPanelOpen(false);
   clearGameSession();
-  if (state.demoMode) { endDemo(); return; }
   const pct = state.correct / Math.max(1, state.total);
   const isTraining = trainingMode;
 
@@ -6038,7 +5967,7 @@ async function endGame() {
     p.totalCorrect = (p.totalCorrect || 0) + state.correct;
     if (state.maxStreak > (p.bestStreak || 0)) p.bestStreak = state.maxStreak;
     if (state.score > (p.bestScore || 0)) p.bestScore = state.score;
-    if (pct >= 0.5 && !state.demoMode) {
+    if (pct >= 0.5) {
       unlockBadge('stage_clear');
     }
     saveProgress(p);
@@ -6064,7 +5993,7 @@ async function endGame() {
     document.getElementById('go-score').textContent = state.score;
     document.getElementById('go-cor').textContent = state.correct;
     document.getElementById('go-wr').textContent = state.wrong;
-    if (!state.useManualRange && !state.challengeMode && !state.homeworkId && LEVEL_FLOW.includes(state.level)) {
+    if (!state.useManualRange && !state.homeworkId && LEVEL_FLOW.includes(state.level)) {
       syncStageCompletion(state.activeStageNum);
       scheduleTierProgressCloudPush();
       updateLevelCounts();
@@ -6076,7 +6005,7 @@ async function endGame() {
     document.getElementById('res-icon').textContent = isTraining ? '🏋️' : (stars === 3 ? '🏆' : stars >= 2 ? '🎉' : '📚');
     document.getElementById('res-title').textContent = isTraining ? 'انتهى التدريب' : (stars === 3 ? 'مذهلة!' : stars >= 2 ? 'أحسنت!' : 'جيد!');
     let resSub = isTraining ? 'وضع التدريب — لا يُحسب في النقاط أو اللوحة' : (stars === 3 ? 'نتيجة ذهبية! أنت بطل/ة! 🌟' : stars >= 2 ? 'نتيجة رائعة! واصل/ي التعلّم 🌟' : 'واصل/ي المحاولة، أنت قادر/ة! 💪');
-    if (!isTraining && !state.useManualRange && !state.challengeMode && !state.homeworkId && LEVEL_FLOW.includes(state.level)) {
+    if (!isTraining && !state.useManualRange && !state.homeworkId && LEVEL_FLOW.includes(state.level)) {
       // Keep legacy stage markers in sync for older progress blobs.
       syncStageCompletion(state.activeStageNum);
       const { solved, total, done, unlockReady, unlockNeed } = getTierProgress(state.book, state.level);
@@ -6486,7 +6415,6 @@ function applyLoginLockUI() {
     if (title) title.textContent = 'الدخول مغلق مؤقتاً';
     if (notice) { notice.hidden = false; notice.style.display = ''; notice.textContent = 'الدخول مغلق مؤقتاً'; }
     updateLoginQuestionHint();
-    refreshLoginAnalyticsPanel();
   } else {
     if (block) block.style.display = '';
     if (divider) divider.style.display = '';
@@ -6579,7 +6507,6 @@ async function restoreSession() {
     switchHint.textContent = `الاسم الأساسي: ${getPrimaryName()}`;
   }
   applyLoginLockUI();
-  refreshLoginAnalyticsPanel();
   void refreshTtsProviderBadge();
   // Defer Quran warm until demo/game start — avoid competing with first paint.
   window.addEventListener('offline', () => applyOfflineVoicePolicy());
