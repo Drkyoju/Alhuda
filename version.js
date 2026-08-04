@@ -5,7 +5,7 @@ window.ALHUDA_ASSETS = {
   kidsUi: 11,
   enhancements: 14,
   app: 162,
-  platform: 15,
-  auth: 14,
+  platform: 16,
+  auth: 16,
   sw: 188,
 };
