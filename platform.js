@@ -97,10 +97,7 @@
     return null;
   }
 
-  function allQuestionsFlat() {
-    return BOOK_KEYS.flatMap((b) => QUESTIONS[b] || []);
-  }
-
+  
   async function recordQuestionAttempt(questionId, wasCorrect) {
     if (!questionId || state.demoMode || trainingMode) return;
     try {
@@ -272,64 +269,8 @@
     if (el) el.classList.toggle('done', !!p.dailyMissionDone);
   }
 
-  function renderClassBanner() {
-    const el = document.getElementById('class-banner');
-    if (!el) return;
-    const p = ensureProgressExt();
-    if (state.userType === 'teacher') {
-      el.style.display = 'none';
-      return;
-    }
-    if (p.className) {
-      el.style.display = 'block';
-      el.innerHTML = `<span>🏫 صفك: <strong>${esc(p.className)}</strong> (${esc(p.classCode)})</span>`;
-    } else {
-      el.style.display = 'block';
-      el.innerHTML = `<span>🏫 لستَ/ِ في صف بعد — انضم/ي بالرمز أدناه</span>`;
-    }
-  }
-
-  async function joinClass() {
-    const code = (document.getElementById('class-code-input')?.value || '').trim().toUpperCase();
-    const msg = document.getElementById('class-join-msg');
-    if (!code) {
-      if (msg) msg.textContent = 'اكتب/ي رمز الصف';
-      return;
-    }
-    if (!state.user) {
-      if (msg) msg.textContent = 'سجّل/ي دخولك أولاً';
-      return;
-    }
-    const clsRes = await safeQuery(
-      () => db.from('classes').select('id,name,code').eq('code', code).maybeSingle(),
-      'تعذّر الاتصال — حاول/ي مجدداً'
-    );
-    const cls = clsRes.data;
-    if (clsRes.error || !cls) {
-      if (msg) msg.textContent = clsRes.error ? '❌ تعذّر البحث عن الصف' : '❌ رمز غير صحيح';
-      return;
-    }
-    const joinRes = await safeQuery(
-      () => db.from('class_members').upsert(
-        { class_id: cls.id, user_id: state.user.id },
-        { onConflict: 'class_id,user_id' }
-      ),
-      'تعذّر الانضمام للصف'
-    );
-    if (joinRes.error) {
-      if (msg) msg.textContent = '❌ تعذّر الانضمام: ' + (joinRes.error.message || '');
-      return;
-    }
-    const p = ensureProgressExt();
-    p.classId = cls.id;
-    p.classCode = cls.code;
-    p.className = cls.name;
-    saveProgressExt(p);
-    if (msg) msg.textContent = '✅ انضممتَ/ِ إلى الصف: ' + cls.name;
-    renderClassBanner();
-    loadStudentHomework();
-  }
-
+  
+  
   function getRepeatedWrongIds(p) {
     const counts = p?.wrongCounts && typeof p.wrongCounts === 'object' ? p.wrongCounts : {};
     return Object.keys(counts).filter((id) => (Number(counts[id]) || 0) >= 2);
@@ -405,51 +346,7 @@
     }
   }
 
-  async function loadStudentHomework() {
-    const el = document.getElementById('homework-banner');
-    if (!el || state.userType === 'teacher') return;
-    const p = ensureProgressExt();
-    if (!p.classId) {
-      el.style.display = 'none';
-      return;
-    }
-    const result = await safeQuery(() => Promise.all([
-      db.from('homework').select('*').eq('class_id', p.classId).eq('active', true).order('created_at', { ascending: false }).limit(5),
-      state.user ? db.from('homework_completions').select('homework_id').eq('user_id', state.user.id) : Promise.resolve({ data: [] }),
-    ]));
-    if (result.error) {
-      // Hide the banner on failure rather than leaving it in an unknown state.
-      el.style.display = 'none';
-      return;
-    }
-    const [hwRes, doneRes] = result.data;
-    const data = hwRes?.data;
-    const done = doneRes?.data;
-    if (!data?.length) {
-      el.style.display = 'none';
-      return;
-    }
-    const doneSet = new Set((done || []).map((d) => d.homework_id));
-    const pending = data.filter((h) => !doneSet.has(h.id)).length;
-    el.style.display = 'block';
-    const badge = pending > 0 ? `<span class="hw-badge">${pending}</span>` : '';
-    el.innerHTML = `<p style="font-weight:900;margin-bottom:8px;">${badge}📋 واجبات الصف</p>` + data.map((h) => {
-      const isDone = doneSet.has(h.id);
-      // XSS hardening: every DB-sourced value is escaped for its context.
-      // - Text content (title, due_date, book, range): use esc().
-      // - Inline JS string argument (h.id): use esc(JSON.stringify(...)) so the
-      //   value is safe in both the HTML-attribute and JS-string layers.
-      const due = h.due_date ? ` — موعد: ${esc(h.due_date)}` : '';
-      const bookLabel = esc(BOOK_LABELS_LOCAL[h.book] || h.book || '');
-      const safeJsId = escJsString(h.id);
-      return `<div class="hw-item${isDone ? ' done' : ''}">
-        <strong>📋 ${esc(h.title)}</strong>
-        <span>${bookLabel} · ${esc(h.q_from)}-${esc(h.q_to)}${due}</span>
-        <button class="btn btn-gold btn-sm" onclick="startHomework(${safeJsId})" ${isDone ? 'disabled' : ''}>${isDone ? 'مكتمل ✓' : 'ابدأ الواجب'}</button>
-      </div>`;
-    }).join('');
-  }
-
+  
   window.startHomework = async function startHomework(hwId) {
     const { data: h, error } = await safeQuery(
       () => db.from('homework').select('*').eq('id', hwId).single(),

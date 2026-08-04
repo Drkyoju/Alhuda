@@ -27,66 +27,6 @@ const db = new Proxy({}, {
 const BOOK_LABELS = { tawheed:'كتاب التوحيد', usool:'الأصول الثلاثة', nawawi:'الأربعون النووية', merge3:'الكتب الثلاثة' };
 const BOOK_BTN_MAP = { tawheed:'tawheed', usool:'usool', nawawi:'nawawi', merge3:'merge' };
 const LEVEL_LABELS = { easy:'سهل', medium:'متوسط', hard:'صعب', all:'كل المستويات' };
-const DEMO_COUNT = 8;
-/** Weekly featured pools (ISO week % 2) mixed into each demo, then filled randomly. */
-const DEMO_FEATURED_POOLS = {
-  tawheed: [
-    [
-      '6dea92e9-ae29-4fda-bbf1-55f3b0f2ac90',
-      '8230d37a-f5c5-4dea-b8d2-ee499eec99e6',
-      '39a35c94-3034-43c9-bcc0-3032b1b01381',
-      '67831742-cfc3-4c12-a11c-4be748e40bda',
-    ],
-    [
-      '40fd1b0a-b12e-4b92-9958-5241f6df5912',
-      '5aeee9f3-c1a0-44e9-a85e-f26691ac1502',
-      '213fc1f9-d919-4153-b28a-6e53cb13acce',
-      '51990c98-78e7-45db-ac60-ae2b4110517f',
-    ],
-  ],
-  usool: [
-    [
-      '45b11c1a-6569-4653-85ee-fc3397d5dce7',
-      '07d01f29-b988-4574-8ca1-9cedad8ca864',
-      'c68b2f57-38b0-4671-ad6d-c546eeea2945',
-      '44c0fa04-4e25-40dc-8b0e-9a4ea3ff9291',
-    ],
-    [
-      '3c6a55b5-9c87-4cbe-8963-9ea596edf789',
-      '51b3515c-278d-4df5-a4fb-a7b71c920153',
-      'cae566ed-4e67-442d-a8bd-df8c76928ebd',
-      '4116d4b3-fd57-4fc9-a4de-0b12024fef7e',
-    ],
-  ],
-  nawawi: [
-    [
-      'da89ed81-0fb5-4f49-a689-880a89271aed',
-      'c222d45d-12aa-489b-b6d5-8c71d179b249',
-      '45777616-94a2-45a0-81c4-1dbcc82a606b',
-      '371c3a70-cb31-4f62-a927-3576432f673e',
-    ],
-    [
-      '5d714abc-747b-4e95-8ab4-e31e6f985a3d',
-      'ff19a316-58a1-4278-bee4-b6f49b4fc435',
-      '41b189f4-a2e6-43a3-ba4f-e27fb4f6627b',
-      'e3b8d209-b4b7-45cc-bfb0-78ac6d7ed91b',
-    ],
-  ],
-};
-function getDemoWeekIndex() {
-  const now = new Date();
-  const utc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-  const dayNum = new Date(utc).getUTCDay() || 7;
-  const thursday = new Date(utc);
-  thursday.setUTCDate(new Date(utc).getUTCDate() + 4 - dayNum);
-  const yearStart = new Date(Date.UTC(thursday.getUTCFullYear(), 0, 1));
-  const weekNo = Math.ceil((((thursday - yearStart) / 86400000) + 1) / 7);
-  return weekNo % 2;
-}
-function getDemoFeaturedIds(book) {
-  const pools = DEMO_FEATURED_POOLS[book] || [];
-  return pools[getDemoWeekIndex()] || pools[0] || [];
-}
 const GAME_RESUME_KEY = 'alhudaGameResumeV1';
 const PENDING_SCORES_KEY = 'pendingScores';
 const QUESTION_TIME_SEC = 45;
@@ -111,37 +51,19 @@ function chapterSortIndex(book, chapter) {
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
 let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, challengeMode:false, challengeCode:'', demoMode:false, demoBook:'', wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:20 };
-let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, pendingLoginAfterDemo = false, loginInProgress = false;
+let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
 let questionShownAt = 0;
-let lastDemoSessionStats = null;
 const AZURE_TTS_USAGE_KEY = 'azureTtsCharsMonthV1';
 const AZURE_F0_SOFT_LIMIT = 450000; // warn before free 500k/month
 const TTS_ERROR_STATS_KEY = 'ttsErrorStatsV1';
 let ttsSessionFailCount = 0;
 let ttsLastErrorMsg = '';
 
-const DEMO_FALLBACK = [
-  { id:'demo1', book:'tawheed', type:'tf', q:'التوحيد هو إفراد الله تعالى بالعبادة.', tf:true, exp:'نعم! التوحيد هو إفراد الله في الربوبية والألوهية والأسماء والصفات.', quote:'«العبادة هي التوحيد»', page:12, cat:'🕌 حق الله' },
-  { id:'demo4', book:'tawheed', type:'tf', q:'الشرك الأكبر يُخرج من الملة.', tf:true, exp:'الشرك الأكبر من أعظم الكبائر ويُبقي صاحبه في النار إن مات عليه.' },
-  { id:'demo6', book:'tawheed', type:'tf', q:'الدعاء عبادة لا تُصرف إلا لله.', tf:true, exp:'الدعاء من أعظم العبادات، وصرفه لغير الله شرك.' },
-  { id:'demo7', book:'tawheed', type:'tf', q:'التوكل على الله واجب.', tf:true, exp:'التوكل عبادة القلب، وهو الاعتماد على الله مع فعل الأسباب.' },
-  { id:'demo2', book:'usool', type:'mc', q:'ما هي الأصول الثلاثة؟', a:['معرفة الرب ومعرفة الدين ومعرفة نبيك','الصلاة والزكاة والصوم','الإيمان والإحسان والإخلاص','القرآن والسنة والإجماع'], c:0, exp:'الأصول الثلاثة: معرفة الرب، ومعرفة الدين بمعرفة دينك، ومعرفة نبيك محمد ﷺ.', quote:'«تَعَلَّمْ أَنَّهُ لَا يَجِبُ عَلَى أَحَدٍ مِنَ الْخَلْقِ أَنْ يُعَبَّدَ إِلَّا اللَّهُ»', page:8, cat:'📚 المسائل الأربع' },
-  { id:'demo5', book:'usool', type:'tf', q:'العبادة هي الطاعة والخضوع لله.', tf:true, exp:'العبادة اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال.' },
-  { id:'demo8', book:'usool', type:'tf', q:'الإخلاص شرط لقبول العمل.', tf:true, exp:'لا يُقبل عمل بغير إخلاص لله ومتابعة للرسول ﷺ.' },
-  { id:'demo9', book:'usool', type:'tf', q:'معرفة الرب أول الأصول الثلاثة.', tf:true, exp:'أول ما يجب معرفة الرب ثم معرفة الدين ثم معرفة النبي ﷺ.' },
-  { id:'demo3', book:'nawawi', type:'tf', q:'أول حديث في الأربعون النووية: «إنما الأعمال بالنيات».', tf:true, exp:'صحيح! وهو أول حديث في الأربعون النووية للإمام النووي رحمه الله.', quote:'«إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ»', page:1, cat:'الأربعون النووية' },
-  { id:'demo10', book:'nawawi', type:'tf', q:'بُني الإسلام على خمس.', tf:true, exp:'الشهادتان والصلاة والزكاة والصوم والحج.' },
-  { id:'demo11', book:'nawawi', type:'tf', q:'الدين النصيحة.', tf:true, exp:'حديث عظيم يدل على أن النصيحة أصل في الدين لله ولكتابه ولرسوله وللأئمة وعامة المسلمين.' },
-  { id:'demo12', book:'nawawi', type:'tf', q:'لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه.', tf:true, exp:'من علامات كمال الإيمان محبة الخير للمسلمين كما تحبه لنفسك.' },
-];
-
 const OFFLINE_QUESTIONS_DB = 'alhudaQuestionsOffline';
 const OFFLINE_QUESTIONS_STORE = 'books';
 const OFFLINE_QUESTIONS_KEY = 'questionsOfflineV1';
-const DEMO_ANALYTICS_KEY = 'demoAnalyticsV1';
-const DEMO_ANALYTICS_MAX = 500;
 
 function openOfflineQuestionsDb() {
   return new Promise((resolve, reject) => {
@@ -163,14 +85,14 @@ function openOfflineQuestionsDb() {
 
 async function saveQuestionsOffline(payload) {
   try {
-    const db = await openOfflineQuestionsDb();
+    const idb = await openOfflineQuestionsDb();
     await new Promise((resolve, reject) => {
-      const tx = db.transaction(OFFLINE_QUESTIONS_STORE, 'readwrite');
+      const tx = idb.transaction(OFFLINE_QUESTIONS_STORE, 'readwrite');
       tx.objectStore(OFFLINE_QUESTIONS_STORE).put(payload, OFFLINE_QUESTIONS_KEY);
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });
-    db.close();
+    idb.close();
   } catch (e) {
     try {
       localStorage.setItem(OFFLINE_QUESTIONS_KEY, JSON.stringify({
@@ -193,14 +115,14 @@ async function saveQuestionsOffline(payload) {
 
 async function loadQuestionsOffline() {
   try {
-    const db = await openOfflineQuestionsDb();
+    const idb = await openOfflineQuestionsDb();
     const data = await new Promise((resolve, reject) => {
-      const tx = db.transaction(OFFLINE_QUESTIONS_STORE, 'readonly');
+      const tx = idb.transaction(OFFLINE_QUESTIONS_STORE, 'readonly');
       const req = tx.objectStore(OFFLINE_QUESTIONS_STORE).get(OFFLINE_QUESTIONS_KEY);
       req.onsuccess = () => resolve(req.result || null);
       req.onerror = () => reject(req.error);
     });
-    db.close();
+    idb.close();
     if (data?.books) return data;
   } catch (e) { /* fall through */ }
   try {
@@ -221,157 +143,9 @@ function persistLoadedQuestionsOffline() {
   void saveQuestionsOffline({ ts: Date.now(), books });
 }
 
-function recordDemoAnalytics(q, isOk, picked, elapsedMs) {
-  if (!state.demoMode || !q) return;
-  let rows = [];
-  try { rows = JSON.parse(localStorage.getItem(DEMO_ANALYTICS_KEY) || '[]'); } catch { rows = []; }
-  if (!Array.isArray(rows)) rows = [];
-  const ms = Number.isFinite(elapsedMs) ? Math.max(0, Math.round(elapsedMs)) : null;
-  rows.push({
-    questionId: q.id || '',
-    book: q.book || state.demoBook || '',
-    correct: !!isOk,
-    picked: String(picked || '').slice(0, 120),
-    q: String(q.q || '').slice(0, 100),
-    ms,
-    t: Date.now(),
-  });
-  if (rows.length > DEMO_ANALYTICS_MAX) rows = rows.slice(-DEMO_ANALYTICS_MAX);
-  try { localStorage.setItem(DEMO_ANALYTICS_KEY, JSON.stringify(rows)); } catch (e) {}
-}
-
 function getQuestionElapsedMs() {
   if (!questionShownAt) return null;
   return Date.now() - questionShownAt;
-}
-
-function buildLastDemoSessionStats() {
-  const total = state.total || (state.questions || []).length || DEMO_COUNT;
-  const correct = state.correct || 0;
-  const wrong = state.wrong || 0;
-  let avgMs = null;
-  try {
-    const rows = JSON.parse(localStorage.getItem(DEMO_ANALYTICS_KEY) || '[]');
-    const session = (Array.isArray(rows) ? rows : [])
-      .filter((r) => r && r.book === (state.demoBook || r.book))
-      .slice(-total)
-      .filter((r) => Number.isFinite(r.ms));
-    if (session.length) {
-      avgMs = Math.round(session.reduce((s, r) => s + r.ms, 0) / session.length);
-    }
-  } catch (e) {}
-  return { total, correct, wrong, avgMs, book: state.demoBook || '' };
-}
-
-function formatAvgAnswerTime(ms) {
-  if (!Number.isFinite(ms) || ms < 0) return '';
-  const sec = Math.round(ms / 1000);
-  return arabicNum(sec) + ' ث';
-}
-
-const DEMO_BOOKS_TRIED_KEY = 'demoBooksTriedV1';
-
-function getDemoBooksTried() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(DEMO_BOOKS_TRIED_KEY) || '{}');
-    return {
-      tawheed: !!raw.tawheed,
-      usool: !!raw.usool,
-      nawawi: !!raw.nawawi,
-    };
-  } catch {
-    return { tawheed: false, usool: false, nawawi: false };
-  }
-}
-
-function markDemoBookTried(book) {
-  if (!QUESTION_BOOKS.includes(book)) return;
-  const tried = getDemoBooksTried();
-  tried[book] = true;
-  try { localStorage.setItem(DEMO_BOOKS_TRIED_KEY, JSON.stringify(tried)); } catch (e) {}
-}
-
-function countDemoBooksTried() {
-  const tried = getDemoBooksTried();
-  return QUESTION_BOOKS.filter((b) => tried[b]).length;
-}
-
-function renderDemoResultSummary() {
-  const el = document.getElementById('demo-result-summary');
-  if (!el) return;
-  const stats = lastDemoSessionStats || buildLastDemoSessionStats();
-  lastDemoSessionStats = stats;
-  const book = BOOK_LABELS[stats.book] || stats.book || '';
-  const avg = formatAvgAnswerTime(stats.avgMs);
-  const pct = stats.total ? stats.correct / stats.total : 0;
-  const stars = pct >= 0.9 ? 3 : pct >= 0.7 ? 2 : pct >= 0.5 ? 1 : 0;
-  let starsHtml = '';
-  for (let i = 0; i < 3; i++) {
-    starsHtml += i < stars ? '⭐' : '<span class="star-empty">⭐</span>';
-  }
-  el.hidden = false;
-  el.classList.remove('demo-result-pop');
-  void el.offsetWidth;
-  el.classList.add('demo-result-pop');
-  el.innerHTML =
-    `<div class="demo-result-stars" aria-hidden="true">${starsHtml}</div>` +
-    `<p class="demo-result-score">${arabicNum(stats.correct)} / ${arabicNum(stats.total)} صحيحة</p>` +
-    `<p class="demo-result-meta">${book ? escapeHtml(book) + ' · ' : ''}` +
-    `${arabicNum(stats.wrong)} خطأ` +
-    (avg ? ` · متوسط الوقت ${avg}` : '') +
-    `</p>` +
-    (countDemoBooksTried() === 2
-      ? `<p class="demo-result-nudge" role="status">🌟 باقي كتاب واحد — اضغط/ي «جرّب/ي كتاباً آخر» وأكمل/ي الثلاثة!</p>`
-      : countDemoBooksTried() >= 3
-        ? `<p class="demo-result-nudge is-done" role="status">✅ أحسنت! جرّبتَ/ِ الكتب الثلاثة</p>`
-        : '');
-  if (pct >= 0.625) {
-    try { launchConfetti(); } catch (e) {}
-    playSound('achievement');
-  }
-}
-
-function getDemoHardQuestionsSummary(limit = 3) {
-  let rows = [];
-  try { rows = JSON.parse(localStorage.getItem(DEMO_ANALYTICS_KEY) || '[]'); } catch { return []; }
-  const recent = rows.filter((r) => r && r.t && Date.now() - r.t < 1000 * 60 * 60 * 24 * 14);
-  const byId = new Map();
-  for (const r of recent) {
-    if (!r.questionId) continue;
-    const cur = byId.get(r.questionId) || { id: r.questionId, q: r.q, wrong: 0, total: 0 };
-    cur.total++;
-    if (!r.correct) cur.wrong++;
-    if (r.q) cur.q = r.q;
-    byId.set(r.questionId, cur);
-  }
-  return [...byId.values()]
-    .filter((x) => x.wrong > 0)
-    .sort((a, b) => (b.wrong / b.total) - (a.wrong / a.total) || b.wrong - a.wrong)
-    .slice(0, limit);
-}
-
-function renderDemoAnalyticsSummary(targetId = 'demo-analytics-summary') {
-  const el = document.getElementById(targetId);
-  if (!el) return;
-  const hard = getDemoHardQuestionsSummary(3);
-  if (!hard.length) {
-    if (targetId === 'demo-analytics-summary' && lastDemoSessionStats) {
-      el.hidden = false;
-      el.innerHTML = '<p class="demo-analytics-title">🌟 أحسنت — لا أخطاء متكررة في تجربتك</p>';
-      return;
-    }
-    el.hidden = true;
-    el.innerHTML = '';
-    return;
-  }
-  el.hidden = false;
-  el.innerHTML = '<p class="demo-analytics-title">أصعب الأسئلة في تجربتك</p><ul>' +
-    hard.map((h) => `<li>${escapeHtml(h.q || 'سؤال')} <span>(خطأ ${arabicNum(h.wrong)}/${arabicNum(h.total)})</span></li>`).join('') +
-    '</ul>';
-}
-
-function refreshLoginAnalyticsPanel() {
-  renderDemoAnalyticsSummary('login-analytics-summary');
 }
 
 const LEVELS = [
@@ -956,7 +730,7 @@ function getQuestionsForStageGame() {
     const next = shuffled.slice(0, size);
     state.qFrom = 1;
     state.activeStageNum = 1;
-    return dedupeGameQuestions(next);
+    return dedupeQuestionList(next);
   }
 
   // Finished the tier — do not auto-recycle into review.
@@ -971,7 +745,7 @@ function getQuestionsForStageGame() {
   state.qFrom = firstIdx >= 0 ? firstIdx + 1 : 1;
   const solvedBefore = pool.length - unsolved.length;
   state.activeStageNum = Math.max(1, Math.floor(solvedBefore / round) + 1);
-  return dedupeGameQuestions(next);
+  return dedupeQuestionList(next);
 }
 
 function updateStagePickerUI() {
@@ -1453,77 +1227,11 @@ function onRangeInputChange() {
   updateQuestionRangeUI();
 }
 
-function buildDemoQuestions(book) {
-  const seen = new Set();
-  const out = [];
-  const pushUnique = (list, limit = DEMO_COUNT) => {
-    for (const q of list || []) {
-      if (!q || seen.has(q.id)) continue;
-      if (q.book && q.book !== book) continue;
-      seen.add(q.id);
-      out.push(q);
-      if (out.length >= limit) return true;
-    }
-    return false;
-  };
-
-  const pool = dedupeQuestionList(getOrderedPool(book, 'all'));
-  const byId = new Map(pool.map((q) => [q.id, q]));
-  const featuredIds = getDemoFeaturedIds(book);
-  const featured = featuredIds.map((id) => byId.get(id)).filter(Boolean);
-
-  // Mix: up to 4 curated featured + fill with random from pool/bundle/fallback.
-  const featuredTarget = Math.min(4, DEMO_COUNT);
-  pushUnique(featured, featuredTarget);
-
-  const restPool = shuffleArr(pool.filter((q) => !seen.has(q.id)));
-  if (pushUnique(restPool)) return shuffleArr(out).slice(0, DEMO_COUNT);
-
-  const bundled = (typeof window !== 'undefined' && window.DEMO_QUESTIONS_BUNDLE?.[book]) || [];
-  if (pushUnique(shuffleArr([...bundled]))) return shuffleArr(out).slice(0, DEMO_COUNT);
-
-  pushUnique(DEMO_FALLBACK.filter((q) => q.book === book));
-  return shuffleArr(out).slice(0, DEMO_COUNT);
-}
 
 function arabicNum(n) {
   return String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[+d]);
 }
 
-function updateDemoBookPicker() {
-  const counts = { tawheed: 0, usool: 0, nawawi: 0 };
-  const tried = getDemoBooksTried();
-  const triedN = countDemoBooksTried();
-  const progress = document.getElementById('demo-books-progress');
-  if (progress) {
-    progress.textContent = triedN
-      ? `جرّبتَ/ِ ${arabicNum(triedN)}/٣ كتب`
-      : '٣ كتب × ٨ أسئلة';
-  }
-  const nudge = document.getElementById('demo-books-nudge');
-  if (nudge) {
-    const showNudge = triedN === 2;
-    nudge.hidden = !showNudge;
-    if (showNudge) {
-      const remaining = QUESTION_BOOKS.find((b) => !tried[b]);
-      const label = remaining ? (BOOK_LABELS[remaining] || remaining) : '';
-      nudge.textContent = label
-        ? `🌟 باقي كتاب واحد: ${label} — أكمل/ي الكتب الثلاثة!`
-        : '🌟 باقي كتاب واحد — جرّب/ي الكتب الثلاثة كلها!';
-    }
-  }
-  for (const book of Object.keys(counts)) {
-    counts[book] = buildDemoQuestions(book).length;
-    const el = document.getElementById('demo-pick-count-' + book);
-    if (el) {
-      el.textContent = tried[book]
-        ? '✓ جرّبتَ · ' + arabicNum(counts[book]) + ' أسئلة'
-        : arabicNum(counts[book]) + ' أسئلة';
-    }
-    const btn = document.querySelector(`.demo-book-pick[onclick*="'${book}'"]`);
-    if (btn) btn.classList.toggle('is-tried', !!tried[book]);
-  }
-}
 
 function escapeHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
@@ -1981,12 +1689,10 @@ function toggleSound() {
 /* ── Voice reading (Yousef baked MP3s; no browser/Edge fallback for lesson TTS) ── */
 /** Fish Audio Arabic narrator (راوي) — all bank clips baked under this id. */
 const TTS_VOICE = 'c3e5d81d807f4cbc9a0c2872a4dea9ea';
-const TTS_VOICE_FALLBACK = 'ar-SA-HamedNeural';
 /** Must match baked-tts.js / collect_tts_strings.mjs (file hashes use this ver). */
 const TTS_CACHE_VER = 'v30';
 /** Bump to drop stale IndexedDB blobs from prior Yousef/v29 bake. */
 const TTS_IDB_NAME = 'alhudaTtsCache_v3';
-let cachedArabicVoice = null;
 const TTS_BLOB_CACHE_MAX = 120;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
@@ -1998,97 +1704,7 @@ if (typeof window !== 'undefined' && window.__alhudaBakedTtsOnly == null) {
 const ttsPreloadedAudio = new Map(); // key -> HTMLAudioElement (decoded ahead of play)
 const TTS_IDB_STORE = 'audio';
 
-/**
- * Quran word-by-word clips for الله-family.
- * OFF by default (Yousef baked TTS keeps case-aware اللَّهُ/ِ/َ).
- */
-const USE_ALLAH_QURAN_CLIPS = false;
-const ALLAH_PRON_CLIPS = {
-  اللهم: 'audio/pron/allahumma.mp3?v=2',
-  بالله: 'audio/pron/billah.mp3?v=2',
-  والله: 'audio/pron/wallah.mp3?v=2',
-  فالله: 'audio/pron/fallah.mp3?v=2',
-  تالله: 'audio/pron/tallah.mp3?v=2',
-  كالله: 'audio/pron/kallah.mp3?v=2',
-  ولله: 'audio/pron/walillah.mp3?v=2',
-  فلله: 'audio/pron/falillah.mp3?v=2',
-  لله: 'audio/pron/lillah.mp3?v=2',
-  الله: 'audio/pron/allah.mp3?v=2',
-};
-const ALLAH_PRON_KEYS = Object.keys(ALLAH_PRON_CLIPS);
-const ALLAH_PRON_RE = new RegExp(
-  `(^|[^\\u0621-\\u064A\\u0671])(${ALLAH_PRON_KEYS.join('|')})(?=[^\\u0621-\\u064A\\u0671]|$)`,
-  'g'
-);
-const allahPronUrlCache = new Map(); // path -> objectUrl
-let allahPronWarmPromise = null;
 
-function splitTtsWithAllahPron(text) {
-  const s = String(text || '').trim();
-  if (!s) return [];
-  // Pure Hamed path (lexicon on the Worker) — no clip splicing.
-  if (!USE_ALLAH_QURAN_CLIPS) return [{ type: 'tts', text: s }];
-  const parts = [];
-  let last = 0;
-  ALLAH_PRON_RE.lastIndex = 0;
-  let m;
-  while ((m = ALLAH_PRON_RE.exec(s))) {
-    const pre = m[1] || '';
-    const tok = m[2];
-    const tokStart = m.index + pre.length;
-    if (tokStart > last) {
-      const chunk = s.slice(last, tokStart).trim();
-      if (chunk) parts.push({ type: 'tts', text: chunk });
-    }
-    parts.push({ type: 'allah', text: tok, clip: ALLAH_PRON_CLIPS[tok] });
-    last = tokStart + tok.length;
-  }
-  if (last < s.length) {
-    const chunk = s.slice(last).trim();
-    if (chunk) parts.push({ type: 'tts', text: chunk });
-  }
-  return parts.length ? parts : [{ type: 'tts', text: s }];
-}
-
-async function ensureAllahPronClipUrl(path) {
-  if (!path) return null;
-  if (allahPronUrlCache.has(path)) return allahPronUrlCache.get(path);
-  const res = await fetch(path, { cache: 'force-cache' });
-  if (!res.ok) throw new Error(`pron clip ${res.status}`);
-  const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
-  allahPronUrlCache.set(path, url);
-  return url;
-}
-
-function warmAllahPronClips() {
-  if (allahPronWarmPromise) return allahPronWarmPromise;
-  const paths = [...new Set(Object.values(ALLAH_PRON_CLIPS))];
-  allahPronWarmPromise = Promise.all(
-    paths.map((p) => ensureAllahPronClipUrl(p).catch(() => null))
-  );
-  return allahPronWarmPromise;
-}
-
-async function playAllahPronClip(path, btn) {
-  const url = await ensureAllahPronClipUrl(path);
-  if (!url) throw new Error('missing pron clip');
-  if (ttsAudio) {
-    ttsAudio.onended = null;
-    ttsAudio.onerror = null;
-    ttsAudio.pause();
-  }
-  ttsAudio = new Audio(url);
-  // Match lesson TTS loudness — raw tilawa clips were much louder/longer.
-  ttsAudio.volume = 0.92;
-  ttsObjectUrl = url;
-  if (btn) btn.classList.add('speaking');
-  await ttsAudio.play();
-  await new Promise((resolve, reject) => {
-    ttsAudio.onended = resolve;
-    ttsAudio.onerror = () => reject(new Error('pron audio error'));
-  });
-}
 
 function ttsCacheKey(text, voice) {
   return `${TTS_CACHE_VER}::${voice || TTS_VOICE}::${String(text || '').slice(0, 600)}`;
@@ -2336,14 +1952,9 @@ function prefetchTtsText(text, voice = TTS_VOICE) {
   void ensureSpeechMapsLoaded().then(() => {
     const clean = prepareTtsPayload(text);
     if (!clean || clean.length < 2) return;
-    void warmAllahPronClips();
-    const parts = splitTtsWithAllahPron(clean);
-    for (const part of parts) {
-      if (part.type !== 'tts' || !part.text || part.text.length < 2) continue;
-      const key = ttsCacheKey(part.text, voice);
-      if (ttsBlobMemoryCache.has(key) || ttsPrefetchInFlight.has(key)) continue;
-      void fetchTtsBlob(part.text, voice).catch(() => {});
-    }
+    const key = ttsCacheKey(clean, voice);
+    if (ttsBlobMemoryCache.has(key) || ttsPrefetchInFlight.has(key)) return;
+    void fetchTtsBlob(clean, voice).catch(() => {});
   });
 }
 
@@ -2352,11 +1963,8 @@ const questionSpeechWarmPromises = new WeakMap();
 /** Prefetch question audio first (resolves ASAP); options warm in parallel. */
 function ttsPayloadReadyInMemory(preparedText, voice = TTS_VOICE) {
   const clean = String(preparedText || '').trim();
-  if (!clean) return true;
-  const parts = splitTtsWithAllahPron(clean);
-  const need = parts.filter((part) => part.type === 'tts' && part.text?.length >= 2);
-  if (!need.length) return true;
-  return need.every((part) => ttsBlobMemoryCache.has(ttsCacheKey(part.text, voice)));
+  if (!clean || clean.length < 2) return true;
+  return ttsBlobMemoryCache.has(ttsCacheKey(clean, voice));
 }
 
 async function warmQuestionSpeech(q) {
@@ -2380,18 +1988,11 @@ async function warmQuestionSpeech(q) {
     }
     const qClean = prepareTtsPayload(questionText);
     try {
-      void warmAllahPronClips();
-      if (qClean) {
-        const parts = splitTtsWithAllahPron(qClean);
-        await Promise.all(
-          parts
-            .filter((part) => part.type === 'tts' && part.text?.length >= 2)
-            .map((part) => {
-              const key = ttsCacheKey(part.text);
-              if (ttsBlobMemoryCache.has(key)) return null;
-              return fetchTtsBlob(part.text).catch(() => null);
-            })
-        );
+      if (qClean && qClean.length >= 2) {
+        const key = ttsCacheKey(qClean);
+        if (!ttsBlobMemoryCache.has(key)) {
+          await fetchTtsBlob(qClean).catch(() => null);
+        }
       }
       return null;
     } catch {
@@ -2728,15 +2329,6 @@ function prepareArabicForSpeech(s) {
   return t;
 }
 
-function pickCitationTextForSpeech(q) {
-  const raw = String(q?.quote || '').replace(/^«|»$/g, '').trim();
-  if (raw && (hasWellFormedTashkeel(raw) || (ARABIC_HARAKAT_RE.test(raw) && !hasOcrTashkeelGaps(raw) && !hasBrokenArabicSpacing(raw)))) {
-    return prepareArabicForSpeech(raw);
-  }
-  if (q?.id && getCanonicalQuote(q.id)) return getCanonicalQuote(q.id);
-  const cleaned = pickCitationText(q).replace(/^«|»$/g, '').trim();
-  return cleaned ? prepareArabicForSpeech(cleaned) : '';
-}
 
 const MANUAL_SPEECH_DIACRITICS = [
   ['قال الله تعالى', 'قَالَ اللهُ تَعَالَى'],
@@ -2983,7 +2575,7 @@ function isQuranicAyahText(s) {
 
 function getQuestionContentBlob(q, extra = '') {
   const parts = [q?.q, q?.exp, extra, q?.quote];
-  if (typeof pickCitationText === 'function') parts.push(pickCitationText(q));
+  if (typeof getCitationBodyText === 'function') parts.push(getCitationBodyText(q));
   if (Array.isArray(q?.a)) parts.push(...q.a);
   return parts.filter(Boolean).join(' ');
 }
@@ -3083,41 +2675,8 @@ function buildQuestionSpeechText(q) {
   return [questionText, optionsText].filter(Boolean).join('، ');
 }
 
-function buildFeedbackSpeechText(q, wrongText) {
-  const parts = [];
-  if (wrongText) parts.push(speechPart(q, 'wrong', wrongText));
-  const correct = getCorrectAnswerText(q);
-  if (correct) {
-    const correctIdx = q?.type === 'mc' && q.c != null ? `a${q.c}` : 'correct';
-    parts.push(`الْإِجَابَةُ الصَّحِيحَةُ، ${speechPart(q, correctIdx, correct)}`);
-  }
-  // Speak الاستشهاد only — same resolved text as the UI (never raw garbage quote / separate شرح).
-  const rawCite = pickCitationText(q) || '';
-  const quote = speechPart(q, 'quote', rawCite);
-  if (quote) {
-    parts.push(quote);
-  } else {
-    const book = BOOK_LABELS[q?.book] || q?.book || '';
-    if (book) parts.push(`من كتاب ${book}`);
-    const pageLabel = q?.page != null ? formatPageLabel(q.page) : '';
-    if (pageLabel) parts.push(pageLabel);
-  }
-  return parts.filter(Boolean).join('، ');
-}
 
 /** Speak ONLY what is on screen in the feedback panel — never invent extra شرح/آية. */
-function buildFeedbackSpeechTextFromDom(root = document.getElementById('fb-exp')) {
-  if (!root) return '';
-  const clone = root.cloneNode(true);
-  clone.querySelectorAll(
-    'button, .quran-recite-btn, .quran-recite-wrap, .quran-recite-status, .quran-recite-above'
-  ).forEach((el) => el.remove());
-  const text = (clone.innerText || clone.textContent || '')
-    .replace(/[📖✅❌💡🎧]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-  return text;
-}
 
 /**
  * Return the verified fully-diacritized form of a raw field value by matching it
@@ -3987,26 +3546,7 @@ function updateQuranReciteSlot(q) {
   void fillAyahTextElements(inline || slot, verseKey, { preferSnippet: false, compact: false });
 }
 
-function scoreArabicVoice(v) {
-  const name = (v.name || '').toLowerCase();
-  const lang = (v.lang || '').toLowerCase();
-  let score = 0;
-  if (lang === 'ar-sa') score += 40;
-  else if (lang.startsWith('ar')) score += 25;
-  if (/hamed|salma|maj(ed)?|tarik|naayf|shakir|zariyah|premium|enhanced|neural|google|microsoft|natural/.test(name)) score += 30;
-  if (/compact|low|robot|espeak|festival/.test(name)) score -= 40;
-  if (v.localService === false) score += 10;
-  return score;
-}
 
-function loadArabicVoice() {
-  if (!('speechSynthesis' in window)) return null;
-  const voices = speechSynthesis.getVoices().filter(v => (v.lang || '').toLowerCase().includes('ar'));
-  if (!voices.length) return null;
-  voices.sort((a, b) => scoreArabicVoice(b) - scoreArabicVoice(a));
-  cachedArabicVoice = voices[0];
-  return cachedArabicVoice;
-}
 
 function clearTtsAudio(btn) {
   if (ttsAbort) {
@@ -4036,27 +3576,6 @@ function stopSpeaking() {
   if ('speechSynthesis' in window) speechSynthesis.cancel();
 }
 
-function speakTextBrowser(text, btn) {
-  if (!('speechSynthesis' in window)) return Promise.resolve(false);
-  return new Promise((resolve) => {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'ar-SA';
-    const voice = cachedArabicVoice || loadArabicVoice();
-    if (voice) u.voice = voice;
-    u.rate = 0.78;
-    u.pitch = 1;
-    if (btn) btn.classList.add('speaking');
-    u.onend = () => {
-      if (btn) btn.classList.remove('speaking');
-      resolve(true);
-    };
-    u.onerror = () => {
-      if (btn) btn.classList.remove('speaking');
-      resolve(false);
-    };
-    speechSynthesis.speak(u);
-  });
-}
 
 async function speakTextCloud(text, btn, voice = TTS_VOICE) {
   const key = ttsCacheKey(text, voice);
@@ -4107,34 +3626,19 @@ async function speakTtsSegment(text, btn, { keepBtnState = true, clearAfter = tr
   // alreadyPrepared: caller already ran prepareTtsPayload (avoid double-normalize cache miss).
   const clean = alreadyPrepared ? String(text || '').trim() : prepareTtsPayload(text);
   if (!clean) return;
-  const parts = splitTtsWithAllahPron(clean);
   try {
-    void warmAllahPronClips();
-    for (const part of parts) {
-      if (part.type === 'allah' && part.clip) {
-        try {
-          await playAllahPronClip(part.clip, btn);
-        } catch (clipErr) {
-          // Clip failed — fall back to cloud TTS for this token only.
-          await speakTextCloud(part.text, btn, TTS_VOICE);
-        }
-      } else if (part.text) {
-        try {
-          await speakTextCloud(part.text, btn, TTS_VOICE);
-        } catch (e) {
-          if (e.name === 'AbortError') throw e;
-          // Do NOT fall back to browser SpeechSynthesis — it is a different voice
-          // and commonly mispronounces الله. Soft-fail instead of wrong audio.
-          clearTtsAudio(keepBtnState ? null : btn);
-          throw e;
-        }
-      }
+    try {
+      await speakTextCloud(clean, btn, TTS_VOICE);
+    } catch (e) {
+      if (e.name === 'AbortError') throw e;
+      // Do NOT fall back to browser SpeechSynthesis — it is a different voice
+      // and commonly mispronounces الله. Soft-fail instead of wrong audio.
+      clearTtsAudio(keepBtnState ? null : btn);
+      throw e;
     }
-  } catch (e) {
-    if (e.name === 'AbortError') throw e;
-    throw e;
+  } finally {
+    if (clearAfter) clearTtsAudio(keepBtnState ? null : btn);
   }
-  if (clearAfter) clearTtsAudio(keepBtnState ? null : btn);
 }
 
 /**
@@ -4295,7 +3799,6 @@ function speakQuestion() {
       const token = hybridSpeechToken;
       if (btn) btn.classList.add('speaking');
       try {
-        void warmAllahPronClips();
         const recited = new Set();
 
         // 1) Question — start ASAP; soft-fail and continue to answers.
@@ -4442,9 +3945,6 @@ function updateVoiceUI() {
   }
 }
 
-function toggleGameVoice() {
-  toggleVoice();
-}
 
 function toggleVoice() {
   voiceOn = !voiceOn;
@@ -4903,9 +4403,6 @@ function getCitationBodyText(q) {
   return '';
 }
 
-function pickCitationText(q) {
-  return getCitationBodyText(q);
-}
 
 function sanitizeBookQuote(text, questionId) {
   return cleanArabicCitation(text, questionId);
@@ -5116,6 +4613,7 @@ async function finishDemoFlow() { show('login-screen'); }
 function updateDemoBookPicker() {}
 function renderDemoResultSummary() {}
 function renderDemoAnalyticsSummary() {}
+function refreshLoginAnalyticsPanel() {}
 function recordDemoAnalytics() {}
 function buildLastDemoSessionStats() { return { total: 0, correct: 0, wrong: 0, avgMs: 0, book: '' }; }
 function buildDemoQuestions() { return []; }
@@ -5342,9 +4840,6 @@ function dedupeQuestionList(questions) {
   return kept;
 }
 
-function dedupeGameQuestions(questions) {
-  return dedupeQuestionList(questions);
-}
 
 function ingestBookQuestions(book, rows) {
   if (!['tawheed', 'usool', 'nawawi'].includes(book)) return;
@@ -5364,7 +4859,7 @@ function ingestBookQuestions(book, rows) {
   const before = mapped.length;
   QUESTIONS[book] = dedupeQuestionList(mapped);
   const removed = before - QUESTIONS[book].length;
-  if (removed > 0) console.info(`[questions] removed ${removed} near-duplicate(s) in ${book}`);
+  if (removed > 0) console.debug(`[questions] removed ${removed} near-duplicate(s) in ${book}`);
   persistLoadedQuestionsOffline();
 }
 
@@ -5442,10 +4937,10 @@ async function loadBookQuestions(book) {
         // Offline full-ish cache only
         QUESTIONS[book] = dedupeQuestionList(cached);
         bookLoadState[book] = true;
-        console.info(`[questions] loaded ${book} from offline cache`);
+        console.debug(`[questions] loaded ${book} from offline cache`);
       } else if (!QUESTIONS[book]?.length) {
         seedQuestionsFromBundle();
-        console.info(`[questions] provisional ${book} from demo bundle`);
+        console.debug(`[questions] provisional ${book} from demo bundle`);
         throw netErr;
       } else {
         // Keep provisional demo rows; mark not fully loaded.
@@ -5706,7 +5201,7 @@ function getQuestionsForGame() {
       slice = filtered;
     }
   }
-  return dedupeGameQuestions(slice);
+  return dedupeQuestionList(slice);
 }
 
 function seededShuffle(arr, seed) {
@@ -7124,14 +6619,9 @@ async function restoreSession() {
   if (localStorage.getItem('voiceOn') == null) localStorage.setItem('voiceOn', 'true');
   if (localStorage.getItem('voiceReadAnswers') == null) localStorage.setItem('voiceReadAnswers', 'true');
   updateVoiceUI();
-  if ('speechSynthesis' in window) {
-    loadArabicVoice();
-    speechSynthesis.onvoiceschanged = loadArabicVoice;
-  }
   // Start diacritics map immediately (not idle) so the first speak never waits
   // on a ~670 KB script download after the question is already on screen.
   void ensureSpeechMapsLoaded();
-  void warmAllahPronClips();
   const savedName = getPrimaryName() || localStorage.getItem('savedName');
   const loginScreenActive = document.getElementById('login-screen')?.classList.contains('active');
   if (savedName && loginScreenActive && !LOGIN_LOCKED) document.getElementById('login-name').value = savedName;

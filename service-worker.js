@@ -4,7 +4,7 @@
 // On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
 // without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v201';
+const CACHE = 'alhuda-v202';
 // Keep install precache lean — large speech-diacritics-map.js loads on demand.
 const ASSETS = [
   './',
@@ -17,6 +17,7 @@ const ASSETS = [
   './allah-irab.browser.js',
   './baked-tts.browser.js',
   './speech-diacritics-core.js',
+  './questions-bank.js',
   './version.js',
   './app.js',
   './auth.js',
@@ -28,12 +29,13 @@ const ASSETS = [
   './enhancements.css',
   './icons/icon.svg',
   './icons/org-logo-96.webp',
+  './icons/org-logo-220.webp',
   './icons/icon-192.png',
   './fonts/tajawal-arabic-400-normal.woff2',
   './fonts/tajawal-arabic-700-normal.woff2',
 ];
 
-const VERSION = 'v15';
+const VERSION = 'v202';
 
 self.addEventListener('message', (e) => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
