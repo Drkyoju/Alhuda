@@ -97,23 +97,6 @@
   color: var(--emerald-dark);
 }
 
-/* ── أزرار الدخول ── */
-.kids-theme .btn-demo-login {
-  background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 45%, #FB7185 100%) !important;
-  color: #163828 !important;
-  border: 3px solid #fff !important;
-  box-shadow: 0 8px 0 #D97706, 0 12px 28px rgba(245, 158, 11, 0.4) !important;
-  animation: kidBtnWiggle 3s ease-in-out infinite;
-}
-.kids-theme .btn-demo-login:active {
-  box-shadow: 0 4px 0 #D97706 !important;
-}
-@keyframes kidBtnWiggle {
-  0%, 88%, 100% { transform: translateY(0) rotate(0deg); }
-  92% { transform: translateY(-2px) rotate(-1deg); }
-  96% { transform: translateY(-2px) rotate(1deg); }
-}
-
 .kids-theme .login-feature {
   border-width: 1px;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
@@ -365,16 +348,10 @@
   100% { transform: scale(1) rotate(0); opacity: 1; }
 }
 
-.kids-theme .training-bar,
-.kids-theme #demo-bar {
+.kids-theme .training-bar {
   border-radius: 14px;
   font-weight: 900;
   animation: kidBarGlow 3s ease-in-out infinite;
-}
-.kids-theme #demo-bar {
-  background: linear-gradient(90deg, #E0F2FE, #FCE7F3, #FEF3C7) !important;
-  border: 2px solid #7DD3FC !important;
-  color: #0C4A6E !important;
 }
 @keyframes kidBarGlow {
   0%, 100% { box-shadow: 0 2px 10px rgba(125, 211, 252, 0.2); }
@@ -416,7 +393,6 @@
   .kids-theme .book-btn .book-icon,
   .kids-theme .score-badge,
   .kids-theme #hearts span,
-  .kids-theme .btn-demo-login,
   .kids-theme .progress-bar,
   .kids-theme .q-box::before,
   .kids-theme #game .q-main::before,

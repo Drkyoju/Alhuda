@@ -4018,29 +4018,6 @@ async function shareScore() {
   } catch (e) { showAlert(text); }
 }
 
-async function shareDemoResult() {
-  const stats = lastDemoSessionStats || buildLastDemoSessionStats();
-  const book = BOOK_LABELS[stats.book] || stats.book || '';
-  const avg = stats.avgMs ? ` · متوسط ${Math.round(stats.avgMs / 1000)} ث` : '';
-  const text =
-    `📝 أنهيتُ نموذجاً تجريبياً في مكتبة جمعية الهدى والحكمة التعليمية` +
-    (book ? ` (${book})` : '') +
-    `\nصحيح: ${arabicNum(stats.correct)} / ${arabicNum(stats.total)}${avg}` +
-    `\nجمعية الهدى والحكمة\nhttps://alhuda.ryodan71.workers.dev/`;
-  const shareBtn = document.getElementById('btn-share-demo');
-  if (navigator.share) {
-    try { await navigator.share({ title: 'مكتبة جمعية الهدى والحكمة التعليمية', text }); return; } catch (e) {}
-  }
-  try {
-    await navigator.clipboard.writeText(text);
-    if (shareBtn) {
-      const prev = shareBtn.textContent;
-      shareBtn.textContent = '✅ تم النسخ!';
-      setTimeout(() => { shareBtn.textContent = prev; }, 2000);
-    }
-  } catch (e) { showAlert(text); }
-}
-
 /* ── Demo & Feedback ── */
 function getCorrectAnswerText(q) {
   if (q.type === 'tf') return q.tf ? 'صَحّ ✓' : 'خَطَأٌ ✗';
@@ -4738,8 +4715,6 @@ async function tryRestoreGameSession() {
   state.wrongLog = data.wrongLog || [];
   state.answered = false;
   trainingMode = !!data.trainingMode;
-  const demoBar = document.getElementById('demo-bar');
-  if (demoBar) demoBar.style.display = state.demoMode ? 'block' : 'none';
   document.getElementById('training-bar').style.display = trainingMode ? 'block' : 'none';
   show('game');
   renderQ();
@@ -4995,20 +4970,7 @@ function seedQuestionsFromBundle() {
       return true;
     }
   }
-  const bundle = (typeof window !== 'undefined' && window.DEMO_QUESTIONS_BUNDLE) || null;
-  if (!bundle) return false;
-  let seeded = false;
-  for (const book of QUESTION_BOOKS) {
-    if (QUESTIONS[book]?.length) continue;
-    const rows = bundle[book];
-    if (rows?.length) {
-      QUESTIONS[book] = dedupeQuestionList(rows);
-      // Provisional only — do NOT set bookLoadState (full bank still loading).
-      seeded = true;
-    }
-  }
-  if (seeded || QUESTION_BOOKS.some((b) => QUESTIONS[b]?.length)) updateDemoBookPicker();
-  return QUESTION_BOOKS.some((b) => QUESTIONS[b]?.length);
+  return false;
 }
 
 async function refreshFullQuestionBank({ quiet = false } = {}) {
@@ -5660,17 +5622,7 @@ function startGame() {
     return;
   }
   if (!state.demoMode) {
-    if (state.challengeMode) {
-      let stored = null;
-      try { stored = JSON.parse(localStorage.getItem('ch_q_' + state.challengeCode) || 'null'); } catch { stored = null; }
-      if (stored?.length) state.questions = stored;
-      else if (!state.questions?.length) {
-        showAlert('لا توجد أسئلة لهذا التحدي.');
-        return;
-      }
-    } else {
-      state.questions = getQuestionsForGame();
-    }
+    state.questions = getQuestionsForGame();
   }
   if (state.questions.length === 0) { showAlert('لا توجد أسئلة لهذا الاختيار.'); return; }
   if (!state.demoMode && !state.useManualRange && !state.challengeMode && !state.homeworkId) {
@@ -5690,8 +5642,6 @@ function startGame() {
   setFeedbackPanelOpen(false);
   setFeedbackContinueVisible(true);
   document.getElementById('training-bar').style.display = trainingMode ? 'block' : 'none';
-  const demoBar = document.getElementById('demo-bar');
-  if (demoBar) demoBar.style.display = state.demoMode ? 'block' : 'none';
   document.getElementById('show-answer-btn').style.display = 'none';
   document.getElementById('res-xp-earned').style.display = 'none';
   updateStageGameBadge();
@@ -5701,8 +5651,6 @@ function startGame() {
   // Warm the whole round into IDB + SW cache so audio survives going offline mid-game.
   if (!state.demoMode && navigator.onLine !== false) {
     void warmRoundAudioForOffline(state.questions, { notify: false });
-  } else if (state.demoMode) {
-    warmDemoSessionAudio();
   }
 }
 
