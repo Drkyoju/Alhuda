@@ -101,27 +101,33 @@
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
     const swVer = window.ALHUDA_ASSETS?.sw || 39;
+    // Reload only on *updates* (had a controller already). First install must not
+    // interrupt login / smoke tests with a mid-flow refresh.
+    let hadController = !!navigator.serviceWorker.controller;
     let refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController) {
+        hadController = true;
+        return;
+      }
       if (refreshing) return;
       refreshing = true;
       if (typeof showToast === 'function') showToast('تم التحديث — جاري إعادة التحميل…', 'ok');
-      setTimeout(() => location.reload(), 400);
+      setTimeout(() => location.reload(), 350);
     });
 
     navigator.serviceWorker.register(`./service-worker.js?v=${swVer}`).then((reg) => {
-      const askWaiting = () => {
-        if (reg.waiting) {
+      const activateWaiting = () => {
+        if (reg.waiting && navigator.serviceWorker.controller) {
           reg.waiting.postMessage('SKIP_WAITING');
         }
       };
-      askWaiting();
+      activateWaiting();
       reg.addEventListener('updatefound', () => {
         const worker = reg.installing;
         if (!worker) return;
         worker.addEventListener('statechange', () => {
           if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-            // New version ready — activate immediately.
             if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
             else worker.postMessage('SKIP_WAITING');
           }
@@ -129,7 +135,7 @@
       });
       const poke = () => {
         try { reg.update(); } catch (e) {}
-        askWaiting();
+        activateWaiting();
       };
       poke();
       document.addEventListener('visibilitychange', () => {
