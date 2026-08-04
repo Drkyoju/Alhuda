@@ -94,10 +94,6 @@
     show._enhanced = true;
   }
 
-  function loadChallengeLeaderboard() {
-    if (typeof showLeaderboard === 'function') showLeaderboard();
-  }
-
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
     const swVer = window.ALHUDA_ASSETS?.sw || 39;
@@ -141,8 +137,6 @@
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') poke();
       });
-      window.addEventListener('focus', poke);
-      setInterval(poke, 5 * 60 * 1000);
     }).catch((err) => {
       console.warn('[SW] registration failed:', err);
     });
@@ -243,7 +237,6 @@
 
   window.showToast = showToast;
   window.trackEvent = trackEvent;
-  window.loadChallengeLeaderboard = loadChallengeLeaderboard;
   window.syncBottomNav = syncBottomNav;
 
   if (document.readyState === 'loading') {

@@ -74,13 +74,18 @@
   }
 
   function ensureProgressExt() {
-    const p = { ...getProgressExt(), ...(typeof getProgress === 'function' ? getProgress() : {}) };
+    if (typeof ensureProgress === 'function') return ensureProgress();
+    const raw = typeof getProgress === 'function' ? getProgress() : {};
+    const p = { ...getProgressExt(), ...raw };
+    let dirty = false;
     if (!p.bookProgress) {
       p.bookProgress = { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } };
+      dirty = true;
     }
-    if (!p.wrongQuestionIds) p.wrongQuestionIds = [];
-    if (!p.gameHistory) p.gameHistory = [];
-    saveProgressExt(p);
+    if (!Array.isArray(p.wrongQuestionIds)) { p.wrongQuestionIds = []; dirty = true; }
+    if (!p.wrongCounts || typeof p.wrongCounts !== 'object') { p.wrongCounts = {}; dirty = true; }
+    if (!Array.isArray(p.gameHistory)) { p.gameHistory = []; dirty = true; }
+    if (dirty) saveProgressExt(p);
     return p;
   }
 
@@ -517,12 +522,9 @@
   function onWelcomeHome() {
     renderBookProgress();
     updateDailyMissionUI();
-    if (typeof updateStagePickerUI === 'function') updateStagePickerUI();
-    if (typeof updateUnlockReminder === 'function') updateUnlockReminder();
-    if (typeof updateLevelPathUI === 'function') updateLevelPathUI();
     const mistakeBtn = document.getElementById('btn-mistakes');
     const p = ensureProgressExt();
-    const repeated = Object.keys(p.wrongCounts || {}).filter((id) => (Number(p.wrongCounts[id]) || 0) >= 2);
+    const repeated = getRepeatedWrongIds(p);
     if (mistakeBtn) {
       mistakeBtn.style.display = repeated.length ? 'inline-flex' : 'none';
       if (repeated.length) mistakeBtn.textContent = `أخطائي المتكررة (${repeated.length})`;

@@ -505,11 +505,18 @@ function getDefaultProgress() {
   return { xp: 0, dailyStreak: 0, lastPlayDate: '', totalGames: 0, totalCorrect: 0, bestStreak: 0, bestScore: 0, completedStages: {}, stageProgress: {}, badges: [], bookProgress: { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } }, wrongQuestionIds: [], wrongCounts: {}, gameHistory: [], classId: null, classCode: '', className: '', dailyMissionDate: '', dailyMissionDone: false };
 }
 function ensureProgress() {
-  const p = { ...getDefaultProgress(), ...getProgress() };
+  const raw = getProgress();
+  const p = { ...getDefaultProgress(), ...raw };
+  const needsNorm =
+    !raw
+    || typeof raw !== 'object'
+    || typeof raw.wrongCounts !== 'object'
+    || !Array.isArray(raw.wrongQuestionIds)
+    || typeof raw.stageProgress !== 'object';
   if (!p.wrongCounts || typeof p.wrongCounts !== 'object') p.wrongCounts = {};
   if (!Array.isArray(p.wrongQuestionIds)) p.wrongQuestionIds = [];
   if (!p.stageProgress || typeof p.stageProgress !== 'object') p.stageProgress = {};
-  saveProgress(p);
+  if (needsNorm) saveProgress(p);
   return p;
 }
 function adoptProgressForName(name) {
@@ -673,14 +680,17 @@ function stageProgressKey(book, level) {
 function ensureStageProgressEntry(key) {
   const p = ensureProgress();
   if (!p.stageProgress) p.stageProgress = {};
+  let dirty = false;
   if (!p.stageProgress[key]) {
     p.stageProgress[key] = { solvedIds: [], completedStages: [], currentStage: 1 };
+    dirty = true;
   }
-  if (!Array.isArray(p.stageProgress[key].solvedIds)) p.stageProgress[key].solvedIds = [];
-  if (!Array.isArray(p.stageProgress[key].completedStages)) p.stageProgress[key].completedStages = [];
-  if (!p.stageProgress[key].currentStage) p.stageProgress[key].currentStage = 1;
-  saveProgress(p);
-  return p.stageProgress[key];
+  const entry = p.stageProgress[key];
+  if (!Array.isArray(entry.solvedIds)) { entry.solvedIds = []; dirty = true; }
+  if (!Array.isArray(entry.completedStages)) { entry.completedStages = []; dirty = true; }
+  if (!entry.currentStage) { entry.currentStage = 1; dirty = true; }
+  if (dirty) saveProgress(p);
+  return entry;
 }
 
 function splitPoolIntoStages(pool, size = STAGE_SIZE) {
@@ -706,31 +716,25 @@ function getStageMeta(book, level) {
 
 function markQuestionSolvedInStage(questionId) {
   if (!questionId || state.demoMode || trainingMode || state.challengeMode || state.homeworkId || state.stageReviewMode) return;
-  const tier = resolveTierKeyForQuestion(questionId);
-  if (!tier) return;
-  const book = resolveBookKeyForQuestion(questionId);
+  const q = findQuestionRecord(questionId);
+  const tier = LEVEL_FLOW.includes(state.level)
+    ? state.level
+    : (LEVEL_FLOW.includes(q?.level) ? q.level : 'medium');
+  const book = (q && QUESTION_BOOKS.includes(q.book))
+    ? q.book
+    : (QUESTION_BOOKS.includes(state.book) ? state.book : null);
   if (!book) return;
   markSolvedForBookTier(book, tier, questionId);
 }
 
-function resolveTierKeyForQuestion(questionId) {
-  if (LEVEL_FLOW.includes(state.level)) return state.level;
-  const q = state.questions?.[state.idx];
-  if (q?.id === questionId && LEVEL_FLOW.includes(q.level)) return q.level;
+function findQuestionRecord(questionId) {
+  const cur = state.questions?.[state.idx];
+  if (cur?.id === questionId) return cur;
   for (const b of QUESTION_BOOKS) {
     const found = (QUESTIONS[b] || []).find((x) => x.id === questionId);
-    if (found && LEVEL_FLOW.includes(found.level)) return found.level;
+    if (found) return found;
   }
-  return 'medium';
-}
-
-function resolveBookKeyForQuestion(questionId) {
-  const q = state.questions?.[state.idx];
-  if (q?.id === questionId && QUESTION_BOOKS.includes(q.book)) return q.book;
-  for (const b of QUESTION_BOOKS) {
-    if ((QUESTIONS[b] || []).some((x) => x.id === questionId)) return b;
-  }
-  return QUESTION_BOOKS.includes(state.book) ? state.book : null;
+  return null;
 }
 
 function markSolvedForBookTier(book, tier, questionId) {
@@ -744,11 +748,6 @@ function markSolvedForBookTier(book, tier, questionId) {
   if (!Array.isArray(prog.solvedIds)) prog.solvedIds = [];
   if (prog.solvedIds.includes(questionId)) return;
   prog.solvedIds.push(questionId);
-  // Correct answer clears stubborn-mistake tracking for this question.
-  if (p.wrongCounts && p.wrongCounts[questionId]) delete p.wrongCounts[questionId];
-  if (Array.isArray(p.wrongQuestionIds)) {
-    p.wrongQuestionIds = p.wrongQuestionIds.filter((id) => id !== questionId);
-  }
   saveProgress(p);
   scheduleTierProgressCloudPush();
 }
@@ -821,10 +820,12 @@ async function pushTierProgressToCloud() {
   try {
     const { error } = await client.auth.updateUser({
       data: {
-        alhuda_tier_v1: backup.stageProgress,
-        alhuda_tier_v1_at: new Date().toISOString(),
+        // Full progress blob is the source of truth; keep tier as a thin
+        // stageProgress mirror for older clients that only read alhuda_tier_v1.
         alhuda_backup_v1: backup,
         alhuda_backup_v1_at: new Date().toISOString(),
+        alhuda_tier_v1: backup.stageProgress,
+        alhuda_tier_v1_at: new Date().toISOString(),
       },
     });
     if (error) console.warn('tier cloud push:', error.message);
@@ -895,8 +896,6 @@ async function pullTierProgressFromCloud() {
     if (changed) {
       updateLevelCounts();
       if (typeof updateStagePickerUI === 'function') updateStagePickerUI();
-      if (typeof updateUnlockReminder === 'function') updateUnlockReminder();
-      if (typeof updateLevelPathUI === 'function') updateLevelPathUI();
       if (window.AlhudaPlatform?.onWelcomeHome) AlhudaPlatform.onWelcomeHome();
     }
     // Always push merged local∪remote so the other device gets newer local solves.
@@ -1364,22 +1363,24 @@ function importProgressBackup() {
       if (!incoming || typeof incoming !== 'object') throw new Error('bad file');
       const ok = window.confirm('دمج ملف التقدّم مع تقدّمك الحالي؟ (يُؤخذ الأعلى من كل جهاز)');
       if (!ok) return;
-      mergeRemoteBackup({
-        stageProgress: incoming.stageProgress || {},
-        xp: incoming.xp,
-        badges: incoming.badges,
-        wrongQuestionIds: incoming.wrongQuestionIds,
-        wrongCounts: incoming.wrongCounts,
-        bookProgress: incoming.bookProgress,
-        totalGames: incoming.totalGames,
-        totalCorrect: incoming.totalCorrect,
-        bestStreak: incoming.bestStreak,
-        bestScore: incoming.bestScore,
-        dailyStreak: incoming.dailyStreak,
-        lastPlayDate: incoming.lastPlayDate,
-      });
-      // Also keep any stageProgress-only file shape.
-      if (incoming.stageProgress) mergeRemoteStageProgress(incoming.stageProgress);
+      if (incoming.stageProgress || incoming.xp != null || incoming.wrongCounts) {
+        mergeRemoteBackup({
+          stageProgress: incoming.stageProgress || {},
+          xp: incoming.xp,
+          badges: incoming.badges,
+          wrongQuestionIds: incoming.wrongQuestionIds,
+          wrongCounts: incoming.wrongCounts,
+          bookProgress: incoming.bookProgress,
+          totalGames: incoming.totalGames,
+          totalCorrect: incoming.totalCorrect,
+          bestStreak: incoming.bestStreak,
+          bestScore: incoming.bestScore,
+          dailyStreak: incoming.dailyStreak,
+          lastPlayDate: incoming.lastPlayDate,
+        });
+      } else {
+        mergeRemoteStageProgress(incoming);
+      }
       updateLevelCounts();
       updateWelcomeGamification();
       if (typeof updateStagePickerUI === 'function') updateStagePickerUI();
@@ -1475,23 +1476,14 @@ function buildDemoQuestions(book) {
   const featuredTarget = Math.min(4, DEMO_COUNT);
   pushUnique(featured, featuredTarget);
 
-  const restPool = shuffleArray(pool.filter((q) => !seen.has(q.id)));
-  if (pushUnique(restPool)) return shuffleArray(out).slice(0, DEMO_COUNT);
+  const restPool = shuffleArr(pool.filter((q) => !seen.has(q.id)));
+  if (pushUnique(restPool)) return shuffleArr(out).slice(0, DEMO_COUNT);
 
   const bundled = (typeof window !== 'undefined' && window.DEMO_QUESTIONS_BUNDLE?.[book]) || [];
-  if (pushUnique(shuffleArray([...bundled]))) return shuffleArray(out).slice(0, DEMO_COUNT);
+  if (pushUnique(shuffleArr([...bundled]))) return shuffleArr(out).slice(0, DEMO_COUNT);
 
   pushUnique(DEMO_FALLBACK.filter((q) => q.book === book));
-  return shuffleArray(out).slice(0, DEMO_COUNT);
-}
-
-function shuffleArray(arr) {
-  const a = [...(arr || [])];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
+  return shuffleArr(out).slice(0, DEMO_COUNT);
 }
 
 function arabicNum(n) {
@@ -1841,10 +1833,6 @@ function showLevelUp(title) {
 }
 function closeLevelUp() {
   document.getElementById('levelup-overlay').classList.remove('show');
-}
-function getBookProgress(book) {
-  const c = getBookQuestionCounts(book);
-  return { done: 0, total: c.all, counts: c };
 }
 function updateBookProgress() {
   const map = { tawheed: 'book-btn-tawheed', usool: 'book-btn-usool', nawawi: 'book-btn-nawawi', merge3: 'book-btn-merge' };
@@ -5871,7 +5859,6 @@ function goHome() {
   document.getElementById('welcome-greeting').textContent = 'مرحباً يا ' + state.userName + '!';
   updateBookButtons();
   updateLevelCounts();
-  updateBookProgress();
   updateQuestionRangeUI();
   updateStagePickerUI();
   updateWelcomeStats();
@@ -6044,7 +6031,12 @@ async function wipeMyProgress() {
     const client = typeof getDb === 'function' ? getDb() : null;
     if (client?.auth?.updateUser) {
       void client.auth.updateUser({
-        data: { alhuda_tier_v1: {}, alhuda_tier_v1_at: new Date().toISOString() },
+        data: {
+          alhuda_tier_v1: {},
+          alhuda_tier_v1_at: new Date().toISOString(),
+          alhuda_backup_v1: null,
+          alhuda_backup_v1_at: new Date().toISOString(),
+        },
       }).catch(() => {});
     }
   }
@@ -6691,7 +6683,7 @@ async function endGame() {
 }
 
 function shuffleArr(arr) {
-  const a = [...arr];
+  const a = [...(arr || [])];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [a[i], a[j]] = [a[j], a[i]];
