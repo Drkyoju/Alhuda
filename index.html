@@ -21,13 +21,13 @@
     .bismillah-crown{text-align:center;padding:12px 16px 0}
     .bismillah-hero{font-family:Amiri,serif;font-size:clamp(1.15rem,4vw,1.55rem);color:#163828;margin:0}
     .screen{display:none}.screen.active{display:block}
-    #login-screen .login-hero{text-align:center;padding:12px 18px 24px}
-    .logo-img{width:min(268px,62vw);height:auto}
+    #login-screen .login-hero{text-align:center;padding:8px 16px 20px}
+    .login-brand-hero .logo-img{width:min(168px,42vw);height:auto;max-height:140px}
   </style>
   <link rel="stylesheet" href="fonts.css?v=1">
   <link rel="stylesheet" href="enhancements.css?v=10">
-  <link rel="stylesheet" href="kids-ui.css?v=11">
-  <link rel="stylesheet" href="styles.css?v=77">
+  <link rel="stylesheet" href="kids-ui.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=78">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -169,29 +169,28 @@
       <div class="logo-wrap login-brand-hero">
         <picture>
           <source type="image/webp" srcset="icons/org-logo-220.webp">
-          <img src="icons/org-logo.png" alt="جمعية الهدى والحكمة" class="logo-img" width="268" height="212" decoding="async" fetchpriority="high">
+          <img src="icons/org-logo.png" alt="جمعية الهدى والحكمة" class="logo-img" width="180" height="142" decoding="async" fetchpriority="high">
         </picture>
-        <div class="org-name org-name-hero">جمعية الهدى والحكمة</div>
         <div class="brand-title">مكتبة جمعية الهدى والحكمة التعليمية</div>
         <div class="brand-sub">أسئلة تعليمية تفاعلية من برامج الجمعية</div>
-        <p class="login-hint" id="login-hint">🎮 انضم/ي وابدأ/ي رحلة التعلّم!</p>
+        <p class="login-q-count" id="login-hint">٧٤٩ سؤال في انتظارك</p>
         <div class="login-features" id="login-features">
-          <button type="button" class="login-feature" id="btn-levels-preview"><strong>🏅</strong>مستويات وشارات</button>
-          <button type="button" class="login-feature" id="btn-leaderboard-preview"><strong>🏆</strong>لوحة متصدرين يومية وأسبوعية وشهرية</button>
+          <button type="button" class="login-feature" id="btn-levels-preview">مستويات وشارات</button>
+          <button type="button" class="login-feature" id="btn-leaderboard-preview">لوحة المتصدرين</button>
         </div>
       </div>
       <div class="card login-card">
         <div class="login-locked-block" id="login-locked-block">
-          <h2 id="login-title">اكتب/ي اسمك للدخول 🎮</h2>
+          <h2 id="login-title">اكتب/ي اسمك للدخول</h2>
           <label class="sr-only" for="login-name">اسمك</label>
           <input type="text" class="input login-input-locked" id="login-name" placeholder="اكتب/ي اسمك هنا..." autocomplete="name" aria-describedby="login-err">
           <p class="login-name-hint login-lock-notice" hidden>الدخول مغلق مؤقتاً</p>
           <p id="login-switch-hint" class="login-name-hint" hidden style="color:var(--text-soft);font-size:0.82em;margin:6px 0;"></p>
           <p style="color:var(--coral);font-size:0.8em;min-height:18px;" id="login-err" role="alert" aria-live="polite"></p>
-          <button type="button" class="btn btn-green btn-xl btn-login-main" id="btn-login" aria-label="دخول" style="display:none">دخول 🎮</button>
-          <p style="color:var(--text-soft);font-size:0.85em;margin-top:10px;text-align:center;">يُدخل تلقائياً بعد كتابة الاسم</p>
-          <div style="display:grid;gap:6px;margin-top:8px;">
-            <button type="button" class="btn btn-white btn-sm" onclick="switchLoginName()">🔄 تغيير الاسم</button>
+          <button type="button" class="btn btn-green btn-xl btn-login-main" id="btn-login" aria-label="دخول" style="display:none">دخول</button>
+          <p class="login-auto-hint">يُدخل تلقائياً بعد كتابة الاسم</p>
+          <div class="login-switch-row">
+            <button type="button" class="btn btn-white btn-sm" onclick="switchLoginName()">تغيير الاسم</button>
           </div>
         </div>
       </div>
@@ -554,7 +553,7 @@
   <script src="questions-bank.js"></script>
   <script src="version.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="app.js?v=163" defer></script>
+  <script src="app.js?v=164" defer></script>
 <script src="auth.js?v=16" defer></script>
 <script src="enhancements.js?v=14" defer></script>
 <script src="platform.js?v=17" defer></script>

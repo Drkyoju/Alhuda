@@ -76,11 +76,25 @@
   border: 3px solid var(--kid-sun);
   box-shadow: 0 10px 32px rgba(252, 211, 77, 0.35), 0 0 0 4px rgba(110, 231, 183, 0.2);
 }
+/* شاشة الدخول: شعار أنعم بدون إطار أصفر سميك */
+.kids-theme #login-screen .login-brand-hero .logo-img {
+  border: 1px solid rgba(201, 169, 98, 0.35);
+  box-shadow: 0 8px 24px rgba(22, 56, 40, 0.1);
+  animation: none;
+  filter: none;
+}
 .kids-theme .brand-title {
   background: linear-gradient(135deg, #163828, #2A8A6B, #C9A962);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+.kids-theme #login-screen .login-brand-hero .brand-title {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: unset;
+  color: var(--emerald-dark);
 }
 
 /* ── أزرار الدخول ── */
@@ -101,19 +115,16 @@
 }
 
 .kids-theme .login-feature {
-  border-width: 2px;
-  transition: transform 0.2s cubic-bezier(0.34, 1.4, 0.64, 1), box-shadow 0.2s;
+  border-width: 1px;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
-.kids-theme .login-feature:nth-child(1) {
-  border-color: var(--kid-sun);
-  background: linear-gradient(180deg, #FFFBEB, #FEF3C7);
-}
+.kids-theme .login-feature:nth-child(1),
 .kids-theme .login-feature:nth-child(2) {
-  border-color: var(--kid-sky);
-  background: linear-gradient(180deg, #F0F9FF, #E0F2FE);
+  border-color: rgba(201, 169, 98, 0.35);
+  background: rgba(255, 255, 255, 0.9);
 }
 .kids-theme .login-feature:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
 }
 
 /* ── بطاقات الكتب ── */

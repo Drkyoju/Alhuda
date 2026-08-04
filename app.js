@@ -5054,16 +5054,16 @@ function updateLoginQuestionHint() {
   const hint = document.getElementById('login-hint');
   if (!hint) return;
   if (LOGIN_LOCKED) {
-    hint.textContent = '📝 النموذج التجريبي فقط — ٨ أسئلة لكل كتاب';
+    hint.textContent = 'النموذج التجريبي فقط — ٨ أسئلة لكل كتاب';
     return;
   }
   const total = QUESTION_BOOKS.reduce((n, b) => n + (QUESTIONS[b]?.length || 0), 0);
   if (total <= 0) return;
   const allLoaded = QUESTION_BOOKS.every((b) => bookLoadState[b]);
   if (allLoaded) {
-    hint.textContent = '📚 ' + arabicNum(total) + ' سؤال في انتظارك!';
+    hint.textContent = arabicNum(total) + ' سؤال في انتظارك';
   } else {
-    hint.textContent = '📚 جاري تجهيز الأسئلة… (حالياً ' + arabicNum(total) + ')';
+    hint.textContent = 'جاري تجهيز الأسئلة… (حالياً ' + arabicNum(total) + ')';
   }
 }
 
