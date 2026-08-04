@@ -4868,15 +4868,15 @@
       margin: 8px 0 10px;
     }
     .login-brand-hero .logo-img {
-      width: min(168px, 42vw);
-      max-width: 168px;
-      max-height: 140px;
+      width: min(148px, 38vw);
+      max-width: 148px;
+      max-height: 124px;
       height: auto;
-      padding: 8px;
-      border-radius: 18px;
+      padding: 6px;
+      border-radius: 16px;
       border: 1px solid rgba(201, 169, 98, 0.28);
       background: rgba(255, 255, 255, 0.96);
-      box-shadow: 0 8px 24px rgba(22, 56, 40, 0.1);
+      box-shadow: 0 6px 18px rgba(22, 56, 40, 0.08);
       animation: none;
       filter: none;
     }
@@ -5316,10 +5316,10 @@
       .demo-book-pick-list { max-width: 520px; margin-inline: auto; }
     }
     @media (min-width: 1024px) {
-      #login-screen .login-hero { max-width: 420px; }
+      #login-screen .login-hero { max-width: 400px; }
       .login-brand-hero .logo-img {
-        width: 180px;
-        max-width: 180px;
+        width: 156px;
+        max-width: 156px;
       }
     }
 

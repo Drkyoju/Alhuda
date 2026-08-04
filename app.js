@@ -6654,7 +6654,7 @@ async function showProfile() {
     </div>
     <div style="display:grid;gap:8px;margin:12px 0;">
       <button type="button" class="btn btn-white btn-sm" onclick="setAsPrimaryName()">⭐ اجعل هذا الاسم الأساسي</button>
-      <button type="button" class="btn btn-white btn-sm" onclick="switchLoginName()">🔄 الدخول باسم آخر</button>
+      <button type="button" class="btn btn-white btn-sm" onclick="switchLoginName()">الدخول باسم آخر</button>
       <button type="button" class="btn btn-white btn-sm" onclick="wipeMyProgress()">🧹 تصفير التقدّم والبدء من جديد</button>
       <button type="button" class="btn btn-white btn-sm" onclick="logout()">🚪 خروج</button>
     </div>
@@ -6685,7 +6685,7 @@ function applyLoginLockUI() {
     if (block) block.style.display = 'none';
     if (divider) divider.style.display = 'none';
     if (features) features.style.display = 'none';
-    if (title) title.textContent = '🔒 الدخول مغلق مؤقتاً';
+    if (title) title.textContent = 'الدخول مغلق مؤقتاً';
     if (notice) { notice.hidden = false; notice.style.display = ''; notice.textContent = 'الدخول مغلق مؤقتاً'; }
     updateLoginQuestionHint();
     refreshLoginAnalyticsPanel();
@@ -6695,12 +6695,12 @@ function applyLoginLockUI() {
     if (features) features.style.display = '';
     nameInput.disabled = false;
     nameInput.removeAttribute('aria-disabled');
-    nameInput.placeholder = 'اكتب/ي اسمك هنا (عربي أو إنجليزي)...';
+    nameInput.placeholder = 'اكتب/ي اسمك هنا...';
     loginBtn.disabled = false;
     loginBtn.removeAttribute('aria-disabled');
-    loginBtn.textContent = 'دخول 🎮';
+    loginBtn.textContent = 'دخول';
     block?.classList.remove('is-locked');
-    if (title) title.textContent = 'اكتب/ي اسمك للدخول 🎮';
+    if (title) title.textContent = 'اكتب/ي اسمك للدخول';
     if (notice) { notice.hidden = true; notice.style.display = 'none'; }
     if (loginBtn) loginBtn.style.display = 'none';
   }
