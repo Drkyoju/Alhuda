@@ -4,7 +4,7 @@
 // On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
 // without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v192';
+const CACHE = 'alhuda-v193';
 // Keep install precache lean — large speech-diacritics-map.js loads on demand.
 const ASSETS = [
   './',
@@ -182,6 +182,32 @@ self.addEventListener('fetch', (e) => {
   }
 
   if (isStaticAppFile(url)) {
+    // Versioned CSS/assets (?v=) must be network-first — cache-first + ignoreSearch
+    // was sticky-serving old oversized mobile styles under a new query pin.
+    const hasVersionPin = url.search.length > 1;
+    if (hasVersionPin || /\.css$/i.test(url.pathname)) {
+      e.respondWith(
+        fetch(e.request)
+          .then((res) => {
+            if (res.ok) {
+              const clone = res.clone();
+              caches.open(CACHE).then((c) => {
+                c.put(e.request, clone);
+                try {
+                  const bare = new URL(e.request.url);
+                  bare.search = '';
+                  c.put(bare.toString(), res.clone());
+                } catch { /* ignore */ }
+              });
+            }
+            return res;
+          })
+          .catch(() =>
+            caches.match(e.request).then((r) => r || caches.match(e.request, { ignoreSearch: true }))
+          )
+      );
+      return;
+    }
     e.respondWith(
       caches.match(e.request).then(async (exact) => {
         if (exact) return exact;
