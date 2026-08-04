@@ -26,8 +26,8 @@
   </style>
   <link rel="stylesheet" href="fonts.css?v=1">
   <link rel="stylesheet" href="enhancements.css?v=10">
-  <link rel="stylesheet" href="kids-ui.css?v=12">
-  <link rel="stylesheet" href="styles.css?v=79">
+  <link rel="stylesheet" href="kids-ui.css?v=13">
+  <link rel="stylesheet" href="styles.css?v=80">
 </head>
 <body class="islamic-bg login-mode kids-theme">
 
@@ -97,7 +97,10 @@
       <button class="btn btn-white" onclick="toggleTrainingMode()" id="training-btn" style="width:100%;margin-bottom:10px;">🏋️ وضع التدريب</button>
       <button class="btn btn-white" onclick="toggleSound()" id="sound-btn" style="width:100%;margin-bottom:10px;">🔊 الأصوات</button>
       <button class="btn btn-white" onclick="toggleVoice()" id="voice-btn" style="width:100%;margin-bottom:10px;">🗣️ القراءة الصوتية</button>
-      <button class="btn btn-white" onclick="toggleVoiceAnswers()" id="voice-answers-btn" style="width:100%;">📢 قراءة الإجابات</button>
+      <button class="btn btn-white" onclick="toggleVoiceAnswers()" id="voice-answers-btn" style="width:100%;margin-bottom:10px;">📢 قراءة الإجابات</button>
+      <button class="btn btn-white" onclick="syncProgressAcrossDevices()" style="width:100%;margin-bottom:10px;">☁️ مزامنة التقدّم</button>
+      <button class="btn btn-white" onclick="exportProgressBackup()" style="width:100%;margin-bottom:10px;">⬇️ تصدير نسخة احتياطية</button>
+      <button class="btn btn-white" onclick="importProgressBackup()" style="width:100%;">⬆️ استيراد تقدّم</button>
     </div>
   </div>
 
@@ -201,29 +204,34 @@
   <div id="welcome" class="screen">
     <div class="welcome-inner">
       <div class="welcome-header welcome-hero">
-        <div class="welcome-user-badge" id="welcome-user">🎓 متعلم/ة</div>
+        <div class="welcome-user-badge" id="welcome-user">متعلم/ة</div>
         <div class="welcome-greeting" id="welcome-greeting">مرحباً!</div>
         <div class="brand-sub welcome-hero-sub">ماذا تريد أن تتعلّم اليوم؟</div>
       </div>
 
+      <div id="unlock-reminder" class="unlock-reminder" hidden role="status" aria-live="polite"></div>
+
       <div class="card play-zone">
-        <div class="section-label">📖 اختار/ي كتابك</div>
+        <div class="section-label">اختار/ي كتابك</div>
         <div class="book-select-row" id="book-select-row">
           <button class="book-btn sel" onclick="selectBook('tawheed')" id="book-btn-tawheed" data-book="tawheed">
-            <span class="book-icon">📖</span><span>كتاب التوحيد</span>
+            <span class="book-icon" aria-hidden="true">📖</span><span>كتاب التوحيد</span>
           </button>
           <button class="book-btn" onclick="selectBook('usool')" id="book-btn-usool" data-book="usool">
-            <span class="book-icon">📗</span><span>الأصول الثلاثة</span>
+            <span class="book-icon" aria-hidden="true">📗</span><span>الأصول الثلاثة</span>
           </button>
           <button class="book-btn" onclick="selectBook('nawawi')" id="book-btn-nawawi" data-book="nawawi">
-            <span class="book-icon">📘</span><span>الأربعون النووية</span>
+            <span class="book-icon" aria-hidden="true">📘</span><span>الأربعون النووية</span>
           </button>
           <button class="book-btn" onclick="selectBook('merge3')" id="book-btn-merge" data-book="merge3">
-            <span class="book-icon">📚</span><span>الكتب الثلاثة</span>
+            <span class="book-icon" aria-hidden="true">📚</span><span>الكتب الثلاثة</span>
           </button>
         </div>
 
-        <div class="section-label">📊 مستوى الصعوبة</div>
+        <div class="section-label">مسار المستويات</div>
+        <div class="level-path" id="level-path" role="list" aria-label="مسار المستويات سهل ثم متوسط ثم صعب"></div>
+
+        <div class="section-label">مستوى الصعوبة</div>
         <div class="level-row">
           <button class="level-btn sel" onclick="selectLevel('easy')" id="btn-easy" data-level="easy">سهل<span class="lvl-count" id="cnt-easy"></span></button>
           <button class="level-btn" onclick="selectLevel('medium')" id="btn-medium" data-level="medium">متوسط<span class="lvl-count" id="cnt-medium"></span></button>
@@ -231,7 +239,7 @@
           <button class="level-btn" onclick="selectLevel('all')" id="btn-all" data-level="all">الكل<span class="lvl-count" id="cnt-all"></span></button>
         </div>
 
-        <div class="section-label">🎯 كم سؤال تبغى في الجولة؟</div>
+        <div class="section-label">كم سؤال تبغى في الجولة؟</div>
         <p class="stage-hint" id="stage-hint"></p>
         <div class="stage-picker" id="stage-picker" aria-label="اختيار عدد أسئلة الجولة"></div>
         <p class="round-progress-note" id="round-progress-note"></p>
@@ -297,8 +305,8 @@
       </div>
 
       <div class="extra-actions">
-        <button class="btn btn-white btn-sm" id="btn-mistakes" style="display:none;" onclick="startMistakeReview()">🔁 كرّر أخطائي</button>
-        <button class="btn btn-white btn-sm" onclick="startExamReview()">📝 مراجعة شاملة</button>
+        <button class="btn btn-white btn-sm" id="btn-mistakes" style="display:none;" onclick="startMistakeReview()">أخطائي المتكررة</button>
+        <button class="btn btn-white btn-sm" onclick="startExamReview()">مراجعة شاملة</button>
       </div>
 
       <a href="https://www.alhuda-alhikma.sa" target="_blank" rel="noopener noreferrer" class="org-link-footer">🌐 موقع جمعية الهدى والحكمة ↗</a>
@@ -554,10 +562,10 @@
   <script src="questions-bank.js"></script>
   <script src="version.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="app.js?v=166" defer></script>
+  <script src="app.js?v=167" defer></script>
 <script src="auth.js?v=16" defer></script>
-<script src="enhancements.js?v=14" defer></script>
-<script src="platform.js?v=17" defer></script>
+<script src="enhancements.js?v=15" defer></script>
+<script src="platform.js?v=18" defer></script>
 <script defer>
 document.addEventListener('DOMContentLoaded', () => {
   (async function boot() {

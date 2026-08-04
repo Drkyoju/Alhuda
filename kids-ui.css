@@ -128,17 +128,16 @@
 }
 
 /* ── بطاقات الكتب ── */
-.kids-theme .book-btn[data-book="tawheed"] {
-  border-color: #6EE7B7;
-  background: linear-gradient(180deg, #ECFDF5, #D1FAE5);
+.kids-theme .book-btn[data-book="tawheed"],
+.kids-theme .book-btn[data-book="usool"],
+.kids-theme .book-btn[data-book="nawawi"],
+.kids-theme .book-btn[data-book="merge3"] {
+  border-color: rgba(201, 169, 98, 0.35);
+  background: rgba(255, 255, 255, 0.94);
 }
-.kids-theme .book-btn[data-book="usool"] {
-  border-color: #7DD3FC;
-  background: linear-gradient(180deg, #F0F9FF, #E0F2FE);
-}
-.kids-theme .book-btn[data-book="nawawi"] {
-  border-color: #C4B5FD;
-  background: linear-gradient(180deg, #F5F3FF, #EDE9FE);
+.kids-theme .book-btn.sel {
+  border-color: var(--gold);
+  box-shadow: 0 4px 14px rgba(22, 56, 40, 0.08);
 }
 .kids-theme .book-btn .book-icon {
   /* No bounce on hub — keeps book tiles readable and calm */

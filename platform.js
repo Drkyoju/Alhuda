@@ -103,17 +103,26 @@
     } catch (e) {
       /* RPC may not exist until supabase_platform.sql runs */
     }
-    if (!state.user || wasCorrect) return;
     const p = ensureProgressExt();
+    if (!p.wrongCounts || typeof p.wrongCounts !== 'object') p.wrongCounts = {};
+    if (!Array.isArray(p.wrongQuestionIds)) p.wrongQuestionIds = [];
+    if (wasCorrect) {
+      if (p.wrongCounts[questionId]) delete p.wrongCounts[questionId];
+      p.wrongQuestionIds = p.wrongQuestionIds.filter((id) => id !== questionId);
+      saveProgressExt(p);
+      return;
+    }
+    p.wrongCounts[questionId] = (Number(p.wrongCounts[questionId]) || 0) + 1;
     if (!p.wrongQuestionIds.includes(questionId)) p.wrongQuestionIds.push(questionId);
     if (p.wrongQuestionIds.length > 80) p.wrongQuestionIds = p.wrongQuestionIds.slice(-80);
     saveProgressExt(p);
+    if (!state.user) return;
     try {
       await db.rpc('record_user_wrong', { uid: state.user.id, qid: questionId });
     } catch (e) {
       try {
         await db.from('user_wrong_questions').upsert(
-          { user_id: state.user.id, question_id: questionId, wrong_count: 1, last_wrong_at: new Date().toISOString() },
+          { user_id: state.user.id, question_id: questionId, wrong_count: p.wrongCounts[questionId], last_wrong_at: new Date().toISOString() },
           { onConflict: 'user_id,question_id', ignoreDuplicates: false }
         );
       } catch (e2) {}
@@ -316,13 +325,21 @@
     loadStudentHomework();
   }
 
+  function getRepeatedWrongIds(p) {
+    const counts = p?.wrongCounts && typeof p.wrongCounts === 'object' ? p.wrongCounts : {};
+    return Object.keys(counts).filter((id) => (Number(counts[id]) || 0) >= 2);
+  }
+
   function startMistakeReview() {
     const p = ensureProgressExt();
-    const ids = [...(p.wrongQuestionIds || [])];
+    const ids = getRepeatedWrongIds(p);
     const qs = ids.map(findQuestionById).filter(Boolean);
     if (!qs.length) {
-      if (typeof showToast === 'function') showToast('لا توجد أخطاء محفوظة بعد. العب/ي جولة أولاً!', 'info');
-      else alert('لا توجد أخطاء محفوظة بعد. العب/ي جولة أولاً!');
+      if (typeof showToast === 'function') {
+        showToast('لا توجد أخطاء متكررة بعد — تظهر هنا الأسئلة التي أخطأت فيها أكثر من مرة', 'info');
+      } else {
+        alert('لا توجد أخطاء متكررة بعد — تظهر هنا الأسئلة التي أخطأت فيها أكثر من مرة');
+      }
       return;
     }
     state.questions = shuffleArr(qs.slice(0, 20));
@@ -501,9 +518,15 @@
     renderBookProgress();
     updateDailyMissionUI();
     if (typeof updateStagePickerUI === 'function') updateStagePickerUI();
+    if (typeof updateUnlockReminder === 'function') updateUnlockReminder();
+    if (typeof updateLevelPathUI === 'function') updateLevelPathUI();
     const mistakeBtn = document.getElementById('btn-mistakes');
     const p = ensureProgressExt();
-    if (mistakeBtn) mistakeBtn.style.display = p.wrongQuestionIds?.length ? 'inline-flex' : 'none';
+    const repeated = Object.keys(p.wrongCounts || {}).filter((id) => (Number(p.wrongCounts[id]) || 0) >= 2);
+    if (mistakeBtn) {
+      mistakeBtn.style.display = repeated.length ? 'inline-flex' : 'none';
+      if (repeated.length) mistakeBtn.textContent = `أخطائي المتكررة (${repeated.length})`;
+    }
   }
 
   async function syncUserClassFromDb() {
@@ -526,13 +549,24 @@
     if (!state.user) return;
     try {
       const { data } = await db.from('user_wrong_questions')
-        .select('question_id')
+        .select('question_id,wrong_count')
         .eq('user_id', state.user.id)
         .order('last_wrong_at', { ascending: false })
         .limit(80);
       if (!data?.length) return;
       const p = ensureProgressExt();
-      p.wrongQuestionIds = [...new Set([...data.map((r) => r.question_id), ...(p.wrongQuestionIds || [])])].slice(-80);
+      if (!p.wrongCounts || typeof p.wrongCounts !== 'object') p.wrongCounts = {};
+      for (const row of data) {
+        const id = row.question_id;
+        if (!id) continue;
+        const n = Math.max(Number(row.wrong_count) || 1, Number(p.wrongCounts[id]) || 0);
+        p.wrongCounts[id] = n;
+      }
+      p.wrongQuestionIds = [...new Set([
+        ...Object.keys(p.wrongCounts),
+        ...(p.wrongQuestionIds || []),
+        ...data.map((r) => r.question_id),
+      ].filter(Boolean))].slice(-80);
       saveProgressExt(p);
     } catch (e) {}
   }

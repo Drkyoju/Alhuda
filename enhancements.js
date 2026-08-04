@@ -101,8 +101,42 @@
   function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
     const swVer = window.ALHUDA_ASSETS?.sw || 39;
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshing) return;
+      refreshing = true;
+      if (typeof showToast === 'function') showToast('تم التحديث — جاري إعادة التحميل…', 'ok');
+      setTimeout(() => location.reload(), 400);
+    });
+
     navigator.serviceWorker.register(`./service-worker.js?v=${swVer}`).then((reg) => {
-      try { reg.update(); } catch (e) {}
+      const askWaiting = () => {
+        if (reg.waiting) {
+          reg.waiting.postMessage('SKIP_WAITING');
+        }
+      };
+      askWaiting();
+      reg.addEventListener('updatefound', () => {
+        const worker = reg.installing;
+        if (!worker) return;
+        worker.addEventListener('statechange', () => {
+          if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+            // New version ready — activate immediately.
+            if (reg.waiting) reg.waiting.postMessage('SKIP_WAITING');
+            else worker.postMessage('SKIP_WAITING');
+          }
+        });
+      });
+      const poke = () => {
+        try { reg.update(); } catch (e) {}
+        askWaiting();
+      };
+      poke();
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') poke();
+      });
+      window.addEventListener('focus', poke);
+      setInterval(poke, 5 * 60 * 1000);
     }).catch((err) => {
       console.warn('[SW] registration failed:', err);
     });

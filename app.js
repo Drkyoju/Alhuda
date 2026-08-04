@@ -502,10 +502,13 @@ function saveProgress(p) {
   }
 }
 function getDefaultProgress() {
-  return { xp: 0, dailyStreak: 0, lastPlayDate: '', totalGames: 0, totalCorrect: 0, bestStreak: 0, bestScore: 0, completedStages: {}, stageProgress: {}, badges: [], bookProgress: { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } }, wrongQuestionIds: [], gameHistory: [], classId: null, classCode: '', className: '', dailyMissionDate: '', dailyMissionDone: false };
+  return { xp: 0, dailyStreak: 0, lastPlayDate: '', totalGames: 0, totalCorrect: 0, bestStreak: 0, bestScore: 0, completedStages: {}, stageProgress: {}, badges: [], bookProgress: { tawheed: { answered: 0, correct: 0 }, usool: { answered: 0, correct: 0 }, nawawi: { answered: 0, correct: 0 } }, wrongQuestionIds: [], wrongCounts: {}, gameHistory: [], classId: null, classCode: '', className: '', dailyMissionDate: '', dailyMissionDone: false };
 }
 function ensureProgress() {
   const p = { ...getDefaultProgress(), ...getProgress() };
+  if (!p.wrongCounts || typeof p.wrongCounts !== 'object') p.wrongCounts = {};
+  if (!Array.isArray(p.wrongQuestionIds)) p.wrongQuestionIds = [];
+  if (!p.stageProgress || typeof p.stageProgress !== 'object') p.stageProgress = {};
   saveProgress(p);
   return p;
 }
@@ -703,8 +706,35 @@ function getStageMeta(book, level) {
 
 function markQuestionSolvedInStage(questionId) {
   if (!questionId || state.demoMode || trainingMode || state.challengeMode || state.homeworkId || state.stageReviewMode) return;
-  if (!LEVEL_FLOW.includes(state.level)) return;
-  const key = stageProgressKey(state.book, state.level);
+  const tier = resolveTierKeyForQuestion(questionId);
+  if (!tier) return;
+  const book = resolveBookKeyForQuestion(questionId);
+  if (!book) return;
+  markSolvedForBookTier(book, tier, questionId);
+}
+
+function resolveTierKeyForQuestion(questionId) {
+  if (LEVEL_FLOW.includes(state.level)) return state.level;
+  const q = state.questions?.[state.idx];
+  if (q?.id === questionId && LEVEL_FLOW.includes(q.level)) return q.level;
+  for (const b of QUESTION_BOOKS) {
+    const found = (QUESTIONS[b] || []).find((x) => x.id === questionId);
+    if (found && LEVEL_FLOW.includes(found.level)) return found.level;
+  }
+  return 'medium';
+}
+
+function resolveBookKeyForQuestion(questionId) {
+  const q = state.questions?.[state.idx];
+  if (q?.id === questionId && QUESTION_BOOKS.includes(q.book)) return q.book;
+  for (const b of QUESTION_BOOKS) {
+    if ((QUESTIONS[b] || []).some((x) => x.id === questionId)) return b;
+  }
+  return QUESTION_BOOKS.includes(state.book) ? state.book : null;
+}
+
+function markSolvedForBookTier(book, tier, questionId) {
+  const key = stageProgressKey(book, tier);
   const p = ensureProgress();
   if (!p.stageProgress) p.stageProgress = {};
   if (!p.stageProgress[key]) {
@@ -714,8 +744,26 @@ function markQuestionSolvedInStage(questionId) {
   if (!Array.isArray(prog.solvedIds)) prog.solvedIds = [];
   if (prog.solvedIds.includes(questionId)) return;
   prog.solvedIds.push(questionId);
+  // Correct answer clears stubborn-mistake tracking for this question.
+  if (p.wrongCounts && p.wrongCounts[questionId]) delete p.wrongCounts[questionId];
+  if (Array.isArray(p.wrongQuestionIds)) {
+    p.wrongQuestionIds = p.wrongQuestionIds.filter((id) => id !== questionId);
+  }
   saveProgress(p);
   scheduleTierProgressCloudPush();
+}
+
+function getSolvedIdSet(book) {
+  const p = ensureProgress();
+  const books = book === 'merge3' ? QUESTION_BOOKS.slice() : (QUESTION_BOOKS.includes(book) ? [book] : QUESTION_BOOKS.slice());
+  const set = new Set();
+  for (const b of books) {
+    for (const lvl of LEVEL_FLOW) {
+      const entry = p.stageProgress?.[stageProgressKey(b, lvl)];
+      for (const id of entry?.solvedIds || []) set.add(id);
+    }
+  }
+  return set;
 }
 
 function mergeRemoteStageProgress(remote) {
@@ -756,18 +804,80 @@ async function pushTierProgressToCloud() {
   const client = typeof getDb === 'function' ? getDb() : null;
   if (!client?.auth?.updateUser) return;
   const p = ensureProgress();
-  const payload = p.stageProgress || {};
+  const backup = {
+    stageProgress: p.stageProgress || {},
+    xp: p.xp || 0,
+    badges: p.badges || [],
+    wrongQuestionIds: p.wrongQuestionIds || [],
+    wrongCounts: p.wrongCounts || {},
+    bookProgress: p.bookProgress || {},
+    totalGames: p.totalGames || 0,
+    totalCorrect: p.totalCorrect || 0,
+    bestStreak: p.bestStreak || 0,
+    bestScore: p.bestScore || 0,
+    dailyStreak: p.dailyStreak || 0,
+    lastPlayDate: p.lastPlayDate || '',
+  };
   try {
     const { error } = await client.auth.updateUser({
       data: {
-        alhuda_tier_v1: payload,
+        alhuda_tier_v1: backup.stageProgress,
         alhuda_tier_v1_at: new Date().toISOString(),
+        alhuda_backup_v1: backup,
+        alhuda_backup_v1_at: new Date().toISOString(),
       },
     });
     if (error) console.warn('tier cloud push:', error.message);
   } catch (e) {
     console.warn('tier cloud push:', e);
   }
+}
+
+function mergeRemoteBackup(remote) {
+  if (!remote || typeof remote !== 'object') return false;
+  let changed = mergeRemoteStageProgress(remote.stageProgress || {});
+  const p = ensureProgress();
+  const takeMax = (a, b) => Math.max(Number(a) || 0, Number(b) || 0);
+  const next = { ...p };
+  next.xp = takeMax(p.xp, remote.xp);
+  next.totalGames = takeMax(p.totalGames, remote.totalGames);
+  next.totalCorrect = takeMax(p.totalCorrect, remote.totalCorrect);
+  next.bestStreak = takeMax(p.bestStreak, remote.bestStreak);
+  next.bestScore = takeMax(p.bestScore, remote.bestScore);
+  next.dailyStreak = takeMax(p.dailyStreak, remote.dailyStreak);
+  if ((remote.lastPlayDate || '') > (p.lastPlayDate || '')) next.lastPlayDate = remote.lastPlayDate;
+  next.badges = [...new Set([...(p.badges || []), ...(remote.badges || [])])];
+  next.wrongCounts = { ...(p.wrongCounts || {}) };
+  for (const [id, n] of Object.entries(remote.wrongCounts || {})) {
+    next.wrongCounts[id] = takeMax(next.wrongCounts[id], n);
+  }
+  next.wrongQuestionIds = [...new Set([
+    ...(p.wrongQuestionIds || []),
+    ...(remote.wrongQuestionIds || []),
+    ...Object.keys(next.wrongCounts),
+  ])].slice(-80);
+  if (remote.bookProgress && typeof remote.bookProgress === 'object') {
+    next.bookProgress = next.bookProgress || {};
+    for (const [b, row] of Object.entries(remote.bookProgress)) {
+      const local = next.bookProgress[b] || { answered: 0, correct: 0 };
+      next.bookProgress[b] = {
+        answered: takeMax(local.answered, row?.answered),
+        correct: takeMax(local.correct, row?.correct),
+      };
+    }
+  }
+  const same =
+    next.xp === p.xp
+    && next.totalGames === p.totalGames
+    && next.totalCorrect === p.totalCorrect
+    && next.bestScore === p.bestScore
+    && next.badges.length === (p.badges || []).length
+    && JSON.stringify(next.wrongCounts) === JSON.stringify(p.wrongCounts || {});
+  if (!same) {
+    saveProgress(next);
+    changed = true;
+  }
+  return changed;
 }
 
 async function pullTierProgressFromCloud() {
@@ -777,11 +887,16 @@ async function pullTierProgressFromCloud() {
   try {
     const { data, error } = await client.auth.getUser();
     if (error) return false;
-    const remote = data?.user?.user_metadata?.alhuda_tier_v1;
-    const changed = mergeRemoteStageProgress(remote);
+    const remoteBackup = data?.user?.user_metadata?.alhuda_backup_v1;
+    const remoteTier = data?.user?.user_metadata?.alhuda_tier_v1;
+    let changed = false;
+    if (remoteBackup) changed = mergeRemoteBackup(remoteBackup) || changed;
+    else if (remoteTier) changed = mergeRemoteStageProgress(remoteTier) || changed;
     if (changed) {
       updateLevelCounts();
       if (typeof updateStagePickerUI === 'function') updateStagePickerUI();
+      if (typeof updateUnlockReminder === 'function') updateUnlockReminder();
+      if (typeof updateLevelPathUI === 'function') updateLevelPathUI();
       if (window.AlhudaPlatform?.onWelcomeHome) AlhudaPlatform.onWelcomeHome();
     }
     // Always push merged local∪remote so the other device gets newer local solves.
@@ -1107,6 +1222,17 @@ function updateLevelCounts() {
       const left = Math.max(0, total - solved);
       el.textContent = left ? `(متبقي ${arabicNum(left)})` : '(مكتمل ✓)';
       el.title = `حلّيت ${arabicNum(solved)} من ${arabicNum(total)} في هذا المستوى`;
+    } else if (level === 'all') {
+      const total = c[level] || 0;
+      if (!total) {
+        el.textContent = '(٠)';
+        return;
+      }
+      const poolIds = new Set(getOrderedPool(state.book, 'all').map((q) => q.id));
+      const solved = [...getSolvedIdSet(state.book)].filter((id) => poolIds.has(id)).length;
+      const left = Math.max(0, total - solved);
+      el.textContent = left ? `(متبقي ${arabicNum(left)})` : '(مكتمل ✓)';
+      el.title = `محلولة ${arabicNum(solved)} من ${arabicNum(total)} — المحلول لا يُعاد في «الكل»`;
     } else {
       el.textContent = c[level] ? `(${arabicNum(c[level])})` : '(٠)';
       el.title = '';
@@ -1117,6 +1243,173 @@ function updateLevelCounts() {
   setProg('cnt-hard', 'hard');
   setProg('cnt-all', 'all');
   updateLevelLockUI();
+  updateUnlockReminder();
+  updateLevelPathUI();
+}
+
+function getUnlockReminderInfo(book = state.book) {
+  if (!isLevelUnlocked(book, 'medium')) {
+    const t = getTierProgress(book, 'easy');
+    const left = Math.max(0, t.unlockNeed - t.solved);
+    if (!t.total || left <= 0) return null;
+    return {
+      next: 'medium',
+      nextLabel: 'المتوسط',
+      left,
+      solved: t.solved,
+      need: t.unlockNeed,
+      total: t.total,
+      fromLabel: 'السهل',
+    };
+  }
+  if (!isLevelUnlocked(book, 'hard')) {
+    const t = getTierProgress(book, 'medium');
+    const left = Math.max(0, t.unlockNeed - t.solved);
+    if (!t.total || left <= 0) return null;
+    return {
+      next: 'hard',
+      nextLabel: 'الصعب',
+      left,
+      solved: t.solved,
+      need: t.unlockNeed,
+      total: t.total,
+      fromLabel: 'المتوسط',
+    };
+  }
+  return null;
+}
+
+function updateUnlockReminder() {
+  const el = document.getElementById('unlock-reminder');
+  if (!el) return;
+  const info = getUnlockReminderInfo(state.book);
+  if (!info) {
+    el.hidden = true;
+    el.textContent = '';
+    return;
+  }
+  el.hidden = false;
+  el.innerHTML = `<span class="ur-icon" aria-hidden="true">🌱</span><span class="ur-text">باقي عليك <strong>${arabicNum(info.left)}</strong> سؤال لفتح <strong>${info.nextLabel}</strong></span>`;
+}
+
+function updateLevelPathUI() {
+  const el = document.getElementById('level-path');
+  if (!el) return;
+  const book = state.book;
+  const steps = LEVEL_FLOW.map((lvl) => {
+    const t = getTierProgress(book, lvl);
+    const unlocked = isLevelUnlocked(book, lvl);
+    const done = !!t.done;
+    const active = state.level === lvl;
+    let status = 'locked';
+    if (done) status = 'done';
+    else if (unlocked) status = active ? 'active' : 'open';
+    const leftUnlock = unlocked
+      ? Math.max(0, t.total - t.solved)
+      : Math.max(0, (lvl === 'medium'
+        ? getTierProgress(book, 'easy').unlockNeed - getTierProgress(book, 'easy').solved
+        : getTierProgress(book, 'medium').unlockNeed - getTierProgress(book, 'medium').solved));
+    let meta = '';
+    if (!unlocked) meta = `يفتح بعد ${arabicNum(leftUnlock)}`;
+    else if (done) meta = 'مكتمل';
+    else meta = `متبقي ${arabicNum(Math.max(0, t.total - t.solved))}`;
+    const pct = t.total ? Math.min(100, Math.round((t.solved / t.total) * 100)) : 0;
+    return `<div class="lp-step lp-${status}" data-level="${lvl}" role="listitem">
+      <button type="button" class="lp-btn" onclick="selectLevel('${lvl}')" ${unlocked ? '' : 'disabled'} aria-current="${active ? 'step' : 'false'}">
+        <span class="lp-label">${LEVEL_LABELS_AR[lvl]}</span>
+        <span class="lp-bar"><span class="lp-fill" style="width:${pct}%"></span></span>
+        <span class="lp-meta">${meta}</span>
+      </button>
+    </div>`;
+  }).join('<div class="lp-arrow" aria-hidden="true">←</div>');
+  el.innerHTML = steps;
+}
+
+function exportProgressBackup() {
+  try {
+    const payload = {
+      v: 1,
+      app: 'alhuda',
+      exportedAt: new Date().toISOString(),
+      name: state.userName || getPrimaryName() || '',
+      progress: ensureProgress(),
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `alhuda-progress-${stamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    if (typeof showToast === 'function') showToast('تم تنزيل نسخة التقدّم', 'ok');
+  } catch (e) {
+    console.warn(e);
+    showAlert('تعذّر تصدير التقدّم');
+  }
+}
+
+function importProgressBackup() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'application/json,.json';
+  input.addEventListener('change', async () => {
+    const file = input.files?.[0];
+    if (!file) return;
+    try {
+      const raw = JSON.parse(await file.text());
+      const incoming = raw?.progress && typeof raw.progress === 'object' ? raw.progress : raw;
+      if (!incoming || typeof incoming !== 'object') throw new Error('bad file');
+      const ok = window.confirm('دمج ملف التقدّم مع تقدّمك الحالي؟ (يُؤخذ الأعلى من كل جهاز)');
+      if (!ok) return;
+      mergeRemoteBackup({
+        stageProgress: incoming.stageProgress || {},
+        xp: incoming.xp,
+        badges: incoming.badges,
+        wrongQuestionIds: incoming.wrongQuestionIds,
+        wrongCounts: incoming.wrongCounts,
+        bookProgress: incoming.bookProgress,
+        totalGames: incoming.totalGames,
+        totalCorrect: incoming.totalCorrect,
+        bestStreak: incoming.bestStreak,
+        bestScore: incoming.bestScore,
+        dailyStreak: incoming.dailyStreak,
+        lastPlayDate: incoming.lastPlayDate,
+      });
+      // Also keep any stageProgress-only file shape.
+      if (incoming.stageProgress) mergeRemoteStageProgress(incoming.stageProgress);
+      updateLevelCounts();
+      updateWelcomeGamification();
+      if (typeof updateStagePickerUI === 'function') updateStagePickerUI();
+      if (window.AlhudaPlatform?.onWelcomeHome) AlhudaPlatform.onWelcomeHome();
+      scheduleTierProgressCloudPush();
+      if (typeof showToast === 'function') showToast('تم استيراد ودمج التقدّم', 'ok');
+    } catch (e) {
+      console.warn(e);
+      showAlert('ملف التقدّم غير صالح');
+    }
+  });
+  input.click();
+}
+
+async function syncProgressAcrossDevices() {
+  if (!state.user) {
+    if (typeof showToast === 'function') showToast('سجّل/ي الدخول لمزامنة التقدّم بين الأجهزة', 'err');
+    else showAlert('سجّل/ي الدخول لمزامنة التقدّم بين الأجهزة');
+    return;
+  }
+  if (typeof showToast === 'function') showToast('جاري مزامنة التقدّم…', 'ok');
+  const changed = await pullTierProgressFromCloud();
+  await pushTierProgressToCloud();
+  updateLevelCounts();
+  updateWelcomeGamification();
+  if (typeof updateStagePickerUI === 'function') updateStagePickerUI();
+  if (window.AlhudaPlatform?.onWelcomeHome) AlhudaPlatform.onWelcomeHome();
+  if (typeof showToast === 'function') {
+    showToast(changed ? 'تم دمج التقدّم من السحابة' : 'التقدّم محدّث ومتزامن', 'ok');
+  }
 }
 
 function updateQuestionRangeUI() {
@@ -5417,6 +5710,14 @@ function getQuestionsForGame() {
     const seed = (state.book === 'tawheed' ? 1 : state.book === 'usool' ? 2 : state.book === 'nawawi' ? 4 : 7) * 10000 + from * 100 + state.bankVersion;
     slice = seededShuffle(slice, seed);
   }
+  // Respect solved questions for «الكل» and manual range (same as tier path).
+  if (!state.homeworkId && !state.challengeMode && !trainingMode && !state.demoMode && !state.stageReviewMode) {
+    const solved = getSolvedIdSet(state.book);
+    if (solved.size) {
+      const filtered = slice.filter((q) => !solved.has(q.id));
+      slice = filtered;
+    }
+  }
   return dedupeGameQuestions(slice);
 }
 
@@ -5566,7 +5867,7 @@ function goHome() {
     show('login-screen');
     return;
   }
-  document.getElementById('welcome-user').textContent = '🎓 متعلم/ة';
+  document.getElementById('welcome-user').textContent = 'متعلم/ة';
   document.getElementById('welcome-greeting').textContent = 'مرحباً يا ' + state.userName + '!';
   updateBookButtons();
   updateLevelCounts();
@@ -6714,6 +7015,9 @@ async function showProfile() {
     <div style="display:grid;gap:8px;margin:12px 0;">
       <button type="button" class="btn btn-white btn-sm" onclick="setAsPrimaryName()">⭐ اجعل هذا الاسم الأساسي</button>
       <button type="button" class="btn btn-white btn-sm" onclick="switchLoginName()">الدخول باسم آخر</button>
+      <button type="button" class="btn btn-white btn-sm" onclick="syncProgressAcrossDevices()">☁️ مزامنة التقدّم بين الأجهزة</button>
+      <button type="button" class="btn btn-white btn-sm" onclick="exportProgressBackup()">⬇️ تصدير نسخة احتياطية</button>
+      <button type="button" class="btn btn-white btn-sm" onclick="importProgressBackup()">⬆️ استيراد تقدّم</button>
       <button type="button" class="btn btn-white btn-sm" onclick="wipeMyProgress()">🧹 تصفير التقدّم والبدء من جديد</button>
       <button type="button" class="btn btn-white btn-sm" onclick="logout()">🚪 خروج</button>
     </div>
