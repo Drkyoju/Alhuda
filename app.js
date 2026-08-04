@@ -703,13 +703,19 @@ function getStageMeta(book, level) {
 
 function markQuestionSolvedInStage(questionId) {
   if (!questionId || state.demoMode || trainingMode || state.challengeMode || state.homeworkId || state.stageReviewMode) return;
+  if (!LEVEL_FLOW.includes(state.level)) return;
   const key = stageProgressKey(state.book, state.level);
-  const prog = ensureStageProgressEntry(key);
-  if (!prog.solvedIds.includes(questionId)) {
-    prog.solvedIds.push(questionId);
-    saveProgress(ensureProgress());
-    scheduleTierProgressCloudPush();
+  const p = ensureProgress();
+  if (!p.stageProgress) p.stageProgress = {};
+  if (!p.stageProgress[key]) {
+    p.stageProgress[key] = { solvedIds: [], completedStages: [], currentStage: 1 };
   }
+  const prog = p.stageProgress[key];
+  if (!Array.isArray(prog.solvedIds)) prog.solvedIds = [];
+  if (prog.solvedIds.includes(questionId)) return;
+  prog.solvedIds.push(questionId);
+  saveProgress(p);
+  scheduleTierProgressCloudPush();
 }
 
 function mergeRemoteStageProgress(remote) {
@@ -788,7 +794,18 @@ async function pullTierProgressFromCloud() {
 }
 
 function syncStageCompletion(stageNum) {
-  const { stages, prog } = getStageMeta(state.book, state.level);
+  if (!LEVEL_FLOW.includes(state.level)) return false;
+  const key = stageProgressKey(state.book, state.level);
+  const p = ensureProgress();
+  if (!p.stageProgress) p.stageProgress = {};
+  if (!p.stageProgress[key]) {
+    p.stageProgress[key] = { solvedIds: [], completedStages: [], currentStage: 1 };
+  }
+  const prog = p.stageProgress[key];
+  if (!Array.isArray(prog.solvedIds)) prog.solvedIds = [];
+  if (!Array.isArray(prog.completedStages)) prog.completedStages = [];
+  const pool = getOrderedPool(state.book, state.level);
+  const stages = splitPoolIntoStages(pool);
   const stage = stages[stageNum - 1];
   if (!stage) return false;
   const solved = stage.questions.filter((q) => prog.solvedIds.includes(q.id)).length;
@@ -798,10 +815,10 @@ function syncStageCompletion(stageNum) {
     prog.completedStages.push(stageNum);
     prog.completedStages.sort((a, b) => a - b);
   }
-  if (prog.currentStage <= stageNum && stageNum < stages.length) {
+  if ((prog.currentStage || 1) <= stageNum && stageNum < stages.length) {
     prog.currentStage = stageNum + 1;
   }
-  saveProgress(ensureProgress());
+  saveProgress(p);
   return true;
 }
 
@@ -818,12 +835,14 @@ function getQuestionsForStageGame() {
   const round = Math.max(1, Math.min(ROUND_SIZE_MAX, state.roundSize || 20));
 
   if (state.stageReviewMode) {
-    const size = Math.min(round, pool.length);
-    const start = ((state.activeStageNum || 1) - 1) * size % Math.max(1, pool.length);
-    const slice = [];
-    for (let i = 0; i < size; i++) slice.push(pool[(start + i) % pool.length]);
-    state.qFrom = start + 1;
-    return dedupeGameQuestions(slice);
+    const solvedQs = pool.filter((q) => prog.solvedIds.includes(q.id));
+    if (!solvedQs.length) return [];
+    const size = Math.min(round, solvedQs.length);
+    const shuffled = shuffleArr(solvedQs);
+    const next = shuffled.slice(0, size);
+    state.qFrom = 1;
+    state.activeStageNum = 1;
+    return dedupeGameQuestions(next);
   }
 
   // Finished the tier — do not auto-recycle into review.
@@ -972,7 +991,7 @@ function startTierReview() {
   }
   state.stageReviewMode = true;
   state.useManualRange = false;
-  updateStagePickerUI();
+  // Start immediately — rebuilding the picker can clear stageReviewMode via round-size handlers.
   void startCountdown();
 }
 
@@ -981,6 +1000,39 @@ function selectStage(num, isDone) {
   state.activeStageNum = Math.max(1, num || 1);
   state.stageReviewMode = !!isDone;
   updateStagePickerUI();
+}
+
+function getNextPlayableLevel(book, level) {
+  if (level === 'easy' && isLevelUnlocked(book, 'medium')) return 'medium';
+  if (level === 'medium' && isLevelUnlocked(book, 'hard')) return 'hard';
+  return null;
+}
+
+function continueToNextLevel() {
+  const next = getNextPlayableLevel(state.book, state.level);
+  goHome();
+  if (next) {
+    selectLevel(next);
+    if (typeof showToast === 'function') {
+      showToast(`انتقلتَ/ِ إلى مستوى «${LEVEL_LABELS_AR[next] || next}»`, 'ok');
+    }
+  }
+}
+
+function updateNextLevelButton() {
+  const btn = document.getElementById('btn-next-level');
+  if (!btn) return;
+  if (state.demoMode || trainingMode || state.challengeMode || state.homeworkId || state.stageReviewMode) {
+    btn.style.display = 'none';
+    return;
+  }
+  const next = getNextPlayableLevel(state.book, state.level);
+  if (!next) {
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = '';
+  btn.textContent = `ابدأ المستوى التالي: ${LEVEL_LABELS_AR[next] || next} ←`;
 }
 
 function updateLevelLockUI() {
@@ -6276,6 +6328,11 @@ async function endGame() {
     document.getElementById('go-score').textContent = state.score;
     document.getElementById('go-cor').textContent = state.correct;
     document.getElementById('go-wr').textContent = state.wrong;
+    if (!state.useManualRange && !state.challengeMode && !state.homeworkId && LEVEL_FLOW.includes(state.level)) {
+      syncStageCompletion(state.activeStageNum);
+      scheduleTierProgressCloudPush();
+      updateLevelCounts();
+    }
     updateReviewButtons();
     show('gameover');
   } else {
@@ -6290,17 +6347,17 @@ async function endGame() {
       const label = LEVEL_LABELS_AR[state.level] || state.level;
       if (done) {
         if (state.level === 'easy') {
-          resSub = `🎉 أنهيت المستوى السهل (${arabicNum(total)})! المتوسط مفتوح`;
+          resSub = `🎉 أنهيت المستوى السهل (${arabicNum(total)})! المتوسط مفتوح — اضغط/ي الزر أدناه للبدء`;
         } else if (state.level === 'medium') {
-          resSub = `🎉 أنهيت المستوى المتوسط (${arabicNum(total)})! الصعب مفتوح`;
+          resSub = `🎉 أنهيت المستوى المتوسط (${arabicNum(total)})! الصعب مفتوح — اضغط/ي الزر أدناه للبدء`;
         } else {
           resSub = `🎉 أنهيت المستوى الصعب (${arabicNum(total)})! أحسنت — المسار مكتمل`;
         }
         state.stageReviewMode = false;
       } else if (unlockReady && state.level === 'easy' && isLevelUnlocked(state.book, 'medium')) {
-        resSub = `🔓 فُتح المتوسط! (حللتَ/ِ ${arabicNum(solved)} من ${arabicNum(total)} في السهل)`;
+        resSub = `🔓 فُتح المتوسط! (حللتَ/ِ ${arabicNum(solved)} من ${arabicNum(total)} في السهل) — يمكنك البدء فيه الآن`;
       } else if (unlockReady && state.level === 'medium' && isLevelUnlocked(state.book, 'hard')) {
-        resSub = `🔓 فُتح الصعب! (حللتَ/ِ ${arabicNum(solved)} من ${arabicNum(total)} في المتوسط)`;
+        resSub = `🔓 فُتح الصعب! (حللتَ/ِ ${arabicNum(solved)} من ${arabicNum(total)} في المتوسط) — يمكنك البدء فيه الآن`;
       } else if (!state.stageReviewMode) {
         const left = Math.max(0, unlockNeed - solved);
         const nextHint = state.level === 'hard' || unlockReady
@@ -6309,6 +6366,7 @@ async function endGame() {
         resSub = `✅ تقدّم ${label}: ${arabicNum(solved)}/${arabicNum(total)}${nextHint}`;
       }
       scheduleTierProgressCloudPush();
+      updateLevelCounts();
     }
     document.getElementById('res-sub').textContent = resSub;
     document.getElementById('fin-score').textContent = state.score;
@@ -6324,6 +6382,7 @@ async function endGame() {
     if (!isTraining && stars >= 2) launchConfetti();
     if (!isTraining && stars === 3) playSound('achievement');
     updateReviewButtons();
+    updateNextLevelButton();
     show('results');
   }
 

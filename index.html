@@ -422,6 +422,7 @@
         <div class="stat-card"><div>⚡</div><div class="big" id="fin-streak">0</div><div class="lbl">متتالية</div></div>
       </div>
       <button class="btn btn-gold btn-xl" onclick="startCountdown()">العب مجدداً 🎮</button>
+      <button class="btn btn-green btn-xl" id="btn-next-level" onclick="continueToNextLevel()" style="display:none;margin-top:8px;">ابدأ المستوى التالي ←</button>
       <button class="btn btn-blue btn-sm" id="btn-review-mistakes" onclick="startReview()" style="display:none;margin-top:8px;">📋 مراجعة الأخطاء</button>
       <button class="btn btn-sm btn-white" onclick="shareScore()" id="share-btn" style="margin-top:8px;">📤 شارك/ي نتيجتك</button>
       <button class="btn btn-sm btn-white" onclick="goHome()" style="margin-top:6px;">🏠 الرئيسية</button>
@@ -553,7 +554,7 @@
   <script src="questions-bank.js"></script>
   <script src="version.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="app.js?v=165" defer></script>
+  <script src="app.js?v=166" defer></script>
 <script src="auth.js?v=16" defer></script>
 <script src="enhancements.js?v=14" defer></script>
 <script src="platform.js?v=17" defer></script>
