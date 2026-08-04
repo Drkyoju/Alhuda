@@ -244,6 +244,24 @@
       border-bottom: 1px solid rgba(201, 169, 98, 0.18);
     }
     .app-topbar > * { pointer-events: auto; }
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      max-width: min(58vw, 280px);
+    }
+    .topbar-brand-name {
+      font-family: 'Tajawal', sans-serif;
+      font-size: clamp(0.72rem, 2.8vw, 0.88rem);
+      font-weight: 800;
+      color: var(--emerald-dark);
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
     .topbar-btn {
       min-width: 44px;
       min-height: 44px;
