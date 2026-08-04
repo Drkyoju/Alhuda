@@ -1,4 +1,4 @@
-# المكتبة الثلاثية — Alhuda Interactive Quiz App
+# مكتبة جمعية الهدى والحكمة التعليمية — Alhuda Interactive Quiz App
 
 Arabic RTL Islamic-education quiz PWA covering three classical texts
 (كتاب التوحيد, الأصول الثلاثة, الأربعون النووية) for

@@ -466,7 +466,7 @@
       else alert(msg);
       return;
     }
-    const text = `شهادة إتمام\n\nيشهد مركز المكتبة الثلاثية — جمعية الهدى والحكمة\nأن الطالب/ة: ${state.userName}\nأتم/ت ${pct}% من ${BOOK_LABELS_LOCAL[book]} بدقة ${acc}%\nبتاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\nبارك الله فيك/ِ`;
+    const text = `شهادة إتمام\n\nتشهد مكتبة جمعية الهدى والحكمة التعليمية\nأن الطالب/ة: ${state.userName}\nأتم/ت ${pct}% من ${BOOK_LABELS_LOCAL[book]} بدقة ${acc}%\nبتاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\nبارك الله فيك/ِ`;
     const w = window.open('', '_blank');
     if (w) {
       // Build the certificate via DOM methods (no document.write) so popup

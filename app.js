@@ -4170,10 +4170,10 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
 }
 
 async function shareScore() {
-  const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في المكتبة الثلاثية! ⭐\nجرّب/ي أنت أيضاً!\nhttps://alhuda.ryodan71.workers.dev/';
+  const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في مكتبة جمعية الهدى والحكمة التعليمية! ⭐\nجرّب/ي أنت أيضاً!\nhttps://alhuda.ryodan71.workers.dev/';
   const shareBtn = document.getElementById('share-btn');
   if (navigator.share) {
-    try { await navigator.share({ title: 'المكتبة الثلاثية', text }); return; } catch (e) {}
+    try { await navigator.share({ title: 'مكتبة جمعية الهدى والحكمة التعليمية', text }); return; } catch (e) {}
   }
   try {
     await navigator.clipboard.writeText(text);
@@ -4190,13 +4190,13 @@ async function shareDemoResult() {
   const book = BOOK_LABELS[stats.book] || stats.book || '';
   const avg = stats.avgMs ? ` · متوسط ${Math.round(stats.avgMs / 1000)} ث` : '';
   const text =
-    `📝 أنهيتُ نموذجاً تجريبياً في المكتبة الثلاثية` +
+    `📝 أنهيتُ نموذجاً تجريبياً في مكتبة جمعية الهدى والحكمة التعليمية` +
     (book ? ` (${book})` : '') +
     `\nصحيح: ${arabicNum(stats.correct)} / ${arabicNum(stats.total)}${avg}` +
     `\nجمعية الهدى والحكمة\nhttps://alhuda.ryodan71.workers.dev/`;
   const shareBtn = document.getElementById('btn-share-demo');
   if (navigator.share) {
-    try { await navigator.share({ title: 'المكتبة الثلاثية', text }); return; } catch (e) {}
+    try { await navigator.share({ title: 'مكتبة جمعية الهدى والحكمة التعليمية', text }); return; } catch (e) {}
   }
   try {
     await navigator.clipboard.writeText(text);
