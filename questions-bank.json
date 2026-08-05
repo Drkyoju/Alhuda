@@ -3115,25 +3115,6 @@
       "language": "ar"
     },
     {
-      "id": "71e2633d-3b09-d2d3-37e8-e17ba92b9666",
-      "book": "tawheed",
-      "chapter": "🕌 الغلو والحلف",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "العطف بالواو في \"ما شاء الله وشئت\" يقتضي:",
-      "options": [
-        "التسوية والتشريك",
-        "الترتيب",
-        "التراخي",
-        "التفضيل"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: التسوية والتشريك.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "684a6d62-7429-426d-cf3e-3c721a563763",
       "book": "tawheed",
       "chapter": "🕌 الغلو والحلف",
