@@ -2468,7 +2468,14 @@ function applyManualSpeechDiacritics(text) {
 function speechTextFor(q, field, raw) {
   const byId = (typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID) || {};
   const hit = q?.id && byId[q.id]?.[field];
-  const base = String(hit || raw || '').trim();
+  const original = String(raw || '').trim();
+  let base = String(hit || raw || '').trim();
+  // If curated speech no longer matches the live question text, prefer the live text
+  // so bank edits (rewrites/dedupes) don't keep showing/speaking stale stems.
+  if (hit && original) {
+    const bare = (s) => String(s || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '').replace(/[^\u0621-\u064A0-9]/g, '');
+    if (bare(hit) !== bare(original)) base = original;
+  }
   if (!base) return '';
   // Hadith / quote-hadith: keep curated form (Gemini or source) — no word-map rewrite.
   if (isHadithPassage(base) || (field === 'quote' && isHadithPassage(base))) {
