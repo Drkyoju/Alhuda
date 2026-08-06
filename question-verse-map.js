@@ -58,5 +58,11 @@ window.QUESTION_VERSE_MAP = {
   "596c922b-de21-40ea-80fa-f55a8e85f28b": "4:142",
   "213fc1f9-d919-4153-b28a-6e53cb13acce": "2:102",
   "6a607ce4-658c-424f-ae9b-a2c88dfeafeb": "53:19",
-  "48ee7845-f5f6-4d90-9da0-6f890e9ca6dc": "108:2"
+  "48ee7845-f5f6-4d90-9da0-6f890e9ca6dc": "108:2",
+  "3c2dca5b-9bbb-c924-b7b3-30d829990edd": "51:56",
+  "da5fd343-b6f1-ca1f-0ac7-4e9d3b3eeede": "108:2",
+  "dcf033d4-6c85-39f2-fbc3-c564255e8f7a": "6:82",
+  "c134a6e9-d0a8-9643-3943-267e128ea448": "6:82",
+  "e5ba211a-5aae-6dd3-51bb-cf9b09d420f8": "6:82",
+  "28aba9b7-8312-826c-21ed-ece8a4227029": "2:165"
 };

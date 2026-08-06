@@ -2203,7 +2203,10 @@ function sanitizeTtsText(text) {
       .replace(/رضي الله عنهما/g, ' رضي الله عنهما ')
       .replace(/رضي الله عنها/g, ' رضي الله عنها ')
       .replace(/رضي الله عنه/g, ' رضي الله عنه ')
-      .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
+      // Drop ALL quote / bracket / punctuation marks so TTS never says «نقطتان» or reads « ».
+      .replace(/[\u00AB\u00BB\u2018-\u201F\u2039\u203A\u300C-\u300F\u301D\u301E\uFF02\uFF07«»"'“”‘’‹›「」『』„‚]/g, ' ')
+      .replace(/[﴿﴾]/g, ' ')
+      .replace(/[.؟!…,:：;؛،()\[\]{}*_#<>=+~^`\/\\|–—•·\-_]+/g, ' ')
       .replace(/\s+/g, ' ')
       .trim()
   );
@@ -2728,9 +2731,21 @@ function shouldReciteHudhaifyForQuestion(q, questionText = '') {
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   if (!verseKey) return false;
   const cite = (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '') || String(q?.quote || '');
-  if (isHadithPassage(cite) || isHadithPassage(q?.q)) return false;
+  const map = (typeof window !== 'undefined' && window.QUESTION_VERSE_MAP) || {};
+  // Explicit map entry = intentional ayah link → always recite Hudhaify.
+  if (map[q.id]) return true;
+  // Citation is clearly a hadith (not Quran) → don't Hudhaify.
+  if (
+    cite
+    && isHadithPassage(cite)
+    && !(typeof citationLooksLikeAyah === 'function' && citationLooksLikeAyah(cite, verseKey))
+    && !fieldHasEmbeddedAyah(cite)
+  ) {
+    return false;
+  }
+  // Don't block just because the question text mentions النبي ﷺ — many ayah Qs do.
   if (typeof citationLooksLikeAyah === 'function' && citationLooksLikeAyah(cite, verseKey)) return true;
-  const blob = `${questionText || ''} ${cite}`;
+  const blob = `${questionText || q.q || ''} ${cite}`;
   return /قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿/.test(blob) || fieldHasEmbeddedAyah(blob);
 }
 
@@ -3506,7 +3521,7 @@ function updateQuranReciteSlot(q) {
 
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   const main = document.querySelector('#game .q-main');
-  if (!verseKey) {
+  if (!verseKey || !shouldReciteHudhaifyForQuestion(q)) {
     slot.style.display = 'none';
     slot.innerHTML = '';
     if (inline) {
@@ -3829,6 +3844,22 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
+        // 1b) Hadith / book citation — read aloud after the question (never as Hudhaify).
+        const citeRaw = String(q.quote || '').trim();
+        if (citeRaw && isHadithPassage(citeRaw) && !citationLooksLikeAyah(citeRaw, verseKey)) {
+          const citeSpeak = speechPart(q, 'quote', citeRaw) || citeRaw;
+          const citeClean = prepareTtsPayload(citeSpeak);
+          if (citeClean) {
+            try {
+              await speakTtsSegment(citeClean, btn, { clearAfter: false, alreadyPrepared: true });
+            } catch (e) {
+              if (e?.name === 'AbortError') return;
+              console.warn('hadith cite tts:', e?.message || e);
+            }
+          }
+        }
+        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+
         // 2) Ayah — الحذيفي فقط (never TTS ayah text; never Hudhaify a hadith).
         const verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
         if (
@@ -3859,11 +3890,11 @@ function speakQuestion() {
               await speakTtsSegment(oClean, btn, { clearAfter: false, alreadyPrepared: true });
             } catch (e) {
               if (e?.name === 'AbortError') return;
-              // Fallback: try the raw option text (may match a different bake key).
+              // Fallback: sanitize again (never speak raw punctuation/quotes).
               try {
-                const raw = String(opt || '').trim();
-                if (raw && raw !== oClean) {
-                  await speakTtsSegment(raw, btn, { clearAfter: false, alreadyPrepared: true });
+                const rawClean = prepareTtsPayload(String(opt || '').trim());
+                if (rawClean && rawClean !== oClean) {
+                  await speakTtsSegment(rawClean, btn, { clearAfter: false, alreadyPrepared: true });
                 }
               } catch (e2) {
                 console.warn('option tts miss:', e2?.message || e2);
@@ -4010,14 +4041,14 @@ function getCorrectAnswerText(q) {
   return speechPart(q, `a${q.c}`, raw) || raw;
 }
 
-/** Visible label with tashkeel when the speech map has it. */
+/** Visible label without tashkeel — speech maps keep harakat for TTS only. */
 function displayFieldText(q, field, raw) {
   const src = String(raw || '');
   if (!src.trim()) return src;
   const marks = src.match(/[✓✗]/g);
   const bare = src.replace(/[✓✗]/g, '').trim();
-  const spoken = speechPart(q, field, bare) || applyManualSpeechDiacritics(bare) || bare;
-  return marks?.length ? `${spoken} ${marks.join('')}` : spoken;
+  const shown = stripArabicDiacritics(bare).replace(/\s+/g, ' ').trim() || bare;
+  return marks?.length ? `${shown} ${marks.join('')}` : shown;
 }
 
 function formatPageLabel(page) {
@@ -4167,7 +4198,7 @@ function extractExplanationSnippet(exp) {
 }
 
 function formatCitationQuote(s) {
-  const t = (s || '').trim();
+  const t = stripArabicDiacritics((s || '').trim()).replace(/\s+/g, ' ').trim();
   if (!t) return '';
   if (t.startsWith('«')) return t;
   return `«${t}»`;
@@ -5608,33 +5639,13 @@ function renderQ() {
   document.getElementById('q-num').textContent =
     `${stagePrefix}سؤال ${state.qFrom + state.idx} — ${state.idx + 1}/${state.total}`;
   updateStageGameBadge();
-  // Show diacritized text when the speech map is ready; otherwise paint raw then refresh.
+  // Show bare text (no tashkeel) — speech maps keep harakat for TTS only.
   const qEl = document.getElementById('q-text');
   const paintQuestionText = () => {
-    qEl.textContent = displayFieldText(q, 'q', q.q) || q.q;
+    qEl.textContent = displayFieldText(q, 'q', q.q) || stripArabicDiacritics(q.q || '');
   };
   paintQuestionText();
-  if (!(typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID)) {
-    void ensureSpeechMapsLoaded().then(() => {
-      if (state.questions[state.idx]?.id === q.id) {
-        paintQuestionText();
-        // Re-paint options with tashkeel once the map arrives.
-        const grid = document.getElementById('ans-grid');
-        if (grid && !state.answered) {
-          const order = state.displayAnswerOrder;
-          grid.querySelectorAll('.ans-btn').forEach((btn, displayIdx) => {
-            const raw = btn.dataset.raw || btn.textContent;
-            if (q.type === 'tf') {
-              btn.textContent = displayFieldText(q, null, raw);
-            } else if (order && order[displayIdx] != null) {
-              const origIdx = order[displayIdx];
-              btn.textContent = displayFieldText(q, `a${origIdx}`, q.a[origIdx] || raw);
-            }
-          });
-        }
-      }
-    });
-  }
+  // No re-paint with speech-map tashkeel — user asked for undiacritized display.
   document.getElementById('q-book-badge').textContent = BOOK_LABELS[q.book] || q.book;
   document.getElementById('q-type-badge').style.display = q.type === 'tf' ? 'inline-block' : 'none';
   updateVoiceUI();
@@ -5672,7 +5683,23 @@ function renderQ() {
     document.getElementById('fb-self-correct').style.display = 'none';
     startQuestionTimer();
     questionShownAt = Date.now();
-    if (voiceOn) speakQuestion();
+    // Speak only AFTER the question is painted and visible (never before the user sees it).
+    const askIdx = state.idx;
+    const askId = q.id;
+    if (voiceOn) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            if (!voiceOn) return;
+            if (state.idx !== askIdx || state.questions[state.idx]?.id !== askId) return;
+            if (!document.getElementById('game')?.classList.contains('active')) return;
+            const painted = document.getElementById('q-text')?.textContent?.trim();
+            if (!painted) return;
+            speakQuestion();
+          }, 400);
+        });
+      });
+    }
   }
   updatePrevQBtn();
   persistGameSession();
