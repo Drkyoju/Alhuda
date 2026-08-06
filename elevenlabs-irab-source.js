@@ -59,6 +59,7 @@ const ELEVENLABS_PHRASE_RULES = [
   [/دين الله/g, `دِينُ ${EL_ALLAH_GEN}`],
   [/شرع الله/g, `شَرْعُ ${EL_ALLAH_GEN}`],
   [/حدود الله/g, `حُدُودُ ${EL_ALLAH_GEN}`],
+  [/عبد الله/g, `عَبْدِ ${EL_ALLAH_GEN}`],
   [/دِينَ\s+اللَّهُ/g, `دِينَ ${EL_ALLAH_GEN}`],
   [/شَرْعَ\s+اللَّهُ/g, `شَرْعَ ${EL_ALLAH_GEN}`],
   [/حُدُودَ\s+اللَّهُ/g, `حُدُودَ ${EL_ALLAH_GEN}`],
@@ -179,6 +180,7 @@ function applyWordLexicon(text) {
     if (bare === 'تالله') return EL_TALLAH;
     if (bare === 'كالله') return EL_KALLAH;
     if (bare === 'إلاالله' || bare === 'الاالله') return EL_ILLA_ALLAH;
+    if (bare === 'عبدالله') return `عَبْدِ ${EL_ALLAH_GEN}`;
     if (bare === 'لاإلهإلاالله' || bare === 'لاالهالاالله' || bare === 'لاالهإلاالله') return EL_LA_ILAHA_ILLA_ALLAH;
     if (bare === 'تعالى') return 'تَعَالَى';
     return token;

@@ -56,6 +56,7 @@ const ALLAH_PHRASE_RULES = [
   [/دين الله/g, `دِينُ ${ALLAH_GEN}`],
   [/شرع الله/g, `شَرْعُ ${ALLAH_GEN}`],
   [/حدود الله/g, `حُدُودُ ${ALLAH_GEN}`],
+  [/عبد الله/g, `عَبْدِ ${ALLAH_GEN}`],
   [/دِينَ\s+اللَّهُ/g, `دِينَ ${ALLAH_GEN}`],
   [/شَرْعَ\s+اللَّهُ/g, `شَرْعَ ${ALLAH_GEN}`],
   [/حُدُودَ\s+اللَّهُ/g, `حُدُودَ ${ALLAH_GEN}`],
@@ -194,6 +195,7 @@ function applyWordLexicon(text) {
     if (bare === 'تالله') return TALLAH;
     if (bare === 'كالله') return KALLAH;
     if (bare === 'إلاالله' || bare === 'الاالله') return ILLA_ALLAH;
+    if (bare === 'عبدالله') return `عَبْدِ ${ALLAH_GEN}`;
     if (bare === 'لاإلهإلاالله' || bare === 'لاالهالاالله' || bare === 'لاالهإلاالله') return LA_ILAHA_ILLA_ALLAH;
     if (bare === 'تعالى') return 'تَعَالَى';
     return token;

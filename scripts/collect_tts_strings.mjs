@@ -23,9 +23,12 @@ export function loadSpeechMaps() {
 }
 
 function stripForTts(text) {
+  // Must stay in sync with app.js sanitizeTtsText — otherwise baked keys miss at runtime.
   return String(text || '')
     .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
-    .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
+    .replace(/[\u00AB\u00BB\u2018-\u201F\u2039\u203A\u300C-\u300F\u301D\u301E\uFF02\uFF07«»"'“”‘’‹›「」『』„‚]/g, ' ')
+    .replace(/[﴿﴾]/g, ' ')
+    .replace(/[.؟!…,:：;؛،()\[\]{}*_#<>=+~^`\/\\|–—•·\-_]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
