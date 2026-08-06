@@ -2279,6 +2279,9 @@ function scrubSpeechDiacriticsNoise(text) {
     ['بَيِّنٌ الشِّرْك', 'بَيْنَ الشِّرْك'],
     ['بَيِّنٌ الْمُس', 'بَيْنَ الْمُس'],
     ['بَيِّنٌ الْحَلَالُ', 'بَيْنَ الْحَلَالِ'],
+    // لولا: split for Fish narrator (avoid mashed «lawlāllāh»)
+    ['لَوْلَا الل', 'لَوْ لَا الل'],
+    ['لَوْلَا', 'لَوْ لَا'],
   ];
   for (const [a, b] of prep) s = s.split(a).join(b);
   return s.replace(/\s+/g, ' ').trim();
