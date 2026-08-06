@@ -25,10 +25,10 @@ const LA_MABUDA_BIHAQQ_ILLA_ALLAH = 'لَا مَعْبُودَ بِحَقٍّ إ
 
 /** Prepositions / إضافة heads that put الله in the genitive. */
 const ALLAH_GEN_BEFORE_RE =
-  /(?:ع(?:ِ)?ن(?:ْ)?د(?:َ)?|م(?:ِ)?ن(?:ْ|َ)?|إِ?ل(?:َ)?ى|الى|ع(?:َ)?ن(?:ْ)?|ع(?:َ)?ل(?:َ)?ى|ف(?:ِ)?ي|م(?:َ)?ع(?:َ)?|ل(?:َ)?د(?:َ)?ى|غ(?:َ)?ي(?:ْ)?ر(?:َ)?|س(?:ِ)?و(?:َ)?ى|د(?:ُ)?و(?:ْ)?ن(?:َ)?|ح(?:َ)?ق(?:ُّ|ُ)?|إِ?ف(?:ْ)?ر(?:َ)?اد(?:ُ)?|افراد|ع(?:ِ)?ب(?:َ)?اد(?:َ)?ة(?:ِ)?|اس(?:ْ)?م(?:ُ)?|ر(?:َ)?س(?:ُ)?ول(?:ُ)?|ع(?:َ)?ب(?:ْ)?د(?:ُ)?|ب(?:ِ)?غ(?:َ)?ي(?:ْ)?ر(?:ِ)?)\s*$/u;
+  /(?:ع(?:ِ)?ن(?:ْ)?د(?:َ)?|م(?:ِ)?ن(?:ْ|َ)?|إِ?ل(?:َ)?ى|الى|ع(?:َ)?ن(?:ْ)?|ع(?:َ)?ل(?:َ)?ى|ف(?:ِ)?ي|م(?:َ)?ع(?:َ)?|ل(?:َ)?د(?:َ)?ى|غ(?:َ)?ي(?:ْ)?ر(?:َ)?|س(?:ِ)?و(?:َ)?ى|د(?:ُ)?و(?:ْ)?ن(?:َ)?|ح(?:َ)?ق(?:ُّ|ُ)?|إِ?ف(?:ْ)?ر(?:َ)?اد(?:ُ)?|افراد|ع(?:ِ)?ب(?:َ)?اد(?:َ)?ة(?:ِ)?|اس(?:ْ)?م(?:ُ)?|ر(?:َ)?س(?:ُ)?ول(?:ُ)?|ع(?:َ)?ب(?:ْ)?د(?:ُ)?|ب(?:ِ)?غ(?:َ)?ي(?:ْ)?ر(?:ِ)?|د(?:ِ)?ين(?:َ|ُ|ِ)?|ش(?:َ)?ر(?:ْ)?ع(?:َ|ُ|ِ)?|ح(?:ُ)?د(?:ُ)?ود(?:َ|ُ|ِ)?|ط(?:َ)?اع(?:َ)?ة(?:ِ)?|م(?:َ)?ع(?:ْ)?ص(?:ِ)?ي(?:َ)?ة(?:ِ)?)\s*$/u;
 
 /** Particles that put الله in the accusative. */
-const ALLAH_ACC_BEFORE_RE = /(?:إِ?ن(?:َّ)?|ان|أَ?ن(?:َّ)?|إِ?ل(?:َّ)?ا)\s*$/u;
+const ALLAH_ACC_BEFORE_RE = /(?:إِ?ن(?:َّ)?|ان|أَ?ن(?:َّ)?|إِ?ل(?:َّ)?ا|اح(?:ْ)?ف(?:َ)?ظ(?:ِ)?|ل(?:َ)?ق(?:ِ)?ي(?:َ)?)\s*$/u;
 
 const ALLAH_PHRASE_RULES = [
   [/ما أعظم الذنوب عند الله/g, `مَا أَعْظَمُ الذُّنُوبِ عِنْدَ ${ALLAH_GEN}`],
@@ -54,6 +54,12 @@ const ALLAH_PHRASE_RULES = [
   [/إفراد الله/g, `إِفْرَادُ ${ALLAH_GEN}`],
   [/افراد الله/g, `إِفْرَادُ ${ALLAH_GEN}`],
   [/حق الله/g, `حَقُّ ${ALLAH_GEN}`],
+  [/دين الله/g, `دِينُ ${ALLAH_GEN}`],
+  [/شرع الله/g, `شَرْعُ ${ALLAH_GEN}`],
+  [/حدود الله/g, `حُدُودُ ${ALLAH_GEN}`],
+  [/دِينَ\s+اللَّهُ/g, `دِينَ ${ALLAH_GEN}`],
+  [/شَرْعَ\s+اللَّهُ/g, `شَرْعَ ${ALLAH_GEN}`],
+  [/حُدُودَ\s+اللَّهُ/g, `حُدُودَ ${ALLAH_GEN}`],
   [/من دون الله/g, `مِنْ دُونِ ${ALLAH_GEN}`],
   [/لغير الله/g, `لِغَيْرِ ${ALLAH_GEN}`],
   [/بغير الله/g, `بِغَيْرِ ${ALLAH_GEN}`],
@@ -111,6 +117,14 @@ function normalizeAllahTokens(text) {
   const H = '[\\u064B-\\u065F\\u0670]*';
   let s = String(text || '');
   s = s.replace(/\uFDF2/g, ALLAH_NOM);
+  // OCR / map typos that make TTS say «اللاه» or skip «إلا»
+  s = s.replace(/إالله/g, 'إلا الله');
+  s = s.replace(/االله/g, 'إلا الله');
+  s = s.replace(/إِلَّا\s*اله(?=$|[^\u0621-\u064A])/g, 'إلا الله');
+  s = s.replace(/إلا\s*اله(?=$|[^\u0621-\u064A])/g, 'إلا الله');
+  s = s.replace(/إِلَّا\s*اللَّ?ه(?=$|[^\u0621-\u064A\u064B-\u065F\u0670])/g, (m) =>
+    /اللَّه[َُِ]/.test(m) ? m : 'إلا الله'
+  );
   s = s.replace(new RegExp(`ل${H}ا${H}\\s+إ${H}ل${H}ه${H}\\s+إ${H}ل${H}[اأإآٱ]?${H}\\s+[اأإآٱ]${H}ل${H}ل${H}ه`, 'g'), LA_ILAHA_ILLA_ALLAH);
   // لا تُفسِد «لا إله إلا اللَّهُ» بتحويلها إلى «إلا اللَّهَ»
   s = s.replace(new RegExp(`إ${H}ل${H}[اأإآٱ]?${H}\\s+[اأإآٱ]${H}ل${H}ل${H}ه`, 'g'), (match, offset, full) => {
@@ -167,8 +181,7 @@ function applyWordLexicon(text) {
   return String(text || '').replace(/[\u0621-\u0671\u064B-\u065F\u0670\uFDF2]+/g, (token, offset, full) => {
     const bare = stripHarakat(token);
     if (bare === 'الله') {
-      // Keep an already-correct case form from phrase rules / previous pass.
-      if (token === ALLAH_NOM || token === ALLAH_ACC || token === ALLAH_GEN) return token;
+      // Always pick case from preceding word — wrong اللَّهُ after دين/شرع caused «اللاه».
       const before = full.slice(Math.max(0, offset - 24), offset);
       return allahFormForContext(before);
     }
