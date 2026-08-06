@@ -173,7 +173,7 @@ window.SPEECH_PRON_LEXICON = {
   صلى: "صَلَّى",
   وسلم: "وَسَلَّمَ",
 
-  /* High-frequency quiz words — clear sukoon/shadda for Hamed (Edge) */
+  /* High-frequency quiz words — clear sukoon/shadda for Fish Audio narrator */
   معاذ: "مُعَاذٍ",
   معاذا: "مُعَاذًا",
   معاذاً: "مُعَاذًا",

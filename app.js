@@ -1948,7 +1948,7 @@ function prepareTtsPayload(text) {
     );
   }
   // Speech-map / already-tashkeeled text: keep mark order for baked TTS keys.
-  // Still fill any remaining bare words from the Hamed-tuned lexicon.
+  // Still fill any remaining bare words from the Fish-tuned lexicon.
   let forTts = hasWellFormedTashkeel(cleaned)
     ? applyPronunciationLexicon(cleaned)
     : applyPronunciationLexicon(applyWordDiacritics(applyManualSpeechDiacritics(cleaned)));
@@ -2218,7 +2218,7 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.split('عُبِدَ').join('عَبْد');
   s = s.split('الن ي').join('النبي');
   s = s.split("اللََّّ").join("اللَّه");
-  // Hamed-critical iʿrāb fixes (wrong case/harakat → mangled reads)
+  // Critical iʿrāb fixes (wrong case/harakat → mangled Fish narrator reads)
   s = s.split("لَعَنَ اللَّهِ").join("لَعَنَ اللَّهَ");
   s = s.split('الْحِكْمَةُ مَنْ خَلَقَ').join('الْحِكْمَةُ مِنْ خَلْقِ');
   s = s.split('الْحِكْمَةُ مَنْ').join('الْحِكْمَةُ مِنْ');

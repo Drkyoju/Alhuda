@@ -136,7 +136,10 @@ export function collectTtsStrings() {
 }
 
 export function bakedTtsKey(text, voice = BAKE_TTS_VOICE, cacheVer = BAKE_TTS_CACHE_VER) {
-  return `${cacheVer}::${voice}::${String(text || '').slice(0, 600)}`;
+  // Array#map passes (item, index, array) — never treat index as voice id.
+  const v = typeof voice === 'string' && voice ? voice : BAKE_TTS_VOICE;
+  const ver = typeof cacheVer === 'string' && cacheVer ? cacheVer : BAKE_TTS_CACHE_VER;
+  return `${ver}::${v}::${String(text || '').slice(0, 600)}`;
 }
 
 export function bakedTtsFileNameSync(text, voice = BAKE_TTS_VOICE, cacheVer = BAKE_TTS_CACHE_VER) {
