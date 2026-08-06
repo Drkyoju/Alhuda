@@ -2196,6 +2196,8 @@ async function refreshTtsProviderBadge() {
 function scrubSpeechDiacriticsNoise(text) {
   let s = String(text || '');
   if (!s) return '';
+  // Match prepareArabicForSpeech — tatweel/ZWNJ must not diverge bake keys from runtime.
+  s = s.replace(/[\u0640\u200c\u200f]/g, '');
   // Orphan marks AFTER spaces only (e.g. «مَن َقَال») — never touch Letter+Shadda+Fatha.
   s = s.replace(/ +[\u064B-\u065F\u0670]+/g, ' ');
   // Classic corruptions from word-map harvest

@@ -25,6 +25,8 @@ export function loadSpeechMaps() {
 function scrubSpeechDiacriticsNoise(text) {
   let s = String(text || '');
   if (!s) return '';
+  // Match prepareArabicForSpeech — tatweel/ZWNJ must not diverge bake keys from runtime.
+  s = s.replace(/[\u0640\u200c\u200f]/g, '');
   // Orphan marks AFTER spaces only — never strip mid-word harakat (shadda+fatha).
   s = s.replace(/ +[\u064B-\u065F\u0670]+/g, ' ');
   s = s.split('َّمَنْ').join('مَنْ');
