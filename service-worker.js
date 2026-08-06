@@ -4,7 +4,7 @@
 // On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
 // without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v220';
+const CACHE = 'alhuda-v221';
 // Keep install precache lean — large speech-diacritics-map.js loads on demand.
 const ASSETS = [
   './',
@@ -171,11 +171,18 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       caches.open(CACHE).then(async (cache) => {
         const hit = await cache.match(e.request);
-        if (hit) return hit;
+        if (hit) {
+          const ctype = (hit.headers.get('content-type') || '').toLowerCase();
+          if (ctype.includes('audio') || ctype.includes('mpeg') || ctype.includes('octet-stream')) {
+            return hit;
+          }
+          // Drop poisoned HTML/SPA responses cached under an .mp3 URL.
+          try { await cache.delete(e.request); } catch { /* ignore */ }
+        }
         try {
-          const res = await fetch(e.request);
+          const res = await fetch(e.request, { cache: 'no-cache' });
           const ctype = (res.headers.get('content-type') || '').toLowerCase();
-          if (res.ok && ctype.includes('audio')) {
+          if (res.ok && (ctype.includes('audio') || ctype.includes('mpeg') || ctype.includes('octet-stream'))) {
             cache.put(e.request, res.clone());
           }
           return res;

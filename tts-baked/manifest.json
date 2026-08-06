@@ -4,9 +4,9 @@
   "voiceLabel": "Hamed (Edge)",
   "provider": "edge-baked",
   "totalStrings": 4286,
-  "bakedThisRun": 82,
-  "skippedExisting": 4204,
+  "bakedThisRun": 11,
+  "skippedExisting": 4275,
   "failed": 0,
   "approxChars": 207085,
-  "generatedAt": "2026-08-06T14:54:19.923Z"
+  "generatedAt": "2026-08-06T17:19:37.433Z"
 }

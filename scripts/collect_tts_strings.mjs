@@ -80,9 +80,18 @@ function stripForTts(text) {
 }
 
 function normalizeForBake(text) {
-  const s = stripForTts(text);
+  // Mirror app.js prepareTtsPayload for map strings (well-formed tashkeel path):
+  // fixAllah → strip tatweel → sanitize (punct + scrub). Order matters for bake keys.
+  let s = String(text || '')
+    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
+    .replace(/\s+/g, ' ')
+    .trim();
   if (!s || s.length < 2) return '';
-  return normalizeForElevenLabs(fixAllahIrabInText(s));
+  s = fixAllahIrabInText(s);
+  s = s.replace(/[\u0640\u200c\u200f]/g, '').replace(/\s+/g, ' ').trim();
+  s = stripForTts(s);
+  if (!s || s.length < 2) return '';
+  return s;
 }
 
 export function collectTtsStrings() {

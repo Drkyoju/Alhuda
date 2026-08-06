@@ -1795,12 +1795,16 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
   if (typeof bakedTtsAssetPath === 'function') {
     try {
       const bakedUrl = await bakedTtsAssetPath(text, lookupVoice);
-      const bakedRes = await fetch(bakedUrl, { signal, cache: 'force-cache' });
+      // Never force-cache: a prior SPA HTML 200 for a missing MP3 poisons silence forever.
+      const bust = typeof window !== 'undefined' && window.ALHUDA_ASSETS?.sw
+        ? `?v=${window.ALHUDA_ASSETS.sw}`
+        : '';
+      const bakedRes = await fetch(`${bakedUrl}${bust}`, { signal, cache: 'no-cache' });
       if (bakedRes.ok) {
         const ctype = (bakedRes.headers.get('content-type') || '').toLowerCase();
         // SPA fallback may serve HTML for missing /tts-baked/* — never treat as audio.
-        if (!ctype.includes('audio') && !ctype.includes('mpeg') && !ctype.includes('octet-stream')) {
-          /* miss */
+        if (!ctype.includes('audio') && !ctype.includes('mpeg') && !ctype.includes('octet-stream') && ctype.includes('html')) {
+          /* miss — cached HTML must not be treated as speech */
         } else {
           const blob = await bakedRes.blob();
           if (blob.size > 500) {
@@ -1821,10 +1825,18 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
     }
   }
   const cached = await getTtsBlobFromIdb(key);
-  if (cached?.size) {
-    const objectUrl = URL.createObjectURL(cached);
-    rememberTtsObjectUrl(key, objectUrl);
-    return cached;
+  if (cached?.size > 500) {
+    try {
+      const head = new Uint8Array(await cached.slice(0, 4).arrayBuffer());
+      const isMp3 =
+        (head[0] === 0xff && (head[1] & 0xe0) === 0xe0) ||
+        (head[0] === 0x49 && head[1] === 0x44 && head[2] === 0x33);
+      if (isMp3) {
+        const objectUrl = URL.createObjectURL(cached);
+        rememberTtsObjectUrl(key, objectUrl);
+        return cached;
+      }
+    } catch { /* ignore bad idb */ }
   }
   // Offline: play from memory/IDB only — never turn voice off globally.
   if (navigator.onLine === false) {
@@ -3577,8 +3589,24 @@ function waitForQuranIdle() {
     a.addEventListener('ended', done, { once: true });
     a.addEventListener('pause', done, { once: true });
     a.addEventListener('error', done, { once: true });
-    // Hard safety only — normal ayahs finish well under this.
-    setTimeout(done, 120000);
+    // If stalled (playing flag but no progress), don't block TTS forever.
+    const start = a.currentTime;
+    const stall = setInterval(() => {
+      if (!quranAudio || quranAudio !== a || a.paused || a.ended) {
+        clearInterval(stall);
+        done();
+        return;
+      }
+      if (a.currentTime === start && a.readyState < 3) {
+        clearInterval(stall);
+        stopQuranAudio();
+        done();
+      }
+    }, 1500);
+    setTimeout(() => {
+      clearInterval(stall);
+      done();
+    }, 90000);
   });
 }
 
@@ -3663,6 +3691,22 @@ function stopSpeaking() {
 }
 
 
+async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
+  if (!ttsAudio) return;
+  try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
+  if (btn) btn.classList.add('speaking');
+  try {
+    await ttsAudio.play();
+  } catch {
+    unlockTtsAudio();
+    await ttsAudio.play();
+  }
+  await new Promise((resolve, reject) => {
+    ttsAudio.onended = resolve;
+    ttsAudio.onerror = () => reject(new Error('audio error'));
+  });
+}
+
 async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
   const key = ttsCacheKey(text, voice);
   // Hot path: play from memory URL immediately — no IDB / network / blob re-fetch.
@@ -3680,13 +3724,7 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_D
   } else {
     ttsAudio = new Audio(url);
   }
-  try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
-  if (btn) btn.classList.add('speaking');
-  await ttsAudio.play();
-  await new Promise((resolve, reject) => {
-    ttsAudio.onended = resolve;
-    ttsAudio.onerror = () => reject(new Error('audio error'));
-  });
+  await playTtsElement(btn, playbackRate);
 }
 
 /** Play a preloaded Audio element with no fetch gap (used to chain Q → answers). */
@@ -3700,13 +3738,7 @@ async function playPreloadedAudio(audio, btn, playbackRate = TTS_DEFAULT_PLAYBAC
   }
   ttsAudio = audio;
   ttsObjectUrl = audio.src || ttsObjectUrl;
-  try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
-  if (btn) btn.classList.add('speaking');
-  await ttsAudio.play();
-  await new Promise((resolve, reject) => {
-    ttsAudio.onended = resolve;
-    ttsAudio.onerror = () => reject(new Error('audio error'));
-  });
+  await playTtsElement(btn, playbackRate);
 }
 
 async function speakTtsSegment(text, btn, {
@@ -6604,6 +6636,12 @@ async function restoreSession() {
   soundOn = localStorage.getItem('soundOn') !== 'false';
   document.getElementById('sound-btn').textContent = soundOn ? '🔊 الأصوات (مفعل)' : '🔇 الأصوات (صامت)';
   voiceOn = localStorage.getItem('voiceOn') !== 'false';
+  // One-shot after silence bug: ensure voice is on (users may have toggled off while debugging).
+  if (localStorage.getItem('voiceForceOnV221') !== '1') {
+    voiceOn = true;
+    localStorage.setItem('voiceOn', 'true');
+    localStorage.setItem('voiceForceOnV221', '1');
+  }
   // One-time: turn answer read-aloud on for everyone (was default-off).
   // V3: re-enable after Fish full-bank bake so every option is spoken again.
   if (localStorage.getItem('voiceReadAnswersMigratedV3') !== '1') {
@@ -6615,6 +6653,7 @@ async function restoreSession() {
   if (localStorage.getItem('voiceOn') == null) localStorage.setItem('voiceOn', 'true');
   if (localStorage.getItem('voiceReadAnswers') == null) localStorage.setItem('voiceReadAnswers', 'true');
   updateVoiceUI();
+  ttsKnownMissCache.clear();
   // Start diacritics map immediately (not idle) so the first speak never waits
   // on a ~670 KB script download after the question is already on screen.
   void ensureSpeechMapsLoaded();
