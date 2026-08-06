@@ -1,12 +1,12 @@
 {
   "version": "v30",
-  "voice": "ar-SA-HamedNeural",
-  "voiceLabel": "Hamed (Edge)",
-  "provider": "edge-baked",
+  "voice": "c3e5d81d807f4cbc9a0c2872a4dea9ea",
+  "voiceLabel": "Fish Audio Arabic narrator (راوي عربي)",
+  "provider": "fish-audio-baked",
   "totalStrings": 4289,
-  "bakedThisRun": 44,
-  "skippedExisting": 4245,
+  "bakedThisRun": 622,
+  "skippedExisting": 3667,
   "failed": 0,
   "approxChars": 211396,
-  "generatedAt": "2026-08-06T18:05:21.185Z"
+  "generatedAt": "2026-08-06T19:01:08.832Z"
 }
