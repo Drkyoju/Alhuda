@@ -2845,6 +2845,9 @@ function getQuranReciteAria() {
 const QURAN_RECITER_BITRATE = 64;
 /** Faster than natural pace so تلاوة finishes sooner without sounding rushed. */
 const QURAN_PLAYBACK_RATE = 1.28;
+/** Answer options TTS — slightly faster so all four finish sooner. */
+const TTS_ANSWER_PLAYBACK_RATE = 1.38;
+const TTS_DEFAULT_PLAYBACK_RATE = 1;
 const QURAN_BLOB_CACHE_MAX = 32;
 const quranAudioBlobCache = new Map(); // cacheKey -> objectUrl
 const quranPrefetchInFlight = new Map();
@@ -3573,7 +3576,7 @@ function stopSpeaking() {
 }
 
 
-async function speakTextCloud(text, btn, voice = TTS_VOICE) {
+async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
   const key = ttsCacheKey(text, voice);
   // Hot path: play from memory URL immediately — no IDB / network / blob re-fetch.
   let url = ttsBlobMemoryCache.get(key) || null;
@@ -3590,6 +3593,7 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE) {
   } else {
     ttsAudio = new Audio(url);
   }
+  try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
   if (btn) btn.classList.add('speaking');
   await ttsAudio.play();
   await new Promise((resolve, reject) => {
@@ -3599,7 +3603,7 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE) {
 }
 
 /** Play a preloaded Audio element with no fetch gap (used to chain Q → answers). */
-async function playPreloadedAudio(audio, btn) {
+async function playPreloadedAudio(audio, btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
   if (!audio) return;
   // Swap in without aborting in-flight prefetches (clearTtsAudio aborts ttsAbort).
   if (ttsAudio) {
@@ -3609,6 +3613,7 @@ async function playPreloadedAudio(audio, btn) {
   }
   ttsAudio = audio;
   ttsObjectUrl = audio.src || ttsObjectUrl;
+  try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
   if (btn) btn.classList.add('speaking');
   await ttsAudio.play();
   await new Promise((resolve, reject) => {
@@ -3617,14 +3622,19 @@ async function playPreloadedAudio(audio, btn) {
   });
 }
 
-async function speakTtsSegment(text, btn, { keepBtnState = true, clearAfter = true, alreadyPrepared = false } = {}) {
+async function speakTtsSegment(text, btn, {
+  keepBtnState = true,
+  clearAfter = true,
+  alreadyPrepared = false,
+  playbackRate = TTS_DEFAULT_PLAYBACK_RATE,
+} = {}) {
   // Same pipeline as prefetchTtsText — shared cache key = instant when warmed.
   // alreadyPrepared: caller already ran prepareTtsPayload (avoid double-normalize cache miss).
   const clean = alreadyPrepared ? String(text || '').trim() : prepareTtsPayload(text);
   if (!clean) return;
   try {
     try {
-      await speakTextCloud(clean, btn, TTS_VOICE);
+      await speakTextCloud(clean, btn, TTS_VOICE, playbackRate);
     } catch (e) {
       if (e.name === 'AbortError') throw e;
       // Do NOT fall back to browser SpeechSynthesis — it is a different voice
@@ -3723,7 +3733,10 @@ async function speakText(text, btn, { allowAnswers = false, question = null } = 
   if (!clean) return;
   stopSpeaking();
   try {
-    await speakTtsSegment(clean, btn, { keepBtnState: false });
+    await speakTtsSegment(clean, btn, {
+      keepBtnState: false,
+      playbackRate: allowAnswers ? TTS_ANSWER_PLAYBACK_RATE : TTS_DEFAULT_PLAYBACK_RATE,
+    });
   } catch (e) {
     if (e.name === 'AbortError') return;
     recordTtsError(e, 'speakText');
@@ -3875,7 +3888,7 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 3) Answers — every option via baked TTS.
+        // 3) Answers — every option via baked TTS (faster playback so the chain finishes sooner).
         //    Hadith wording in options/questions stays TTS; mapped Quran ayahs use Hudhaify above.
         if (voiceReadAnswers && opts.length) {
           for (const opt of opts) {
@@ -3883,14 +3896,22 @@ function speakQuestion() {
             const oClean = prepareTtsPayload(opt);
             if (!oClean) continue;
             try {
-              await speakTtsSegment(oClean, btn, { clearAfter: false, alreadyPrepared: true });
+              await speakTtsSegment(oClean, btn, {
+                clearAfter: false,
+                alreadyPrepared: true,
+                playbackRate: TTS_ANSWER_PLAYBACK_RATE,
+              });
             } catch (e) {
               if (e?.name === 'AbortError') return;
               // Fallback: sanitize again (never speak raw punctuation/quotes).
               try {
                 const rawClean = prepareTtsPayload(String(opt || '').trim());
                 if (rawClean && rawClean !== oClean) {
-                  await speakTtsSegment(rawClean, btn, { clearAfter: false, alreadyPrepared: true });
+                  await speakTtsSegment(rawClean, btn, {
+                    clearAfter: false,
+                    alreadyPrepared: true,
+                    playbackRate: TTS_ANSWER_PLAYBACK_RATE,
+                  });
                 }
               } catch (e2) {
                 console.warn('option tts miss:', e2?.message || e2);
