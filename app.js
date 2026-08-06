@@ -3495,6 +3495,40 @@ async function playQuranForQuestion(q, btn) {
   }
 }
 
+/**
+ * Await Hudhaify until the ayah actually ends. Never race a short timeout —
+ * that left recitation running while answer TTS started over it.
+ */
+async function awaitHudhaifyThenContinue(verseKey, btn, { interruptAll = false } = {}) {
+  if (!verseKey) return;
+  try {
+    await playQuranRecitation(verseKey, btn, { interruptAll });
+  } catch (e) {
+    stopQuranAudio();
+    console.warn('quran skip:', e?.message || e);
+  }
+  // Safety: if anything left audio playing, wait it out before answers.
+  await waitForQuranIdle();
+}
+
+function waitForQuranIdle() {
+  const a = quranAudio;
+  if (!a || a.paused || a.ended) return Promise.resolve();
+  return new Promise((resolve) => {
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    a.addEventListener('ended', done, { once: true });
+    a.addEventListener('pause', done, { once: true });
+    a.addEventListener('error', done, { once: true });
+    // Hard safety only — normal ayahs finish well under this.
+    setTimeout(done, 120000);
+  });
+}
+
 function updateQuranReciteSlot(q) {
   let slot = document.getElementById('quran-recite-slot');
   if (!slot) {
@@ -3826,14 +3860,7 @@ function speakQuestion() {
               }
               if (token !== hybridSpeechToken || state.idx !== askIdx) return;
               recited.add(mappedKey);
-              try {
-                await Promise.race([
-                  playQuranRecitation(mappedKey, btn, { interruptAll: false }),
-                  new Promise((_, rej) => setTimeout(() => rej(new Error('quran timeout')), 5000)),
-                ]);
-              } catch (e) {
-                console.warn('quran skip:', e?.message || e);
-              }
+              await awaitHudhaifyThenContinue(mappedKey, btn, { interruptAll: false });
             } else {
               const fromQ = await playSpeechForText(questionText, q, btn, token);
               fromQ.forEach((k) => recited.add(k));
@@ -3870,6 +3897,7 @@ function speakQuestion() {
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
         // 2) Ayah — الحذيفي فقط (never TTS ayah text; never Hudhaify a hadith).
+        //    Must fully finish before answers — no short timeout that overlaps TTS.
         const verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
         if (
           verseKeyForRecite
@@ -3877,15 +3905,10 @@ function speakQuestion() {
           && shouldReciteHudhaifyForQuestion(q, questionText)
         ) {
           recited.add(verseKeyForRecite);
-          try {
-            await Promise.race([
-              playQuranRecitation(verseKeyForRecite, btn, { interruptAll: false }),
-              new Promise((_, rej) => setTimeout(() => rej(new Error('quran timeout')), 5000)),
-            ]);
-          } catch (e) {
-            console.warn('quran skip:', e?.message || e);
-          }
+          await awaitHudhaifyThenContinue(verseKeyForRecite, btn, { interruptAll: false });
         }
+        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+        await waitForQuranIdle();
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
         // 3) Answers — every option via baked TTS (faster playback so the chain finishes sooner).
