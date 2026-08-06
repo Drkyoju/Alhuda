@@ -19,7 +19,30 @@ export function loadSpeechMaps() {
   const window = {};
   const fn = new Function('window', readFileSync(join(root, 'speech-diacritics-map.js'), 'utf8'));
   fn(window);
+  try {
+    new Function('window', readFileSync(join(root, 'speech-pronunciation-lexicon.js'), 'utf8'))(window);
+  } catch {
+    /* optional */
+  }
   return window;
+}
+
+const ARABIC_HARAKAT_RE = /[\u064B-\u065F\u0670\u0610-\u061A]/;
+const SPEECH_WORD_RE = /[\u0621-\u064A\u0671\u064B-\u065F\u0670]+/g;
+
+function stripHarakat(s) {
+  return String(s || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '');
+}
+
+function hasWellFormedTashkeel(s) {
+  if (!s || !ARABIC_HARAKAT_RE.test(s)) return false;
+  const tokens = String(s).split(/\s+/).filter(Boolean);
+  if (!tokens.length) return false;
+  const singles = tokens.filter((t) => t.replace(/[^\u0621-\u064A]/g, '').length <= 1).length;
+  if (singles / tokens.length >= 0.4) return false;
+  const letters = (s.match(/[\u0621-\u064A\u0671]/g) || []).length;
+  const marks = (s.match(/[\u064B-\u065F\u0670]/g) || []).length;
+  return marks >= 3 && marks >= letters * 0.12;
 }
 
 function scrubSpeechDiacriticsNoise(text) {
@@ -37,9 +60,16 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.split("لَعَنَ اللَّهِ").join("لَعَنَ اللَّهَ");
   s = s.split('الْحِكْمَةُ مَنْ خَلَقَ').join('الْحِكْمَةُ مِنْ خَلْقِ');
   s = s.split('الْحِكْمَةُ مَنْ').join('الْحِكْمَةُ مِنْ');
+  // النبيُّ فاعل بعد أفعال شائعة
   s = s.split("بَعَثَ النَّبِيِّ").join("بَعَثَ النَّبِيُّ");
   s = s.split("أَمَرَ النَّبِيِّ").join("أَمَرَ النَّبِيُّ");
   s = s.split("حَذَّرَ النَّبِيِّ").join("حَذَّرَ النَّبِيُّ");
+  s = s.split("لَعَنَ النَّبِيِّ").join("لَعَنَ النَّبِيُّ");
+  s = s.split("قَالَ النَّبِيِّ").join("قَالَ النَّبِيُّ");
+  s = s.split("أَرْسَلَ النَّبِيِّ").join("أَرْسَلَ النَّبِيُّ");
+  s = s.split("غَيَّرَ النَّبِيِّ").join("غَيَّرَ النَّبِيُّ");
+  s = s.split("عَلَّمَ النَّبِيِّ").join("عَلَّمَ النَّبِيُّ");
+  s = s.split("قال النبيُّ").join("قَالَ النَّبِيُّ");
   const prep = [
     ['مَنْ دُون', 'مِنْ دُون'],
     ['مَنْ غَيْر', 'مِنْ غَيْر'],
@@ -68,6 +98,7 @@ function scrubSpeechDiacriticsNoise(text) {
     ['مَنْ أَقْسَام', 'مِنْ أَقْسَام'],
     ['مَنْ الشِّرْك', 'مِنْ الشِّرْك'],
     ['مَنْ الشِّرْك', 'مِنْ الشِّرْك'],
+    ['مَنْ فَوَائِدِ', 'مِنْ فَوَائِدِ'],
     ['لَا يُقْبَلُ مَنْ', 'لَا يُقْبَلُ مِنْ'],
     ['يُقْبَلُ مَنْ', 'يُقْبَلُ مِنْ'],
     ['تَعْبُدُ اللَّهِ', 'تَعْبُدُ اللَّهَ'],
@@ -75,6 +106,8 @@ function scrubSpeechDiacriticsNoise(text) {
     ['نَعْبُدُ اللَّهِ', 'نَعْبُدُ اللَّهَ'],
     ['يَعْبُدَ اللَّهِ', 'يَعْبُدَ اللَّهَ'],
     ['تَعْبُدَ اللَّهِ', 'تَعْبُدَ اللَّهَ'],
+    ['وب فِيهِ للأم ة', 'وَبَيَّنَ فِيهِ لِلْأُمَّةِ'],
+    ['وب فيه للأم ة', 'وَبَيَّنَ فِيهِ لِلْأُمَّةِ'],
   ];
   for (const [a, b] of prep) s = s.split(a).join(b);
   return s.replace(/\s+/g, ' ').trim();
@@ -95,14 +128,37 @@ function stripForTts(text) {
   );
 }
 
-function normalizeForBake(text) {
-  // Mirror app.js prepareTtsPayload for map strings (well-formed tashkeel path):
-  // fixAllah → strip tatweel → sanitize (punct + scrub). Order matters for bake keys.
+function applyPronunciationLexicon(text, lex) {
+  if (!lex) return text;
+  return String(text).replace(SPEECH_WORD_RE, (tok) => {
+    if (ARABIC_HARAKAT_RE.test(tok)) return tok;
+    const bare = stripHarakat(tok);
+    return lex[bare] || tok;
+  });
+}
+
+function applyWordDiacritics(text, wordMap, lex) {
+  if (!wordMap && !lex) return text;
+  return String(text).replace(SPEECH_WORD_RE, (tok) => {
+    if (ARABIC_HARAKAT_RE.test(tok)) return tok;
+    const bare = stripHarakat(tok);
+    if (lex?.[bare]) return lex[bare];
+    return (wordMap && wordMap[bare]) || tok;
+  });
+}
+
+function normalizeForBake(text, maps = null) {
+  // Mirror app.js prepareTtsPayload exactly — bake keys must match runtime.
   let s = String(text || '')
     .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
     .replace(/\s+/g, ' ')
     .trim();
   if (!s || s.length < 2) return '';
+  const lex = maps?.SPEECH_PRON_LEXICON || null;
+  const wordMap = maps?.SPEECH_WORD_MAP || null;
+  s = hasWellFormedTashkeel(s)
+    ? applyPronunciationLexicon(s, lex)
+    : applyPronunciationLexicon(applyWordDiacritics(s, wordMap, lex), lex);
   s = fixAllahIrabInText(s);
   s = s.replace(/[\u0640\u200c\u200f]/g, '').replace(/\s+/g, ' ').trim();
   s = stripForTts(s);
@@ -115,7 +171,7 @@ export function collectTtsStrings() {
   const out = new Set();
 
   const add = (raw) => {
-    const s = normalizeForBake(raw);
+    const s = normalizeForBake(raw, maps);
     if (s && s.length >= 2) out.add(s);
   };
 

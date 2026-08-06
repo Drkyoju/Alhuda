@@ -2225,6 +2225,11 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.split("بَعَثَ النَّبِيِّ").join("بَعَثَ النَّبِيُّ");
   s = s.split("أَمَرَ النَّبِيِّ").join("أَمَرَ النَّبِيُّ");
   s = s.split("حَذَّرَ النَّبِيِّ").join("حَذَّرَ النَّبِيُّ");
+  s = s.split("لَعَنَ النَّبِيِّ").join("لَعَنَ النَّبِيُّ");
+  s = s.split("قَالَ النَّبِيِّ").join("قَالَ النَّبِيُّ");
+  s = s.split("أَرْسَلَ النَّبِيِّ").join("أَرْسَلَ النَّبِيُّ");
+  s = s.split("غَيَّرَ النَّبِيِّ").join("غَيَّرَ النَّبِيُّ");
+  s = s.split("عَلَّمَ النَّبِيِّ").join("عَلَّمَ النَّبِيُّ");
   s = s.split("قال النبيُّ").join("قَالَ النَّبِيُّ");
   // Preposition مِنْ (not interrogative مَنْ)
   const prep = [
@@ -2255,6 +2260,7 @@ function scrubSpeechDiacriticsNoise(text) {
     ['مَنْ أَقْسَام', 'مِنْ أَقْسَام'],
     ['مَنْ الشِّرْك', 'مِنْ الشِّرْك'],
     ['مَنْ الشِّرْك', 'مِنْ الشِّرْك'],
+    ['مَنْ فَوَائِدِ', 'مِنْ فَوَائِدِ'],
     ['لَا يُقْبَلُ مَنْ', 'لَا يُقْبَلُ مِنْ'],
     ['يُقْبَلُ مَنْ', 'يُقْبَلُ مِنْ'],
     ['تَعْبُدُ اللَّهِ', 'تَعْبُدُ اللَّهَ'],
@@ -2262,6 +2268,8 @@ function scrubSpeechDiacriticsNoise(text) {
     ['نَعْبُدُ اللَّهِ', 'نَعْبُدُ اللَّهَ'],
     ['يَعْبُدَ اللَّهِ', 'يَعْبُدَ اللَّهَ'],
     ['تَعْبُدَ اللَّهِ', 'تَعْبُدَ اللَّهَ'],
+    ['وب فِيهِ للأم ة', 'وَبَيَّنَ فِيهِ لِلْأُمَّةِ'],
+    ['وب فيه للأم ة', 'وَبَيَّنَ فِيهِ لِلْأُمَّةِ'],
   ];
   for (const [a, b] of prep) s = s.split(a).join(b);
   return s.replace(/\s+/g, ' ').trim();
@@ -2542,7 +2550,13 @@ function applyManualSpeechDiacritics(text) {
     if (exact === normalizeArabicForMatch(plain)) return diacritized;
   }
   for (const [plain, diacritized] of getSortedManualSpeech()) {
-    if (plain.length >= 5 && out.includes(plain)) out = out.split(plain).join(diacritized);
+    // Whole-token only — never splice into already-diacritized words (النبيُّ + النبي → النَّبِيُِّّ).
+    if (plain.length < 5) continue;
+    const re = new RegExp(
+      `(^|[^\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])${plain.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])`,
+      'g'
+    );
+    out = out.replace(re, (_, pre) => `${pre}${diacritized}`);
   }
   return applyWordDiacritics(out);
 }
