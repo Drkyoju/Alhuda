@@ -169,14 +169,14 @@
   100% { transform: scale(1); }
 }
 
-.kids-theme #hearts span {
+.kids-theme #hearts .heart-pip {
   display: inline-block;
   animation: kidHeartBeat 1.8s ease-in-out infinite;
 }
-.kids-theme #hearts span:nth-child(2) { animation-delay: 0.15s; }
-.kids-theme #hearts span:nth-child(3) { animation-delay: 0.3s; }
-.kids-theme #hearts span:nth-child(4) { animation-delay: 0.45s; }
-.kids-theme #hearts span:nth-child(5) { animation-delay: 0.6s; }
+.kids-theme #hearts .heart-pip:nth-child(2) { animation-delay: 0.15s; }
+.kids-theme #hearts .heart-pip:nth-child(3) { animation-delay: 0.3s; }
+.kids-theme #hearts .heart-pip:nth-child(4) { animation-delay: 0.45s; }
+.kids-theme #hearts .heart-pip:nth-child(5) { animation-delay: 0.6s; }
 @keyframes kidHeartBeat {
   0%, 100% { transform: scale(1); }
   15% { transform: scale(1.15); }
@@ -392,7 +392,7 @@
   .kid-bubble,
   .kids-theme .book-btn .book-icon,
   .kids-theme .score-badge,
-  .kids-theme #hearts span,
+  .kids-theme #hearts .heart-pip,
   .kids-theme .progress-bar,
   .kids-theme .q-box::before,
   .kids-theme #game .q-main::before,

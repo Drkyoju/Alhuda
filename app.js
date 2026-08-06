@@ -6106,7 +6106,7 @@ function renderHearts() {
   c.setAttribute('aria-label', labels[state.hearts] || `${state.hearts} محاولات متبقية`);
   c.innerHTML = '';
   for (let i = 0; i < 5; i++) {
-    c.innerHTML += `<span aria-hidden="true" style="font-size:16px;transition:.3s;${i >= state.hearts ? 'filter:grayscale(1) opacity(.3);transform:scale(.75);' : ''}">❤️</span>`;
+    c.innerHTML += `<span class="heart-pip${i >= state.hearts ? ' is-lost' : ''}" aria-hidden="true">❤️</span>`;
   }
 }
 
