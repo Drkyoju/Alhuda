@@ -71,6 +71,8 @@ function stripForTts(text) {
   return scrubSpeechDiacriticsNoise(
     String(text || '')
       .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
+      .replace(/\uFDFA/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ')
+      .replace(/\uFDFB/g, ' جَلَّ جَلَالُهُ ')
       .replace(/[\u00AB\u00BB\u2018-\u201F\u2039\u203A\u300C-\u300F\u301D\u301E\uFF02\uFF07«»"'“”‘’‹›「」『』„‚]/g, ' ')
       .replace(/[﴿﴾]/g, ' ')
       .replace(/[.؟!…,:：;؛،()\[\]{}*_#<>=+~^`\/\\|–—•·\-_]+/g, ' ')

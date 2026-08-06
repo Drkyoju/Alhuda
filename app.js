@@ -2259,7 +2259,9 @@ function sanitizeTtsText(text) {
     scrubSpeechDiacriticsNoise(
       (text || '')
         .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
-        // Keep ﷺ/ﷻ as-is — bake keys use the symbol, not expanded phrases.
+        // Expand honorific ligatures so the voice actually says them (symbol alone is silent).
+        .replace(/\uFDFA/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ')
+        .replace(/\uFDFB/g, ' جَلَّ جَلَالُهُ ')
         .replace(/رضي الله عنهما/g, ' رضي الله عنهما ')
         .replace(/رضي الله عنها/g, ' رضي الله عنها ')
         .replace(/رضي الله عنه/g, ' رضي الله عنه ')
