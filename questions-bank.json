@@ -2469,25 +2469,6 @@
       "language": "ar"
     },
     {
-      "id": "61c12cf8-2713-61fd-1622-5651c572edd2",
-      "book": "tawheed",
-      "chapter": "🕌 حق الله",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "ما أول ما أمر معاذ أن يدعو إليه أهل اليمن؟",
-      "options": [
-        "شهادة أن لا إله إلا الله",
-        "الصلاة",
-        "الزكاة",
-        "الصوم"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: شهادة أن لا إله إلا الله.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "7704f604-a213-51b3-4086-d4eb4310823e",
       "book": "tawheed",
       "chapter": "🕌 حق الله",
@@ -2788,25 +2769,6 @@
       "correct_index": 0,
       "is_true": null,
       "explanation": "«من ذبح لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "2661c7aa-2202-ea68-1c41-e3dcb7bf6c1f",
-      "book": "tawheed",
-      "chapter": "⚠️ الشرك",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "\"دخل النار رجل في ذباب\" لأنه:",
-      "options": [
-        "قرب للصنم قربانا",
-        "سرق",
-        "كذب",
-        "ترك الصلاة"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: قرب للصنم قربانا.",
       "source_quote": null,
       "language": "ar"
     },
@@ -3415,25 +3377,6 @@
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإجابة الصحيحة: الملائكة والأنبياء والصالحين.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "c36eadfd-ef66-80a0-0c81-457a0ff8bd8d",
-      "book": "tawheed",
-      "chapter": "📚 سبّ الدهر وتسمية الحاكم",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "في الحديث القدسي: \"يؤذيني ابن آدم يسب\":",
-      "options": [
-        "الدهر",
-        "الناس",
-        "الملائكة",
-        "الأنبياء"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«الدهر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
       "source_quote": null,
       "language": "ar"
     },
@@ -4274,25 +4217,6 @@
       "language": "ar"
     },
     {
-      "id": "121bd595-129a-77ca-3ee3-a5261283870e",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "التولة شيء يصنع يزعمون أنه:",
-      "options": [
-        "يحبب المرأة إلى زوجها",
-        "يشفي المرض",
-        "يدفع العين",
-        "يجلب المال"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: يحبب المرأة إلى زوجها.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "db8d4fa6-bbbe-0fbe-bfd7-657954cb822c",
       "book": "tawheed",
       "chapter": "📿 الرقى والتمائم",
@@ -4882,63 +4806,6 @@
       "language": "ar"
     },
     {
-      "id": "d8feff57-bfa0-57f9-b52e-67554a47229e",
-      "book": "tawheed",
-      "chapter": "📚 سبّ الدهر",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "من اعتقد أن الدهر فاعل مع الله فهو؟",
-      "options": [
-        "مشرك",
-        "عاص",
-        "فاسق",
-        "مبتدع"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: مشرك.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "35ee87ed-dbb3-6eee-8081-c2cc4cb0d308",
-      "book": "tawheed",
-      "chapter": "📚 سبّ الدهر",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "قال الله تعالى: \"يؤذيني ابن آدم، يسب\":",
-      "options": [
-        "الدهر",
-        "الناس",
-        "الزمان",
-        "الليل"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«الدهر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "bf0de495-fa6d-411b-8e0d-2a41e619af3a",
-      "book": "tawheed",
-      "chapter": "📚 سبّ الدهر",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "في رواية: \"لا تسبوا الدهر فإن الله\":",
-      "options": [
-        "هو الدهر",
-        "خالق الدهر",
-        "مدبر الدهر",
-        "رب الدهر"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: هو الدهر.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "a64e7df5-28bd-111f-29aa-8f7d514a7130",
       "book": "tawheed",
       "chapter": "📚 سبّ الدهر",
@@ -5258,25 +5125,6 @@
       "correct_index": 0,
       "is_true": null,
       "explanation": "«لله وحده» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "831e1e87-4c3a-3ee1-a6fa-0ee231cfe67e",
-      "book": "tawheed",
-      "chapter": "📚 قصة الذباب والصنم",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "في قصة الذباب: دخل النار رجل قرب للصنم:",
-      "options": [
-        "ذبابا",
-        "شاة",
-        "بعيرا",
-        "طيرا"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: ذبابا.",
       "source_quote": null,
       "language": "ar"
     },
@@ -5961,25 +5809,6 @@
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإجابة الصحيحة: قل الكهان.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "1e0da09f-e3fc-4195-057d-923c00799532",
-      "book": "tawheed",
-      "chapter": "⚠️ الشرك",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "الكهانة شرك لأنها تتضمن دعوى مشاركة الله في:",
-      "options": [
-        "علم الغيب",
-        "الخلق",
-        "الرزق",
-        "الملك"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: علم الغيب.",
       "source_quote": null,
       "language": "ar"
     },
@@ -7219,25 +7048,6 @@
       "language": "ar"
     },
     {
-      "id": "2d01551b-15ed-0c3f-a98b-6d5cad365b2d",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "قال سعيد بن جبير: من قطع تميمة من إنسان كان ك:",
-      "options": [
-        "عدل رقبة",
-        "صيام شهر",
-        "صدقة",
-        "حجة"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«عدل رقبة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "97a5074b-b348-0ac7-1aef-03828a508009",
       "book": "tawheed",
       "chapter": "📿 الرقى والتمائم",
@@ -8193,44 +8003,6 @@
       "correct_index": 2,
       "is_true": null,
       "explanation": "العمل الصالح هو العمل الموافق لسنة رسول الله .",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "209521ef-e031-026e-9c8c-0f70af15e211",
-      "book": "usool",
-      "chapter": "📿 الدين",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "ماذا يتضمن الإيمان بالرسل ؟",
-      "options": [
-        "يتضمن الإيمان بالرسل أربعة أمور وهي: 1) الإيمان بأن رسالتهم حق من الله تعالى",
-        "الاستسلام لله بالتوحيد والانقياد له بالطاعة والبراءة من الشرك وأهله .",
-        "القصد، وال توجه .",
-        "نوعان : 1) آيات كونية : هي المخلوقات. 2) آيات شرعية : هي الوحي الذي أنزله الله على رسله."
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "يتضمن الإيمان بالرسل أربعة أمور وهي: 1) الإيمان بأن رسالتهم حق من الله تعالى. 2) الإيمان بمن علمنا اسمه منهم ومن لم نعلم اسمه. 3) تصديق ما صح عنهم من أخبارهم. 4) العمل بشريعة من أرسل إلينا منهم هو خاتمهم المرسل إلى جميع الناس.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "87459f8b-38aa-cf0c-3061-cb406315e638",
-      "book": "usool",
-      "chapter": "📿 الدين",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "ماذا يتضمن الإيمان؟",
-      "options": [
-        "الهجرة: الانتقال من بلد الشرك إلى بلد الإسلام . لشيخ الإسلام محمد بن عبدالوهاب رحمه الله",
-        "هي الطريقة المائلة عن الشرك إلى التوحيد .",
-        "يتضمن الإيمان أربعة أمور: 1) الإيمان بوجود",
-        "الخشية : هي الخوف المبني على العلم."
-      ],
-      "correct_index": 2,
-      "is_true": null,
-      "explanation": "يتضمن الإيمان أربعة أمور: 1) الإيمان بوجود . 2) الإيمان بربوبيته . 3) الإيمانبألوهيته. 4) الإيمان بأسمائه وصفاته.",
       "source_quote": null,
       "language": "ar"
     },
