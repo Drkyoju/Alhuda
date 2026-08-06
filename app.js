@@ -50,7 +50,7 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:20, bankVersion:0, wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:20 };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:15, bankVersion:0, wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:15 };
 let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
@@ -172,8 +172,10 @@ const DEFAULT_PLAYER = 'بطل/ة';
 const STAGE_SIZE = 20; // legacy fallback only
 /** Max questions per difficulty tier (rebalanced by real easy→hard order). */
 const LEVEL_CAPS = { easy: 80, medium: 100, hard: 120 };
-const ROUND_SIZE_OPTIONS = [5, 10, 15, 20, 30, 40];
+const ROUND_SIZE_OPTIONS = [15, 20, 30, 40];
+const ROUND_SIZE_MIN = 15;
 const ROUND_SIZE_MAX = 80;
+const ROUND_SIZE_DEFAULT = 15;
 const LEVEL_FLOW = ['easy', 'medium', 'hard'];
 const LEVEL_LABELS_AR = { easy: 'سهل', medium: 'متوسط', hard: 'صعب', all: 'الكل' };
 /** Unlock next tier after this fraction of the current tier is solved (not 100%). */
@@ -422,9 +424,7 @@ function isTierReadyToUnlockNext(book, level) {
 }
 
 function isLevelUnlocked(book, level) {
-  if (level === 'easy' || level === 'all') return true;
-  if (level === 'medium') return isTierReadyToUnlockNext(book, 'easy');
-  if (level === 'hard') return isTierReadyToUnlockNext(book, 'easy') && isTierReadyToUnlockNext(book, 'medium');
+  // All difficulty tiers stay open — no progressive lock.
   return true;
 }
 
@@ -720,7 +720,7 @@ function getQuestionsForStageGame() {
   const { pool, prog, done } = getTierProgress(state.book, state.level);
   if (!pool.length) return [];
 
-  const round = Math.max(1, Math.min(ROUND_SIZE_MAX, state.roundSize || 20));
+  const round = Math.max(ROUND_SIZE_MIN, Math.min(ROUND_SIZE_MAX, state.roundSize || ROUND_SIZE_DEFAULT));
 
   if (state.stageReviewMode) {
     const solvedQs = pool.filter((q) => prog.solvedIds.includes(q.id));
@@ -785,10 +785,13 @@ function updateStagePickerUI() {
 
   const remaining = Math.max(0, total - solved);
   const maxPick = Math.max(1, Math.min(ROUND_SIZE_MAX, done ? total : (remaining || total)));
-  if ((state.roundSize || 20) > maxPick) state.roundSize = maxPick;
+  if ((state.roundSize || ROUND_SIZE_DEFAULT) > maxPick) state.roundSize = maxPick;
+  if ((state.roundSize || ROUND_SIZE_DEFAULT) < ROUND_SIZE_MIN && maxPick >= ROUND_SIZE_MIN) {
+    state.roundSize = ROUND_SIZE_MIN;
+  }
 
   const roundBtns = ROUND_SIZE_OPTIONS.filter((n) => n <= maxPick).map((n) => {
-    const on = (state.roundSize || 20) === n ? 'sel' : '';
+    const on = (state.roundSize || ROUND_SIZE_DEFAULT) === n ? 'sel' : '';
     return `<button type="button" class="level-btn round-size-btn ${on}" data-round="${n}" onclick="selectRoundSize(${n})">${arabicNum(n)}</button>`;
   }).join('');
 
@@ -796,12 +799,13 @@ function updateStagePickerUI() {
     ? `<button type="button" class="btn btn-white btn-sm review-tier-btn" onclick="startTierReview()">🔁 مراجعة ما حلّيته (${arabicNum(solved)})</button>`
     : '';
 
+  const minPick = Math.min(ROUND_SIZE_MIN, maxPick);
   el.innerHTML = `
     <div class="round-size-wrap">
       <div class="level-row round-size-row">${roundBtns}</div>
       <div class="round-custom-row">
         <label for="round-custom-input">أو اكتب العدد بالضبط</label>
-        <input type="number" id="round-custom-input" class="q-range-input round-custom-input" min="1" max="${maxPick}" value="${state.roundSize || 20}" inputmode="numeric" onchange="onRoundCustomInput()" oninput="onRoundCustomInput()">
+        <input type="number" id="round-custom-input" class="q-range-input round-custom-input" min="${minPick}" max="${maxPick}" value="${state.roundSize || ROUND_SIZE_DEFAULT}" inputmode="numeric" onchange="onRoundCustomInput()" oninput="onRoundCustomInput()">
         <span class="round-custom-max">إلى ${arabicNum(maxPick)}</span>
       </div>
       ${reviewBtn}
@@ -809,20 +813,11 @@ function updateStagePickerUI() {
 
   if (hint) {
     const label = LEVEL_LABELS_AR[state.level] || state.level;
-    const round = Math.min(state.roundSize || 20, maxPick);
-    const t = getTierProgress(state.book, state.level);
+    const round = Math.min(state.roundSize || ROUND_SIZE_DEFAULT, maxPick);
     if (state.useManualRange) {
       hint.textContent = 'وضع النطاق اليدوي مفعّل — مسار التدرّج معطّل لهذه الجولة';
     } else if (done) {
       hint.textContent = `🎉 أنهيت ${label} بالكامل (${arabicNum(total)} سؤال). الأسئلة المحلولة لن تظهر إلا إذا ضغطت مراجعة.`;
-    } else if (t.unlockReady && state.level === 'easy') {
-      hint.textContent = `${label}: حلّيت ${arabicNum(solved)} من ${arabicNum(total)} — متبقي ${arabicNum(remaining)} — الجولة القادمة ${arabicNum(round)} سؤال · 🔓 المتوسط مفتوح`;
-    } else if (t.unlockReady && state.level === 'medium') {
-      hint.textContent = `${label}: حلّيت ${arabicNum(solved)} من ${arabicNum(total)} — متبقي ${arabicNum(remaining)} — الجولة ${arabicNum(round)} · 🔓 الصعب مفتوح`;
-    } else if (!t.unlockReady && state.level !== 'hard') {
-      const left = Math.max(0, t.unlockNeed - solved);
-      const nextLabel = state.level === 'easy' ? 'المتوسط' : 'الصعب';
-      hint.textContent = `${label}: حلّيت ${arabicNum(solved)} من ${arabicNum(total)} — متبقي ${arabicNum(remaining)} في المستوى · الجولة ${arabicNum(round)} · لفتح ${nextLabel} متبقي ${arabicNum(left)}`;
     } else {
       hint.textContent = `${label}: حلّيت ${arabicNum(solved)} من ${arabicNum(total)} — متبقي ${arabicNum(remaining)} · اختر ${arabicNum(round)} سؤال لهذه الجولة`;
     }
@@ -837,7 +832,7 @@ function updateStagePickerUI() {
 }
 
 function selectRoundSize(n) {
-  const num = Math.max(1, Math.min(ROUND_SIZE_MAX, Number(n) || 20));
+  const num = Math.max(ROUND_SIZE_MIN, Math.min(ROUND_SIZE_MAX, Number(n) || ROUND_SIZE_DEFAULT));
   state.roundSize = num;
   state.useManualRange = false;
   state.stageReviewMode = false;
@@ -854,7 +849,8 @@ function onRoundCustomInput() {
   const { solved, total, done } = getTierProgress(state.book, state.level);
   const remaining = Math.max(0, total - solved);
   const maxPick = Math.max(1, Math.min(ROUND_SIZE_MAX, done ? total : (remaining || total || ROUND_SIZE_MAX)));
-  n = Math.max(1, Math.min(maxPick, n));
+  const minPick = Math.min(ROUND_SIZE_MIN, maxPick);
+  n = Math.max(minPick, Math.min(maxPick, n));
   el.value = String(n);
   state.roundSize = n;
   state.useManualRange = false;
@@ -955,7 +951,7 @@ function updateStartButtonLabel() {
     return;
   }
   const remaining = Math.max(0, total - solved);
-  const n = Math.min(state.roundSize || 20, state.stageReviewMode || done ? total : (remaining || total));
+  const n = Math.min(state.roundSize || ROUND_SIZE_DEFAULT, state.stageReviewMode || done ? total : (remaining || total));
   if (state.stageReviewMode) {
     btn.textContent = `مراجعة ${arabicNum(n)} سؤال 🔁`;
   } else if (done) {
@@ -978,7 +974,7 @@ function updateStageGameBadge() {
   const { solved, total } = getTierProgress(state.book, state.level);
   const label = LEVEL_LABELS_AR[state.level] || '';
   el.style.display = '';
-  el.textContent = `📊 ${label}: ${arabicNum(solved)}/${arabicNum(total)} — جولة ${arabicNum(state.roundSize || 20)}`;
+  el.textContent = `📊 ${label}: ${arabicNum(solved)}/${arabicNum(total)} — جولة ${arabicNum(state.roundSize || ROUND_SIZE_DEFAULT)}`;
 }
 
 function updateLevelCounts() {
@@ -5518,7 +5514,7 @@ function selectLevel(l) {
   const toEl = document.getElementById('q-to-input');
   const fromEl = document.getElementById('q-from-input');
   if (fromEl) fromEl.value = 1;
-  if (toEl) toEl.value = max ? Math.min(state.roundSize || 20, max) : 1;
+  if (toEl) toEl.value = max ? Math.min(Math.max(state.roundSize || ROUND_SIZE_DEFAULT, ROUND_SIZE_MIN), max) : 1;
   updateQuestionRangeUI();
   updateStagePickerUI();
   updateLevelCounts();
