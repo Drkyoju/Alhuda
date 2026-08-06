@@ -3,10 +3,10 @@
   "voice": "ar-SA-HamedNeural",
   "voiceLabel": "Hamed (Edge)",
   "provider": "edge-baked",
-  "totalStrings": 4293,
-  "bakedThisRun": 4,
-  "skippedExisting": 4289,
+  "totalStrings": 4286,
+  "bakedThisRun": 307,
+  "skippedExisting": 3979,
   "failed": 0,
-  "approxChars": 208217,
-  "generatedAt": "2026-08-06T11:42:07.687Z"
+  "approxChars": 207175,
+  "generatedAt": "2026-08-06T12:29:15.313Z"
 }
