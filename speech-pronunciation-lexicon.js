@@ -174,6 +174,12 @@ window.SPEECH_PRON_LEXICON = {
   وسلم: "وَسَلَّمَ",
 
   /* High-frequency quiz words — clear sukoon/shadda for Fish Audio narrator */
+  /* Preposition بَيْنَ — never adjective بَيِّنٌ (that is only for الحلال بيّن) */
+  بين: "بَيْنَ",
+  وبين: "وَبَيْنَ",
+  فقط: "فَقَطْ",
+  غير: "غَيْرَ",
+  كل: "كُلُّ",
   معاذ: "مُعَاذٍ",
   معاذا: "مُعَاذًا",
   معاذاً: "مُعَاذًا",

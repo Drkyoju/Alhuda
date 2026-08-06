@@ -4,9 +4,9 @@
   "voiceLabel": "Fish Audio Arabic narrator (راوي عربي)",
   "provider": "fish-audio-baked",
   "totalStrings": 4243,
-  "bakedThisRun": 0,
-  "skippedExisting": 4243,
+  "bakedThisRun": 8,
+  "skippedExisting": 4235,
   "failed": 0,
-  "approxChars": 212442,
-  "generatedAt": "2026-08-06T19:34:00.125Z"
+  "approxChars": 212434,
+  "generatedAt": "2026-08-06T20:47:30.000Z"
 }
