@@ -1948,9 +1948,9 @@ function prepareTtsPayload(text) {
     );
   }
   // Speech-map / already-tashkeeled text: keep mark order for baked TTS keys.
-  // Only fill bare words when the chunk lacks well-formed harakat.
+  // Still fill any remaining bare words from the Hamed-tuned lexicon.
   let forTts = hasWellFormedTashkeel(cleaned)
-    ? cleaned
+    ? applyPronunciationLexicon(cleaned)
     : applyPronunciationLexicon(applyWordDiacritics(applyManualSpeechDiacritics(cleaned)));
   forTts = typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(forTts) : forTts;
   return sanitizeTtsText(prepareArabicForSpeech(forTts));
@@ -2216,6 +2216,16 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.split('َّمَنْ').join('مَنْ');
   s = s.split('َّوَمَنْ').join('وَمَنْ');
   s = s.split('عُبِدَ').join('عَبْد');
+  s = s.split('الن ي').join('النبي');
+  s = s.split("اللََّّ").join("اللَّه");
+  // Hamed-critical iʿrāb fixes (wrong case/harakat → mangled reads)
+  s = s.split("لَعَنَ اللَّهِ").join("لَعَنَ اللَّهَ");
+  s = s.split('الْحِكْمَةُ مَنْ خَلَقَ').join('الْحِكْمَةُ مِنْ خَلْقِ');
+  s = s.split('الْحِكْمَةُ مَنْ').join('الْحِكْمَةُ مِنْ');
+  s = s.split("بَعَثَ النَّبِيِّ").join("بَعَثَ النَّبِيُّ");
+  s = s.split("أَمَرَ النَّبِيِّ").join("أَمَرَ النَّبِيُّ");
+  s = s.split("حَذَّرَ النَّبِيِّ").join("حَذَّرَ النَّبِيُّ");
+  s = s.split("قال النبيُّ").join("قَالَ النَّبِيُّ");
   // Preposition مِنْ (not interrogative مَنْ)
   const prep = [
     ['مَنْ دُون', 'مِنْ دُون'],
@@ -2225,6 +2235,10 @@ function scrubSpeechDiacriticsNoise(text) {
     ['مَنْ قَبْل', 'مِنْ قَبْل'],
     ['مَنْ بَيْن', 'مِنْ بَيْن'],
     ['مَنْ عِنْد', 'مِنْ عِنْد'],
+    ['مَنْ أَجْل', 'مِنْ أَجْل'],
+    ['مَنْ خِلَال', 'مِنْ خِلَال'],
+    ['مَنْ أَخْذِ', 'مِنْ أَخْذِ'],
+    ['مَنْ أَخْذ', 'مِنْ أَخْذ'],
     ['يُخْرِجُ مَنْ', 'يُخْرِجُ مِنْ'],
     ['يَخْرُجُ مَنْ', 'يَخْرُجُ مِنْ'],
     ['مَنْ الْمِلَّة', 'مِنْ الْمِلَّة'],
@@ -2239,6 +2253,8 @@ function scrubSpeechDiacriticsNoise(text) {
     ['مَنْ شُرُوط', 'مِنْ شُرُوط'],
     ['مَنْ أَنْوَاع', 'مِنْ أَنْوَاع'],
     ['مَنْ أَقْسَام', 'مِنْ أَقْسَام'],
+    ['مَنْ الشِّرْك', 'مِنْ الشِّرْك'],
+    ['مَنْ الشِّرْك', 'مِنْ الشِّرْك'],
     ['لَا يُقْبَلُ مَنْ', 'لَا يُقْبَلُ مِنْ'],
     ['يُقْبَلُ مَنْ', 'يُقْبَلُ مِنْ'],
     ['تَعْبُدُ اللَّهِ', 'تَعْبُدُ اللَّهَ'],
