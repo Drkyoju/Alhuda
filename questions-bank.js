@@ -1671,25 +1671,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "47c251c4-2a11-43ae-db9b-6e221c2b98c2",
-      "book": "tawheed",
-      "chapter": "📖 لماذا خُلقنا",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "ما الحكمة من خلق الجن والإنس؟",
-      "options": [
-        "عبادة الله وحده",
-        "العمل والكسب",
-        "التكاثر",
-        "الزينة"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الحكم الصحيح هو «عبادة الله وحده»، كما قرره النص الشرعي في الباب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "2ce7876d-da2d-771f-1bcf-846c44ce4181",
       "book": "tawheed",
       "chapter": "كتاب التوحيد",
@@ -3742,25 +3723,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "59ab06dc-ec5e-19fc-2204-ea2d0b0e2e29",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "حكم تعلم السحر وتعليمه:",
-      "options": [
-        "كفر",
-        "مكروه",
-        "مباح",
-        "صغيرة"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الحكم الصحيح هو «كفر»، كما قرره النص الشرعي في الباب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "938d1c1c-8f81-a6e2-2c57-9300c66dd7d8",
       "book": "tawheed",
       "chapter": "📿 الرقى والتمائم",
@@ -4084,63 +4046,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "e5ba211a-5aae-6dd3-51bb-cf9b09d420f8",
-      "book": "tawheed",
-      "chapter": "✅ تحقيق التوحيد",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "\"الذين آمنوا ولم يلبسوا إيمانهم بظلم\"، المراد بالظلم هنا:",
-      "options": [
-        "الشرك",
-        "المعصية",
-        "الكفر",
-        "البغي"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: الشرك.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "7ecb98e7-373d-ea8b-5e3e-9bc90280aec2",
-      "book": "tawheed",
-      "chapter": "✅ تحقيق التوحيد",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "الذين يدخلون الجنة بغير حساب عددهم:",
-      "options": [
-        "سبعون ألفا",
-        "سبعة آلاف",
-        "سبعمئة",
-        "ألف"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: سبعون ألفا.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "20f0405d-fb13-39cc-676a-8e1e9da2ee59",
-      "book": "tawheed",
-      "chapter": "✅ تحقيق التوحيد",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "من صفات السبعين ألفا أنهم لا يسترقون ولا يكتوون ولا يتطيرون وعلى ربهم؟",
-      "options": [
-        "يتوكلون",
-        "يصبرون",
-        "يتوبون",
-        "يحلفون"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: يتوكلون.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "b5fecca4-b8fe-63ec-28fd-4087d1f6a403",
       "book": "tawheed",
       "chapter": "✅ تحقيق التوحيد",
@@ -4156,82 +4061,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإجابة الصحيحة: عكاشة بن محصن.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "7146c297-16c2-8283-5175-174d6b3c1c88",
-      "book": "tawheed",
-      "chapter": "✅ تحقيق التوحيد",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "\"لا يسترقون\" معناها:",
-      "options": [
-        "لا يطلبون من يرقيهم",
-        "لا يرقون غيرهم",
-        "لا يكتوون",
-        "لا يتطيرون"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«لا يطلبون من يرقيهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "f648bb71-6278-4fbd-52ea-4a909715ceaf",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "\"إن الرقى والتمائم والتولة\":",
-      "options": [
-        "شرك",
-        "مكروه",
-        "مباح",
-        "بدعة"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: شرك.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "9fee6ce4-3b95-41e4-7e24-06f327cac297",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "التمائم: شيء يعلق على الأولاد ل:",
-      "options": [
-        "اتقاء العين",
-        "الزينة",
-        "التداوي",
-        "التبرك"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: اتقاء العين.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "db8d4fa6-bbbe-0fbe-bfd7-657954cb822c",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "أكمل الحديث: «من تعلق تميمة فقد ___»؟",
-      "options": [
-        "أشرك",
-        "كفر",
-        "فسق",
-        "ظلم"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: أشرك.",
       "source_quote": null,
       "language": "ar"
     },
@@ -4289,25 +4118,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإجابة الصحيحة: شجرة يعكف عندها المشركون.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "f28d7b89-dd4a-7a37-b0c5-5ab506ab69b3",
-      "book": "tawheed",
-      "chapter": "⚠️ الشرك",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "لما طلب الصحابة \"اجعل لنا ذات أنواط\" شبه النبي ﷺ قولهم بقول بني إسرائيل:",
-      "options": [
-        "اجعل لنا إلها",
-        "اتخذوا عجلا",
-        "لن نؤمن لك",
-        "أرنا الله"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«اجعل لنا إلها» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
       "source_quote": null,
       "language": "ar"
     },
@@ -4384,25 +4194,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "«ينوطون بها أسلحتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "d12b38d3-b220-725b-20ce-02ae7cae64d9",
-      "book": "tawheed",
-      "chapter": "⚠️ الشرك",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "قول الصحابة \"اجعل لنا ذات أنواط\" شبهه النبي ﷺ بقول بني إسرائيل:",
-      "options": [
-        "اجعل لنا إلها كما لهم آلهة",
-        "لن نؤمن",
-        "أرنا الله جهرة",
-        "ابعث لنا ملكا"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: اجعل لنا إلها كما لهم آلهة.",
       "source_quote": null,
       "language": "ar"
     },
@@ -4669,25 +4460,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإجابة الصحيحة: يصدق.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "3ebd1b36-06d9-9c37-a9a4-31b6fa73c337",
-      "book": "tawheed",
-      "chapter": "🕌 الغلو والحلف",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "\"ومن حلف له بالله\" — فعليه أن:",
-      "options": [
-        "يرضى",
-        "يشك",
-        "يحلف",
-        "يصمت"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: يرضى.",
       "source_quote": null,
       "language": "ar"
     },
@@ -5072,25 +4844,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "97707c53-e875-8e34-caf3-38ad84597d4f",
-      "book": "tawheed",
-      "chapter": "📚 الذبح لغير الله واللعن",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "\"لعن الله من آوى\":",
-      "options": [
-        "محدثا",
-        "ضالا",
-        "غريبا",
-        "يتيما"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«محدثا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "b47b0cea-8e73-b16f-d548-add5450fccf2",
       "book": "tawheed",
       "chapter": "📚 الذبح لغير الله واللعن",
@@ -5125,25 +4878,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "«لله وحده» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "89d8e4aa-36d8-abf5-ed29-8de943feb652",
-      "book": "tawheed",
-      "chapter": "📚 قصة الذباب والصنم",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "الرجل الذي دخل الجنة هو الذي:",
-      "options": [
-        "أبى أن يقرب شيئا",
-        "قرب ذبابا",
-        "قرب شاة",
-        "سجد للصنم"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: أبى أن يقرب شيئا.",
       "source_quote": null,
       "language": "ar"
     },
@@ -5186,25 +4920,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "eaf22de9-e972-dd21-1559-488cca397b06",
-      "book": "tawheed",
-      "chapter": "🕌 الغلو والحلف",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "أكمل: «من حلف له بالله فليرض، ومن لم يرض فليس من___»؟",
-      "options": [
-        "الله",
-        "المسلمين",
-        "المؤمنين",
-        "الصادقين"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: الله.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "82dd4e52-6c26-63c2-58c5-489ab067703c",
       "book": "tawheed",
       "chapter": "🕌 الغلو والحلف",
@@ -5239,25 +4954,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "«الشرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "850e9201-00c0-ee27-2cd2-f20a6278064a",
-      "book": "tawheed",
-      "chapter": "✅ تحقيق التوحيد",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "إبراهيم عليه السلام كان إماما للموحدين، ودعا ربه أن يجنبه وبنيه:",
-      "options": [
-        "عبادة الأصنام",
-        "الفقر",
-        "المرض",
-        "الأعداء"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: عبادة الأصنام.",
       "source_quote": null,
       "language": "ar"
     },
@@ -5338,25 +5034,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "1acb73c6-3961-eec5-f7ff-3731f4aa5ff6",
-      "book": "tawheed",
-      "chapter": "📚 الواهنة والحلقة",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "قال له النبي ﷺ: \"انزعها فإنها لا تزيدك إلا\":",
-      "options": [
-        "وهنا",
-        "قوة",
-        "شفاء",
-        "بركة"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«وهنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "7521ae78-8c58-6a1b-d97a-21d108d2a89b",
       "book": "tawheed",
       "chapter": "📚 الواهنة والحلقة",
@@ -5433,44 +5110,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "b195d0bc-d736-c9e8-1ff9-abab5f72023b",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "التمائم: شيء يعلق على الأولاد يتقى به:",
-      "options": [
-        "العين",
-        "الحمى",
-        "السحر",
-        "الجن"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: العين.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "056a5554-7066-0ab2-321b-e2df9cb210b9",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "التولة: شيء يصنع يزعمون أنه يحبب:",
-      "options": [
-        "المرأة إلى زوجها",
-        "الناس بعضهم",
-        "الطعام",
-        "المال"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: المرأة إلى زوجها.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "1cc9fb32-7441-2bf5-ea1e-d267ad9e7198",
       "book": "tawheed",
       "chapter": "📿 الرقى والتمائم",
@@ -5486,44 +5125,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "«عقبة بن عامر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "4ff2a4e9-e6bf-84a0-ce92-695eb2e824ba",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "في رواية: \"من علق تميمة فقد\":",
-      "options": [
-        "أشرك",
-        "كفر",
-        "ظلم",
-        "فسق"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: أشرك.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "16bfb493-893a-a0c5-c019-c76bd084dfdb",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "الرقى التي رخص فيها هي ما خلا من:",
-      "options": [
-        "الشرك",
-        "المرض",
-        "الكلام",
-        "العربية"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: الشرك.",
       "source_quote": null,
       "language": "ar"
     },
@@ -5604,25 +5205,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "eb3767c9-4e00-263e-246b-719bdbc94240",
-      "book": "tawheed",
-      "chapter": "⚠️ الشرك",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "\"إن الرقى والتمائم والتولة شرك\" — رواه عن النبي ﷺ:",
-      "options": [
-        "ابن مسعود",
-        "أبو هريرة",
-        "علي",
-        "ابن عباس"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«ابن مسعود» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "35308379-5670-5cf6-2bf4-01d362869250",
       "book": "tawheed",
       "chapter": "📿 الرقى والتمائم",
@@ -5638,44 +5220,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "«العزائم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "417ab83d-22d4-bb08-5c15-2333c2642f29",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "الرقية التي رخص فيها النبي ﷺ هي ما خلا من:",
-      "options": [
-        "الشرك",
-        "العربية",
-        "القرآن",
-        "الدعاء"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: الشرك.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "aa478a3e-4d01-ef86-2154-ef70dd0142a8",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "\"التولة\" شيء يصنعونه يزعمون أنه يحبب:",
-      "options": [
-        "المرأة إلى زوجها",
-        "الناس للمال",
-        "الأطفال للنوم",
-        "المريض للشفاء"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: المرأة إلى زوجها.",
       "source_quote": null,
       "language": "ar"
     },
@@ -5714,25 +5258,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإجابة الصحيحة: أصغر أو أكبر بحسب الاعتقاد.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "07c86467-1043-85f6-8743-13a6c3a2d458",
-      "book": "tawheed",
-      "chapter": "📚 الكهان والعرافين",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "أكمل: «من أتى كاهنا فصدقه بما يقول فقد كفر بما أنزل على___»؟",
-      "options": [
-        "محمد ﷺ",
-        "موسى",
-        "عيسى",
-        "إبراهيم"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: محمد ﷺ.",
       "source_quote": null,
       "language": "ar"
     },
@@ -5927,25 +5452,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "e571ccb7-679e-7d10-0d15-b088787bec45",
-      "book": "tawheed",
-      "chapter": "🕌 الغلو والحلف",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "\"لعن الله اليهود والنصارى اتخذوا قبور أنبيائهم\":",
-      "options": [
-        "مساجد",
-        "أعيادا",
-        "أوثانا",
-        "آلهة"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«مساجد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "52d01861-7b83-8cf4-fed3-1a5baf8c65df",
       "book": "tawheed",
       "chapter": "🕌 الغلو والحلف",
@@ -5980,25 +5486,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "«الصلاة على النبي ﷺ» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "955d0da0-ac36-70c7-e185-091f06f162ed",
-      "book": "tawheed",
-      "chapter": "⚠️ الشرك",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "\"الطيرة شرك، الطيرة شرك، وما منا إلا…\" والذي يذهبها هو:",
-      "options": [
-        "التوكل على الله",
-        "الصدقة",
-        "الدعاء",
-        "الصبر"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: التوكل على الله.",
       "source_quote": null,
       "language": "ar"
     },
@@ -6364,25 +5851,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "3e152c75-0f37-df90-cc32-b27e29996423",
-      "book": "tawheed",
-      "chapter": "🕌 الغلو والحلف",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "\"زائرات القبور\" لعن — والمقصود من:",
-      "options": [
-        "النساء",
-        "الرجال",
-        "الأطفال",
-        "المنافقين"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«النساء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "0c67dd3b-35b7-fb8e-9893-cf70b19549f6",
       "book": "tawheed",
       "chapter": "⚠️ الشرك",
@@ -6398,25 +5866,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإجابة الصحيحة: عبادة الأموات.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "11452798-e7c2-fa11-d8a3-147f813511ed",
-      "book": "tawheed",
-      "chapter": "📿 الرقى والتمائم",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "النشرة هي حل السحر عن:",
-      "options": [
-        "المسحور",
-        "الساحر",
-        "الكاهن",
-        "العائن"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«المسحور» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
       "source_quote": null,
       "language": "ar"
     },
@@ -6858,25 +6307,6 @@ window.QUESTIONS_BANK = {
       "language": "ar"
     },
     {
-      "id": "ce7a68dd-fa9c-36ba-8596-5a3ac421db65",
-      "book": "tawheed",
-      "chapter": "⚠️ الشرك",
-      "level": "hard",
-      "type": "mc",
-      "question_text": "الذبح لغير الله من الشرك لأنه:",
-      "options": [
-        "عبادة صرفت لغير الله",
-        "معصية فقط",
-        "بدعة",
-        "مكروه"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: عبادة صرفت لغير الله.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
       "id": "3e47a9fe-c7e6-dcf2-f438-0c1e1f34d5e7",
       "book": "tawheed",
       "chapter": "📚 حديث الذُّباب (الدخول بسبب التقرب)",
@@ -7139,25 +6569,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الحكم الصحيح هو «التحريم»، كما قرره النص الشرعي في الباب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "6d2bf519-b48d-f2f0-27a6-d29b215aaada",
-      "book": "tawheed",
-      "chapter": "📚 باب لا يُستشفع بالله على خلقه",
-      "level": "easy",
-      "type": "mc",
-      "question_text": "سب الدهر يقع في الغالب عند نزول:",
-      "options": [
-        "المصائب",
-        "النعم",
-        "الطاعات",
-        "الأسفار"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "«المصائب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
       "source_quote": null,
       "language": "ar"
     },
@@ -8022,25 +7433,6 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "«معرفة الله ونبيه ودينه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": null,
-      "language": "ar"
-    },
-    {
-      "id": "4a5652e2-95f7-f070-10a9-ac8763072dcb",
-      "book": "usool",
-      "chapter": "📖 الكتاب",
-      "level": "medium",
-      "type": "mc",
-      "question_text": "المراتب الأربع التي يجب تعلمها هي:",
-      "options": [
-        "العلم والعمل والدعوة والصبر",
-        "الإسلام والإيمان والإحسان والتقوى",
-        "الصلاة والزكاة والصوم والحج",
-        "التوحيد والشرك والكفر والنفاق"
-      ],
-      "correct_index": 0,
-      "is_true": null,
-      "explanation": "الإجابة الصحيحة: العلم والعمل والدعوة والصبر.",
       "source_quote": null,
       "language": "ar"
     },

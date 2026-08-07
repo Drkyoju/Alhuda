@@ -1,0 +1,115 @@
+-- De-dupe near-exact question clones (2026-08-07)
+-- Removed 32 redundant questions from local bank (652 → 620)
+-- Safe to re-run. Keeps pedagogical TF+MC / ayah-dalil / vocab variants.
+
+BEGIN;
+
+DELETE FROM user_wrong_questions WHERE question_id IN (
+  '47c251c4-2a11-43ae-db9b-6e221c2b98c2'::uuid,
+  '59ab06dc-ec5e-19fc-2204-ea2d0b0e2e29'::uuid,
+  '11452798-e7c2-fa11-d8a3-147f813511ed'::uuid,
+  '3ebd1b36-06d9-9c37-a9a4-31b6fa73c337'::uuid,
+  'ce7a68dd-fa9c-36ba-8596-5a3ac421db65'::uuid,
+  '16bfb493-893a-a0c5-c019-c76bd084dfdb'::uuid,
+  'e571ccb7-679e-7d10-0d15-b088787bec45'::uuid,
+  '9fee6ce4-3b95-41e4-7e24-06f327cac297'::uuid,
+  'b195d0bc-d736-c9e8-1ff9-abab5f72023b'::uuid,
+  '6d2bf519-b48d-f2f0-27a6-d29b215aaada'::uuid,
+  '7ecb98e7-373d-ea8b-5e3e-9bc90280aec2'::uuid,
+  'aa478a3e-4d01-ef86-2154-ef70dd0142a8'::uuid,
+  '056a5554-7066-0ab2-321b-e2df9cb210b9'::uuid,
+  '89d8e4aa-36d8-abf5-ed29-8de943feb652'::uuid,
+  '3e152c75-0f37-df90-cc32-b27e29996423'::uuid,
+  '07c86467-1043-85f6-8743-13a6c3a2d458'::uuid,
+  '4a5652e2-95f7-f070-10a9-ac8763072dcb'::uuid,
+  '850e9201-00c0-ee27-2cd2-f20a6278064a'::uuid,
+  'f648bb71-6278-4fbd-52ea-4a909715ceaf'::uuid,
+  '417ab83d-22d4-bb08-5c15-2333c2642f29'::uuid,
+  'e5ba211a-5aae-6dd3-51bb-cf9b09d420f8'::uuid,
+  '1acb73c6-3961-eec5-f7ff-3731f4aa5ff6'::uuid,
+  'eaf22de9-e972-dd21-1559-488cca397b06'::uuid,
+  '20f0405d-fb13-39cc-676a-8e1e9da2ee59'::uuid,
+  '7146c297-16c2-8283-5175-174d6b3c1c88'::uuid,
+  '955d0da0-ac36-70c7-e185-091f06f162ed'::uuid,
+  'f28d7b89-dd4a-7a37-b0c5-5ab506ab69b3'::uuid,
+  'd12b38d3-b220-725b-20ce-02ae7cae64d9'::uuid,
+  '97707c53-e875-8e34-caf3-38ad84597d4f'::uuid,
+  'db8d4fa6-bbbe-0fbe-bfd7-657954cb822c'::uuid,
+  '4ff2a4e9-e6bf-84a0-ce92-695eb2e824ba'::uuid,
+  'eb3767c9-4e00-263e-246b-719bdbc94240'::uuid
+);
+
+DELETE FROM question_stats WHERE question_id IN (
+  '47c251c4-2a11-43ae-db9b-6e221c2b98c2'::uuid,
+  '59ab06dc-ec5e-19fc-2204-ea2d0b0e2e29'::uuid,
+  '11452798-e7c2-fa11-d8a3-147f813511ed'::uuid,
+  '3ebd1b36-06d9-9c37-a9a4-31b6fa73c337'::uuid,
+  'ce7a68dd-fa9c-36ba-8596-5a3ac421db65'::uuid,
+  '16bfb493-893a-a0c5-c019-c76bd084dfdb'::uuid,
+  'e571ccb7-679e-7d10-0d15-b088787bec45'::uuid,
+  '9fee6ce4-3b95-41e4-7e24-06f327cac297'::uuid,
+  'b195d0bc-d736-c9e8-1ff9-abab5f72023b'::uuid,
+  '6d2bf519-b48d-f2f0-27a6-d29b215aaada'::uuid,
+  '7ecb98e7-373d-ea8b-5e3e-9bc90280aec2'::uuid,
+  'aa478a3e-4d01-ef86-2154-ef70dd0142a8'::uuid,
+  '056a5554-7066-0ab2-321b-e2df9cb210b9'::uuid,
+  '89d8e4aa-36d8-abf5-ed29-8de943feb652'::uuid,
+  '3e152c75-0f37-df90-cc32-b27e29996423'::uuid,
+  '07c86467-1043-85f6-8743-13a6c3a2d458'::uuid,
+  '4a5652e2-95f7-f070-10a9-ac8763072dcb'::uuid,
+  '850e9201-00c0-ee27-2cd2-f20a6278064a'::uuid,
+  'f648bb71-6278-4fbd-52ea-4a909715ceaf'::uuid,
+  '417ab83d-22d4-bb08-5c15-2333c2642f29'::uuid,
+  'e5ba211a-5aae-6dd3-51bb-cf9b09d420f8'::uuid,
+  '1acb73c6-3961-eec5-f7ff-3731f4aa5ff6'::uuid,
+  'eaf22de9-e972-dd21-1559-488cca397b06'::uuid,
+  '20f0405d-fb13-39cc-676a-8e1e9da2ee59'::uuid,
+  '7146c297-16c2-8283-5175-174d6b3c1c88'::uuid,
+  '955d0da0-ac36-70c7-e185-091f06f162ed'::uuid,
+  'f28d7b89-dd4a-7a37-b0c5-5ab506ab69b3'::uuid,
+  'd12b38d3-b220-725b-20ce-02ae7cae64d9'::uuid,
+  '97707c53-e875-8e34-caf3-38ad84597d4f'::uuid,
+  'db8d4fa6-bbbe-0fbe-bfd7-657954cb822c'::uuid,
+  '4ff2a4e9-e6bf-84a0-ce92-695eb2e824ba'::uuid,
+  'eb3767c9-4e00-263e-246b-719bdbc94240'::uuid
+);
+
+DELETE FROM questions WHERE id IN (
+  '47c251c4-2a11-43ae-db9b-6e221c2b98c2'::uuid,
+  '59ab06dc-ec5e-19fc-2204-ea2d0b0e2e29'::uuid,
+  '11452798-e7c2-fa11-d8a3-147f813511ed'::uuid,
+  '3ebd1b36-06d9-9c37-a9a4-31b6fa73c337'::uuid,
+  'ce7a68dd-fa9c-36ba-8596-5a3ac421db65'::uuid,
+  '16bfb493-893a-a0c5-c019-c76bd084dfdb'::uuid,
+  'e571ccb7-679e-7d10-0d15-b088787bec45'::uuid,
+  '9fee6ce4-3b95-41e4-7e24-06f327cac297'::uuid,
+  'b195d0bc-d736-c9e8-1ff9-abab5f72023b'::uuid,
+  '6d2bf519-b48d-f2f0-27a6-d29b215aaada'::uuid,
+  '7ecb98e7-373d-ea8b-5e3e-9bc90280aec2'::uuid,
+  'aa478a3e-4d01-ef86-2154-ef70dd0142a8'::uuid,
+  '056a5554-7066-0ab2-321b-e2df9cb210b9'::uuid,
+  '89d8e4aa-36d8-abf5-ed29-8de943feb652'::uuid,
+  '3e152c75-0f37-df90-cc32-b27e29996423'::uuid,
+  '07c86467-1043-85f6-8743-13a6c3a2d458'::uuid,
+  '4a5652e2-95f7-f070-10a9-ac8763072dcb'::uuid,
+  '850e9201-00c0-ee27-2cd2-f20a6278064a'::uuid,
+  'f648bb71-6278-4fbd-52ea-4a909715ceaf'::uuid,
+  '417ab83d-22d4-bb08-5c15-2333c2642f29'::uuid,
+  'e5ba211a-5aae-6dd3-51bb-cf9b09d420f8'::uuid,
+  '1acb73c6-3961-eec5-f7ff-3731f4aa5ff6'::uuid,
+  'eaf22de9-e972-dd21-1559-488cca397b06'::uuid,
+  '20f0405d-fb13-39cc-676a-8e1e9da2ee59'::uuid,
+  '7146c297-16c2-8283-5175-174d6b3c1c88'::uuid,
+  '955d0da0-ac36-70c7-e185-091f06f162ed'::uuid,
+  'f28d7b89-dd4a-7a37-b0c5-5ab506ab69b3'::uuid,
+  'd12b38d3-b220-725b-20ce-02ae7cae64d9'::uuid,
+  '97707c53-e875-8e34-caf3-38ad84597d4f'::uuid,
+  'db8d4fa6-bbbe-0fbe-bfd7-657954cb822c'::uuid,
+  '4ff2a4e9-e6bf-84a0-ce92-695eb2e824ba'::uuid,
+  'eb3767c9-4e00-263e-246b-719bdbc94240'::uuid
+);
+
+COMMIT;
+
+-- Verify: SELECT COUNT(*) FROM questions WHERE language = 'ar';
+-- Expected ~620 if DB matched local bank before.
