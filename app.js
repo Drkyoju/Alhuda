@@ -1691,8 +1691,11 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v34';
+const TTS_CACHE_VER = 'v40';
 let ttsStatusReadyPromise = null;
+/** AbortController for background (next-Q / answer) warms — cancelled when current Q speaks. */
+let ttsBackgroundWarmAbort = null;
+let currentQuestionTtsKick = null;
 
 function isFishVoiceIdClient(id) {
   return /^[a-f0-9]{32}$/i.test(String(id || '').trim());
@@ -1711,8 +1714,8 @@ function ensureTtsVoiceReady() {
   }
   return ttsStatusReadyPromise;
 }
-/** Bump to drop stale IndexedDB blobs from prior Yousef/v29/v30 bake. */
-const TTS_IDB_NAME = 'alhudaTtsCache_v5';
+/** Bump to drop stale IndexedDB blobs from prior Yousef/v29/v30/v34 bake. */
+const TTS_IDB_NAME = 'alhudaTtsCache_v6';
 const TTS_BLOB_CACHE_MAX = 220;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
@@ -2032,12 +2035,62 @@ function ttsPayloadReadyInMemory(preparedText, voice = TTS_VOICE) {
   return ttsBlobMemoryCache.has(ttsCacheKey(clean, voice));
 }
 
-async function warmQuestionSpeech(q) {
+/** Cancel next-Q / answer background warms so current question wins the network. */
+function cancelBackgroundTtsWarms() {
+  if (ttsBackgroundWarmAbort) {
+    try { ttsBackgroundWarmAbort.abort(); } catch { /* ignore */ }
+  }
+  ttsBackgroundWarmAbort = new AbortController();
+}
+
+/**
+ * Kick CURRENT question TTS the instant the question is known (before/during paint).
+ * Does NOT wait on full map timeout, next-Q, or answer prefetch.
+ */
+function kickCurrentQuestionTts(q) {
+  if (!q || !voiceOn) return null;
+  cancelBackgroundTtsWarms();
+  void ensureTtsVoiceReady();
+  // Reuse in-flight kick for the same question (renderQ + speakQuestion).
+  if (currentQuestionTtsKick?.qId === q.id && currentQuestionTtsKick.promise) {
+    return currentQuestionTtsKick.promise;
+  }
+  const work = (async () => {
+    // Prefer curated BY_ID if already present; otherwise wait briefly (not full 4s).
+    if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID?.[q.id]) {
+      await Promise.race([
+        ensureSpeechMapsLoaded(),
+        new Promise((r) => setTimeout(r, 100)),
+      ]);
+    }
+    void ensureSpeechMapsLoaded();
+    const { questionText } = buildQuestionSpeechParts(q);
+    let qClean = prepareTtsPayload(questionText);
+    if (!qClean) {
+      qClean = prepareTtsPayload(String(q.q || '').trim())
+        || stripForSpeech(String(q.q || '').trim());
+    }
+    if (qClean && qClean.length >= 2) {
+      const key = ttsCacheKey(qClean);
+      if (!ttsBlobMemoryCache.has(key) && !ttsPrefetchInFlight.has(key)) {
+        void fetchTtsBlob(qClean).catch(() => null);
+      } else if (ttsPrefetchInFlight.has(key)) {
+        await ttsPrefetchInFlight.get(key).catch(() => null);
+      }
+    }
+    return qClean || null;
+  })();
+  currentQuestionTtsKick = { qId: q.id, promise: work };
+  return work;
+}
+
+/** Warm only question audio — never steal bandwidth with answers/next before speak. */
+async function warmQuestionSpeech(q, { allowAnswers = false } = {}) {
   if (!q) return null;
   const existing = questionSpeechWarmPromises.get(q);
   if (existing) return existing;
   const work = (async () => {
-    if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID) {
+    if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID?.[q.id]) {
       await Promise.race([
         ensureSpeechMapsLoaded(),
         new Promise((r) => setTimeout(r, 80)),
@@ -2046,8 +2099,6 @@ async function warmQuestionSpeech(q) {
     const { questionText, optionList } = buildQuestionSpeechParts(q);
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => null);
-    // Prefetch question first; with ayah, warm ALL answers (Hudhaify gap before options).
-    // Without ayah, soft-warm at most 2 to limit TTS quota.
     const qClean = prepareTtsPayload(questionText);
     try {
       if (qClean && qClean.length >= 2) {
@@ -2056,10 +2107,13 @@ async function warmQuestionSpeech(q) {
           await fetchTtsBlob(qClean).catch(() => null);
         }
       }
-      const opts = primaryVerse
-        ? (optionList || [])
-        : (optionList || []).slice(0, 2);
-      for (const opt of opts) prefetchTtsText(opt);
+      // Answers only when explicitly allowed (after current Q audio has started).
+      if (allowAnswers) {
+        const opts = primaryVerse
+          ? (optionList || [])
+          : (optionList || []).slice(0, 2);
+        for (const opt of opts) prefetchTtsText(opt);
+      }
       return null;
     } catch {
       return null;
@@ -2120,20 +2174,17 @@ function warmPopularQuranAyahs() {
 /** Prefetch full round TTS + Quran into IDB/SW while online so replay works offline. */
 async function warmRoundAudioForOffline(questions, { notify = true } = {}) {
   if (!questions?.length || navigator.onLine === false) return;
-  // Only warm current + next — warming the whole round storms /api/tts (429) and
-  // silences many live questions. Offline cache fills as the student plays.
+  // Current question ONLY — next-Q warm races first-byte and causes silence.
   const start = Math.max(0, state.idx | 0);
-  const list = questions.slice(start, start + 2);
+  const q = questions[start];
+  if (!q) return;
   await ensureSpeechMapsLoaded();
-  for (const q of list) {
-    if (!q) continue;
-    try { await warmQuestionSpeech(q); } catch { /* ignore */ }
-    const verseKey = getPrimaryVerseKeyForQuestion(q);
-    if (verseKey) {
-      try { await fetchQuranAudioObjectUrl(verseKey); } catch { /* ignore */ }
-    }
+  try { await warmQuestionSpeech(q, { allowAnswers: false }); } catch { /* ignore */ }
+  const verseKey = getPrimaryVerseKeyForQuestion(q);
+  if (verseKey) {
+    try { await fetchQuranAudioObjectUrl(verseKey); } catch { /* ignore */ }
   }
-  if (notify && list.length >= 1 && typeof showToast === 'function' && document.getElementById('game')?.classList.contains('active')) {
+  if (notify && typeof showToast === 'function' && document.getElementById('game')?.classList.contains('active')) {
     showToast('الصوت جاهز للسؤال الحالي ✓', 'ok');
   }
 }
@@ -2296,6 +2347,11 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/تَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "تَعْبُدُ اللَّهَ");
   s = s.replace(/نَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "نَعْبُدُ اللَّهَ");
   s = s.replace(/أَنْ\s+تَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ اللَّهَ");
+  // أن المصدرية before imperfect — NEVER أنّ (Fish reads أنَّ يعلّم as garbage).
+  s = s.replace(/أَنَّ(\s+)([يتن][\u064B-\u065F\u0670\u0621-\u064A])/g, 'أَنْ$1$2');
+  s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, "بَعْدَ التَّوْحِيدِ");
+  s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, 'بَعْدَ التَّوْحِيدِ');
+  s = s.replace(/أَمَرَ\s+مُعَاذٍ/g, 'أَمَرَ مُعَاذٌ');
   s = s.replace(/فَقَدْ\s+كُفْر[\u064B-\u065F\u0670]*/g, 'فَقَدْ كَفَرَ');
   s = s.split('الْحِكْمَةُ مَنْ خَلَقَ').join('الْحِكْمَةُ مِنْ خَلْقِ');
   s = s.split('الْحِكْمَةُ مَنْ').join('الْحِكْمَةُ مِنْ');
@@ -2788,6 +2844,11 @@ function speechTextFor(q, field, raw) {
   // Hadith / quote-hadith: keep curated form (Gemini or source) — no word-map rewrite.
   if (isHadithPassage(base) || (field === 'quote' && isHadithPassage(base))) {
     return prepareArabicForSpeech(base);
+  }
+  // Per-question curated map: NEVER let SPEECH_PHRASE_MAP overwrite good tashkeel
+  // (phrase map had wrong أنَّ/إعراب that mangled Fish reading of Muadh Q etc.).
+  if (hit && base === String(hit).trim() && hasWellFormedTashkeel(base)) {
+    return prepareArabicForSpeech(applyWordDiacritics(base));
   }
   return prepareArabicForSpeech(applyManualSpeechDiacritics(base));
 }
@@ -4327,6 +4388,8 @@ function speakQuestion() {
   const btn = document.getElementById('btn-speak-question');
   const askIdx = state.idx;
   const askId = q.id;
+  // Ensure fetch is in flight (no-op if kickCurrentQuestionTts already started it).
+  kickCurrentQuestionTts(q);
   // Cut previous audio once. Avoid a second stopSpeaking later that aborts the
   // just-started clip (token bump + ttsAbort race).
   stopSpeaking();
@@ -4337,6 +4400,13 @@ function speakQuestion() {
       // Never block speech on full map — start ASAP with bank+core+lexicon;
       // full map loads in parallel and helps later questions.
       void ensureSpeechMapsLoaded();
+      // Join early kick if present (already downloading while paint ran).
+      if (currentQuestionTtsKick?.qId === askId) {
+        await Promise.race([
+          currentQuestionTtsKick.promise,
+          new Promise((r) => setTimeout(r, 30)),
+        ]);
+      }
       // Only wait briefly if FISH_VOICE_ID not yet applied (avoids fish-live 400).
       if (!isFishVoiceIdClient(TTS_VOICE)) {
         void ensureTtsVoiceReady();
@@ -4421,8 +4491,10 @@ function speakQuestion() {
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
         // Prefetch next/answers only AFTER current question audio has started.
+        cancelBackgroundTtsWarms();
         const next = state.questions[askIdx + 1];
-        if (next) void warmQuestionSpeech(next);
+        if (next) void warmQuestionSpeech(next, { allowAnswers: false });
+        void warmQuestionSpeech(q, { allowAnswers: true });
         for (const opt of (opts || []).slice(0, 2)) prefetchTtsText(opt);
 
         // 2) Ayah — sync key only (never hang on network verse search).
@@ -6231,10 +6303,13 @@ function startGame() {
 
 function renderQ() {
   if (state.idx >= state.questions.length) { void endGame(); return; }
-  stopSpeaking();
   const q = state.questions[state.idx];
-  // One warm only — avoid double-fetch racing the live speak.
-  void warmQuestionSpeech(q);
+  // CRITICAL latency: start CURRENT question TTS fetch the instant idx is known,
+  // before paint / double-rAF — so audio is already downloading when text appears.
+  if (voiceOn) {
+    kickCurrentQuestionTts(q);
+  }
+  stopSpeaking();
   const prior = state.answerLog?.[state.idx] || null;
   state.answered = !!prior;
   document.getElementById('show-answer-btn').style.display = 'none';
@@ -6286,6 +6361,7 @@ function renderQ() {
     startQuestionTimer();
     questionShownAt = Date.now();
     // Speak ASAP after paint is visible — double-rAF (~0–16ms), no 80ms wait.
+    // Fetch already started in kickCurrentQuestionTts above.
     const askIdx = state.idx;
     const askId = q.id;
     if (voiceOn) {

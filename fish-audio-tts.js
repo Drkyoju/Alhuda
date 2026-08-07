@@ -20,15 +20,16 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   format: 'mp3',
   mp3_bitrate: 192, // max documented MP3 quality
   sample_rate: 44100,
-  latency: 'normal', // best quality (vs balanced/low)
+  // balanced = faster first byte; normal caused multi-second silence before audio.
+  latency: 'balanced',
   normalize: false, // keep Arabic harakat — do not rewrite diacritics
   chunk_length: 300, // max continuity for long vocalized sentences
-  temperature: 0.26, // stick tightly to provided tashkeel/iʿrāb
-  top_p: 0.45,
+  temperature: 0.22, // stick tightly to provided tashkeel/iʿrāb
+  top_p: 0.4,
   repetition_penalty: 1.35,
   prosody: {
-    speed: 0.96, // natural pace (was 0.88 — felt sluggish); override via FISH_TTS_SPEED
-    volume: 5, // louder without clipping (-20..20); was 2
+    speed: 0.97, // clear MSA pace; override via FISH_TTS_SPEED
+    volume: 6, // loud classroom playback (-20..20)
     normalize_loudness: true,
   },
 });
@@ -99,6 +100,11 @@ export function prepareFishTtsText(text) {
   s = s.replace(/يعبد\s+الله/g, "يَعْبُدُ اللَّهَ");
   s = s.replace(/تعبد\s+الله/g, "تَعْبُدُ اللَّهَ");
   s = s.replace(/نعبد\s+الله/g, "نَعْبُدُ اللَّهَ");
+  // أن المصدرية + مضارع — wrong أنّ makes clone voice mangled («أنّ يعلّمهم»).
+  s = s.replace(/أَنَّ(\s+)([يتن][\u064B-\u065F\u0670\u0621-\u064A])/g, 'أَنْ$1$2');
+  s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, "بَعْدَ التَّوْحِيدِ");
+  s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, 'بَعْدَ التَّوْحِيدِ');
+  s = s.replace(/أَمَرَ\s+مُعَاذٍ/g, 'أَمَرَ مُعَاذٌ');
   s = s.replace(/فَقَدْ\s+كُفْر[\u064B-\u065F\u0670]*/g, 'فَقَدْ كَفَرَ');
   s = s.replace(/فقد\s+كفر/g, 'فَقَدْ كَفَرَ');
   s = s.replace(/مَنْ\s+دُون/g, 'مِنْ دُون');
