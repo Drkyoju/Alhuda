@@ -1693,15 +1693,15 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v48';
+const TTS_CACHE_VER = 'v49';
 /**
  * Lesson Fish TTS only — mild loudness (NOT v267 3.6× / heavy EQ).
  * Never applied to Quran Hudhaify.
  */
 const TTS_PLAYBACK_GAIN = 1.3;
-/** Fish prosody for question prose (natural, slightly careful). */
-const TTS_FISH_SPEED_QUESTION = 0.97;
-/** Fish prosody for answer options — slightly faster, still clear. */
+/** Fish prosody for question prose — snappy, not sluggish (was 0.97). */
+const TTS_FISH_SPEED_QUESTION = 1.05;
+/** Fish prosody for answer options — same pace as questions; snappy back-to-back. */
 const TTS_FISH_SPEED_ANSWER = 1.05;
 let ttsAudioGraph = null; // { source, nodes[] }
 /** createMediaElementSource may only bind once per element — reuse across replays. */
@@ -3521,7 +3521,8 @@ const QURAN_PLAYBACK_RATE = 1.28;
  * Main answer pace comes from Fish prosody (TTS_FISH_SPEED_ANSWER ≈ 1.05).
  */
 const TTS_ANSWER_PLAYBACK_RATE = 1.08;
-const TTS_DEFAULT_PLAYBACK_RATE = 1;
+/** Question clips — modest client boost on top of Fish 1.05 (was 1.0 / sluggish). */
+const TTS_DEFAULT_PLAYBACK_RATE = 1.08;
 /** Intentional silence between answer options (ms). Keep tiny for back-to-back. */
 const TTS_ANSWER_GAP_MS = 40;
 const QURAN_BLOB_CACHE_MAX = 32;

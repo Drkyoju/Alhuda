@@ -28,8 +28,8 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   top_p: 0.4,
   repetition_penalty: 1.35,
   prosody: {
-    // v265 pace (0.97) — do NOT slow to 0.92; mild volume bump only (was 6).
-    speed: 0.97,
+    // v278+ question/default pace — snappy (was 0.97 / felt slow).
+    speed: 1.05,
     volume: 9,
     normalize_loudness: true,
   },
@@ -285,7 +285,7 @@ function buildFishTtsBody(cleanText, selectedVoice, env = process.env, opts = {}
   };
 }
 
-/** @param {{ speed?: number }} [opts] — per-request prosody speed (e.g. answers 1.05, questions 0.97). */
+/** @param {{ speed?: number }} [opts] — per-request prosody speed (default 1.05). */
 export async function synthesizeFishArabicSpeech(text, voiceId, env = process.env, opts = {}) {
   const apiKey = String(env?.FISH_API_KEY || '').trim();
   if (!apiKey) throw new Error('Fish Audio not configured (missing FISH_API_KEY)');
