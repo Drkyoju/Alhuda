@@ -102,10 +102,14 @@ export function prepareFishTtsText(text) {
   s = s.replace(/نعبد\s+الله/g, "نَعْبُدُ اللَّهَ");
   // OCR/map often puts fatha BEFORE shadda (أَنَّ); NFC wants shadda then vowel (أَنَّ).
   s = s.replace(/([\u064E\u064F\u0650])(\u0651)/g, '$2$1');
-  // أن المصدرية + مضارع — wrong أنّ/بِأَنّ mangled clone voice («أنّ يعلّمهم»).
+  // أن / بِأَن المصدرية + مضارع — wrong أنّ/بِأَنّ mangled clone voice («أنّ يعلّمهم»).
   // Require a haraka on the imperfect letter so أنّ+اسم (نزولها/الله) is kept.
-  s = s.replace(/أَنَّ(\s+)([يتن][\u064B-\u065F\u0670])/g, 'أَنْ$1$2');
-  s = s.replace(/أَنّ(\s+)([يتن][\u064B-\u065F\u0670])/g, 'أَنْ$1$2');
+  s = s.replace(/(?:بِ)?أَنَّ(\s+)([يتن][\u064B-\u065F\u0670])/g, (m, sp, verb) =>
+    (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb
+  );
+  s = s.replace(/(?:بِ)?أَنّ(\s+)([يتن][\u064B-\u065F\u0670])/g, (m, sp, verb) =>
+    (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb
+  );
   s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, "بَعْدَ التَّوْحِيدِ");
   s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, 'بَعْدَ التَّوْحِيدِ');
   s = s.replace(/أَمَرَ\s+مُعَاذٍ/g, 'أَمَرَ مُعَاذٌ');

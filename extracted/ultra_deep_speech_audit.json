@@ -1,0 +1,252 @@
+{
+  "meta": {
+    "checked": 652,
+    "uniqueIds": 652,
+    "bankExpected": 652,
+    "timestamp": "2026-08-07T16:58:54.818Z",
+    "deeperThanMapAudit": true
+  },
+  "summary": {
+    "wordingFails": 95,
+    "annaImperfectFails": 0,
+    "densityFails": 0,
+    "densityWarn": 0,
+    "tfFails": 0,
+    "ayahFishLeaks": 0,
+    "prepEmpty": 0,
+    "mapAnnaResidual": 0,
+    "collisionFindings": 1,
+    "muadhCuratedSurvives": true,
+    "hasWellFormedGuard": true,
+    "contentLoss": 0,
+    "preparedDriftOnly": 95
+  },
+  "muadhTest": {
+    "ok": true,
+    "wordingOk": true,
+    "hasAnSukun": true,
+    "hasAnnaBad": false,
+    "spoken": "بَعْدَ التَّوْحِيدِ، أَمَرَ النَّبِيُّ ﷺ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ أَنَّ اللَّهَ افْتَرَضَ عَلَيْهِمْ:",
+    "prepared": "بَعْدَ التَّوْحِيدِ أَمَرَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ أَنَّ اللَّهَ افْتَرَضَ عَلَيْهِمْ",
+    "fish": "بَعْدَ التَّوْحِيدِ أَمَرَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ أَنَّ اللَّهَ افْتَرَضَ عَلَيْهِمْ"
+  },
+  "guardOk": true,
+  "collisionFindings": [
+    {
+      "kind": "word-map-bianna-always-shadda",
+      "value": "بِأَنَّ",
+      "risk": "Bare بأن → بِأَنَّ; mitigated by scrub/Fish بِأَنْ before imperfect+haraka",
+      "mitigated": true
+    }
+  ],
+  "mapAnnaHits": [],
+  "latency": {
+    "kickCurrentQuestionTts": true,
+    "speakUsesKick": true,
+    "noFullMapAwaitBeforeSpeak": true,
+    "answersPrefetchAfterQStart": true,
+    "kickMapRaceMs100": true,
+    "remainingWaits": {
+      "setTimeoutMs": [
+        30,
+        60,
+        80,
+        200,
+        200
+      ],
+      "promiseRaces": 2,
+      "note": "Short races (30/60/80ms) + retry backoffs only — no multi-second map await in speakQuestion"
+    }
+  },
+  "cache": {
+    "TTS_CACHE_VER": "v41",
+    "TTS_IDB_NAME": "alhudaTtsCache_v7",
+    "liveVersion": null,
+    "bumpedRecently": true,
+    "assetsCache": "alhuda-v261",
+    "sw": 261,
+    "app": 225
+  },
+  "samples": {
+    "wordingFails": [
+      {
+        "id": "a65b90a9-be7c-b2b5-de1f-1ed22818eedf",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الحديث: «من تعلق شيئا وكل ___»؟",
+        "prepared": "أَكْمِلِ الْحَدِيثَ من تعلّق شيئاً وُكِل",
+        "loss": false
+      },
+      {
+        "id": "e517de7c-d07a-33a1-43bc-5bc9ee685d4e",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الحديث القدسي: «أنا الدهر، أقلب الليل و___»؟",
+        "prepared": "أكمل الْحَدِيثِ الْقُدْسِيِّ أَنَا الدَّهْرِ أقلِّب اللَّيْلُ و",
+        "loss": false
+      },
+      {
+        "id": "39d543ed-8c5d-a3ba-9480-c85261e939ca",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الحديث: «إن الله هو الحكم وإليه ___»؟",
+        "prepared": "أَكْمِلِ الْحَدِيثَ إِنَّ اللَّهُ هُوَ الحَكَم وَإِلَيْهِ",
+        "loss": false
+      },
+      {
+        "id": "27b4b080-cbd4-86d0-3038-c0d0ce2ade61",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الآية: «لا تعتذروا قد كفرتم بعد ___»؟",
+        "prepared": "أَكْمِلِ الْآيَةَ لَا تَعْتَذِرُوا قَدْ كَفَرْتُمْ بَعْدَ",
+        "loss": false
+      },
+      {
+        "id": "938d1c1c-8f81-a6e2-2c57-9300c66dd7d8",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الآية عن السحر: «وما يعلمان من أحد حتى يقولا إنما نحن ___»؟",
+        "prepared": "أَكْمِلِ الْآيَةَ عَنْ السِّحْرِ وَمَا يُعَلِّمَانِ مَنْ أَحَدٍ حَتَّى يَقُولَا إِنَّمَا نَحْنُ",
+        "loss": false
+      },
+      {
+        "id": "e9455bdd-c43c-9e0d-0487-d4a6906ed056",
+        "field": "a0",
+        "kind": "prepared-drift",
+        "bank": "منازل القمر/النجوم",
+        "prepared": "مَنَازِلَ الْقَمَرِ النُّجُومِ",
+        "loss": false
+      },
+      {
+        "id": "194c609c-81c0-3d96-6c8c-c1b6f9111b8c",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الحديث: «ليس منا من ضرب الخدود وشق الجيوب ودعا بدعوى ___»؟",
+        "prepared": "أَكْمِلِ الْحَدِيثَ لَيْسَ منّا من ضَرَبَ الْخُدُودَ وشقّ الْجُيُوبَ وَدَعَا بِدَعْوَى",
+        "loss": false
+      },
+      {
+        "id": "db8d4fa6-bbbe-0fbe-bfd7-657954cb822c",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الحديث: «من تعلق تميمة فقد ___»؟",
+        "prepared": "أَكْمِلِ الْحَدِيثَ من تعلّق تَمِيمَةً فَقَدْ",
+        "loss": false
+      },
+      {
+        "id": "9c10d8ef-9ed4-bd1e-97b0-8de978472d4f",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الحديث: «من كان حالفا فليحلف بالله أو ___»؟",
+        "prepared": "أَكْمِلِ الْحَدِيثَ من كَانَ حالفاً فَلْيَحْلِفْ بِاللَّهِ أَوْ",
+        "loss": false
+      },
+      {
+        "id": "0f917e45-196c-b2fc-5e68-3f1dd7a1ae81",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الحديث: «ومن لم يرض بالحلف بالله فليس من ___»؟",
+        "prepared": "أَكْمِلِ الْحَدِيثَ ومن لَمْ يَرْضَ بِالْحَلِفِ بِاللَّهِ فَلَيْسَ من",
+        "loss": false
+      },
+      {
+        "id": "eaf22de9-e972-dd21-1559-488cca397b06",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل: «من حلف له بالله فليرض، ومن لم يرض فليس من___»؟",
+        "prepared": "أكمل مَنْ حَلَفَ لَهُ بِاللَّهِ فَلْيَرْضَ وَمَنْ لَمْ يَرْضَ فَلَيْسَ مَنْ",
+        "loss": false
+      },
+      {
+        "id": "07c86467-1043-85f6-8743-13a6c3a2d458",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل: «من أتى كاهنا فصدقه بما يقول فقد كفر بما أنزل على___»؟",
+        "prepared": "أكمل من أَتَى كَاهِنًا فَصَدَّقَهُ بِمَا يَقُولَ فَقَدْ كَفَرَ بِمَا أَنْزَلَ عَلَى",
+        "loss": false
+      },
+      {
+        "id": "1660db39-87f6-00de-4f68-e08a728e4878",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "أكمل الحديث: «من اقتبس شعبة من النجوم فقد اقتبس شعبة من ___»؟",
+        "prepared": "أَكْمِلِ الْحَدِيثَ من اقْتَبَسَ شُعْبَةٌ من النُّجُومِ فَقَدْ اقْتَبَسَ شُعْبَةٌ من",
+        "loss": false
+      },
+      {
+        "id": "9daed191-d0b4-ab7b-83e4-47a315fdd750",
+        "field": "a0",
+        "kind": "prepared-drift",
+        "bank": "الهجرة: الانتقال من بلد الشرك إلى بلد الإسلام . لشيخ الإسلام محمد بن عبدالوهاب رحمه الله",
+        "prepared": "الْهِجْرَةِ الِانْتِقَالُ مَنْ بَلَدِ الشِّرْكِ إِلَى بَلَدِ الْإِسْلَامِ لشيخ الْإِسْلَامِ مُحَمَّدٍ بْنُ عَبْدِ الْوَهَّابِ رَحِمَهُ اللَّهُ",
+        "loss": false
+      },
+      {
+        "id": "a2193183-1fae-524d-f67a-aa8201744fa4",
+        "field": "a3",
+        "kind": "prepared-drift",
+        "bank": "نعم، المؤمنونإخوة فيما بينهم .",
+        "prepared": "نَعَمْ الْمُؤْمِنُونَ إِخْوَةٌ فِيمَا بينهم",
+        "loss": false
+      },
+      {
+        "id": "906b9850-0a26-a499-222b-a33ecde138c5",
+        "field": "a2",
+        "kind": "prepared-drift",
+        "bank": "نعم، المؤمنونإخوة فيما بينهم .",
+        "prepared": "نَعَمْ الْمُؤْمِنُونَ إِخْوَةٌ فِيمَا بينهم",
+        "loss": false
+      },
+      {
+        "id": "75664f37-3afd-0dfb-adc9-cd9994b1dc3d",
+        "field": "a1",
+        "kind": "prepared-drift",
+        "bank": "نعم، أن الضرر يزال ويبنى على ذلك كثي من الحكام",
+        "prepared": "نَعَمْ أَنَّ الضَّرَرِ يَزَالُ وَيُبْنَى عَلَى ذَلِكَ كَثِيرٌ مَنْ الْحُكَّامِ",
+        "loss": false
+      },
+      {
+        "id": "437ad277-3c89-1263-1b74-9204fbc5f5aa",
+        "field": "q",
+        "kind": "prepared-drift",
+        "bank": "من فوائد الحديث (2- الإيمان): أن الله أنزل على رسوله الكتاب وب فيه للأم ة ما تحتاج إليه من حلال وحرام؟",
+        "prepared": "من فَوَائِدِ الْحَدِيثِ 2 الْإِيمَانِ أَنَّ اللَّهَ أَنْزَلَ عَلَى رَسُولِهِ الْكِتَابِ وَبَيَّنَ فِيهِ لِلْأُمَّةِ مَا تَحْتَاجُ إِلَيْهِ من حلال وحرام",
+        "loss": false
+      },
+      {
+        "id": "437ad277-3c89-1263-1b74-9204fbc5f5aa",
+        "field": "a2",
+        "kind": "prepared-drift",
+        "bank": "نعم، صب على طاعة الله.",
+        "prepared": "نَعَمْ صَبْرٌ عَلَى طَاعَةِ اللَّهِ",
+        "loss": false
+      },
+      {
+        "id": "437ad277-3c89-1263-1b74-9204fbc5f5aa",
+        "field": "a3",
+        "kind": "prepared-drift",
+        "bank": "نعم، أن الله أنزل على رسوله الكتاب وب فيه للأم ة ما تحتاج إليه من حلال وحرام",
+        "prepared": "نَعَمْ أَنَّ اللَّهَ أَنْزَلَ عَلَى رَسُولِهِ الْكِتَابِ وَبَيَّنَ فِيهِ لِلْأُمَّةِ مَا تَحْتَاجُ إِلَيْهِ مَنْ حلال وحرام",
+        "loss": false
+      }
+    ],
+    "annaFails": [],
+    "densityFails": [],
+    "densityWarn": [],
+    "tfFails": [],
+    "ayahFishLeaks": [],
+    "prepEmpty": []
+  },
+  "haqqAllah": {
+    "id": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+    "bank": "حق الله على العباد هو عبادته وعدم الشرك به.",
+    "spoken": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ.",
+    "prepared": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ",
+    "fish": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ",
+    "tf": [
+      "صَحّ",
+      "خَطَأٌ"
+    ],
+    "wordingOk": true
+  }
+}

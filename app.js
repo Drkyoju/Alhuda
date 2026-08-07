@@ -1691,7 +1691,7 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v40';
+const TTS_CACHE_VER = 'v41';
 let ttsStatusReadyPromise = null;
 /** AbortController for background (next-Q / answer) warms — cancelled when current Q speaks. */
 let ttsBackgroundWarmAbort = null;
@@ -1715,7 +1715,7 @@ function ensureTtsVoiceReady() {
   return ttsStatusReadyPromise;
 }
 /** Bump to drop stale IndexedDB blobs from prior Yousef/v29/v30/v34 bake. */
-const TTS_IDB_NAME = 'alhudaTtsCache_v6';
+const TTS_IDB_NAME = 'alhudaTtsCache_v7';
 const TTS_BLOB_CACHE_MAX = 220;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
@@ -2347,8 +2347,16 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/تَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "تَعْبُدُ اللَّهَ");
   s = s.replace(/نَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "نَعْبُدُ اللَّهَ");
   s = s.replace(/أَنْ\s+تَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ اللَّهَ");
-  // أن المصدرية before imperfect — NEVER أنّ (Fish reads أنَّ يعلّم as garbage).
-  s = s.replace(/أَنَّ(\s+)([يتن][\u064B-\u065F\u0670\u0621-\u064A])/g, 'أَنْ$1$2');
+  // أن / بِأَن المصدرية before imperfect — NEVER أنّ (Fish reads أنَّ يعلّم as garbage).
+  // NFC: accept fatha↔shadda order; require haraka on ي/ت/ن so أنّ+اسم stays.
+  s = s.replace(/([\u064E\u064F\u0650])(\u0651)/g, '$2$1');
+  s = s.replace(/(?:بِ)?أَنَّ(\s+)([يتن][\u064B-\u065F\u0670])/g, (m, sp, verb) =>
+    (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb
+  );
+  s = s.replace(/(?:بِ)?أَنّ(\s+)([يتن][\u064B-\u065F\u0670])/g, (m, sp, verb) =>
+    (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb
+  );
+  s = s.replace(/أَنَّ(\s+)([يتن][\u0621-\u064A])/g, 'أَنْ$1$2');
   s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, "بَعْدَ التَّوْحِيدِ");
   s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, 'بَعْدَ التَّوْحِيدِ');
   s = s.replace(/أَمَرَ\s+مُعَاذٍ/g, 'أَمَرَ مُعَاذٌ');
@@ -2609,9 +2617,12 @@ const ARABIC_HARAKAT_RE = /[\u064B-\u065F\u0670\u0610-\u061A]/;
 function hasWellFormedTashkeel(s) {
   if (!s || !ARABIC_HARAKAT_RE.test(s)) return false;
   const tokens = String(s).split(/\s+/).filter(Boolean);
-  if (!tokens.length) return false;
-  const singles = tokens.filter((t) => t.replace(/[^\u0621-\u064A]/g, '').length <= 1).length;
-  if (singles / tokens.length >= 0.4) return false;
+  // Ignore symbol-only tokens (ﷺ, punctuation). Short «ب:» must not tank the ratio
+  // or prepareArabicForSpeech collapses «لَا تَحْلِفُوا» → «لاتحلفوا».
+  const arabicToks = tokens.filter((t) => t.replace(/[^\u0621-\u064A\u0671]/g, '').length > 0);
+  if (!arabicToks.length) return false;
+  const singles = arabicToks.filter((t) => t.replace(/[^\u0621-\u064A\u0671]/g, '').length <= 1).length;
+  if (singles / arabicToks.length >= 0.4) return false;
   const letters = (s.match(/[\u0621-\u064A\u0671]/g) || []).length;
   const marks = (s.match(/[\u064B-\u065F\u0670]/g) || []).length;
   return marks >= 3 && marks >= letters * 0.12;
@@ -2822,7 +2833,7 @@ function speechMatchesDisplay(spoken, displayed) {
     .replace(/ى/g, 'ي')
     .replace(/ؤ/g, 'و')
     .replace(/ئ/g, 'ي')
-    .replace(/\bلو\s+لا\b/g, 'لولا')
+    .replace(/لو\s+لا/g, 'لولا')
     .replace(/[؟?!.،,;؛:«»"'“”‘’\(\)\[\]\{\}✓✗—–\-…]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -2965,16 +2976,18 @@ function removeQuranicVersesForSpeech(text) {
   );
 
   s = s.replace(/\(\s*([^)]{10,})\s*\)/g, (m, inner) => {
+    // Only drop quotes that resolve to a known verse key. The isQuranicAyahText
+    // heuristic falsely nukes vocalized hadith / «أكمل الحديث» prompts → empty Fish.
     if (typeof lookupKnownVerseKey === 'function' && lookupKnownVerseKey(inner)) return ' ';
-    return isQuranicAyahText(inner) ? ' ' : m;
+    return m;
   });
   s = s.replace(/"([^"]{10,})"/g, (m, inner) => {
     if (typeof lookupKnownVerseKey === 'function' && lookupKnownVerseKey(inner)) return ' ';
-    return isQuranicAyahText(inner) ? ' ' : m;
+    return m;
   });
   s = s.replace(/«([^»]{10,})»/g, (m, inner) => {
     if (typeof lookupKnownVerseKey === 'function' && lookupKnownVerseKey(inner)) return ' ';
-    return isQuranicAyahText(inner) ? ' ' : m;
+    return m;
   });
 
   // Do NOT blanket-strip AYAH_SNIPPET_MAP here — MC answers may be ayah wording
@@ -2984,18 +2997,26 @@ function removeQuranicVersesForSpeech(text) {
 }
 
 function isHadithQudsiText(s) {
-  const t = (s || '').replace(/[،.؛:!؟«»"[\]]/g, ' ').trim();
+  // Strip harakat first — vocalized speech-map text must still match bare hadith cues
+  // (otherwise «إِنَّ الرُّقَى…» is misclassified as ayah and Fish gets empty prose).
+  const t = stripArabicDiacritics(s || '')
+    .replace(/[،.؛:!؟«»"'“”‘’[\]{}]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
   if (/يؤذيني\s+ابن\s+آدم|إنما\s+الأعمال\s+بالنيات|إنك\s+تأتي\s+قوم|من\s+لقي\s+الله\s+لا\s+يشرك|إن\s+الله\s+تجاوز\s+عن|أقرب\s+ما\s+يكون\s+العبد/i.test(t)) return true;
   if (/رواه|حديث|قال\s*النبي|رسول\s*الله|ﷺ|رضي\s*الله|البر\s+حسن\s+الخلق|لا\s+يؤمن\s+أحدكم\s+حتى\s+يحب|لا\s+ضرر\s+ولا\s+ضرار|كل\s+بدعة\s+ضلالة|لا\s+تجعلوا\s+بيوتكم\s+قبور|لا\s+تتخذوا\s+قبري|الرقى\s+والتمائم|لا\s+عدوى\s+ولا\s+طيرة|إن\s+الله\s+فرض\s+فرائض/i.test(t)) return true;
+  // Common lesson hadith stems (bank/speech-map often wrap these in quotes).
+  if (/اللهم\s+لا\s+تجعل\s+قبري|لعن\s+الله\s+اليهود|لا\s+تحلفوا|إن\s+الله\s+طيب|من\s+أتى\s+كاهنا|فقد\s+كفر\s+بما\s+أنزل|اشتد\s+غضب\s+الله\s+على\s+قوم|اتخذوا\s+قبور\s+أنبيائهم|من\s+تعلق\s+شيئا|أخوف\s+ما\s+أخاف/i.test(t)) return true;
   return false;
 }
 
 /** Broader hadith detection — these stay as curated text (no word-map rewrite, never Hudhaify). */
 function isHadithPassage(s) {
-  const t = String(s || '').trim();
-  if (!t) return false;
-  if (isHadithQudsiText(t)) return true;
-  if (/ﷺ/.test(t)) return true;
+  const raw = String(s || '').trim();
+  if (!raw) return false;
+  if (/ﷺ/.test(raw)) return true;
+  if (isHadithQudsiText(raw)) return true;
+  const t = stripArabicDiacritics(raw).replace(/\s+/g, ' ').trim();
   if (/قال\s*(رسول|النبي)\s*الله|عن\s+النبي|حديث\s+(قدسي|صحيح|حسن)|رواه\s+\S+|أخرجه\s+\S+/i.test(t)) return true;
   if (/قال\s*صلى\s*الله|فيما\s+يرويه\s+عن\s*(ربه|الله)/i.test(t)) return true;
   return false;
@@ -3009,6 +3030,8 @@ function isQuranicAyahText(s) {
   if (typeof lookupKnownVerseKey === 'function' && lookupKnownVerseKey(s)) return true;
   if (/^الاجابه\s*الصحيحه/.test(t)) return false;
   if (/^(انما\s+الاعمال|ان\s+الله\s+تجاوز|لا\s+يومن|من\s+حلف|ان\s+الحلال|البر\s+حسن)/.test(t)) return false;
+  // Hadith / lesson stems that start like ayah but must stay in Fish TTS.
+  if (/كاهنا|التمائم|التوله|قبري\s+وثنا|قبور\s+انبيائهم|لا\s+تحلفوا|فقد\s+كفر\s+بما\s+انزل|ان\s+الله\s+طيب|اخوف\s+ما\s+اخاف/.test(t)) return false;
   if (/^(ان|اني|انا|الذين|فمن|ومن|يا\s+ايها|تبارك|سبحان|قل|لقد|وما\s+خلقت|فلا\s+تخاف|فلا\s+تجعل)/.test(t)) return true;
   if (t.length >= 28 && /الله|ايمان|كفر|شرك|جنه|نار|عباد|ربك/.test(t)) return true;
   return false;
@@ -4714,9 +4737,10 @@ function stripArabicDiacritics(s) {
 function hasBrokenArabicSpacing(s) {
   if (hasOcrTashkeelGaps(s)) return true;
   const toks = (s || '').split(/\s+/).filter(Boolean);
-  if (toks.length < 4) return false;
-  const singles = toks.filter((t) => t.replace(/[^\u0621-\u064A]/g, '').length <= 1).length;
-  return singles / toks.length >= 0.35;
+  const arabicToks = toks.filter((t) => t.replace(/[^\u0621-\u064A\u0671]/g, '').length > 0);
+  if (arabicToks.length < 4) return false;
+  const singles = arabicToks.filter((t) => t.replace(/[^\u0621-\u064A\u0671]/g, '').length <= 1).length;
+  return singles / arabicToks.length >= 0.35;
 }
 
 function collapseBrokenArabicSpaces(s) {
