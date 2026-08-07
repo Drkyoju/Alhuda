@@ -135,7 +135,41 @@ export function prepareFishTtsText(text) {
   s = s.replace(/على العباد/g, 'عَلَى الْعِبَادِ');
   // Construct عبد + ال… (الوهاب / الله)
   s = s.replace(/عَبْد[\u064B-\u065F\u0670]*\s+(ال)/g, 'عَبْدِ $1');
-  return fixAllahIrabInText(stripTtsPunctuation(s));
+  // Western/Eastern digits → fully vocalized Arabic (display may keep numerals)
+  // After عَاشَ / عاش → accusative; otherwise nominative
+  s = s.replace(/عَاشَ\s*63(?=[^\d]|$)/g, 'عَاشَ ثَلَاثًا وَسِتِّينَ');
+  s = s.replace(/عاش\s*63(?=[^\d]|$)/g, 'عَاشَ ثَلَاثًا وَسِتِّينَ');
+  s = s.replace(/عَاشَ\s*٦٣(?=[^\d٠-٩]|$)/g, 'عَاشَ ثَلَاثًا وَسِتِّينَ');
+  s = s.replace(/(^|[^\d])63(?=[^\d]|$)/g, '$1ثَلَاثٌ وَسِتُّونَ');
+  s = s.replace(/(^|[^\d٠-٩])٦٣(?=[^\d٠-٩]|$)/g, '$1ثَلَاثٌ وَسِتُّونَ');
+  // Hadith «في بُضْعِ أحدكم» — never بِضْع (a few)
+  s = s.replace(/بِضْعِ\s+أَحَد/g, 'بُضْعِ أَحَد');
+  s = s.replace(/بِضْعِ\s+احد/g, 'بُضْعِ أَحَد');
+  s = s.replace(/في\s+بضع\s+احد/g, 'فِي بُضْعِ أَحَد');
+  s = s.replace(/فِي\s+بِضْع/g, 'فِي بُضْع');
+  // Incomplete OCR tashkeel that Fish mangles
+  s = s.replace(/شرعاً/g, 'شَرْعًا');
+  s = s.replace(/شَرعاً/g, 'شَرْعًا');
+  s = s.replace(/ذُكرت/g, 'ذُكِرَتْ');
+  s = s.replace(/يُكنّى/g, 'يُكَنَّى');
+  s = s.replace(/يُكَنّى/g, 'يُكَنَّى');
+  s = s.replace(/والعزّى/g, 'وَالْعُزَّى');
+  s = s.replace(/(^|[^\u0621-\u064A])العزّى/g, '$1الْعُزَّى');
+  // High-mangled lesson tokens — NFC shadda+vowel order Fish clone prefers
+  s = s.replace(/الرِّيَاءُ/g, 'الرِّيَاءُ');
+  s = s.replace(/الرِّيَاءِ/g, 'الرِّيَاءِ');
+  s = s.replace(/الْقِصَّةُ/g, 'الْقِصَّةُ');
+  s = s.replace(/الْأَطْفَالُ\s+لِلنَّوْمِ/g, 'الْأَطْفَالُ لِلنَّوْمِ');
+  s = s.replace(/خَاصٌّ\s+بِالصَّلَاةِ/g, 'خَاصٌّ بِالصَّلَاةِ');
+  s = stripTtsPunctuation(s);
+  // After quote-strip: بِ «ثُمَّ» → بِ ثُمَّ (Fish reads «بسما»); glue particle
+  s = s.replace(/بِ\s+ثُمَّ/g, 'بِثُمَّ');
+  s = s.replace(/بِ\s+ثم(?![ا-ي])/g, 'بِثُمَّ');
+  // Tatweel clarity for short Fish-mangled stems (stripped from bare/display match)
+  s = s.replace(/الرِّيَاءُ\s+مِنْ\s+أَمْثِلَةِ/g, 'الرِّيَـاءُ مِنْ أَمْـثِلَةِ');
+  s = s.replace(/فِي\s+بُضْعِ\s+أَحَدِكُمْ\s+صَدَقَةٌ/g, 'فِي بُضْـعِ أَحَدِكُمْ صَدَقَـةٌ');
+  s = s.replace(/^ذُكِرَتْ\s+فِي\s+سُورَةِ$/g, 'ذُكِـرَتْ فِي سُورَةِ');
+  return fixAllahIrabInText(s);
 }
 
 function buildFishTtsBody(cleanText, selectedVoice, env = process.env) {
