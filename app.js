@@ -2977,28 +2977,34 @@ function maybeSpeakFeedbackAfterAnswer(q, wrongText) {
   void speakFeedbackOnce(q, wrongText || '', btn);
 }
 
-/** True when this question should play Hudhaify (ayah), not when the citation is a hadith. */
+/** True when this question should play Hudhaify (ayah) after the question prose.
+ *  Rule: if we can resolve a verse key and the question isn't hadith-only, recite it.
+ *  Never skip an ayah that belongs to the same question. */
 function shouldReciteHudhaifyForQuestion(q, questionText = '') {
   if (!q) return false;
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   if (!verseKey) return false;
-  const cite = (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '') || String(q?.quote || '');
   const map = (typeof window !== 'undefined' && window.QUESTION_VERSE_MAP) || {};
-  // Explicit map entry = intentional ayah link → always recite Hudhaify.
+  // Explicit map entry = intentional ayah link → always recite.
   if (map[q.id]) return true;
-  // Citation is clearly a hadith (not Quran) → don't Hudhaify.
+  const cite = (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '') || String(q?.quote || '');
+  const qBlob = `${questionText || q.q || ''} ${cite}`;
+  // Any ayah marker / snippet / resolvable key in the question → Hudhaify.
+  if (fieldHasEmbeddedAyah(qBlob) || /﴿|قال\s+(الله\s+)?تعالى|قوله\s+تعالى/.test(qBlob)) return true;
+  if (typeof citationLooksLikeAyah === 'function' && citationLooksLikeAyah(cite, verseKey)) return true;
+  if (findVerseKeysSync(typeof getQuestionContentBlob === 'function' ? getQuestionContentBlob(q) : qBlob).length) {
+    return true;
+  }
+  // Hadith-only citation with no ayah cues — don't force Hudhaify on a stray key.
   if (
     cite
     && isHadithPassage(cite)
     && !(typeof citationLooksLikeAyah === 'function' && citationLooksLikeAyah(cite, verseKey))
-    && !fieldHasEmbeddedAyah(cite)
   ) {
     return false;
   }
-  // Don't block just because the question text mentions النبي ﷺ — many ayah Qs do.
-  if (typeof citationLooksLikeAyah === 'function' && citationLooksLikeAyah(cite, verseKey)) return true;
-  const blob = `${questionText || q.q || ''} ${cite}`;
-  return /قال\s+(الله\s+)?تعالى|قوله\s+تعالى|﴿/.test(blob) || fieldHasEmbeddedAyah(blob);
+  // We have a concrete verse key for this question → recite it.
+  return true;
 }
 
 async function speakFeedbackOnce(q, wrongText, btn) {
@@ -3765,6 +3771,9 @@ async function playQuranForQuestion(q, btn) {
  */
 async function awaitHudhaifyThenContinue(verseKey, btn, { interruptAll = false } = {}) {
   if (!verseKey) return;
+  // Free the audio element from the previous Fish clip so iOS/Safari can start Hudhaify.
+  // Do NOT bump hybridSpeechToken (that would abort the rest of speakQuestion).
+  clearTtsAudio();
   try {
     await playQuranRecitation(verseKey, btn, { interruptAll });
   } catch (e) {
@@ -4184,14 +4193,35 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 2) Ayah — الحذيفي فقط، كاملًا قبل الإجابات.
-        const verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
-        if (
-          verseKeyForRecite
-          && shouldReciteHudhaifyForQuestion(q, questionText)
-        ) {
-          recited.add(verseKeyForRecite);
-          await awaitHudhaifyThenContinue(verseKeyForRecite, btn, { interruptAll: false });
+        // 2) Ayah — الحذيفي كاملًا قبل الإجابات (لا تتخطّى الآية في نفس السؤال).
+        let verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
+        if (!verseKeyForRecite) {
+          try {
+            verseKeyForRecite = await resolveVerseKeyForQuestion(q);
+          } catch (e) {
+            console.warn('verse resolve:', e?.message || e);
+          }
+        }
+        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+        if (verseKeyForRecite) {
+          const mapHit = !!(typeof window !== 'undefined' && window.QUESTION_VERSE_MAP?.[q.id]);
+          const cite = (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '') || String(q?.quote || '');
+          const qBody = String(questionText || q.q || '');
+          const ayahInQuestion = mapHit
+            || fieldHasEmbeddedAyah(qBody)
+            || fieldHasEmbeddedAyah(cite)
+            || /﴿|قال\s+(الله\s+)?تعالى|قوله\s+تعالى/.test(`${qBody} ${cite}`)
+            || (typeof citationLooksLikeAyah === 'function' && citationLooksLikeAyah(cite, verseKeyForRecite))
+            || shouldReciteHudhaifyForQuestion(q, questionText);
+          // Skip ONLY pure-hadith questions with a false-positive verse key.
+          const hadithOnly = !ayahInQuestion
+            && cite
+            && isHadithPassage(cite)
+            && !(typeof citationLooksLikeAyah === 'function' && citationLooksLikeAyah(cite, verseKeyForRecite));
+          if (!hadithOnly) {
+            recited.add(verseKeyForRecite);
+            await awaitHudhaifyThenContinue(verseKeyForRecite, btn, { interruptAll: false });
+          }
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
         await waitForQuranIdle();
