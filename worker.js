@@ -289,7 +289,12 @@ async function handleTts(request, env) {
 
   try {
     const fishVoice = resolveFishVoiceId(body?.voice, env);
-    const stream = await synthesizeFishArabicSpeech(text, fishVoice, env);
+    const reqSpeed = Number(body?.speed);
+    const fishOpts =
+      Number.isFinite(reqSpeed) && reqSpeed >= 0.5 && reqSpeed <= 2
+        ? { speed: reqSpeed }
+        : {};
+    const stream = await synthesizeFishArabicSpeech(text, fishVoice, env, fishOpts);
     return new Response(stream, {
       status: 200,
       headers: {
@@ -300,6 +305,7 @@ async function handleTts(request, env) {
         'X-TTS-Model': resolveFishModel(env),
         'X-TTS-Quality': 'hq',
         'X-TTS-Chars': String(text.length),
+        ...(fishOpts.speed != null ? { 'X-TTS-Speed': String(fishOpts.speed) } : {}),
       },
     });
   } catch (err) {

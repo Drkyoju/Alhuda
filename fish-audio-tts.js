@@ -204,9 +204,17 @@ export function prepareFishTtsText(text) {
   return fixAllahIrabInText(s);
 }
 
-function buildFishTtsBody(cleanText, selectedVoice, env = process.env) {
+function resolveFishProsodySpeed(env = process.env, overrideSpeed) {
   const q = FISH_QUALITY_DEFAULTS;
-  const speed = Number(env?.FISH_TTS_SPEED);
+  const fromReq = Number(overrideSpeed);
+  if (Number.isFinite(fromReq) && fromReq >= 0.5 && fromReq <= 2) return fromReq;
+  const fromEnv = Number(env?.FISH_TTS_SPEED);
+  if (Number.isFinite(fromEnv) && fromEnv >= 0.5 && fromEnv <= 2) return fromEnv;
+  return q.prosody.speed;
+}
+
+function buildFishTtsBody(cleanText, selectedVoice, env = process.env, opts = {}) {
+  const q = FISH_QUALITY_DEFAULTS;
   const volume = Number(env?.FISH_TTS_VOLUME);
   const temperature = Number(env?.FISH_TTS_TEMPERATURE);
   const topP = Number(env?.FISH_TTS_TOP_P);
@@ -225,14 +233,15 @@ function buildFishTtsBody(cleanText, selectedVoice, env = process.env) {
     top_p: Number.isFinite(topP) && topP > 0 ? topP : q.top_p,
     repetition_penalty: q.repetition_penalty,
     prosody: {
-      speed: Number.isFinite(speed) && speed >= 0.5 && speed <= 2 ? speed : q.prosody.speed,
+      speed: resolveFishProsodySpeed(env, opts?.speed),
       volume: Number.isFinite(volume) && volume >= -20 && volume <= 20 ? volume : q.prosody.volume,
       normalize_loudness: q.prosody.normalize_loudness,
     },
   };
 }
 
-export async function synthesizeFishArabicSpeech(text, voiceId, env = process.env) {
+/** @param {{ speed?: number }} [opts] — per-request prosody speed (e.g. answers 1.05, questions 0.97). */
+export async function synthesizeFishArabicSpeech(text, voiceId, env = process.env, opts = {}) {
   const apiKey = String(env?.FISH_API_KEY || '').trim();
   if (!apiKey) throw new Error('Fish Audio not configured (missing FISH_API_KEY)');
 
@@ -244,7 +253,7 @@ export async function synthesizeFishArabicSpeech(text, voiceId, env = process.en
   const clean = prepareFishTtsText(text);
   if (!clean) throw new Error('Fish TTS empty text');
 
-  const body = buildFishTtsBody(clean, selectedVoice, env);
+  const body = buildFishTtsBody(clean, selectedVoice, env, opts);
 
   const res = await fetch(FISH_TTS_ENDPOINT, {
     method: 'POST',
