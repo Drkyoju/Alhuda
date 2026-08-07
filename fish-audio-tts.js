@@ -37,11 +37,19 @@ export function fishAudioConfigured(env = process.env) {
   return !!String(env?.FISH_API_KEY || '').trim();
 }
 
+export function isFishReferenceId(voiceId) {
+  // Fish voice/model reference ids are 32-char hex (e.g. 03ea787e74ac4cf088e90bb7db0a43ed).
+  return /^[a-f0-9]{32}$/i.test(String(voiceId || '').trim());
+}
+
 export function resolveFishVoiceId(voiceId, env = process.env) {
-  return (
-    String(voiceId || env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim() ||
-    String(env?.FISH_VOICE_ID || '').trim()
-  );
+  const fromEnv = String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim();
+  const fromArg = String(voiceId || '').trim();
+  // Never pass Azure/legacy labels (ar-SA-HamedNeural, fish-live, …) as reference_id —
+  // Fish returns 400 "Reference not found" and the whole lesson goes silent.
+  if (isFishReferenceId(fromArg)) return fromArg;
+  if (isFishReferenceId(fromEnv)) return fromEnv;
+  return fromEnv || '';
 }
 
 export function resolveFishModel(env = process.env) {

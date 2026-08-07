@@ -1691,7 +1691,26 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v31';
+const TTS_CACHE_VER = 'v32';
+let ttsStatusReadyPromise = null;
+
+function isFishVoiceIdClient(id) {
+  return /^[a-f0-9]{32}$/i.test(String(id || '').trim());
+}
+
+/** Ensure /api/tts-status applied FISH_VOICE_ID before first speak (avoids fish-live 400). */
+function ensureTtsVoiceReady() {
+  if (isFishVoiceIdClient(TTS_VOICE)) return Promise.resolve(TTS_VOICE);
+  if (!ttsStatusReadyPromise) {
+    ttsStatusReadyPromise = (async () => {
+      try {
+        await refreshTtsProviderBadge();
+      } catch { /* server still has FISH_VOICE_ID */ }
+      return TTS_VOICE;
+    })();
+  }
+  return ttsStatusReadyPromise;
+}
 /** Bump to drop stale IndexedDB blobs from prior Yousef/v29/v30 bake. */
 const TTS_IDB_NAME = 'alhudaTtsCache_v5';
 const TTS_BLOB_CACHE_MAX = 220;
@@ -1892,22 +1911,25 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
           if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
           signal.addEventListener('abort', onAbort, { once: true });
         }
-        const timer = setTimeout(() => ctrl.abort(), 7000);
+        const timer = setTimeout(() => ctrl.abort(), 20000);
         let res;
         try {
+          // Only send a real Fish reference id — omit otherwise so Worker uses FISH_VOICE_ID.
+          const ttsBody = { text };
+          if (isFishVoiceIdClient(lookupVoice)) ttsBody.voice = lookupVoice;
           res = await fetch('/api/tts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text, voice: lookupVoice }),
+            body: JSON.stringify(ttsBody),
             signal: ctrl.signal,
           });
         } finally {
           clearTimeout(timer);
           if (signal) signal.removeEventListener('abort', onAbort);
         }
-        if (res.status === 429 || res.status === 503) {
+        if (res.status === 429 || res.status === 503 || res.status === 502) {
           lastErr = new Error(`tts failed:${res.status}`);
-          await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+          await new Promise((r) => setTimeout(r, 500 * (attempt + 1)));
           continue;
         }
         if (res.status === 404) {
@@ -1919,7 +1941,8 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
         if (!blob.size) throw new Error('empty audio');
         const provider = (res.headers.get('X-TTS-Provider') || '').toLowerCase();
         rememberTtsObjectUrl(key, URL.createObjectURL(blob));
-        if (provider === 'baked' || provider === 'elevenlabs') {
+        // Persist Fish clips too — faster replay across questions in the same session.
+        if (provider === 'baked' || provider === 'elevenlabs' || provider === 'fish') {
           void putTtsBlobInIdb(key, blob);
         }
         recordAzureTtsUsage(text.length, res.headers.get('X-TTS-Provider'));
@@ -4136,6 +4159,7 @@ function speakQuestion() {
   unlockTtsAudio();
   void (async () => {
     try {
+      await ensureTtsVoiceReady();
       const warmP = questionSpeechWarmPromises.get(q) || warmQuestionSpeech(q);
       // Core speech map is inline — only wait briefly on cold boot.
       if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID) {
