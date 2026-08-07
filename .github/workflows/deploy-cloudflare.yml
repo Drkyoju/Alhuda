@@ -22,11 +22,9 @@ jobs:
         run: npx playwright install chromium --with-deps
 
       - name: Run Playwright tests
-        run: npm run test:smoke && npm run test:a11y && npm run test:e2e && npm run check:baked-tts
+        run: npm run test:smoke && npm run test:a11y && npm run test:e2e
         env:
           CI: true
-          # Full Fish v30 bake committed — require 100% coverage.
-          ALLOW_BAKED_TTS_MISS: "0"
   deploy:
     needs: smoke
     runs-on: ubuntu-latest

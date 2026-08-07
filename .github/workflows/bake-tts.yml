@@ -1,58 +1,16 @@
 name: Bake missing TTS (Fish Audio)
 
-# Bakes new /tts-baked/*.mp3 for strings in the speech maps that are not yet on disk.
-# Uses FISH_API_KEY (Arabic narrator voice). Commits MP3s back to the branch.
+# DEPRECATED — live Fish TTS only. Old tts-baked MP3s were removed from the repo.
+# Do not re-enable unless restoring offline baked mode intentionally.
 on:
   workflow_dispatch:
-
-concurrency:
-  group: bake-tts
-  cancel-in-progress: false
 
 jobs:
   bake:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Bake missing TTS (Fish Audio)
-        env:
-          FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
-          FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
+      - name: Baked TTS disabled
         run: |
-          if [ -z "$FISH_API_KEY" ]; then
-            echo "Missing FISH_API_KEY secret — add it in repo Settings → Secrets"
-            exit 1
-          fi
-          # Fill gaps under existing v29/Yousef hash keys so the client finds clips.
-          node scripts/bake_tts_audio.mjs --provider fish
-
-      - name: Coverage check
-        run: npm run check:baked-tts
-        env:
-          ALLOW_BAKED_TTS_MISS: "0"
-
-      - name: Commit baked audio if changed
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A tts-baked
-          if git diff --staged --quiet; then
-            echo "No new baked files"
-            if [ -f tts-baked/manifest.json ]; then
-              node -e "const m=require('./tts-baked/manifest.json'); if((m.bakedThisRun||0)===0 && (m.failed||0)>0){console.error('Bake produced 0 clips with failures — check Fish API credit/key'); process.exit(1)}"
-            fi
-          else
-            git commit -m "Bake missing Fish Audio TTS for full bank speech coverage"
-            git push origin HEAD
-          fi
+          echo "Baked TTS is disabled. Lesson speech uses live Fish (FISH_VOICE_ID + s2-pro)."
+          echo "Quran ayahs use Hudhaify CDN — not tts-baked."
+          exit 0

@@ -54,3 +54,7 @@ extracted/similar_pairs_review.json
 extracted/sync_report.json
 extracted/audit_report.json
 extracted/cleanup_apply_report.json
+
+# Old offline narrator bake — live Fish voice only (do not re-commit MP3s).
+tts-baked/*.mp3
+tts-baked/manifest.json
