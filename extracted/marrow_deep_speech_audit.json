@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "checked": 652,
+    "uniqueIds": 652,
+    "bankExpected": 652,
+    "timestamp": "2026-08-07T17:17:26.052Z",
+    "marrowDepth": true,
+    "deeperThan": "ultra_deep_speech_audit",
+    "version": {
+      "cache": "alhuda-v263",
+      "sw": 263,
+      "app": 227
+    }
+  },
+  "summary": {
+    "emptyFish": 0,
+    "annaImperfectFails": 0,
+    "annaIsmCorruption": 0,
+    "phraseMapIsmHits": 0,
+    "contentLoss": 0,
+    "ayahFishLeaks": 0,
+    "tfFails": 0,
+    "hadithAsAyah": 0,
+    "prepEmpty": 0,
+    "wordingHard": 0,
+    "phraseOverwrite": 0,
+    "landmineFails": 0,
+    "muadhOk": true,
+    "guardOk": true,
+    "hardFail": false
+  },
+  "bugsMissedByPriorAudits": [
+    {
+      "id": "anna-ism-scrub-false-positive",
+      "severity": "critical",
+      "detail": "scrubSpeechDiacriticsNoise converted أَنَّ/بِأَنَّ + ي/ت/ن(+optional haraka) to أنْ even for ism stems (نزولها). Ultra-deep only checked أنّ+مضارع residual, not أنْ+اسم corruption. Fixed with keepIsm guard in app.js + fish-audio-tts.js."
+    },
+    {
+      "id": "broad-anna-bare-letter-line",
+      "severity": "critical",
+      "detail": "Extra line /أَنَّ(\\s+)([يتن][\\u0621-\\u064A])/ mangled بِأَنَّ نزولها via substring match inside بِأَنَّ. Removed."
+    },
+    {
+      "id": "abd-tanween-construct",
+      "severity": "medium",
+      "detail": "عَبْدٌ الْوَهَّابِ survived Fish (only matched الل). Extended construct rewrite to عَبْدِ ال…"
+    }
+  ],
+  "silentPaths": [
+    {
+      "id": "fetchTtsBlob.memory-hit-returns-null",
+      "severity": "info",
+      "note": "Intentional — ensureTtsObjectUrl re-reads memory URL"
+    },
+    {
+      "id": "fetchTtsBlob.known-miss-throw",
+      "severity": "medium",
+      "note": "Cached miss throws — speakTtsSegment soft-fails; option may stay silent"
+    },
+    {
+      "id": "fetchTtsBlob.offline-miss",
+      "severity": "medium",
+      "note": "Offline cache miss throws — no toast if baked-miss filtered"
+    },
+    {
+      "id": "fetchTtsBlob.baked-only",
+      "severity": "low",
+      "note": "Baked-only mode skips /api/tts"
+    },
+    {
+      "id": "fetchTtsBlob.html-spa-reject",
+      "severity": "low",
+      "note": "Rejects SPA HTML as audio — silent fallthrough"
+    },
+    {
+      "id": "fetchTtsBlob.baked-catch-fallthrough",
+      "severity": "info",
+      "note": "Baked fetch errors fall through to network"
+    },
+    {
+      "id": "speakQuestion.voice-off",
+      "severity": "info",
+      "note": "Early return when voice off"
+    },
+    {
+      "id": "speakQuestion.token-abort",
+      "severity": "info",
+      "note": "Navigation/token bump aborts mid-sequence (expected)"
+    },
+    {
+      "id": "speakQuestion.empty-qProse-skips-question",
+      "severity": "high",
+      "note": "Empty qProse after ayah strip → skip question Fish (Hudhaify may still play)"
+    },
+    {
+      "id": "speakQuestion.empty-option-continue",
+      "severity": "high",
+      "note": "Empty option prepare → silent answer slot"
+    },
+    {
+      "id": "speakQuestion.baked-miss-no-toast",
+      "severity": "low",
+      "note": "Baked misses suppress toast — student hears silence"
+    },
+    {
+      "id": "speakQuestion.prefetch-after-start",
+      "severity": "info",
+      "note": "Latency win — answers warm after Q audio starts"
+    }
+  ],
+  "landmines": [
+    {
+      "id": "bianna-nuzul-ism",
+      "ok": true,
+      "okKeep": true,
+      "okFail": true,
+      "prepared": "الْإِيمَانِ بِأَنَّ نزولها مِنْ عِنْدَ اللَّهِ",
+      "fish": "الْإِيمَانِ بِأَنَّ نزولها مِنْ عِنْدَ اللَّهِ",
+      "wordMapBianna": "بِأَنَّ"
+    },
+    {
+      "id": "anna-nuzul-vocalized",
+      "ok": true,
+      "okKeep": true,
+      "okFail": true,
+      "prepared": "أَنَّ نُزُولَهَا مِنْ عِنْدِ اللَّهِ",
+      "fish": "أَنَّ نُزُولَهَا مِنْ عِنْدِ اللَّهِ",
+      "wordMapBianna": "بِأَنَّ"
+    },
+    {
+      "id": "anna-imperfect-muadh",
+      "ok": true,
+      "okKeep": true,
+      "okFail": true,
+      "prepared": "أَمَرَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ",
+      "fish": "أَمَرَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ",
+      "wordMapBianna": "بِأَنَّ"
+    },
+    {
+      "id": "bianna-imperfect",
+      "ok": true,
+      "okKeep": true,
+      "okFail": true,
+      "prepared": "بِأَنْ يَكُونَ شَيْئًا",
+      "fish": "بِأَنْ يَكُونَ شَيْئًا",
+      "wordMapBianna": "بِأَنَّ"
+    },
+    {
+      "id": "ma-abd-passive",
+      "ok": true,
+      "okKeep": true,
+      "okFail": true,
+      "prepared": "كُلُّ مَا عُبِدَ من دُونِ اللَّهِ",
+      "fish": "كُلُّ مَا عُبِدَ من دُونِ اللَّهِ",
+      "wordMapBianna": "بِأَنَّ"
+    },
+    {
+      "id": "laan-allah",
+      "ok": true,
+      "okKeep": true,
+      "okFail": true,
+      "prepared": "لَعَنَ اللَّهُ اليهود",
+      "fish": "لَعَنَ اللَّهُ اليهود",
+      "wordMapBianna": "بِأَنَّ"
+    },
+    {
+      "id": "abd-wahhab-construct",
+      "ok": true,
+      "okKeep": true,
+      "okFail": true,
+      "prepared": "عَبْدِ الْوَهَّابِ",
+      "fish": "عَبْدِ الْوَهَّابِ",
+      "wordMapBianna": "بِأَنَّ"
+    }
+  ],
+  "muadhTest": {
+    "ok": true,
+    "hasAnSukun": true,
+    "hasAnnaBad": false,
+    "prepared": "بَعْدَ التَّوْحِيدِ أَمَرَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ أَنَّ اللَّهَ افْتَرَضَ عَلَيْهِمْ",
+    "fish": "بَعْدَ التَّوْحِيدِ أَمَرَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ أَنَّ اللَّهَ افْتَرَضَ عَلَيْهِمْ"
+  },
+  "guardOk": true,
+  "wordMapLandmines": {
+    "بان": "بِأَنَّ",
+    "note": "بِأَنَّ always — mitigated by scrub/Fish masdariyya before imperfect; ism kept via keepIsm",
+    "abd": "عَبْد",
+    "an": "أَنْ",
+    "lan": "لَعَنَ",
+    "anPrep": "عَنْ"
+  },
+  "samples": {
+    "emptyFish": [],
+    "annaImpFails": [],
+    "annaIsmFails": [],
+    "phraseMapIsmHits": [],
+    "contentLoss": [],
+    "ayahFishLeaks": [],
+    "tfFails": [],
+    "hadithAsAyah": [],
+    "prepEmpty": [],
+    "phraseOverwrite": []
+  }
+}

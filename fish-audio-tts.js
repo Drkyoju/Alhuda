@@ -103,13 +103,20 @@ export function prepareFishTtsText(text) {
   // OCR/map often puts fatha BEFORE shadda (أَنَّ); NFC wants shadda then vowel (أَنَّ).
   s = s.replace(/([\u064E\u064F\u0650])(\u0651)/g, '$2$1');
   // أن / بِأَن المصدرية + مضارع — wrong أنّ/بِأَنّ mangled clone voice («أنّ يعلّمهم»).
-  // Require a haraka on the imperfect letter so أنّ+اسم (نزولها/الله) is kept.
-  s = s.replace(/(?:بِ)?أَنَّ(\s+)([يتن][\u064B-\u065F\u0670])/g, (m, sp, verb) =>
-    (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb
-  );
-  s = s.replace(/(?:بِ)?أَنّ(\s+)([يتن][\u064B-\u065F\u0670])/g, (m, sp, verb) =>
-    (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb
-  );
+  // Keep أنّ before ism stems starting with ي/ت/ن (نزولها / توحيد / يوم) — haraka alone
+  // is NOT enough (نُزُولَهَا has damma on ن and must stay أنّ).
+  {
+    const keepIsm =
+      /^(نزول|نزور|نفس|نوع|نصيب|نحو|نهي|نور|نار|يوم|يوسف|يونس|يهود|توحيد|توبة|ترك|تميم|تيسير|يأس|يده)/;
+    const toMasdar = (m, sp, verb) => {
+      const bare = String(verb || '').replace(/[\u064B-\u065F\u0670]/g, '');
+      if (keepIsm.test(bare)) return m;
+      return (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb;
+    };
+    // Full vocalized token — «نُزُولَهَا» must keep أنّ (not stop at نُز).
+    s = s.replace(/(?:بِ)?أَنَّ(\s+)([يتن][\u0621-\u064A\u0671\u064B-\u065F\u0670]*)/g, toMasdar);
+    s = s.replace(/(?:بِ)?أَنّ(\s+)([يتن][\u0621-\u064A\u0671\u064B-\u065F\u0670]*)/g, toMasdar);
+  }
   s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, "بَعْدَ التَّوْحِيدِ");
   s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, 'بَعْدَ التَّوْحِيدِ');
   s = s.replace(/أَمَرَ\s+مُعَاذٍ/g, 'أَمَرَ مُعَاذٌ');
@@ -120,7 +127,8 @@ export function prepareFishTtsText(text) {
   s = s.replace(/حق\s+الله\s+على\s+العباد/g, "حَقُّ اللَّهِ عَلَى الْعِبَادِ");
   s = s.replace(/حَقُّ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*\s+عَلَى\s+الْ?عِ?بَاد[\u064B-\u065F\u0670]*/g, "حَقُّ اللَّهِ عَلَى الْعِبَادِ");
   s = s.replace(/على العباد/g, 'عَلَى الْعِبَادِ');
-  s = s.replace(/عَبْد[\u064B-\u065F\u0670]*\s+الل/g, "عَبْدِ الل");
+  // Construct عبد + ال… (الوهاب / الله)
+  s = s.replace(/عَبْد[\u064B-\u065F\u0670]*\s+(ال)/g, 'عَبْدِ $1');
   return fixAllahIrabInText(stripTtsPunctuation(s));
 }
 

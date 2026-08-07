@@ -175,6 +175,7 @@ const fnNames = [
   'hasWellFormedTashkeel',
   'fixDetachedHarakat',
   'hasOcrTashkeelGaps',
+  'hasSoftOcrLetterBreaks',
   'hasBrokenArabicSpacing',
   'collapseBrokenArabicSpaces',
   'prepareArabicForSpeech',

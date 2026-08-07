@@ -1,0 +1,100 @@
+{
+  "auditedAt": "2026-08-07T17:08:45.539Z",
+  "bankCount": 652,
+  "mapCount": 662,
+  "coverage": {
+    "missingInMap": 0,
+    "orphansInMap": 10,
+    "orphansRemoved": 440,
+    "demoKept": 10,
+    "orphanSample": [
+      "demo1",
+      "demo2",
+      "demo3",
+      "demo4",
+      "demo5",
+      "demo6",
+      "demo7",
+      "demo8",
+      "demo9",
+      "demo10"
+    ],
+    "missingSample": []
+  },
+  "fixed": {
+    "bankTextFields": 137,
+    "bankQuotes": 5,
+    "mapFields": 82,
+    "mapQuotes": 5,
+    "phrase": 2,
+    "orphansRemoved": 440,
+    "uniqueIdsTouched": 62,
+    "quoteIdsRepaired": [
+      "6ed4bd4d-321c-48b4-b26f-0d6426edfc6d",
+      "8b903aae-b88a-48a8-a498-cecfc51f8a03",
+      "2ce74baf-e8dd-4963-9a65-72de04664a3a",
+      "4505d711-ae74-4891-99f9-4bfb3f1a4eec",
+      "cb21e26c-43d2-403f-b059-750a049578b0"
+    ],
+    "phrasePresentationStripped": 42
+  },
+  "remaining": {
+    "softOcrInSpokenMapFields": 0,
+    "softOcrBankQuotes": 0,
+    "weakTashkeel": 0,
+    "glued": 0,
+    "emptyQ": 0,
+    "annaImperfect": 0,
+    "presentationInBankLinkedMap": 0,
+    "phraseKeyGlyphSaladKeys": "keys may still contain presentation glyphs used only as lookup; values stripped",
+    "softNawawiWorksheetDistractors": "mostly cleaned; residual worksheet typos (if any) are display-only soft issues",
+    "note": "Spoken bank-linked map fields clean after repair. Soft leftovers: phrase-map lookup keys with glyph salad (values scrubbed)."
+  },
+  "feedback": {
+    "note": "isAnswerPrefixedQuote + isGarbageCitation + hasSoftOcrLetterBreaks (app.js) drop answer-prefix and soft OCR quotes from speech/UI",
+    "priorAnswerPrefixQuotesInBank": 0,
+    "softQuotesNowRepairedOrFiltered": 5,
+    "filterSmoke": {
+      "spaced": true,
+      "en": true,
+      "qul": true,
+      "qul2": true,
+      "clean": true,
+      "means": true
+    }
+  },
+  "questionVerseMap": {
+    "entries": 42,
+    "orphans": 0,
+    "hadithAsAyah": 0,
+    "kalimaFalsePositives": 0,
+    "status": "clean"
+  },
+  "codeFixes": [
+    "app.js: hasSoftOcrLetterBreaks wired into hasBrokenArabicSpacing / isGarbageCitation",
+    "speech-diacritics-map: pruned 440 orphan ids; repaired OCR quotes/fields; stripped presentation-form glyph salad from phrases",
+    "questions-bank: repaired soft OCR source_quote + nawawi worksheet OCR in options/questions"
+  ],
+  "version": {
+    "deployed": false,
+    "cache": "alhuda-v261",
+    "app": 225,
+    "sw": 261,
+    "note": "لم يُنشر — ارفع بـ bump --all عند النشر"
+  },
+  "scan": {
+    "emptyQ": 0,
+    "weakTashkeel": 0,
+    "weakSample": [],
+    "glued": 0,
+    "gluedSample": [],
+    "annaImperfect": 0,
+    "annaSample": [],
+    "presentationGarbage": 0,
+    "latinMojibake": 0,
+    "softOcrBankQuotesRemaining": 0,
+    "softDisplayLeftovers": 0,
+    "softDisplaySample": [],
+    "phraseSoftIssues": 0
+  }
+}
