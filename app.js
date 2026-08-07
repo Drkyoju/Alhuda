@@ -2003,9 +2003,9 @@ function prepareTtsPayload(text) {
     );
   }
   // Speech-map / already-tashkeeled text: keep mark order for baked TTS keys.
-  // Still fill any remaining bare words from the Fish-tuned lexicon.
+  // Still fill any remaining bare words from the word map + Fish-tuned lexicon.
   let forTts = hasWellFormedTashkeel(cleaned)
-    ? applyPronunciationLexicon(cleaned)
+    ? applyPronunciationLexicon(applyWordDiacritics(cleaned))
     : applyPronunciationLexicon(applyWordDiacritics(applyManualSpeechDiacritics(cleaned)));
   // Never send Quran ayah wording to Fish — Hudhaify recites ayahs separately.
   forTts = removeQuranicVersesForSpeech(forTts);
@@ -2611,39 +2611,34 @@ function getSortedManualSpeech() {
 
 function ensureSpeechMapsLoaded() {
   if (typeof window !== 'undefined' && window.SPEECH_MAPS_FULL) return Promise.resolve();
-  if (typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID && !_speechMapsPromise) {
-    // Core map already in index.html — resolve instantly; full map loads idle.
-    const ver = window.ALHUDA_ASSETS?.sw || 172;
-    const idle = typeof requestIdleCallback === 'function'
-      ? (fn) => requestIdleCallback(fn, { timeout: 4000 })
-      : (fn) => setTimeout(fn, 1800);
-    idle(() => {
-      if (window.SPEECH_MAPS_FULL) return;
-      void loadSpeechScript(`speech-diacritics-map.js?v=${ver}`, 'speech-maps-full').then(() => {
-        window.SPEECH_MAPS_FULL = true;
-      });
-    });
-    return Promise.resolve();
-  }
   if (_speechMapsPromise) return _speechMapsPromise;
   _speechMapsPromise = (async () => {
     const ver = (typeof window !== 'undefined' && window.ALHUDA_ASSETS?.sw) || 87;
-    // 1) Tiny core (~45KB) — enough for demo + curated lexicon quality.
-    if (!window.SPEECH_BY_QUESTION_ID) {
+    // 1) Tiny core if somehow missing.
+    if (typeof window !== 'undefined' && !window.SPEECH_BY_QUESTION_ID) {
       await loadSpeechScript(`speech-diacritics-core.js?v=${ver}`, 'speech-maps-core');
     }
-    // 2) Full map idle — upgrades word/phrase coverage without blocking first 🔊.
-    const idle = typeof requestIdleCallback === 'function'
-      ? (fn) => requestIdleCallback(fn, { timeout: 4000 })
-      : (fn) => setTimeout(fn, 1800);
-    idle(() => {
-      if (window.SPEECH_MAPS_FULL) return;
-      void loadSpeechScript(`speech-diacritics-map.js?v=${ver}`, 'speech-maps-full').then(() => {
-        window.SPEECH_MAPS_FULL = true;
-      });
-    });
+    // 2) Full curated map ASAP — core only covers ~50 Qs; bank needs full map for iʿrāb.
+    if (typeof window !== 'undefined' && !window.SPEECH_MAPS_FULL) {
+      await loadSpeechScript(`speech-diacritics-map.js?v=${ver}`, 'speech-maps-full');
+      window.SPEECH_MAPS_FULL = true;
+    }
   })();
   return _speechMapsPromise;
+}
+
+/** Wait for full SPEECH_BY_QUESTION_ID (all bank questions) before speaking. */
+async function ensureFullSpeechMapsForVoice(timeoutMs = 4000) {
+  if (typeof window !== 'undefined' && window.SPEECH_MAPS_FULL) return true;
+  try {
+    await Promise.race([
+      ensureSpeechMapsLoaded(),
+      new Promise((r) => setTimeout(r, timeoutMs)),
+    ]);
+  } catch (e) {
+    console.warn('speech maps:', e?.message || e);
+  }
+  return !!(typeof window !== 'undefined' && window.SPEECH_MAPS_FULL);
 }
 
 function loadSpeechScript(src, marker) {
@@ -4160,14 +4155,9 @@ function speakQuestion() {
   void (async () => {
     try {
       await ensureTtsVoiceReady();
+      // Full diacritics map before any segment — otherwise most bank Qs fall back to weak word-map.
+      await ensureFullSpeechMapsForVoice(4500);
       const warmP = questionSpeechWarmPromises.get(q) || warmQuestionSpeech(q);
-      // Core speech map is inline — only wait briefly on cold boot.
-      if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID) {
-        await Promise.race([
-          ensureSpeechMapsLoaded(),
-          new Promise((r) => setTimeout(r, 50)),
-        ]);
-      }
       if (!voiceOn || state.idx !== askIdx) return;
 
       const { questionText, optionList } = buildQuestionSpeechParts(q);
@@ -5992,6 +5982,8 @@ function startGame() {
     showRealGameLockedAlert();
     return;
   }
+  // Ensure full iʿrāb map is loading before first question speech.
+  void ensureSpeechMapsLoaded();
   state.questions = getQuestionsForGame();
   if (state.questions.length === 0) { showAlert('لا توجد أسئلة لهذا الاختيار.'); return; }
   if (!state.useManualRange && !state.homeworkId) {
@@ -6945,6 +6937,8 @@ async function restoreSession() {
   }
   applyLoginLockUI();
   void refreshTtsProviderBadge();
+  // Warm full speech diacritics map at boot so every question has proper iʿrāb.
+  void ensureSpeechMapsLoaded();
   // Unlock audio on the first real tap anywhere — critical for iPhone Safari.
   const unlockOnce = () => {
     unlockTtsAudio();

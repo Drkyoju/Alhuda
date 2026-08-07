@@ -22,14 +22,14 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   sample_rate: 44100,
   latency: 'normal', // best quality (vs balanced/low)
   normalize: false, // keep Arabic harakat — do not rewrite diacritics
-  chunk_length: 280, // higher = better continuity/quality (100–300)
-  temperature: 0.55, // lower = clearer, more consistent MSA reads
-  top_p: 0.65,
-  repetition_penalty: 1.25,
+  chunk_length: 300, // max continuity for long vocalized sentences
+  temperature: 0.4, // lower = stick closer to provided tashkeel/iʿrāb
+  top_p: 0.55,
+  repetition_penalty: 1.3,
   prosody: {
-    speed: 0.94, // slightly slower → clearer for students
-    volume: 2, // mild lift (dB, -20..20)
-    normalize_loudness: true, // S2-Pro consistent loudness
+    speed: 0.9, // slower → clearer harakat for students
+    volume: 2,
+    normalize_loudness: true,
   },
 });
 
