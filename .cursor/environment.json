@@ -1,0 +1,11 @@
+{
+  "name": "Alhuda quiz PWA",
+  "install": "npm ci && npx playwright install --with-deps chromium",
+  "terminals": [
+    {
+      "name": "dev-server",
+      "command": "python3 -m http.server 8765"
+    }
+  ],
+  "ports": [8765]
+}
