@@ -2409,9 +2409,10 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/ذُكرت/g, 'ذُكِرَتْ');
   s = s.replace(/يُكنّى/g, 'يُكَنَّى');
   s = s.replace(/والعزّى/g, 'وَالْعُزَّى');
-  // After quote-strip: glue floating بِ (ب الظلم → بِالظلم) — else Fish → «المراجب».
-  s = s.replace(/بِ\s+(?=[\u0621-\u064A\u0671])/g, 'بِ');
-  s = s.replace(/(^|[^\u0621-\u064A\u0671])ب\s+(?=[\u0621-\u064A\u0671])/g, '$1بِ');
+  // Standalone particle بِ/ب only — NOT word-final …بِ (بابِ / كتابِ / طَلَبِ).
+  // Harakat before ب must not count as a boundary.
+  s = s.replace(/(?<![\u0621-\u064A\u0671][\u064B-\u065F\u0670]*)بِ\s+(?=[\u0621-\u064A\u0671])/g, 'بِ');
+  s = s.replace(/(?<![\u0621-\u064A\u0671][\u064B-\u065F\u0670]*)ب\s+(?=[\u0621-\u064A\u0671])/g, 'بِ');
   s = s.replace(/الْعِبَادَةِ\s+شَرْعًا/g, 'الْعِبَادَةُ شَرْعًا');
   s = s.replace(/(^|[^\u0621-\u064A])الذَّبْحِ\s+لِغَيْر/g, '$1الذَّبْحُ لِغَيْر');
   s = s.replace(/فِي\s+قَوْلُهُ/g, 'فِي قَوْلِهِ');

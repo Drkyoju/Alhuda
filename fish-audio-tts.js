@@ -164,11 +164,12 @@ export function prepareFishTtsText(text) {
   s = s.replace(/خَاصٌّ\s+بِالصَّلَاةِ/g, 'خَاصٌّ بِالصَّلَاةِ');
   s = stripTtsPunctuation(s);
   // After quote-strip: بِ «ثُمَّ» → بِ ثُمَّ (Fish reads «بسما»); glue particle
-  s = s.replace(/بِ\s+ثُمَّ/g, 'بِثُمَّ');
-  s = s.replace(/بِ\s+ثم(?![ا-ي])/g, 'بِثُمَّ');
-  // After quote-strip: floating بِ + next word → glue (بِ الظلم → بِالظلم). Never leave «ب » alone.
-  s = s.replace(/بِ\s+(?=[\u0621-\u064A\u0671])/g, 'بِ');
-  s = s.replace(/(^|[^\u0621-\u064A\u0671])ب\s+(?=[\u0621-\u064A\u0671])/g, '$1بِ');
+  // Only standalone particle بِ/ب — never word-final …بِ (بابِ / كتابِ / طَلَبِ).
+  // Harakat before ب must not count as a boundary (طَلَبِ = letter+fatha+بِ).
+  s = s.replace(/(?<![\u0621-\u064A\u0671][\u064B-\u065F\u0670]*)بِ\s+ثُمَّ/g, 'بِثُمَّ');
+  s = s.replace(/(?<![\u0621-\u064A\u0671][\u064B-\u065F\u0670]*)بِ\s+ثم(?![ا-ي])/g, 'بِثُمَّ');
+  s = s.replace(/(?<![\u0621-\u064A\u0671][\u064B-\u065F\u0670]*)بِ\s+(?=[\u0621-\u064A\u0671])/g, 'بِ');
+  s = s.replace(/(?<![\u0621-\u064A\u0671][\u064B-\u065F\u0670]*)ب\s+(?=[\u0621-\u064A\u0671])/g, 'بِ');
   // Wrong case / OCR that Fish reads as different words
   s = s.replace(/الْعِبَادَةِ\s+شَرْعًا/g, 'الْعِبَادَةُ شَرْعًا');
   s = s.replace(/العبادةِ\s+شرعا/g, 'الْعِبَادَةُ شَرْعًا');
