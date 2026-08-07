@@ -78,6 +78,11 @@ const ALLAH_PHRASE_RULES = [
   [/نعبد الله/g, `نَعْبُدُ ${ALLAH_ACC}`],
   [/أن تعبد الله/g, `أَنْ تَعْبُدَ ${ALLAH_ACC}`],
   [/أَنْ\s+تَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, `أَنْ تَعْبُدَ ${ALLAH_ACC}`],
+  [/أَنَّ\s+لَا/g, 'أَنْ لَا'],
+  [/أَنّ\s+لَا/g, 'أَنْ لَا'],
+  [/أَنْ\s+لَا\s+يُعْبَد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, `أَنْ لَا يُعْبَدَ ${ALLAH_NOM}`],
+  [/أَنْ\s+لَا\s+يَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, `أَنْ لَا يَعْبُدَ ${ALLAH_ACC}`],
+  [/ان لا يعبد الله/g, `أَنْ لَا يَعْبُدَ ${ALLAH_ACC}`],
   [/فقد كفر/g, 'فَقَدْ كَفَرَ'],
   [/فَقَدْ\s+كُفْر[\u064B-\u065F\u0670]*/g, 'فَقَدْ كَفَرَ'],
   [/لا معبود بحق/g, 'لَا مَعْبُودَ بِحَقٍّ'],
@@ -139,9 +144,14 @@ function applyPhraseRules(text) {
 }
 
 function allahFormForContext(before) {
-  const bare = stripHarakat(before || '').replace(/\s+/g, ' ').trim();
+  const raw = String(before || '');
+  const bare = stripHarakat(raw).replace(/\s+/g, ' ').trim();
   // شهادة: لا إله إلا الله — الله مرفوع (لا تُعامل كـ «إلا الله» المنصوب)
   if (/(?:إله|اله)\s+(?:إلا|الا)\s*$/u.test(bare)) return ALLAH_NOM;
+  // Passive يُعْبَد → الله نائب فاعل مرفوع (bare «يعبد» must NOT trigger accusative)
+  if (/ي[\u064F]ع[\u064B-\u065F\u0670]*ب[\u064B-\u065F\u0670]*د[\u064B-\u065F\u0670]*\s*$/u.test(raw.trimEnd())) {
+    return ALLAH_NOM;
+  }
   const last = bare.split(/\s+/).filter(Boolean).pop() || '';
   if (ALLAH_GEN_LAST_RE.test(last)) return ALLAH_GEN;
   if (ALLAH_ACC_LAST_RE.test(last)) return ALLAH_ACC;

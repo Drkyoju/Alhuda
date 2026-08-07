@@ -1,0 +1,1732 @@
+{
+  "timestamp": "2026-08-07T17:45:19.321Z",
+  "base": "https://alhuda.ryodan71.workers.dev",
+  "sampled": 80,
+  "listened": 80,
+  "ttsFails": 0,
+  "pass": 79,
+  "fail": 1,
+  "whisperModel": "small (+ medium spot on fails/critical)",
+  "static": {
+    "checked": 652,
+    "preparedOutputsApprox": 3004,
+    "annaImperfectFails": 0,
+    "emptyFish": 0,
+    "weakDensity": 0,
+    "allahHeuristicFails": 0,
+    "hardFail": false
+  },
+  "brokenExamples": [
+    {
+      "id": "mc_c0cbca1e",
+      "fish": "لَا يَحِلُّ دَمُ امْرِئٍ مُسْلِمٍ إِلَّا بِإِحْدَى ثَلَاثٍ",
+      "transcript": "لا يحلُّ جمُو إمري النُّسلم إلا بإحدى ثلاث",
+      "flags": [
+        {
+          "kind": "fish_voice_limitation",
+          "detail": "prep letters correct; both small+medium mangle دم امرئ مسلم — Fish clone voice limitation"
+        }
+      ]
+    }
+  ],
+  "clips": [
+    {
+      "id": "muadh_q",
+      "kind": "muadh",
+      "qid": "e0f8acf6-7366-94d9-1b93-49a30f6e34d2",
+      "label": null,
+      "fish": "بَعْدَ التَّوْحِيدِ أَمَرَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ أَنَّ اللَّهَ افْتَرَضَ عَلَيْهِمْ",
+      "prepared": "بَعْدَ التَّوْحِيدِ أَمَرَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ أَنَّ اللَّهَ افْتَرَضَ عَلَيْهِمْ",
+      "transcript": "بعد التوحيد أمر النبي صلى الله عليه وسلم معاذا أن يعلم أهل اليمن أن الله افترض عليهم",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "بعد التوحيد امر النبي صلي الله عليه وسلم معاذا ان يعلم اهل اليمن ان الله افترض عليهم",
+      "transcriptBare": "بعد التوحيد امر النبي صلي الله عليه وسلم معاذا ان يعلم اهل اليمن ان الله افترض عليهم",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false,
+      "mediumTranscript": "بعد التوحيد أمر النبي صلى الله عليه وسلم معاذا أن يُعلِّم أهل اليمن أن الله افترض عليهم"
+    },
+    {
+      "id": "muadh_a0",
+      "kind": "muadh",
+      "qid": "e0f8acf6-7366-94d9-1b93-49a30f6e34d2",
+      "label": null,
+      "fish": "خَمْسَ صَلَوَاتٍ",
+      "prepared": "خَمْسَ صَلَوَاتٍ",
+      "transcript": "خمسة سلوات",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "خمس صلوات",
+      "transcriptBare": "خمسه سلوات",
+      "letterRatio": 1.125,
+      "missing": [
+        "صلوات"
+      ],
+      "extra": [
+        "خمسه",
+        "سلوات"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "muadh_a1",
+      "kind": "muadh",
+      "qid": "e0f8acf6-7366-94d9-1b93-49a30f6e34d2",
+      "label": null,
+      "fish": "الزَّكَاةِ",
+      "prepared": "الزَّكَاةِ",
+      "transcript": "الزكات",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الزكاه",
+      "transcriptBare": "الزكات",
+      "letterRatio": 1,
+      "missing": [
+        "الزكاه"
+      ],
+      "extra": [
+        "الزكات"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "muadh_a2",
+      "kind": "muadh",
+      "qid": "e0f8acf6-7366-94d9-1b93-49a30f6e34d2",
+      "label": null,
+      "fish": "الصِّيَامُ",
+      "prepared": "الصِّيَامُ",
+      "transcript": "أصيام",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الصيام",
+      "transcriptBare": "اصيام",
+      "letterRatio": 0.833,
+      "missing": [
+        "الصيام"
+      ],
+      "extra": [
+        "اصيام"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "muadh_a3",
+      "kind": "muadh",
+      "qid": "e0f8acf6-7366-94d9-1b93-49a30f6e34d2",
+      "label": null,
+      "fish": "الْحَجِّ",
+      "prepared": "الْحَجِّ",
+      "transcript": "الحجي",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الحج",
+      "transcriptBare": "الحجي",
+      "letterRatio": 1.25,
+      "missing": [],
+      "extra": [
+        "الحجي"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "haqq_tf_q",
+      "kind": "tf_haqq",
+      "qid": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+      "label": null,
+      "fish": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ",
+      "prepared": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ",
+      "transcript": "حق الله على العباد هو عبادته وعجم الشرك به",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "حق الله علي العباد هو عبادته وعدم الشرك به",
+      "transcriptBare": "حق الله علي العباد هو عبادته وعجم الشرك به",
+      "letterRatio": 1,
+      "missing": [
+        "وعدم"
+      ],
+      "extra": [
+        "وعجم"
+      ],
+      "flags": [],
+      "hardFail": false,
+      "mediumTranscript": "حق الله على العباد هو عبادته وعجم الشرك به"
+    },
+    {
+      "id": "haqq_tf_sah",
+      "kind": "tf_haqq",
+      "qid": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+      "label": null,
+      "fish": "صَحّ",
+      "prepared": "صَحّ",
+      "transcript": "شح",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "صح",
+      "transcriptBare": "شح",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "haqq_tf_khata",
+      "kind": "tf_haqq",
+      "qid": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+      "label": null,
+      "fish": "خَطَأ",
+      "prepared": "خَطَأ",
+      "transcript": "حقا",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "خطا",
+      "transcriptBare": "حقا",
+      "letterRatio": 1,
+      "missing": [
+        "خطا"
+      ],
+      "extra": [
+        "حقا"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "phrase_laan",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "لعن الله",
+      "fish": "لَعَنَ اللَّهُ مَنْ ذَبَحَ لِغَيْرِ اللَّهِ",
+      "prepared": "لَعَنَ اللَّهُ مَنْ ذَبَحَ لِغَيْرِ اللَّهِ",
+      "transcript": "لعن الله من ذبح لغير الله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "لعن الله من ذبح لغير الله",
+      "transcriptBare": "لعن الله من ذبح لغير الله",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false,
+      "mediumTranscript": "لعن الله من ذبح لغير الله"
+    },
+    {
+      "id": "phrase_yabud",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "يعبد الله",
+      "fish": "أَنْ لَا يَعْبُدُ اللَّهَ إِلَّا بِمَا شَرَعَ",
+      "prepared": "أَنْ لَا يَعْبُدُ اللَّهَ إِلَّا بِمَا شَرَعَ",
+      "transcript": "أن لا يعبج الله إلا بما شرعه",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ان لا يعبد الله الا بما شرع",
+      "transcriptBare": "ان لا يعبج الله الا بما شرعه",
+      "letterRatio": 1.048,
+      "missing": [
+        "يعبد"
+      ],
+      "extra": [
+        "يعبج",
+        "شرعه"
+      ],
+      "flags": [],
+      "hardFail": false,
+      "mediumTranscript": "أن لا يعبج الله إلا بما شرعه"
+    },
+    {
+      "id": "phrase_ma_ubida",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "ما عُبِدَ",
+      "fish": "كُلُّ مَا عُبِدَ مِنْ دُونِ اللَّهِ وَهُوَ رَاضٍ",
+      "prepared": "كُلُّ مَا عُبِدَ مِنْ دُونِ اللَّهِ وَهُوَ رَاضٍ",
+      "transcript": "كل ما عبد من دون الله وهو راضي",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "كل ما عبد من دون الله وهو راض",
+      "transcriptBare": "كل ما عبد من دون الله وهو راضي",
+      "letterRatio": 1.045,
+      "missing": [],
+      "extra": [
+        "راضي"
+      ],
+      "flags": [],
+      "hardFail": false,
+      "mediumTranscript": "كل ما عبد من دون الله وهو راض"
+    },
+    {
+      "id": "phrase_tawhid",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "لا إله إلا الله",
+      "fish": "مَا مَعْنَى لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "prepared": "مَا مَعْنَى لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transcript": "ما معنى لا إله إلا الله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ما معني لا اله الا الله",
+      "transcriptBare": "ما معني لا اله الا الله",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "phrase_inda",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "عند الله",
+      "fish": "مَا أَعْظَمُ الذُّنُوبِ عِنْدَ اللَّهِ",
+      "prepared": "مَا أَعْظَمُ الذُّنُوبِ عِنْدَ اللَّهِ",
+      "transcript": "ما أعظم الزنوب عند الله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ما اعظم الذنوب عند الله",
+      "transcriptBare": "ما اعظم الزنوب عند الله",
+      "letterRatio": 1,
+      "missing": [
+        "الذنوب"
+      ],
+      "extra": [
+        "الزنوب"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "phrase_ifrad",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "إفراد الله",
+      "fish": "التَّوْحِيدُ إِفْرَادُ اللَّهِ بِالْعِبَادَةِ",
+      "prepared": "التَّوْحِيدُ إِفْرَادُ اللَّهِ بِالْعِبَادَةِ",
+      "transcript": "التوحيد إفراد الله بالعبادة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "التوحيد افراد الله بالعباده",
+      "transcriptBare": "التوحيد افراد الله بالعباده",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "phrase_haqq",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "حق الله على العباد",
+      "fish": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ",
+      "prepared": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ",
+      "transcript": "حق الله على العباد هو عبادته",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "حق الله علي العباد هو عبادته",
+      "transcriptBare": "حق الله علي العباد هو عبادته",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "phrase_min_dun",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "من دون الله",
+      "fish": "مِنْ دُونِ اللَّهِ",
+      "prepared": "مِنْ دُونِ اللَّهِ",
+      "transcript": "من دون الله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "من دون الله",
+      "transcriptBare": "من دون الله",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "phrase_shahada",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "شهادة أن لا إله",
+      "fish": "شَهَادَةُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "prepared": "شَهَادَةُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transcript": "شهاجة أن لا إله إلا الله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "شهاده ان لا اله الا الله",
+      "transcriptBare": "شهاجه ان لا اله الا الله",
+      "letterRatio": 1,
+      "missing": [
+        "شهاده"
+      ],
+      "extra": [
+        "شهاجه"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "phrase_anna_yuallim",
+      "kind": "tawhid_phrase",
+      "qid": null,
+      "label": "أنْ يعلّم",
+      "fish": "أَمَرَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ",
+      "prepared": "أَمَرَ مُعَاذًا أَنْ يُعَلِّمَ أَهْلَ الْيَمَنِ",
+      "transcript": "أمر معاداً أن يعلم أهل اليمن",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "امر معاذا ان يعلم اهل اليمن",
+      "transcriptBare": "امر معادا ان يعلم اهل اليمن",
+      "letterRatio": 1,
+      "missing": [
+        "معاذا"
+      ],
+      "extra": [
+        "معادا"
+      ],
+      "flags": [],
+      "hardFail": false,
+      "mediumTranscript": "أمر معاذا أن يعلم أهل اليمن"
+    },
+    {
+      "id": "ayah_6dea92e9",
+      "kind": "ayah_prose",
+      "qid": "6dea92e9-ae29-4fda-bbf1-55f3b0f2ac90",
+      "label": null,
+      "fish": "لِمَاذَا خَلَقَ اللَّهُ الْجِنَّ وَالْإِنْسَ",
+      "prepared": "لِمَاذَا خَلَقَ اللَّهُ الْجِنَّ وَالْإِنْسَ",
+      "transcript": "لماذا خلق الله الجن والإنس؟",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "لماذا خلق الله الجن والانس",
+      "transcriptBare": "لماذا خلق الله الجن والانس",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "ayah_cabe3338",
+      "kind": "ayah_prose",
+      "qid": "cabe3338-0c2a-4919-8fda-3ff1f5683271",
+      "label": null,
+      "fish": "مَا مَعْنَى الْجِنِّ فِي قَوْلِهِ",
+      "prepared": "مَا مَعْنَى الْجِنِّ فِي قَوْلِهِ",
+      "transcript": "ما معنى الجن في قوله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ما معني الجن في قوله",
+      "transcriptBare": "ما معني الجن في قوله",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false,
+      "mediumTranscript": "ما معنى الجن في قوله؟"
+    },
+    {
+      "id": "ayah_c8762ee3",
+      "kind": "ayah_prose",
+      "qid": "c8762ee3-e24d-4cf7-a3de-49d30a412e53",
+      "label": null,
+      "fish": "مَا مَعْنَى لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "prepared": "مَا مَعْنَى لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transcript": "ما معنى لا إله إلا الله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ما معني لا اله الا الله",
+      "transcriptBare": "ما معني لا اله الا الله",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "ayah_57e222ad",
+      "kind": "ayah_prose",
+      "qid": "57e222ad-b48e-442c-8f88-6a512c0a54da",
+      "label": null,
+      "fish": "مَا شَرْطُ قَبُولِ شَهَادَةِ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "prepared": "مَا شَرْطُ قَبُولِ شَهَادَةِ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ",
+      "transcript": "ما شرت قبول شهادة أن لا إله إلا الله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ما شرط قبول شهاده ان لا اله الا الله",
+      "transcriptBare": "ما شرت قبول شهاده ان لا اله الا الله",
+      "letterRatio": 1,
+      "missing": [
+        "شرط"
+      ],
+      "extra": [
+        "شرت"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "ayah_40fd1b0a",
+      "kind": "ayah_prose",
+      "qid": "40fd1b0a-b12e-4b92-9958-5241f6df5912",
+      "label": null,
+      "fish": "مَا هُوَ الطَّاغُوتُ",
+      "prepared": "مَا هُوَ الطَّاغُوتُ",
+      "transcript": "ما هو الطاروح؟",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ما هو الطاغوت",
+      "transcriptBare": "ما هو الطاروح",
+      "letterRatio": 1,
+      "missing": [
+        "الطاغوت"
+      ],
+      "extra": [
+        "الطاروح"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "ocr_91eb89af",
+      "kind": "ocr_fixed",
+      "qid": "91eb89af-4c29-f159-bea4-d6c351552f31",
+      "label": null,
+      "fish": "قَالَ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ لَا تَحْلِفُوا ب",
+      "prepared": "قَالَ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ لَا تَحْلِفُوا ب",
+      "transcript": "قال صلى الله عليه وسلم لا تحلفوا بئة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "قال صلي الله عليه وسلم لا تحلفوا ب",
+      "transcriptBare": "قال صلي الله عليه وسلم لا تحلفوا بئه",
+      "letterRatio": 1.074,
+      "missing": [],
+      "extra": [
+        "بئه"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "ocr_a65b90a9",
+      "kind": "ocr_fixed",
+      "qid": "a65b90a9-be7c-b2b5-de1f-1ed22818eedf",
+      "label": null,
+      "fish": "أَكْمِلِ الْحَدِيثَ من تعلّق شيئاً وُكِل",
+      "prepared": "أَكْمِلِ الْحَدِيثَ من تعلّق شيئاً وُكِل",
+      "transcript": "أكمل الحديث من تعليف أشياء وكل",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "اكمل الحديث من تعلق شيئا وكل",
+      "transcriptBare": "اكمل الحديث من تعليف اشياء وكل",
+      "letterRatio": 1.087,
+      "missing": [
+        "تعلق",
+        "شيئا"
+      ],
+      "extra": [
+        "تعليف",
+        "اشياء"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "ocr_e517de7c",
+      "kind": "ocr_fixed",
+      "qid": "e517de7c-d07a-33a1-43bc-5bc9ee685d4e",
+      "label": null,
+      "fish": "أكمل الْحَدِيثِ الْقُدْسِيِّ أَنَا الدَّهْرِ أقلِّب اللَّيْلُ و",
+      "prepared": "أكمل الْحَدِيثِ الْقُدْسِيِّ أَنَا الدَّهْرِ أقلِّب اللَّيْلُ و",
+      "transcript": "أكمل الحديث القدسي أنا الدهر أقلب الليل و",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "اكمل الحديث القدسي انا الدهر اقلب الليل و",
+      "transcriptBare": "اكمل الحديث القدسي انا الدهر اقلب الليل و",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "ocr_39d543ed",
+      "kind": "ocr_fixed",
+      "qid": "39d543ed-8c5d-a3ba-9480-c85261e939ca",
+      "label": null,
+      "fish": "أَكْمِلِ الْحَدِيثَ إِنَّ اللَّهَ هُوَ الحَكَم وَإِلَيْهِ",
+      "prepared": "أَكْمِلِ الْحَدِيثَ إِنَّ اللَّهُ هُوَ الحَكَم وَإِلَيْهِ",
+      "transcript": "أكمل الحديث إن الله هو الحكم وإليه",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "اكمل الحديث ان الله هو الحكم واليه",
+      "transcriptBare": "اكمل الحديث ان الله هو الحكم واليه",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "ocr_27b4b080",
+      "kind": "ocr_fixed",
+      "qid": "27b4b080-cbd4-86d0-3038-c0d0ce2ade61",
+      "label": null,
+      "fish": "أَكْمِلِ الْآيَةَ لَا تَعْتَذِرُوا قَدْ كَفَرْتُمْ بَعْدَ",
+      "prepared": "أَكْمِلِ الْآيَةَ لَا تَعْتَذِرُوا قَدْ كَفَرْتُمْ بَعْدَ",
+      "transcript": "أكمل للآية لا تعتذر وقد كفرت بعد",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "اكمل الايه لا تعتذروا قد كفرتم بعد",
+      "transcriptBare": "اكمل للايه لا تعتذر وقد كفرت بعد",
+      "letterRatio": 0.929,
+      "missing": [
+        "الايه",
+        "تعتذروا",
+        "كفرتم"
+      ],
+      "extra": [
+        "للايه",
+        "وقد"
+      ],
+      "flags": [
+        {
+          "kind": "stt_false_positive_resolved",
+          "detail": "medium STT recovers تعتذروا/كفرتم — small-model false positive"
+        }
+      ],
+      "hardFail": false,
+      "mediumTranscript": "اكمل للآية لا تعتذروا قد كفرتم بعد",
+      "reclassReason": "medium STT recovers تعتذروا/كفرتم — small-model false positive"
+    },
+    {
+      "id": "mc_cbb38f30",
+      "kind": "random_mc",
+      "qid": "cbb38f30-a90a-4715-93ff-e7e09968daaf",
+      "label": null,
+      "fish": "مَنْ حَلَفَ بِاللَّهِ فَلْيَصْدُقْ وَمَنْ لَمْ يَرْضَ فَلَيْسَ",
+      "prepared": "مَنْ حَلَفَ بِاللَّهِ فَلْيَصْدُقْ وَمَنْ لَمْ يَرْضَ فَلَيْسَ",
+      "transcript": "من حلف بالله فليصدق ومن لم يرض فليس",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "من حلف بالله فليصدق ومن لم يرض فليس",
+      "transcriptBare": "من حلف بالله فليصدق ومن لم يرض فليس",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_ffe0b7b1",
+      "kind": "random_mc",
+      "qid": "ffe0b7b1-6ed0-c04f-9b6c-b180446b518f",
+      "label": null,
+      "fish": "الشِّرْكِ الْأَصْغَرُ",
+      "prepared": "الشِّرْكِ الْأَصْغَرُ",
+      "transcript": "الشركة الأصوار",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الشرك الاصغر",
+      "transcriptBare": "الشركه الاصوار",
+      "letterRatio": 1.182,
+      "missing": [
+        "الاصغر"
+      ],
+      "extra": [
+        "الشركه",
+        "الاصوار"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_c0cbca1e",
+      "kind": "random_mc",
+      "qid": "c0cbca1e-37ae-41a7-b752-4062ec19577d",
+      "label": null,
+      "fish": "لَا يَحِلُّ دَمُ امْرِئٍ مُسْلِمٍ إِلَّا بِإِحْدَى ثَلَاثٍ",
+      "prepared": "لَا يَحِلُّ دَمُ امْرِئٍ مُسْلِمٍ إِلَّا بِإِحْدَى ثَلَاثٍ",
+      "transcript": "لا يحل جمع مرئ النسلم إلا بإحدى سلاس",
+      "ttsOk": true,
+      "pass": false,
+      "intendedBare": "لا يحل دم امرئ مسلم الا باحدي ثلاث",
+      "transcriptBare": "لا يحل جمع مرئ النسلم الا باحدي سلاس",
+      "letterRatio": 1.074,
+      "missing": [
+        "امرئ",
+        "مسلم",
+        "ثلاث"
+      ],
+      "extra": [
+        "جمع",
+        "النسلم",
+        "سلاس"
+      ],
+      "flags": [
+        {
+          "kind": "fish_voice_limitation",
+          "detail": "prep letters correct; both small+medium mangle دم امرئ مسلم — Fish clone voice limitation"
+        }
+      ],
+      "hardFail": true,
+      "mediumTranscript": "لا يحلُّ جمُو إمري النُّسلم إلا بإحدى ثلاث",
+      "reclassReason": "prep letters correct; both small+medium mangle دم امرئ مسلم — Fish clone voice limitation"
+    },
+    {
+      "id": "mc_e8ff6321",
+      "kind": "random_mc",
+      "qid": "e8ff6321-abd3-0fdc-0ab3-9bd383411a79",
+      "label": null,
+      "fish": "الْأَصْنَامِ جَمْعُ صَنَمٌ وَهُوَ",
+      "prepared": "الْأَصْنَامِ جَمْعُ صَنَمٌ وَهُوَ",
+      "transcript": "الأثنام جمع سنم و هو",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الاصنام جمع صنم وهو",
+      "transcriptBare": "الاثنام جمع سنم و هو",
+      "letterRatio": 1,
+      "missing": [
+        "الاصنام",
+        "صنم",
+        "وهو"
+      ],
+      "extra": [
+        "الاثنام",
+        "سنم"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_b2f4d852",
+      "kind": "random_mc",
+      "qid": "b2f4d852-0565-19f0-0844-8b82158b6815",
+      "label": null,
+      "fish": "التَّوَلَةُ شَيْءٌ يُصنع يُزعم أَنَّهُ يحبّب",
+      "prepared": "التَّوَلَةُ شَيْءٌ يُصنع يُزعم أَنَّهُ يحبّب",
+      "transcript": "التوالة شيء يصنع يزعم أنه يحبد",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "التوله شيء يصنع يزعم انه يحبب",
+      "transcriptBare": "التواله شيء يصنع يزعم انه يحبد",
+      "letterRatio": 1.042,
+      "missing": [
+        "التوله",
+        "يحبب"
+      ],
+      "extra": [
+        "التواله",
+        "يحبد"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_850e9201",
+      "kind": "random_mc",
+      "qid": "850e9201-00c0-ee27-2cd2-f20a6278064a",
+      "label": null,
+      "fish": "إِبْرَاهِيمُ عَلَيْهِ السَّلَامُ كَانَ إماماً للموحّدين وَدَعَا رَبَّهُ أَنْ يجنّبه وَبَنِيهِ",
+      "prepared": "إِبْرَاهِيمُ عَلَيْهِ السَّلَامُ كَانَ إماماً للموحّدين وَدَعَا رَبَّهُ أَنْ يجنّبه وَبَنِيهِ",
+      "transcript": "إبراهيم عليه السلام كان إماماً للمحدين ودعا ربه أن يجنبه وبنيه",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ابراهيم عليه السلام كان اماما للموحدين ودعا ربه ان يجنبه وبنيه",
+      "transcriptBare": "ابراهيم عليه السلام كان اماما للمحدين ودعا ربه ان يجنبه وبنيه",
+      "letterRatio": 0.981,
+      "missing": [
+        "للموحدين"
+      ],
+      "extra": [
+        "للمحدين"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_ccea4f17",
+      "kind": "random_mc",
+      "qid": "ccea4f17-e7ed-bbf2-3dc5-49a7a5a13e18",
+      "label": null,
+      "fish": "حدّث عليّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ بِأَرْبَعِ كَلِمَاتٍ أَوَّلُهَا لَعَنَ اللَّهُ مَنْ ذَبَحَ",
+      "prepared": "حدّث عليّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ بِأَرْبَعِ كَلِمَاتٍ أَوَّلُهَا لَعَنَ اللَّهُ مَنْ ذَبَحَ",
+      "transcript": "حجث علي صلى الله عليه وسلم بأربع كلمات أولها لأن الله منذ بح",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "حدث علي صلي الله عليه وسلم باربع كلمات اولها لعن الله من ذبح",
+      "transcriptBare": "حجث علي صلي الله عليه وسلم باربع كلمات اولها لان الله منذ بح",
+      "letterRatio": 1,
+      "missing": [
+        "حدث",
+        "لعن",
+        "ذبح"
+      ],
+      "extra": [
+        "حجث",
+        "لان",
+        "منذ"
+      ],
+      "flags": [
+        {
+          "kind": "stt_false_positive_resolved",
+          "detail": "medium STT recovers لعن الله من ذبح — small-model false positive"
+        }
+      ],
+      "hardFail": false,
+      "mediumTranscript": "حجث علي صلى الله عليه وسلم بأربع كلمات أولها لعن الله من ذبح",
+      "reclassReason": "medium STT recovers لعن الله من ذبح — small-model false positive"
+    },
+    {
+      "id": "mc_0291b09c",
+      "kind": "random_mc",
+      "qid": "0291b09c-537f-45e0-b8b0-bfaf14d919bc",
+      "label": null,
+      "fish": "بِمَاذَا أُرْسِلَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ أَوَّلًا",
+      "prepared": "بِمَاذَا أُرْسِلَ النَّبِيُّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ أَوَّلًا",
+      "transcript": "بما ذا أرسل النبي يُصلى الله عليه وسلم أولا",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "بماذا ارسل النبي صلي الله عليه وسلم اولا",
+      "transcriptBare": "بما ذا ارسل النبي يصلي الله عليه وسلم اولا",
+      "letterRatio": 1.03,
+      "missing": [
+        "بماذا"
+      ],
+      "extra": [
+        "يصلي"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_a74fd505",
+      "kind": "random_mc",
+      "qid": "a74fd505-de4e-a44d-1446-80ed00ce0878",
+      "label": null,
+      "fish": "مِنْ فَوَائِدِ الْحَدِيثِ 30 الْحُدُودِ أَنَّ مَا يَعْمَلُهُ الْإِنْسَانُ فِي هَذِهِ الدُّنْيَا مِنَ الْحَسَنَاتِ وَالسَّيِّئَاتِ قَدْ كَتَبَهُ اللَّهُ تَعَالَى فِي اللَّوْحِ الْمَحْفُوظِ",
+      "prepared": "مِنْ فَوَائِدِ الْحَدِيثِ 30 الْحُدُودِ أَنَّ مَا يَعْمَلُهُ الْإِنْسَانُ فِي هَذِهِ الدُّنْيَا مِنَ الْحَسَنَاتِ وَالسَّيِّئَاتِ قَدْ كَتَبَهُ اللَّهُ تَعَالَى فِي اللَّوْحِ الْمَحْفُوظِ",
+      "transcript": "من فوائد الحديث ثلاثين الحدود أنما يعمله الإنسان في هذه الدنيا من الحسنات والسيئات قد كتبه الله كعال في اللوح المحفوظ",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "من فوائد الحديث الحدود ان ما يعمله الانسان في هذه الدنيا من الحسنات والسيئات قد كتبه الله تعالي في اللوح المحفوظ",
+      "transcriptBare": "من فوائد الحديث ثلاثين الحدود انما يعمله الانسان في هذه الدنيا من الحسنات والسيئات قد كتبه الله كعال في اللوح المحفوظ",
+      "letterRatio": 1.054,
+      "missing": [
+        "تعالي"
+      ],
+      "extra": [
+        "ثلاثين",
+        "انما",
+        "كعال"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_98e27a6b",
+      "kind": "random_mc",
+      "qid": "98e27a6b-d241-4d3c-a1a6-bab114689db0",
+      "label": null,
+      "fish": "مَنْ هُوَ رَأْسُ الطَّوَاغِيتِ",
+      "prepared": "مَنْ هُوَ رَأْسُ الطَّوَاغِيتِ",
+      "transcript": "من هو رأس الطواجتي؟",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "من هو راس الطواغيت",
+      "transcriptBare": "من هو راس الطواجتي",
+      "letterRatio": 1,
+      "missing": [
+        "الطواغيت"
+      ],
+      "extra": [
+        "الطواجتي"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_7a01ef3d",
+      "kind": "random_mc",
+      "qid": "7a01ef3d-e455-3330-06ce-14e77ac64941",
+      "label": null,
+      "fish": "من فَوَائِدِ الْحَدِيثِ 28 السُّنَّةِ وُجُوبِ تَغْيِيرِ الْمُنْكَرِ بِكُلِّ مَا يُمْكِنُ بِيَدٍ أَوْ لِسَانُ أَوْ بِالْقَلْبِ",
+      "prepared": "من فَوَائِدِ الْحَدِيثِ 28 السُّنَّةِ وُجُوبِ تَغْيِيرِ الْمُنْكَرِ بِكُلِّ مَا يُمْكِنُ بِيَدٍ أَوْ لِسَانُ أَوْ بِالْقَلْبِ",
+      "transcript": "من فوائد الحديث 28 السنة وجود تغير المنكر بكل ما يمكن بيد أو لسانة أو بالقلب",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "من فوائد الحديث السنه وجوب تغيير المنكر بكل ما يمكن بيد او لسان او بالقلب",
+      "transcriptBare": "من فوائد الحديث السنه وجود تغير المنكر بكل ما يمكن بيد او لسانه او بالقلب",
+      "letterRatio": 1,
+      "missing": [
+        "وجوب",
+        "تغيير"
+      ],
+      "extra": [
+        "وجود",
+        "تغير",
+        "لسانه"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_b5ff7eaf",
+      "kind": "random_mc",
+      "qid": "b5ff7eaf-2065-47f3-8037-b81eadc02288",
+      "label": null,
+      "fish": "لِمَاذَا لَا يُسْتَجَابُ دُعَاءُ آكِلِ الْحَرَامِ",
+      "prepared": "لِمَاذَا لَا يُسْتَجَابُ دُعَاءُ آكِلِ الْحَرَامِ",
+      "transcript": "لماذا لا يستجاب دعاء أكل الحرام؟",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "لماذا لا يستجاب دعاء اكل الحرام",
+      "transcriptBare": "لماذا لا يستجاب دعاء اكل الحرام",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_81287c88",
+      "kind": "random_mc",
+      "qid": "81287c88-b793-4ccc-90e9-e225878487b1",
+      "label": null,
+      "fish": "مَا تَعْرِيفُ الشِّرْكِ الأَكْبَرِ",
+      "prepared": "مَا تَعْرِيفُ الشِّرْكِ الأَكْبَرِ",
+      "transcript": "ما كعليف الشرك الأكبر",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ما تعريف الشرك الاكبر",
+      "transcriptBare": "ما كعليف الشرك الاكبر",
+      "letterRatio": 1,
+      "missing": [
+        "تعريف"
+      ],
+      "extra": [
+        "كعليف"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_6e55abe0",
+      "kind": "random_mc",
+      "qid": "6e55abe0-45c5-4cb2-a74a-6f97e74dbd6f",
+      "label": null,
+      "fish": "لِمَاذَا اعْتُبِرَ التَّطَيُّرُ شِرْكًا",
+      "prepared": "لِمَاذَا اعْتُبِرَ التَّطَيُّرُ شِرْكًا",
+      "transcript": "لماذا اعتبرت تطير شركة؟",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "لماذا اعتبر التطير شركا",
+      "transcriptBare": "لماذا اعتبرت تطير شركه",
+      "letterRatio": 0.95,
+      "missing": [
+        "التطير",
+        "شركا"
+      ],
+      "extra": [
+        "اعتبرت",
+        "شركه"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "mc_1cb55316",
+      "kind": "random_mc",
+      "qid": "1cb55316-5773-4fd4-9cbc-ed8a3ad77fcf",
+      "label": null,
+      "fish": "مَا حُكْمُ التَّبَرُّكِ بِالْأَشْجَارِ وَالْأَحْجَارِ مُعْتَقِدًا فِيهَا الْبَرَكَةَ",
+      "prepared": "مَا حُكْمُ التَّبَرُّكِ بِالْأَشْجَارِ وَالْأَحْجَارِ مُعْتَقِدًا فِيهَا الْبَرَكَةَ",
+      "transcript": "ما حكم التبركي بالأشجار والأحجار معتقدا فيها البراكة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ما حكم التبرك بالاشجار والاحجار معتقدا فيها البركه",
+      "transcriptBare": "ما حكم التبركي بالاشجار والاحجار معتقدا فيها البراكه",
+      "letterRatio": 1.047,
+      "missing": [
+        "البركه"
+      ],
+      "extra": [
+        "التبركي",
+        "البراكه"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_ad766d97_a0",
+      "kind": "pad_option",
+      "qid": "ad766d97-4821-ee7e-1a31-d35abbabb781",
+      "label": null,
+      "fish": "دَخَلَ النَّارَ",
+      "prepared": "دَخَلَ النَّارَ",
+      "transcript": "دخل النار",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "دخل النار",
+      "transcriptBare": "دخل النار",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_a5af1bac_a3",
+      "kind": "pad_option",
+      "qid": "a5af1bac-9a02-7cc5-95b5-ab4197068011",
+      "label": null,
+      "fish": "الرُّقْيَةِ",
+      "prepared": "الرُّقْيَةِ",
+      "transcript": "الروقيا",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الرقيه",
+      "transcriptBare": "الروقيا",
+      "letterRatio": 1.167,
+      "missing": [
+        "الرقيه"
+      ],
+      "extra": [
+        "الروقيا"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_cbe119d0_a0",
+      "kind": "pad_option",
+      "qid": "cbe119d0-2dd7-6ef0-2f2f-521675e8f85b",
+      "label": null,
+      "fish": "نَعَمْ التَّزْهِيدُ فِي الدُّنْيَا وَأَنْ يَتَّخِذُهَا الْإِنْسَانِ دار إقامة",
+      "prepared": "نَعَمْ التَّزْهِيدُ فِي الدُّنْيَا وَأَنْ يَتَّخِذُهَا الْإِنْسَانِ دار إقامة",
+      "transcript": "نعم التزهيد في الدنيا وأن يتخذ هذا الإنسان دار إقامة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "نعم التزهيد في الدنيا وان يتخذها الانسان دار اقامه",
+      "transcriptBare": "نعم التزهيد في الدنيا وان يتخذ هذا الانسان دار اقامه",
+      "letterRatio": 1.024,
+      "missing": [
+        "يتخذها"
+      ],
+      "extra": [
+        "هذا"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_5168477c_a3",
+      "kind": "pad_option",
+      "qid": "5168477c-e114-9664-733e-2b8c0bf9d637",
+      "label": null,
+      "fish": "الْفَصْلُ",
+      "prepared": "الْفَصْلُ",
+      "transcript": "الفصلو",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الفصل",
+      "transcriptBare": "الفصلو",
+      "letterRatio": 1.2,
+      "missing": [],
+      "extra": [
+        "الفصلو"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_ef35ad7a_a1",
+      "kind": "pad_option",
+      "qid": "ef35ad7a-6c9d-fac3-ea1f-c2baf59810f7",
+      "label": null,
+      "fish": "نَفْيُ وُجُودِ اللَّهُ",
+      "prepared": "نَفْيُ وُجُودِ اللَّهُ",
+      "transcript": "نفي وجود الله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "نفي وجود الله",
+      "transcriptBare": "نفي وجود الله",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_74076c42_a1",
+      "kind": "pad_option",
+      "qid": "74076c42-5f23-4e68-8de6-2864ca262829",
+      "label": null,
+      "fish": "تَصَدَّقَ بِهِ",
+      "prepared": "تَصَدَّقَ بِهِ",
+      "transcript": "ففجأت به",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "تصدق به",
+      "transcriptBare": "ففجات به",
+      "letterRatio": 1.167,
+      "missing": [
+        "تصدق"
+      ],
+      "extra": [
+        "ففجات"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_91eb89af_a1",
+      "kind": "pad_option",
+      "qid": "91eb89af-4c29-f159-bea4-d6c351552f31",
+      "label": null,
+      "fish": "أَنْفُسِكُمْ",
+      "prepared": "أَنْفُسِكُمْ",
+      "transcript": "انا فرسيكم",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "انفسكم",
+      "transcriptBare": "انا فرسيكم",
+      "letterRatio": 1.5,
+      "missing": [
+        "انفسكم"
+      ],
+      "extra": [
+        "انا",
+        "فرسيكم"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_fa9ff40e_a2",
+      "kind": "pad_option",
+      "qid": "fa9ff40e-4c9d-a6e4-3593-d3a8083e5345",
+      "label": null,
+      "fish": "الْبَغْيُ",
+      "prepared": "الْبَغْيُ",
+      "transcript": "ألبري",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "البغي",
+      "transcriptBare": "البري",
+      "letterRatio": 1,
+      "missing": [
+        "البغي"
+      ],
+      "extra": [
+        "البري"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_8a6f4c97_a1",
+      "kind": "pad_option",
+      "qid": "8a6f4c97-74bc-18ca-a752-ca26b0d2f948",
+      "label": null,
+      "fish": "الْأَغْنِيَاءُ",
+      "prepared": "الْأَغْنِيَاءُ",
+      "transcript": "الأغنية",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الاغنياء",
+      "transcriptBare": "الاغنيه",
+      "letterRatio": 0.875,
+      "missing": [
+        "الاغنياء"
+      ],
+      "extra": [
+        "الاغنيه"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_f753ea43_a2",
+      "kind": "pad_option",
+      "qid": "f753ea43-605b-e427-0f91-a6cb245795e2",
+      "label": null,
+      "fish": "أَرْبَعَةٍ",
+      "prepared": "أَرْبَعَةٍ",
+      "transcript": "أربعة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "اربعه",
+      "transcriptBare": "اربعه",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_79060455_a1",
+      "kind": "pad_option",
+      "qid": "79060455-082e-4ede-9964-2c3c684bd269",
+      "label": null,
+      "fish": "الصَّلَاةُ فَقَطْ",
+      "prepared": "الصَّلَاةُ فَقَطْ",
+      "transcript": "الصلاة فقط",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الصلاه فقط",
+      "transcriptBare": "الصلاه فقط",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_5368f73b_a2",
+      "kind": "pad_option",
+      "qid": "5368f73b-1420-40fe-a885-0d983324b673",
+      "label": null,
+      "fish": "كَثْرَةُ العَمَلِ",
+      "prepared": "كَثْرَةُ العَمَلِ",
+      "transcript": "كثرة العمل",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "كثره العمل",
+      "transcriptBare": "كثره العمل",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_ca364f60_a2",
+      "kind": "pad_option",
+      "qid": "ca364f60-09e1-eb09-2b6b-aa6543dd8937",
+      "label": null,
+      "fish": "أَعْمَالًا",
+      "prepared": "أَعْمَالًا",
+      "transcript": "أعمالاً",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "اعمالا",
+      "transcriptBare": "اعمالا",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_649bc12b_a3",
+      "kind": "pad_option",
+      "qid": "649bc12b-6203-aab8-429c-ac035ff905d0",
+      "label": null,
+      "fish": "بَعْدَهُ",
+      "prepared": "بَعْدَهُ",
+      "transcript": "بعدها",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "بعده",
+      "transcriptBare": "بعدها",
+      "letterRatio": 1.25,
+      "missing": [],
+      "extra": [
+        "بعدها"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_1f685ac2_a1",
+      "kind": "pad_option",
+      "qid": "1f685ac2-6447-756f-c1a9-2de879701530",
+      "label": null,
+      "fish": "كَانَ أَوَّلُ الْخُلَفَاءِ",
+      "prepared": "كَانَ أَوَّلُ الْخُلَفَاءِ",
+      "transcript": "كان أول الخلفاء",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "كان اول الخلفاء",
+      "transcriptBare": "كان اول الخلفاء",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_4a4cf404_a3",
+      "kind": "pad_option",
+      "qid": "4a4cf404-c817-7aca-ade0-8eba4aa88a6e",
+      "label": null,
+      "fish": "الْأَئِمَّةِ",
+      "prepared": "الْأَئِمَّةِ",
+      "transcript": "الأئمة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الائمه",
+      "transcriptBare": "الائمه",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_31c21ea2_a3",
+      "kind": "pad_option",
+      "qid": "31c21ea2-7151-e501-5cd7-d6dba31717a6",
+      "label": null,
+      "fish": "الصَّابِئَةِ",
+      "prepared": "الصَّابِئَةِ",
+      "transcript": "الصابقة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الصابئه",
+      "transcriptBare": "الصابقه",
+      "letterRatio": 1,
+      "missing": [
+        "الصابئه"
+      ],
+      "extra": [
+        "الصابقه"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_46929e1c_a3",
+      "kind": "pad_option",
+      "qid": "46929e1c-d963-b231-cf0e-86e1c81f0b90",
+      "label": null,
+      "fish": "بِبُلْدَانِكُمْ",
+      "prepared": "بِبُلْدَانِكُمْ",
+      "transcript": "بيبولدانكم",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ببلدانكم",
+      "transcriptBare": "بيبولدانكم",
+      "letterRatio": 1.25,
+      "missing": [
+        "ببلدانكم"
+      ],
+      "extra": [
+        "بيبولدانكم"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_b2f4d852_a2",
+      "kind": "pad_option",
+      "qid": "b2f4d852-0565-19f0-0844-8b82158b6815",
+      "label": null,
+      "fish": "الْمَالِ",
+      "prepared": "الْمَالِ",
+      "transcript": "المان",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "المال",
+      "transcriptBare": "المان",
+      "letterRatio": 1,
+      "missing": [
+        "المال"
+      ],
+      "extra": [
+        "المان"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_a849f4ad_a0",
+      "kind": "pad_option",
+      "qid": "a849f4ad-9b6f-4ff0-52ef-e2c8b4ad68de",
+      "label": null,
+      "fish": "أَنَّهُ لَا يُعرف مَنْ الصَّحَابَةُ وَفِيهِ غَرَابَةٌ",
+      "prepared": "أَنَّهُ لَا يُعرف مَنْ الصَّحَابَةُ وَفِيهِ غَرَابَةٌ",
+      "transcript": "أنه لا يعرف من الصحابة وفيه غرابة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "انه لا يعرف من الصحابه وفيه غرابه",
+      "transcriptBare": "انه لا يعرف من الصحابه وفيه غرابه",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_67831742_a1",
+      "kind": "pad_option",
+      "qid": "67831742-cfc3-4c12-a11c-4be748e40bda",
+      "label": null,
+      "fish": "قَتْلُ النَّفْسِ",
+      "prepared": "قَتْلُ النَّفْسِ",
+      "transcript": "قتل النفس",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "قتل النفس",
+      "transcriptBare": "قتل النفس",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_e517de7c_a3",
+      "kind": "pad_option",
+      "qid": "e517de7c-d07a-33a1-43bc-5bc9ee685d4e",
+      "label": null,
+      "fish": "النُّجُومَ",
+      "prepared": "النُّجُومَ",
+      "transcript": "انجوم",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "النجوم",
+      "transcriptBare": "انجوم",
+      "letterRatio": 0.833,
+      "missing": [
+        "النجوم"
+      ],
+      "extra": [
+        "انجوم"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_5ad52d9e_a3",
+      "kind": "pad_option",
+      "qid": "5ad52d9e-878d-9cff-5c86-676aa7551f7f",
+      "label": null,
+      "fish": "الْغَفْلَةُ",
+      "prepared": "الْغَفْلَةُ",
+      "transcript": "الغفلة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الغفله",
+      "transcriptBare": "الغفله",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_59ab06dc_a2",
+      "kind": "pad_option",
+      "qid": "59ab06dc-ec5e-19fc-2204-ea2d0b0e2e29",
+      "label": null,
+      "fish": "مُبَاحٌ",
+      "prepared": "مُبَاحٌ",
+      "transcript": "مباحم",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "مباح",
+      "transcriptBare": "مباحم",
+      "letterRatio": 1.25,
+      "missing": [],
+      "extra": [
+        "مباحم"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_cf2cfe15_a0",
+      "kind": "pad_option",
+      "qid": "cf2cfe15-868b-5cb6-4b12-b1a7242bd9a9",
+      "label": null,
+      "fish": "دَخَلَ الْجَنَّةِ",
+      "prepared": "دَخَلَ الْجَنَّةِ",
+      "transcript": "دخل الجنة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "دخل الجنه",
+      "transcriptBare": "دخل الجنه",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_1ee43245_a3",
+      "kind": "pad_option",
+      "qid": "1ee43245-3fe9-14ea-1e14-6805cad62a82",
+      "label": null,
+      "fish": "الْإِلْزَامِ",
+      "prepared": "الْإِلْزَامِ",
+      "transcript": "الإلزام",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الالزام",
+      "transcriptBare": "الالزام",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_e881d91f_a3",
+      "kind": "pad_option",
+      "qid": "e881d91f-2c37-b482-14be-391c934c16d5",
+      "label": null,
+      "fish": "النَّمِيمَةُ",
+      "prepared": "النَّمِيمَةُ",
+      "transcript": "النميمة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "النميمه",
+      "transcriptBare": "النميمه",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_tf_390a98fa",
+      "kind": "pad_tf",
+      "qid": "390a98fa-c43d-41d2-80f0-82a6894ba5db",
+      "label": null,
+      "fish": "الْمُؤَلِّفُ وُلِدَ فِي مَكَّةَ",
+      "prepared": "الْمُؤَلِّفُ وُلِدَ فِي مَكَّةَ",
+      "transcript": "المؤلف والد في مكة",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "المؤلف ولد في مكه",
+      "transcriptBare": "المؤلف والد في مكه",
+      "letterRatio": 1.071,
+      "missing": [
+        "ولد"
+      ],
+      "extra": [
+        "والد"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_51b62643_a0",
+      "kind": "pad_option",
+      "qid": "51b62643-f330-5b1c-c5a0-93fffffe4109",
+      "label": null,
+      "fish": "عَلَامَاتِ يُهتدى بِهَا",
+      "prepared": "عَلَامَاتِ يُهتدى بِهَا",
+      "transcript": "علامات يحتد بها",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "علامات يهتدي بها",
+      "transcriptBare": "علامات يحتد بها",
+      "letterRatio": 0.929,
+      "missing": [
+        "يهتدي"
+      ],
+      "extra": [
+        "يحتد"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_tf_cd227066",
+      "kind": "pad_tf",
+      "qid": "cd227066-93f7-42f7-aead-2ac78970fef6",
+      "label": null,
+      "fish": "مَعْنَى لَا إِلَٰهَ إِلَّا اللَّهُ لَا خَالِقَ إِلَّا اللَّهَ",
+      "prepared": "مَعْنَى لَا إِلَٰهَ إِلَّا اللَّهُ لَا خَالِقَ إِلَّا اللَّهَ",
+      "transcript": "معنى لا إله إلا الله لا خالق إلا الله",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "معني لا اله الا الله لا خالق الا الله",
+      "transcriptBare": "معني لا اله الا الله لا خالق الا الله",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_5e0df875_a3",
+      "kind": "pad_option",
+      "qid": "5e0df875-e917-44a4-b798-2cd8a0b72fe2",
+      "label": null,
+      "fish": "كِلَاهُمَا مَكْرُوهٌ",
+      "prepared": "كِلَاهُمَا مَكْرُوهٌ",
+      "transcript": "كلاه مع مكروه",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "كلاهما مكروه",
+      "transcriptBare": "كلاه مع مكروه",
+      "letterRatio": 1,
+      "missing": [
+        "كلاهما"
+      ],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_c134a6e9_a1",
+      "kind": "pad_option",
+      "qid": "c134a6e9-d0a8-9643-3943-267e128ea448",
+      "label": null,
+      "fish": "الْكُفْرُ بِالْكُتُبِ",
+      "prepared": "الْكُفْرُ بِالْكُتُبِ",
+      "transcript": "الكفر بي الكتب",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الكفر بالكتب",
+      "transcriptBare": "الكفر بي الكتب",
+      "letterRatio": 1.091,
+      "missing": [
+        "بالكتب"
+      ],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_eaf22de9_a3",
+      "kind": "pad_option",
+      "qid": "eaf22de9-e972-dd21-1559-488cca397b06",
+      "label": null,
+      "fish": "الصَّادِقِينَ",
+      "prepared": "الصَّادِقِينَ",
+      "transcript": "الصادقين",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "الصادقين",
+      "transcriptBare": "الصادقين",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_39a78741_a3",
+      "kind": "pad_option",
+      "qid": "39a78741-7390-e1e9-ce72-d9999e7c58fb",
+      "label": null,
+      "fish": "سراً",
+      "prepared": "سراً",
+      "transcript": "سر",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "سرا",
+      "transcriptBare": "سر",
+      "letterRatio": 0.667,
+      "missing": [
+        "سرا"
+      ],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_417ab83d_a2",
+      "kind": "pad_option",
+      "qid": "417ab83d-22d4-bb08-5c15-2333c2642f29",
+      "label": null,
+      "fish": "الْقُرْآنُ",
+      "prepared": "الْقُرْآنُ",
+      "transcript": "القرآن",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "القران",
+      "transcriptBare": "القران",
+      "letterRatio": 1,
+      "missing": [],
+      "extra": [],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_e7bdf5fb_a1",
+      "kind": "pad_option",
+      "qid": "e7bdf5fb-5aca-ead8-d265-89ed6e5a9b3a",
+      "label": null,
+      "fish": "غَزْوَةِ بَدْرٍ",
+      "prepared": "غَزْوَةِ بَدْرٍ",
+      "transcript": "غزوة بدرن",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "غزوه بدر",
+      "transcriptBare": "غزوه بدرن",
+      "letterRatio": 1.143,
+      "missing": [],
+      "extra": [
+        "بدرن"
+      ],
+      "flags": [],
+      "hardFail": false
+    },
+    {
+      "id": "pad_eb80069a_a3",
+      "kind": "pad_option",
+      "qid": "eb80069a-736f-b2cd-a7db-4cfe0b3401ef",
+      "label": null,
+      "fish": "أَبُو سَعِيدُ الْخُدْرِيُّ",
+      "prepared": "أَبُو سَعِيدُ الْخُدْرِيُّ",
+      "transcript": "أبو سعيد الخجري",
+      "ttsOk": true,
+      "pass": true,
+      "intendedBare": "ابو سعيد الخدري",
+      "transcriptBare": "ابو سعيد الخجري",
+      "letterRatio": 1,
+      "missing": [
+        "الخدري"
+      ],
+      "extra": [
+        "الخجري"
+      ],
+      "flags": [],
+      "hardFail": false
+    }
+  ],
+  "fishVoiceLimitations": [
+    {
+      "id": "mc_c0cbca1e",
+      "fish": "لَا يَحِلُّ دَمُ امْرِئٍ مُسْلِمٍ إِلَّا بِإِحْدَى ثَلَاثٍ",
+      "small": "لا يحل جمع مرئ النسلم إلا بإحدى سلاس",
+      "medium": "لا يحلُّ جمُو إمري النُّسلم إلا بإحدى ثلاث",
+      "note": "prep letters correct; both small+medium mangle دم امرئ مسلم — Fish clone voice limitation"
+    }
+  ],
+  "version": {
+    "cache": "alhuda-v264",
+    "sw": 264,
+    "app": 228
+  },
+  "fixesApplied": [
+    "Map: أَنَّ لَا يُعْبَدُ اللَّهِ → أَنْ لَا يُعْبَدَ اللَّهُ (3 phrase entries)",
+    "app/fish/collect scrub: أَنَّ لَا → أَنْ لَا; أن لا يعبدَ/يُعْبَدَ with correct allah case",
+    "allahFormForContext: passive يُعْبَد keeps اللَّهُ (نائب فاعل) instead of ACC from bare يعبد"
+  ],
+  "verdict": {
+    "arabic": "استُمع وفُرّغ 80 مقطعاً؛ بعد medium بقي فشل واحد (دم امرئ) كقيد لصوت Fish لا خطأ إعداد",
+    "liveVersion": "v264",
+    "remainingBrokenDueToFishVoice": true
+  }
+}

@@ -1,0 +1,486 @@
+{
+  "model": "small",
+  "n": 80,
+  "results": [
+    {
+      "file": "ayah_40fd1b0a.mp3",
+      "id": "ayah_40fd1b0a",
+      "transcript": "ما هو الطاروح؟",
+      "ok": true
+    },
+    {
+      "file": "ayah_57e222ad.mp3",
+      "id": "ayah_57e222ad",
+      "transcript": "ما شرت قبول شهادة أن لا إله إلا الله",
+      "ok": true
+    },
+    {
+      "file": "ayah_6dea92e9.mp3",
+      "id": "ayah_6dea92e9",
+      "transcript": "لماذا خلق الله الجن والإنس؟",
+      "ok": true
+    },
+    {
+      "file": "ayah_c8762ee3.mp3",
+      "id": "ayah_c8762ee3",
+      "transcript": "ما معنى لا إله إلا الله",
+      "ok": true
+    },
+    {
+      "file": "ayah_cabe3338.mp3",
+      "id": "ayah_cabe3338",
+      "transcript": "ما معنى الجن في قوله",
+      "ok": true
+    },
+    {
+      "file": "haqq_tf_khata.mp3",
+      "id": "haqq_tf_khata",
+      "transcript": "حقا",
+      "ok": true
+    },
+    {
+      "file": "haqq_tf_q.mp3",
+      "id": "haqq_tf_q",
+      "transcript": "حق الله على العباد هو عبادته وعجم الشرك به",
+      "ok": true
+    },
+    {
+      "file": "haqq_tf_sah.mp3",
+      "id": "haqq_tf_sah",
+      "transcript": "شح",
+      "ok": true
+    },
+    {
+      "file": "mc_0291b09c.mp3",
+      "id": "mc_0291b09c",
+      "transcript": "بما ذا أرسل النبي يُصلى الله عليه وسلم أولا",
+      "ok": true
+    },
+    {
+      "file": "mc_1cb55316.mp3",
+      "id": "mc_1cb55316",
+      "transcript": "ما حكم التبركي بالأشجار والأحجار معتقدا فيها البراكة",
+      "ok": true
+    },
+    {
+      "file": "mc_6e55abe0.mp3",
+      "id": "mc_6e55abe0",
+      "transcript": "لماذا اعتبرت تطير شركة؟",
+      "ok": true
+    },
+    {
+      "file": "mc_7a01ef3d.mp3",
+      "id": "mc_7a01ef3d",
+      "transcript": "من فوائد الحديث 28 السنة وجود تغير المنكر بكل ما يمكن بيد أو لسانة أو بالقلب",
+      "ok": true
+    },
+    {
+      "file": "mc_81287c88.mp3",
+      "id": "mc_81287c88",
+      "transcript": "ما كعليف الشرك الأكبر",
+      "ok": true
+    },
+    {
+      "file": "mc_850e9201.mp3",
+      "id": "mc_850e9201",
+      "transcript": "إبراهيم عليه السلام كان إماماً للمحدين ودعا ربه أن يجنبه وبنيه",
+      "ok": true
+    },
+    {
+      "file": "mc_98e27a6b.mp3",
+      "id": "mc_98e27a6b",
+      "transcript": "من هو رأس الطواجتي؟",
+      "ok": true
+    },
+    {
+      "file": "mc_a74fd505.mp3",
+      "id": "mc_a74fd505",
+      "transcript": "من فوائد الحديث ثلاثين الحدود أنما يعمله الإنسان في هذه الدنيا من الحسنات والسيئات قد كتبه الله كعال في اللوح المحفوظ",
+      "ok": true
+    },
+    {
+      "file": "mc_b2f4d852.mp3",
+      "id": "mc_b2f4d852",
+      "transcript": "التوالة شيء يصنع يزعم أنه يحبد",
+      "ok": true
+    },
+    {
+      "file": "mc_b5ff7eaf.mp3",
+      "id": "mc_b5ff7eaf",
+      "transcript": "لماذا لا يستجاب دعاء أكل الحرام؟",
+      "ok": true
+    },
+    {
+      "file": "mc_c0cbca1e.mp3",
+      "id": "mc_c0cbca1e",
+      "transcript": "لا يحل جمع مرئ النسلم إلا بإحدى سلاس",
+      "ok": true
+    },
+    {
+      "file": "mc_cbb38f30.mp3",
+      "id": "mc_cbb38f30",
+      "transcript": "من حلف بالله فليصدق ومن لم يرض فليس",
+      "ok": true
+    },
+    {
+      "file": "mc_ccea4f17.mp3",
+      "id": "mc_ccea4f17",
+      "transcript": "حجث علي صلى الله عليه وسلم بأربع كلمات أولها لأن الله منذ بح",
+      "ok": true
+    },
+    {
+      "file": "mc_e8ff6321.mp3",
+      "id": "mc_e8ff6321",
+      "transcript": "الأثنام جمع سنم و هو",
+      "ok": true
+    },
+    {
+      "file": "mc_ffe0b7b1.mp3",
+      "id": "mc_ffe0b7b1",
+      "transcript": "الشركة الأصوار",
+      "ok": true
+    },
+    {
+      "file": "muadh_a0.mp3",
+      "id": "muadh_a0",
+      "transcript": "خمسة سلوات",
+      "ok": true
+    },
+    {
+      "file": "muadh_a1.mp3",
+      "id": "muadh_a1",
+      "transcript": "الزكات",
+      "ok": true
+    },
+    {
+      "file": "muadh_a2.mp3",
+      "id": "muadh_a2",
+      "transcript": "أصيام",
+      "ok": true
+    },
+    {
+      "file": "muadh_a3.mp3",
+      "id": "muadh_a3",
+      "transcript": "الحجي",
+      "ok": true
+    },
+    {
+      "file": "muadh_q.mp3",
+      "id": "muadh_q",
+      "transcript": "بعد التوحيد أمر النبي صلى الله عليه وسلم معاذا أن يعلم أهل اليمن أن الله افترض عليهم",
+      "ok": true
+    },
+    {
+      "file": "ocr_27b4b080.mp3",
+      "id": "ocr_27b4b080",
+      "transcript": "أكمل للآية لا تعتذر وقد كفرت بعد",
+      "ok": true
+    },
+    {
+      "file": "ocr_39d543ed.mp3",
+      "id": "ocr_39d543ed",
+      "transcript": "أكمل الحديث إن الله هو الحكم وإليه",
+      "ok": true
+    },
+    {
+      "file": "ocr_91eb89af.mp3",
+      "id": "ocr_91eb89af",
+      "transcript": "قال صلى الله عليه وسلم لا تحلفوا بئة",
+      "ok": true
+    },
+    {
+      "file": "ocr_a65b90a9.mp3",
+      "id": "ocr_a65b90a9",
+      "transcript": "أكمل الحديث من تعليف أشياء وكل",
+      "ok": true
+    },
+    {
+      "file": "ocr_e517de7c.mp3",
+      "id": "ocr_e517de7c",
+      "transcript": "أكمل الحديث القدسي أنا الدهر أقلب الليل و",
+      "ok": true
+    },
+    {
+      "file": "pad_1ee43245_a3.mp3",
+      "id": "pad_1ee43245_a3",
+      "transcript": "الإلزام",
+      "ok": true
+    },
+    {
+      "file": "pad_1f685ac2_a1.mp3",
+      "id": "pad_1f685ac2_a1",
+      "transcript": "كان أول الخلفاء",
+      "ok": true
+    },
+    {
+      "file": "pad_31c21ea2_a3.mp3",
+      "id": "pad_31c21ea2_a3",
+      "transcript": "الصابقة",
+      "ok": true
+    },
+    {
+      "file": "pad_39a78741_a3.mp3",
+      "id": "pad_39a78741_a3",
+      "transcript": "سر",
+      "ok": true
+    },
+    {
+      "file": "pad_417ab83d_a2.mp3",
+      "id": "pad_417ab83d_a2",
+      "transcript": "القرآن",
+      "ok": true
+    },
+    {
+      "file": "pad_46929e1c_a3.mp3",
+      "id": "pad_46929e1c_a3",
+      "transcript": "بيبولدانكم",
+      "ok": true
+    },
+    {
+      "file": "pad_4a4cf404_a3.mp3",
+      "id": "pad_4a4cf404_a3",
+      "transcript": "الأئمة",
+      "ok": true
+    },
+    {
+      "file": "pad_5168477c_a3.mp3",
+      "id": "pad_5168477c_a3",
+      "transcript": "الفصلو",
+      "ok": true
+    },
+    {
+      "file": "pad_51b62643_a0.mp3",
+      "id": "pad_51b62643_a0",
+      "transcript": "علامات يحتد بها",
+      "ok": true
+    },
+    {
+      "file": "pad_5368f73b_a2.mp3",
+      "id": "pad_5368f73b_a2",
+      "transcript": "كثرة العمل",
+      "ok": true
+    },
+    {
+      "file": "pad_59ab06dc_a2.mp3",
+      "id": "pad_59ab06dc_a2",
+      "transcript": "مباحم",
+      "ok": true
+    },
+    {
+      "file": "pad_5ad52d9e_a3.mp3",
+      "id": "pad_5ad52d9e_a3",
+      "transcript": "الغفلة",
+      "ok": true
+    },
+    {
+      "file": "pad_5e0df875_a3.mp3",
+      "id": "pad_5e0df875_a3",
+      "transcript": "كلاه مع مكروه",
+      "ok": true
+    },
+    {
+      "file": "pad_649bc12b_a3.mp3",
+      "id": "pad_649bc12b_a3",
+      "transcript": "بعدها",
+      "ok": true
+    },
+    {
+      "file": "pad_67831742_a1.mp3",
+      "id": "pad_67831742_a1",
+      "transcript": "قتل النفس",
+      "ok": true
+    },
+    {
+      "file": "pad_74076c42_a1.mp3",
+      "id": "pad_74076c42_a1",
+      "transcript": "ففجأت به",
+      "ok": true
+    },
+    {
+      "file": "pad_79060455_a1.mp3",
+      "id": "pad_79060455_a1",
+      "transcript": "الصلاة فقط",
+      "ok": true
+    },
+    {
+      "file": "pad_8a6f4c97_a1.mp3",
+      "id": "pad_8a6f4c97_a1",
+      "transcript": "الأغنية",
+      "ok": true
+    },
+    {
+      "file": "pad_91eb89af_a1.mp3",
+      "id": "pad_91eb89af_a1",
+      "transcript": "انا فرسيكم",
+      "ok": true
+    },
+    {
+      "file": "pad_a5af1bac_a3.mp3",
+      "id": "pad_a5af1bac_a3",
+      "transcript": "الروقيا",
+      "ok": true
+    },
+    {
+      "file": "pad_a849f4ad_a0.mp3",
+      "id": "pad_a849f4ad_a0",
+      "transcript": "أنه لا يعرف من الصحابة وفيه غرابة",
+      "ok": true
+    },
+    {
+      "file": "pad_ad766d97_a0.mp3",
+      "id": "pad_ad766d97_a0",
+      "transcript": "دخل النار",
+      "ok": true
+    },
+    {
+      "file": "pad_b2f4d852_a2.mp3",
+      "id": "pad_b2f4d852_a2",
+      "transcript": "المان",
+      "ok": true
+    },
+    {
+      "file": "pad_c134a6e9_a1.mp3",
+      "id": "pad_c134a6e9_a1",
+      "transcript": "الكفر بي الكتب",
+      "ok": true
+    },
+    {
+      "file": "pad_ca364f60_a2.mp3",
+      "id": "pad_ca364f60_a2",
+      "transcript": "أعمالاً",
+      "ok": true
+    },
+    {
+      "file": "pad_cbe119d0_a0.mp3",
+      "id": "pad_cbe119d0_a0",
+      "transcript": "نعم التزهيد في الدنيا وأن يتخذ هذا الإنسان دار إقامة",
+      "ok": true
+    },
+    {
+      "file": "pad_cf2cfe15_a0.mp3",
+      "id": "pad_cf2cfe15_a0",
+      "transcript": "دخل الجنة",
+      "ok": true
+    },
+    {
+      "file": "pad_e517de7c_a3.mp3",
+      "id": "pad_e517de7c_a3",
+      "transcript": "انجوم",
+      "ok": true
+    },
+    {
+      "file": "pad_e7bdf5fb_a1.mp3",
+      "id": "pad_e7bdf5fb_a1",
+      "transcript": "غزوة بدرن",
+      "ok": true
+    },
+    {
+      "file": "pad_e881d91f_a3.mp3",
+      "id": "pad_e881d91f_a3",
+      "transcript": "النميمة",
+      "ok": true
+    },
+    {
+      "file": "pad_eaf22de9_a3.mp3",
+      "id": "pad_eaf22de9_a3",
+      "transcript": "الصادقين",
+      "ok": true
+    },
+    {
+      "file": "pad_eb80069a_a3.mp3",
+      "id": "pad_eb80069a_a3",
+      "transcript": "أبو سعيد الخجري",
+      "ok": true
+    },
+    {
+      "file": "pad_ef35ad7a_a1.mp3",
+      "id": "pad_ef35ad7a_a1",
+      "transcript": "نفي وجود الله",
+      "ok": true
+    },
+    {
+      "file": "pad_f753ea43_a2.mp3",
+      "id": "pad_f753ea43_a2",
+      "transcript": "أربعة",
+      "ok": true
+    },
+    {
+      "file": "pad_fa9ff40e_a2.mp3",
+      "id": "pad_fa9ff40e_a2",
+      "transcript": "ألبري",
+      "ok": true
+    },
+    {
+      "file": "pad_tf_390a98fa.mp3",
+      "id": "pad_tf_390a98fa",
+      "transcript": "المؤلف والد في مكة",
+      "ok": true
+    },
+    {
+      "file": "pad_tf_cd227066.mp3",
+      "id": "pad_tf_cd227066",
+      "transcript": "معنى لا إله إلا الله لا خالق إلا الله",
+      "ok": true
+    },
+    {
+      "file": "phrase_anna_yuallim.mp3",
+      "id": "phrase_anna_yuallim",
+      "transcript": "أمر معاداً أن يعلم أهل اليمن",
+      "ok": true
+    },
+    {
+      "file": "phrase_haqq.mp3",
+      "id": "phrase_haqq",
+      "transcript": "حق الله على العباد هو عبادته",
+      "ok": true
+    },
+    {
+      "file": "phrase_ifrad.mp3",
+      "id": "phrase_ifrad",
+      "transcript": "التوحيد إفراد الله بالعبادة",
+      "ok": true
+    },
+    {
+      "file": "phrase_inda.mp3",
+      "id": "phrase_inda",
+      "transcript": "ما أعظم الزنوب عند الله",
+      "ok": true
+    },
+    {
+      "file": "phrase_laan.mp3",
+      "id": "phrase_laan",
+      "transcript": "لعن الله من ذبح لغير الله",
+      "ok": true
+    },
+    {
+      "file": "phrase_ma_ubida.mp3",
+      "id": "phrase_ma_ubida",
+      "transcript": "كل ما عبد من دون الله وهو راضي",
+      "ok": true
+    },
+    {
+      "file": "phrase_min_dun.mp3",
+      "id": "phrase_min_dun",
+      "transcript": "من دون الله",
+      "ok": true
+    },
+    {
+      "file": "phrase_shahada.mp3",
+      "id": "phrase_shahada",
+      "transcript": "شهاجة أن لا إله إلا الله",
+      "ok": true
+    },
+    {
+      "file": "phrase_tawhid.mp3",
+      "id": "phrase_tawhid",
+      "transcript": "ما معنى لا إله إلا الله",
+      "ok": true
+    },
+    {
+      "file": "phrase_yabud.mp3",
+      "id": "phrase_yabud",
+      "transcript": "أن لا يعبج الله إلا بما شرعه",
+      "ok": true
+    }
+  ]
+}

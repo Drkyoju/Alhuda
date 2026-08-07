@@ -2365,6 +2365,12 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/تَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "تَعْبُدُ اللَّهَ");
   s = s.replace(/نَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "نَعْبُدُ اللَّهَ");
   s = s.replace(/أَنْ\s+تَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ اللَّهَ");
+  // أنْ لا + مضارع منصوب — map OCR often wrote أنَّ لا يُعْبَدُ اللَّهِ (broken).
+  s = s.replace(/أَنَّ\s+لَا/g, 'أَنْ لَا');
+  s = s.replace(/أَنّ\s+لَا/g, 'أَنْ لَا');
+  s = s.replace(/أَنْ\s+لَا\s+يُعْبَد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ لَا يُعْبَدَ اللَّهُ");
+  s = s.replace(/أَنْ\s+لَا\s+يَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ لَا يَعْبُدَ اللَّهَ");
+  s = s.replace(/ان\s+لا\s+يعبد\s+الله/g, "أَنْ لَا يَعْبُدَ اللَّهَ");
   // أن / بِأَن المصدرية before imperfect — NEVER أنّ (Fish reads أنَّ يعلّم as garbage).
   // Keep أنّ before ism stems that start with ي/ت/ن (نزولها / توحيد / يوم…) —
   // older “any يتن(+haraka)” rewrites falsely mangled بِأَنَّ نزولها → بِأَنْ نزولها.
