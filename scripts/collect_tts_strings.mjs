@@ -286,6 +286,7 @@ export function collectTtsStrings() {
     for (const v of Object.values(fields || {})) add(v);
   }
 
+  add('صَحِيحٌ');
   add('صَحّ');
   add('خَطَأٌ');
   add('الْإِجَابَةُ الصَّحِيحَةُ');

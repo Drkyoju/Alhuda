@@ -1693,7 +1693,7 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v47';
+const TTS_CACHE_VER = 'v48';
 /**
  * Lesson Fish TTS only — mild loudness (NOT v267 3.6× / heavy EQ).
  * Never applied to Quran Hudhaify.
@@ -2421,14 +2421,26 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, 'بَعْدَ التَّوْحِيدِ');
   s = s.replace(/أَمَرَ\s+مُعَاذٍ/g, 'أَمَرَ مُعَاذٌ');
   s = s.replace(/فَقَدْ\s+كُفْر[\u064B-\u065F\u0670]*/g, 'فَقَدْ كَفَرَ');
-  // Hadith بُضْع (not بِضْع «a few»)
-  s = s.replace(/فِي\s+بِضْعِ\s+أَحَد/g, 'فِي بُضْعِ أَحَد');
-  s = s.replace(/في\s+بضع\s+احد/g, 'فِي بُضْعِ أَحَد');
-  s = s.replace(/فِي\s+بِضْع/g, 'فِي بُضْع');
+  // Hadith بُضْع (not بِضْع «a few») — hamza/bare/vocalized في
+  s = s.replace(/فِي\s+بِضْعِ?\s+أَ?حَدِكُمْ/g, 'فِي بُضْعِ أَحَدِكُمْ');
+  s = s.replace(/فِي\s+بضع\s+أَ?حدكم/g, 'فِي بُضْعِ أَحَدِكُمْ');
+  s = s.replace(/في\s+بضع\s+أ?حدكم/g, 'فِي بُضْعِ أَحَدِكُمْ');
+  s = s.replace(/بِضْعِ\s+أَ?حَد/g, 'بُضْعِ أَحَد');
+  s = s.replace(/فِي\s+بِضْعِ?\s+أَ?حَد/g, 'فِي بُضْعِ أَحَد');
+  s = s.replace(/فِي\s+بضع\s+أَ?حد/g, 'فِي بُضْعِ أَحَد');
+  s = s.replace(/في\s+بضع\s+أ?حد/g, 'فِي بُضْعِ أَحَد');
+  s = s.replace(/فِي\s+بِضْع(?!\s*و)/g, 'فِي بُضْع');
   s = s.replace(/شرعاً/g, 'شَرْعًا');
   s = s.replace(/ذُكرت/g, 'ذُكِرَتْ');
   s = s.replace(/يُكنّى/g, 'يُكَنَّى');
+  s = s.replace(/يكنى/g, 'يُكَنَّى');
   s = s.replace(/والعزّى/g, 'وَالْعُزَّى');
+  // Soft-OCR torn stems
+  s = s.replace(/الب\s*ضع/g, 'الْبِضْع');
+  s = s.replace(/بالبِ?\s*ضع/g, 'بِالْبِضْعِ');
+  s = s.replace(/ان\s*واط/g, 'أَنْوَاط');
+  s = s.replace(/الري\s*اء/g, 'الرِّيَاء');
+  s = s.replace(/فر\s*ائض/g, 'فَرَائِض');
   // Standalone particle بِ/ب only — NOT word-final …بِ (بابِ / كتابِ / طَلَبِ).
   // Harakat before ب must not count as a boundary.
   s = s.replace(/(?<![\u0621-\u064A\u0671][\u064B-\u065F\u0670]*)بِ\s+(?=[\u0621-\u064A\u0671])/g, 'بِ');
@@ -2436,12 +2448,24 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/الْعِبَادَةِ\s+شَرْعًا/g, 'الْعِبَادَةُ شَرْعًا');
   s = s.replace(/(^|[^\u0621-\u064A])الذَّبْحِ\s+لِغَيْر/g, '$1الذَّبْحُ لِغَيْر');
   s = s.replace(/فِي\s+قَوْلُهُ/g, 'فِي قَوْلِهِ');
+  s = s.replace(/فِي\s+الْأُصُولُ/g, 'فِي الْأُصُولِ');
   s = s.replace(/اَلطَّاعَةُ/g, 'الطَّاعَةِ');
   s = s.replace(/اَلطَّاعَةِ/g, 'الطَّاعَةِ');
-  s = s.replace(/أَنْوَاطٍ/g, 'أَنْوَاطْ');
-  s = s.replace(/فَرَائِضَ\s*فَلَا/g, 'فَرَائِضْ فَلَا');
-  s = s.replace(/بالبِ?\s+ضع/g, 'بِالْبِضْعِ');
-  s = s.replace(/الْمُرَادُ\s+بالبِ?\s*ضع/g, 'الْمُرَادُ بِالْبِضْعِ');
+  s = s.replace(/طَلَبٌ\s+الصَّحَابَة[ُِ]/g, 'طَلَبُ الصَّحَابَةِ');
+  s = s.replace(/قَوْلُ\s+الصَّحَابَةُ/g, 'قَوْلُ الصَّحَابَةِ');
+  s = s.replace(/أَنْوَاطٍ/g, 'أَنْوَاطَ');
+  s = s.replace(/أَنْوَاطْ/g, 'أَنْوَاطَ');
+  s = s.replace(/فَرَائِضَ\s*فَلَا/g, 'فَرَائِضْ  فَلَا');
+  s = s.replace(/الْمُرَادُ\s+بِ/g, 'اَلْمُرَادْ بِ');
+  s = s.replace(/الْمُرَادُ/g, 'اَلْمُرَادْ');
+  s = s.replace(/اللَّاتُ/g, 'الْلَاتُ');
+  s = s.replace(/اللَاتُ/g, 'الْلَاتُ');
+  s = s.replace(/ذَاتِ\s+أَنْوَاط[ٍَْ]?/g, 'ذَاتِ أَنْوَاطَ');
+  s = s.replace(/ذَات[َ]?\s+أَنْوَاط[ٍَْ]?/g, 'ذَاتَ أَنْوَاطَ');
+  s = s.replace(/بُضْعِ\s+أَحَدِكُمْ/g, 'بُضْعِ  أَحَدِكُمْ');
+  s = s.replace(/(^|[\s،,])صَحّ(?=$|[\s،,])/g, '$1صَحِيحٌ');
+  s = s.replace(/لَا\s+ضَرَرَ\s+وَلَا\s+ضِرَارَ/g, 'لَا ضَرَرَ  وَلَا ضِرَارَ');
+  s = s.replace(/دَمُ\s+امْرِئٍ\s+مُسْلِمٍ/g, 'دَمُ  امْرِئٍ  مُسْلِمٍ');
   // Soft OCR / wasla alef leftovers from harvest
   s = s.replace(/ثَلَاثَةٍ\s+أَنْوَاع/g, 'ثَلَاثَةُ أَنْوَاعٍ');
   s = s.replace(/بُنِيَ\s+إِسْرَائِيل/g, 'بَنِي إِسْرَائِيل');
@@ -3245,7 +3269,8 @@ function buildQuestionOptionSpeechList(q) {
     });
   } else if (q?.type === 'tf') {
     // Must match on-screen buttons «صح ✓» / «خطأ ✗» (harakat OK for TTS).
-    items.push('صَحّ');
+    // صَحّ alone often heard as «صحن» on Fish clone — speak كامل (UI still «صح»)
+    items.push('صَحِيحٌ');
     items.push('خَطَأٌ');
   }
   return items;
@@ -4863,7 +4888,7 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
     sp.textContent = '🔊';
     const rawSpeak = raw.replace(/[✓✗]/g, '').trim();
     let toSpeak;
-    if (speechField === 'tf0') toSpeak = 'صَحّ';
+    if (speechField === 'tf0') toSpeak = 'صَحِيحٌ';
     else if (speechField === 'tf1') toSpeak = 'خَطَأٌ';
     else if (speechField) toSpeak = speechPart(q, speechField, rawSpeak);
     else toSpeak = prepareArabicForSpeech(applyManualSpeechDiacritics(rawSpeak));
@@ -4943,7 +4968,7 @@ function hasSoftOcrLetterBreaks(s) {
   const t = String(s || '');
   if (!t) return false;
   // Known torn stems from PDF/worksheet OCR (avoid \\b — it breaks on Arabic letters).
-  if (/(?:ي\s+ؤ(?:من)?|بالل\s+ه|الل\s+ه|(?:^|[\s«"'])ق\s+ل(?:[\s»"'،,]|$)|(?:^|[\s«"'])إ\s+ن(?:[\s»"'،,]|$)|ف\s+لي|ل\s+يص|أم\s+تي|الخ\s+طأ|است\s+كره|عل\s+يه|يعني\s+ه(?:[\s»"'،.]|$)|ف\s+لي\s*قل|ل\s+يص\s*مت)/.test(t)) {
+  if (/(?:ي\s+ؤ(?:من)?|بالل\s+ه|الل\s+ه|(?:^|[\s«"'])ق\s+ل(?:[\s»"'،,]|$)|(?:^|[\s«"'])إ\s+ن(?:[\s»"'،,]|$)|ف\s+لي|ل\s+يص|أم\s+تي|الخ\s+طأ|است\s+كره|عل\s+يه|يعني\s+ه(?:[\s»"'،.]|$)|ف\s+لي\s*قل|ل\s+يص\s*مت|الب\s+ضع|ان\s+واط|الري\s+اء|فر\s+ائض)/.test(t)) {
     return true;
   }
   // ≥3 short (1–2 letter) Arabic tokens adjacent to longer Arabic tokens → torn words.
