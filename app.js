@@ -2046,7 +2046,8 @@ async function warmQuestionSpeech(q) {
     const { questionText, optionList } = buildQuestionSpeechParts(q);
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => null);
-    // Prefetch question first only — answers warm lazily so we don't burn TTS quota.
+    // Prefetch question first; with ayah, warm ALL answers (Hudhaify gap before options).
+    // Without ayah, soft-warm at most 2 to limit TTS quota.
     const qClean = prepareTtsPayload(questionText);
     try {
       if (qClean && qClean.length >= 2) {
@@ -2055,8 +2056,9 @@ async function warmQuestionSpeech(q) {
           await fetchTtsBlob(qClean).catch(() => null);
         }
       }
-      // Soft-warm at most 2 answers in background (not all four at once).
-      const opts = (optionList || []).slice(0, 2);
+      const opts = primaryVerse
+        ? (optionList || [])
+        : (optionList || []).slice(0, 2);
       for (const opt of opts) prefetchTtsText(opt);
       return null;
     } catch {
@@ -3079,11 +3081,31 @@ function buildFeedbackSpeechPlan(q, wrongText) {
     if (correctSpeech) plan.push({ type: 'tts', text: correctSpeech });
   }
   const verseKey = getPrimaryVerseKeyForQuestion(q);
-  const citeBody = (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '') || '';
+  // Prefer real book quote for speech; fall back to explanation — never answer-as-quote / OCR junk.
+  let citeBody = (typeof getBookQuoteOnly === 'function' ? getBookQuoteOnly(q) : '')
+    || (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '')
+    || '';
+  const rawQuote = String(q?.quote || '').trim();
+  if (
+    isAnswerPrefixedQuote(rawQuote)
+    || isGarbageCitation(rawQuote)
+    || (citeBody && isGarbageCitation(citeBody))
+  ) {
+    // Drop fake/OCR quote; speak clean explanation only when it adds value beyond the answer.
+    const exp = typeof getCleanExplanationText === 'function' ? getCleanExplanationText(q) : '';
+    const corBare = normalizeArabicForMatch(correct || '');
+    const expBare = normalizeArabicForMatch(exp || '');
+    citeBody = exp && expBare && expBare !== corBare && !textIsSubstantiallyContained(expBare, corBare)
+      ? exp
+      : '';
+  }
   const quoteIsAyah = typeof citationLooksLikeAyah === 'function'
     ? citationLooksLikeAyah(citeBody, verseKey)
     : false;
   // Hadith / book prose → TTS. Quran ayah only → Hudhaify (never TTS the ayah wording).
+  if (citeBody && (isAnswerPrefixedQuote(citeBody) || isGarbageCitation(String(citeBody).replace(/^«|»$/g, '')))) {
+    citeBody = '';
+  }
   if (isHadithPassage(citeBody) || (citeBody && !quoteIsAyah && !fieldHasEmbeddedAyah(citeBody))) {
     const citeSpeech = diacritizeFieldText(q, citeBody);
     if (citeSpeech) plan.push({ type: 'tts', text: citeSpeech });
@@ -3574,11 +3596,18 @@ function extractAyahSnippets(text) {
 
 function lookupKnownVerseKey(snippet) {
   const norm = normalizeArabicForMatch(snippet);
+  if (!norm || norm.length < 8) return null;
   const map = (typeof window !== 'undefined' && window.AYAH_SNIPPET_MAP) || {};
   if (map[norm]) return map[norm];
   for (const [key, verseKey] of Object.entries(map)) {
     const nk = normalizeArabicForMatch(key);
-    if (norm.includes(nk) || nk.includes(norm)) return verseKey;
+    if (!nk || nk.length < 10) continue;
+    if (norm === nk) return verseKey;
+    // Quote contains a known snippet (prefer longer map keys).
+    if (nk.length >= 12 && norm.includes(nk)) return verseKey;
+    // Map key contains the quote only when the quote is substantial —
+    // blocks «لا إله إلا الله» / short kalima falsely matching 47:19.
+    if (norm.length >= 18 && nk.includes(norm)) return verseKey;
   }
   return null;
 }
@@ -3589,6 +3618,20 @@ function findVerseKeysSync(text) {
   for (const snippet of extractAyahSnippets(text)) {
     const key = lookupKnownVerseKey(snippet);
     if (key) keys.add(key);
+  }
+  // Bare (unquoted) ayah wording in the question card — e.g. اللات والعزى ومناة.
+  const bare = normalizeArabicForMatch(text);
+  if (bare.length >= 16) {
+    const map = (typeof window !== 'undefined' && window.AYAH_SNIPPET_MAP) || {};
+    const sorted = Object.keys(map).sort((a, b) => b.length - a.length);
+    for (const snip of sorted) {
+      const nk = normalizeArabicForMatch(snip);
+      if (nk.length < 16) continue;
+      if (bare.includes(nk)) {
+        keys.add(map[snip]);
+        break;
+      }
+    }
   }
   return [...keys];
 }
@@ -4325,9 +4368,15 @@ function speakQuestion() {
               }
               console.warn('question tts:', e);
               if (attempt === 2) {
-                // Last resort: raw bank text without heavy prep.
+                // Last resort: still never Fish-speak ayah wording (Hudhaify owns that).
                 try {
-                  const raw = stripForSpeech(String(q.q || '').trim()) || String(q.q || '').trim();
+                  let raw = stripForSpeech(String(q.q || '').trim()) || String(q.q || '').trim();
+                  if (raw && verseKey && shouldReciteHudhaifyForQuestion(q, questionText || q.q)) {
+                    raw = stripKnownAyahSnippetsForSpeech(raw);
+                    raw = raw
+                      ? (prepareTtsPayload(raw) || sanitizeTtsText(raw) || raw)
+                      : '';
+                  }
                   if (raw && raw !== qProse) {
                     await speakTtsSegment(raw, btn, { clearAfter: false, alreadyPrepared: true });
                   } else if (!String(e?.message || '').includes('baked miss')) {
@@ -4593,12 +4642,24 @@ function hasGluedWords(s) {
   return false;
 }
 
+/** Raw quote is just the answer key labeled as a book citation — never speak/show as استشهاد. */
+function isAnswerPrefixedQuote(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return false;
+  return /^(?:ال)?إج[اآ]بة\s*الصحيحة\s*:/i.test(s)
+    || /^الإجابة\s*الصحيحة\s*:/i.test(s);
+}
+
 function isGarbageCitation(s) {
   if (!s) return true;
+  if (isAnswerPrefixedQuote(s)) return true;
   if (isWorksheetCitation(s)) return true;
   if (hasOcrTashkeelGaps(s)) return true;
+  if (hasBrokenArabicSpacing(s)) return true;
   if (hasGluedWords(s)) return true;
   if ((s.match(/[a-zA-Z]/g) || []).length > 2) return true;
+  // Private-use / mojibake leftovers from PDF OCR (األمة, , …).
+  if (/[\uE000-\uF8FF]|اأ|ألم|ألمة|األ/.test(s)) return true;
   // Leftovers after stripping «الإجابة الصحيحة:» are usually the answer option, not a book quote.
   if (/^(صح|خطأ|شرك\s*أكبر|شرك\s*أصغر|الأسماء\s*والصفات)\s*$/i.test(String(s).trim())) return true;
   return citationTextQuality(s) < 0.45;
@@ -4641,6 +4702,9 @@ function citationTextQuality(s) {
 function cleanArabicCitation(raw, questionId) {
   if (questionId && getCanonicalQuote(questionId)) return getCanonicalQuote(questionId);
   if (!raw || isWorksheetCitation(raw)) return '';
+  // Answer-key dumps («الإجابة الصحيحة: …») are not book citations — drop entirely
+  // (do not strip the prefix and keep the answer text as a fake quote).
+  if (isAnswerPrefixedQuote(raw)) return '';
   let s = raw.trim();
   // Strip PDF/OCR private-use glyphs and presentation forms leftovers.
   s = s.replace(/[\uE000-\uF8FF]/g, '');
@@ -4655,6 +4719,8 @@ function cleanArabicCitation(raw, questionId) {
   s = s.replace(/[|]{2,}|_{3,}|\.{4,}/g, ' ');
   s = s.replace(/\s+/g, ' ').trim();
   if (!s || isWorksheetCitation(s)) return '';
+  // Still-broken letter spacing after collapse → unusable OCR.
+  if (hasBrokenArabicSpacing(s) && hasBrokenArabicSpacing(collapseBrokenArabicSpaces(s))) return '';
   s = postFixCitationPhrases(collapseBrokenArabicSpaces(s));
   if (isGarbageCitation(s)) return '';
   return s;
@@ -4832,29 +4898,49 @@ function findBookCitation(q) {
   const rejectAsAnswerOnly = (text) => {
     const bare = normalizeArabicForMatch(String(text || '').replace(/^«|»$/g, ''));
     if (!bare || bare.length < 3) return true;
+    if (isAnswerPrefixedQuote(text)) return true;
     const cor = normalizeArabicForMatch(getCorrectAnswerText(q));
     if (cor && bare === cor) return true;
     const stripped = bare.replace(/^الاجابه\s*الصحيحه\s*/g, '').trim();
     if (cor && stripped === cor) return true;
+    // TF: short leftover after stripping answer-prefix is never a real book quote.
+    if (q?.type === 'tf' && stripped.length > 0 && stripped.length <= 40) {
+      const expBare = normalizeArabicForMatch(String(q.exp || ''));
+      if (expBare && (stripped === expBare || textIsSubstantiallyContained(stripped, expBare))) {
+        return true;
+      }
+    }
     if (q?.type === 'mc' && Array.isArray(q.a)) {
       for (const opt of q.a) {
         const ob = normalizeArabicForMatch(String(opt || ''));
         if (ob && (bare === ob || stripped === ob)) return true;
+        // Near-paraphrase of the keyed answer (e.g. يسهل vs سهل الله له…).
+        if (ob && ob.length >= 6 && (stripped.includes(ob) || ob.includes(stripped))) return true;
       }
+    }
+    // Explanation already covers this line — don't double-speak as «استشهاد».
+    const expBare = normalizeArabicForMatch(String(q.exp || ''));
+    if (expBare && stripped && (stripped === expBare || textIsSubstantiallyContained(stripped, expBare))) {
+      return true;
     }
     return false;
   };
 
   const canonRaw = q?.id ? getCanonicalQuote(q.id) : '';
   if (canonRaw) {
-    const canon = cleanArabicCitation(canonRaw, null) || collapseBrokenArabicSpaces(canonRaw);
-    if (canon && !isGarbageCitation(canon) && !rejectAsAnswerOnly(canon)) {
-      return formatCitationQuote(canon);
+    if (isAnswerPrefixedQuote(canonRaw) || isGarbageCitation(canonRaw)) {
+      /* fall through */
+    } else {
+      const canon = cleanArabicCitation(canonRaw, null) || collapseBrokenArabicSpaces(canonRaw);
+      if (canon && !isGarbageCitation(canon) && !rejectAsAnswerOnly(canon)) {
+        return formatCitationQuote(canon);
+      }
     }
   }
 
   const quoteRaw = String(q?.quote || '').trim();
   if (quoteRaw) {
+    if (isAnswerPrefixedQuote(quoteRaw) || isGarbageCitation(quoteRaw)) return '';
     const cleaned = cleanArabicCitation(quoteRaw, null);
     if (cleaned && !isGarbageCitation(cleaned) && !rejectAsAnswerOnly(cleaned)) {
       return formatCitationQuote(cleaned);

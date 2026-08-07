@@ -128,6 +128,14 @@ function diacritizeFromBank(text) {
 
 /** Known high-quality overrides (display words + correct iʿrāb). */
 const MANUAL_Q = {
+  '4e0c618e-520b-4511-9a67-5b9f328aa7c3': {
+    a1: 'أَعْطَاهُ مَالًا',
+  },
+  'ef0c9b86-fc95-4c6c-b10d-ef93a2e46153': {
+    a1: 'يُصَلِّي وَيَصُومُ',
+    a2: 'يَحُجُّ وَيَعْتَمِرُ',
+  },
+
   '07483021-8f6a-44c8-9f32-1040d095f0c5': {
     q: "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ.",
   },

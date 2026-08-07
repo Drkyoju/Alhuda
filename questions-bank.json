@@ -1572,7 +1572,7 @@
       "correct_index": 0,
       "is_true": null,
       "explanation": "أن يعبدوه ولا يشركوا به شيئا.",
-      "source_quote": "الإجابة الصحيحة: أن يعبدوه ولا يشركوا به شيئا",
+      "source_quote": null,
       "language": "ar"
     },
     {
@@ -1629,7 +1629,7 @@
       "correct_index": 0,
       "is_true": null,
       "explanation": "حق العباد على الله: ألا يعذب من عبده ولم يشرك به شيئا.",
-      "source_quote": "الإجابة الصحيحة: ألا يعذبهم",
+      "source_quote": null,
       "language": "ar"
     },
     {
@@ -1667,7 +1667,7 @@
       "correct_index": null,
       "is_true": true,
       "explanation": "لأن الله هو الدهر.",
-      "source_quote": "الإجابة الصحيحة: مدبر الأمور (الله)",
+      "source_quote": null,
       "language": "ar"
     },
     {
@@ -7796,7 +7796,7 @@
       "correct_index": null,
       "is_true": true,
       "explanation": "الهجرة فريضة على هذه الأمة.",
-      "source_quote": "اجل واب: الهجرة فريضة على هذه األمة من بلد الشرك إلى بلد الإسلام، وهي .باقية إلى أن تقوم الساعة  ما الدليل على فرضية الهجرة",
+      "source_quote": null,
       "language": "ar"
     },
     {
@@ -9142,7 +9142,7 @@
       "correct_index": null,
       "is_true": true,
       "explanation": "ومن كان يؤمن بالله واليوم الآخر فليكرم جاره.",
-      "source_quote": "«من كان ي ؤمن بالل ه واليوم الآخر ف ليقل خيرا أو ل يص مت ، ومن كان ي ؤمن بالل ه واليوم الآخر ف لي كرم جاره ، ومن كان ي ؤمن بالل ه واليوم الآخر ف لي كرم ضيفه»",
+      "source_quote": null,
       "language": "ar"
     },
     {
@@ -9694,7 +9694,7 @@
       "correct_index": null,
       "is_true": true,
       "explanation": "وبينهما أمور مشتبهات.",
-      "source_quote": "الإجابة الصحيحة: اتقاء الشبهات",
+      "source_quote": null,
       "language": "ar"
     },
     {
@@ -9770,7 +9770,7 @@
       "correct_index": 0,
       "is_true": null,
       "explanation": "سهل الله له به طريقا إلى الجنة.",
-      "source_quote": "الإجابة الصحيحة: يسهل الله له طريقا إلى الجنة",
+      "source_quote": null,
       "language": "ar"
     },
     {
@@ -9865,7 +9865,7 @@
       "correct_index": 0,
       "is_true": null,
       "explanation": "احفظ الله يحفظك.",
-      "source_quote": "الإجابة الصحيحة: يحفظك",
+      "source_quote": null,
       "language": "ar"
     },
     {

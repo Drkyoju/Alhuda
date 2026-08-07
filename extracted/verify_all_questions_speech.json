@@ -1,0 +1,20 @@
+{
+  "checked": 652,
+  "uniqueIds": 652,
+  "wordingMismatches": 0,
+  "weakTashkeel": 0,
+  "missingIds": 0,
+  "abadBad": 0,
+  "allahBad": 0,
+  "speakPlanExtras": 0,
+  "tfPlanBad": 0,
+  "ayahFishLeak": 0,
+  "wordingSample": [],
+  "weakSample": [],
+  "abadSample": [],
+  "allahSample": [],
+  "extrasSample": [],
+  "ayahSample": [],
+  "allWording": [],
+  "allWeak": []
+}

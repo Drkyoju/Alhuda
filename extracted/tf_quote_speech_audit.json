@@ -1,0 +1,87 @@
+{
+  "auditedAt": "2026-08-07T14:01:02.797Z",
+  "tfCount": 72,
+  "bankTotal": 652,
+  "questionCard": {
+    "tfSpeechQMismatches": 0,
+    "tfQuoteExpLeakedIntoSpokenQ": 0,
+    "hadithMuadhAppendedToQ": 0,
+    "knownId07483021": {
+      "bankQ": "حق الله على العباد هو عبادته وعدم الشرك به.",
+      "speechQ": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ.",
+      "quoteSeparate": "هَذَا مَا جَاءَ فِي حَدِيثِ مُعَاذِ بْنِ جَبَلٍ.",
+      "status": "FIXED — quote/exp not in speech q; guards land in app.js v253"
+    },
+    "tfOptionsSpeech": "hardcoded صَحّ / خَطَأٌ in buildQuestionOptionSpeechList + appendAnswerOption tf0/tf1",
+    "speakQuestionSkipsQuoteExp": true
+  },
+  "fixedNow": {
+    "removedStaleA0A3FromTfSpeechMap": [
+      "00fb1757-a23c-46e3-a4dc-825537d500c3",
+      "81b93c71-d614-4610-8da3-86aa7e75fa90",
+      "c54d1682-3662-427d-a959-c54766568898",
+      "a1d8f12b-4697-41c4-8b9a-ee32cacb22f3",
+      "9218b66d-d695-4c63-bc4d-2cf6ea1419ee",
+      "64108c2e-be22-4a6e-832c-73a5ccb6527d",
+      "cb21e26c-43d2-403f-b059-750a049578b0",
+      "9ef7f53c-a9c8-4f0e-9057-fe16b630df14"
+    ],
+    "note": "Pollution only — speakQuestion already ignored these; cleaned to protect diacritizeFieldText"
+  },
+  "notFixedContentBugsFeedbackCitation": [
+    {
+      "id": "c54d1682-3662-427d-a959-c54766568898",
+      "type": "tf",
+      "issue": "answer-prefix-as-quote",
+      "snippet": "الإجابة الصحيحة: مدبر الأمور (الله)"
+    },
+    {
+      "id": "9218b66d-d695-4c63-bc4d-2cf6ea1419ee",
+      "type": "tf",
+      "issue": "answer-prefix-as-quote",
+      "snippet": "الإجابة الصحيحة: اتقاء الشبهات"
+    },
+    {
+      "id": "d3e5d0d4-711f-46ac-b7a3-840b9258f67c",
+      "type": "tf",
+      "issue": "ocr-garbage-quote",
+      "snippet": "اجل واب: الهجرة فريضة على هذه األمة..."
+    },
+    {
+      "id": "59571e92-ff34-4008-aa2e-a6a0bc4545b4",
+      "type": "tf",
+      "issue": "ocr-spaced-quote",
+      "snippet": "من كان ي ؤمن بالل ه..."
+    },
+    {
+      "id": "79060455-082e-4ede-9964-2c3c684bd269",
+      "type": "mc",
+      "issue": "answer-prefix-as-quote",
+      "snippet": "الإجابة الصحيحة: أن يعبدوه ولا يشركوا به شيئا"
+    },
+    {
+      "id": "e069ac98-4775-48e3-be48-d8928457a9fc",
+      "type": "mc",
+      "issue": "answer-prefix-as-quote",
+      "snippet": "الإجابة الصحيحة: ألا يعذبهم"
+    },
+    {
+      "id": "4e0c618e-520b-4511-9a67-5b9f328aa7c3",
+      "type": "mc",
+      "issue": "answer-prefix-as-quote",
+      "snippet": "الإجابة الصحيحة: يسهل الله له طريقا إلى الجنة"
+    },
+    {
+      "id": "41b189f4-a2e6-43a3-ba4f-e27fb4f6627b",
+      "type": "mc",
+      "issue": "answer-prefix-as-quote",
+      "snippet": "الإجابة الصحيحة: يحفظك"
+    }
+  ],
+  "appGuardsAlreadyLanded": [
+    "speechMatchesDisplay reject mismatched map rows",
+    "buildQuestionOptionSpeechList TF → صَحّ/خَطَأٌ only",
+    "speakQuestion comment: Never speak quote/exp on question card",
+    "appendAnswerOption tf0/tf1 hardcoded"
+  ]
+}

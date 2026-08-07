@@ -1,0 +1,349 @@
+{
+  "sampled": 24,
+  "includesHaqqAllah": true,
+  "wordingFails": 0,
+  "ayahStillInFish": 0,
+  "haqqAllah": {
+    "id": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+    "type": "tf",
+    "bankQ": "حق الله على العباد هو عبادته وعدم الشرك به.",
+    "preparedQ": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ",
+    "verseKey": null,
+    "optionCount": 2,
+    "mismatches": [],
+    "prepDrift": [],
+    "harakatRatioQ": 0.853
+  },
+  "sample": [
+    {
+      "id": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+      "type": "tf",
+      "bankQ": "حق الله على العباد هو عبادته وعدم الشرك به.",
+      "preparedQ": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ",
+      "harakatRatioQ": 0.853,
+      "verseKey": null
+    },
+    {
+      "id": "64ea9fa9-b63d-2267-8cff-3b7cd76a4dfe",
+      "type": "mc",
+      "bankQ": "الحلف بغير الله شرك:",
+      "preparedQ": "الْحَلِفُ بِغَيْرِ اللَّهِ شِرْكٌ",
+      "harakatRatioQ": 0.875,
+      "verseKey": null
+    },
+    {
+      "id": "2cd97dec-c009-6bfd-c646-0492ec5d5480",
+      "type": "mc",
+      "bankQ": "الشرك سمي ظلما لأنه:",
+      "preparedQ": "الشِّرْكِ سمّي ظلماً لِأَنَّهُ",
+      "harakatRatioQ": 0.688,
+      "verseKey": null
+    },
+    {
+      "id": "7bf71509-12cb-415e-9974-2ea1b237c14a",
+      "type": "mc",
+      "bankQ": "الغضب جمرة يلقيها الشيطان، ويطفأ ب:",
+      "preparedQ": "الْغَضَبُ جَمْرَةٌ يُلْقِيهَا الشَّيْطَانُ وَيُطْفَأُ بِ",
+      "harakatRatioQ": 0.821,
+      "verseKey": null
+    },
+    {
+      "id": "04f0e7ba-0689-0e29-8837-a95309fb3b29",
+      "type": "mc",
+      "bankQ": "من لم يشرك بالله ومات على ذلك فهو؟",
+      "preparedQ": "مَنْ لَمْ يُشْرَكَ بِاللَّهِ وَمَاتَ عَلَى ذَلِكَ فَهُوَ",
+      "harakatRatioQ": 0.885,
+      "verseKey": null
+    },
+    {
+      "id": "de608085-2f6f-c6a3-ae18-f773910abb1d",
+      "type": "mc",
+      "bankQ": "معنى \"حنيفا\" في وصف إبراهيم عليه السلام:",
+      "preparedQ": "مَعْنَى حنيفاً فِي وَصْفِ إِبْرَاهِيمُ عَلَيْهِ السَّلَامُ",
+      "harakatRatioQ": 0.677,
+      "verseKey": null
+    },
+    {
+      "id": "7da44f63-4cb4-c79d-4ac4-80a5af7bec84",
+      "type": "mc",
+      "bankQ": "\"أمة\" في وصف إبراهيم معناها:",
+      "preparedQ": "أمّة فِي وَصْفِ إِبْرَاهِيمُ مَعْنَاهَا",
+      "harakatRatioQ": 0.667,
+      "verseKey": null
+    },
+    {
+      "id": "649bc12b-6203-aab8-429c-ac035ff905d0",
+      "type": "mc",
+      "bankQ": "\"حنيفا\" معناها المقبل على الله المعرض عما:",
+      "preparedQ": "حَنِيفًا مَعْنَاهَا الْمُقْبِلُ عَلَى اللَّهِ الْمُعْرِضُ عَمَّا",
+      "harakatRatioQ": 0.758,
+      "verseKey": null
+    }
+  ],
+  "results": [
+    {
+      "id": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+      "type": "tf",
+      "bankQ": "حق الله على العباد هو عبادته وعدم الشرك به.",
+      "preparedQ": "حَقُّ اللَّهِ عَلَى الْعِبَادِ هُوَ عِبَادَتُهُ وَعَدَمُ الشِّرْكِ بِهِ",
+      "verseKey": null,
+      "optionCount": 2,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.853
+    },
+    {
+      "id": "64ea9fa9-b63d-2267-8cff-3b7cd76a4dfe",
+      "type": "mc",
+      "bankQ": "الحلف بغير الله شرك:",
+      "preparedQ": "الْحَلِفُ بِغَيْرِ اللَّهِ شِرْكٌ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.875
+    },
+    {
+      "id": "2cd97dec-c009-6bfd-c646-0492ec5d5480",
+      "type": "mc",
+      "bankQ": "الشرك سمي ظلما لأنه:",
+      "preparedQ": "الشِّرْكِ سمّي ظلماً لِأَنَّهُ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.688
+    },
+    {
+      "id": "7bf71509-12cb-415e-9974-2ea1b237c14a",
+      "type": "mc",
+      "bankQ": "الغضب جمرة يلقيها الشيطان، ويطفأ ب:",
+      "preparedQ": "الْغَضَبُ جَمْرَةٌ يُلْقِيهَا الشَّيْطَانُ وَيُطْفَأُ بِ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.821
+    },
+    {
+      "id": "04f0e7ba-0689-0e29-8837-a95309fb3b29",
+      "type": "mc",
+      "bankQ": "من لم يشرك بالله ومات على ذلك فهو؟",
+      "preparedQ": "مَنْ لَمْ يُشْرَكَ بِاللَّهِ وَمَاتَ عَلَى ذَلِكَ فَهُوَ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.885
+    },
+    {
+      "id": "de608085-2f6f-c6a3-ae18-f773910abb1d",
+      "type": "mc",
+      "bankQ": "معنى \"حنيفا\" في وصف إبراهيم عليه السلام:",
+      "preparedQ": "مَعْنَى حنيفاً فِي وَصْفِ إِبْرَاهِيمُ عَلَيْهِ السَّلَامُ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.677
+    },
+    {
+      "id": "7da44f63-4cb4-c79d-4ac4-80a5af7bec84",
+      "type": "mc",
+      "bankQ": "\"أمة\" في وصف إبراهيم معناها:",
+      "preparedQ": "أمّة فِي وَصْفِ إِبْرَاهِيمُ مَعْنَاهَا",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.667
+    },
+    {
+      "id": "649bc12b-6203-aab8-429c-ac035ff905d0",
+      "type": "mc",
+      "bankQ": "\"حنيفا\" معناها المقبل على الله المعرض عما:",
+      "preparedQ": "حَنِيفًا مَعْنَاهَا الْمُقْبِلُ عَلَى اللَّهِ الْمُعْرِضُ عَمَّا",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.758
+    },
+    {
+      "id": "b86c4401-c533-81ae-26c6-0d80bcfdb481",
+      "type": "mc",
+      "bankQ": "إبراهيم النخعي روي عنه كراهة التمائم كلها من القرآن و:",
+      "preparedQ": "إِبْرَاهِيمُ النَّخَعِيُّ رُوِيَ عَنْهُ كَرَاهَةُ التَّمَائِمِ كُلِّهَا مَنْ الْقُرْآنُ و",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.818
+    },
+    {
+      "id": "4a5652e2-95f7-f070-10a9-ac8763072dcb",
+      "type": "mc",
+      "bankQ": "المراتب الأربع التي يجب تعلمها هي:",
+      "preparedQ": "الْمَرَاتِبِ الْأَرْبَعُ الَّتِي يَجِبُ تَعَلُّمُهَا هِيَ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.857
+    },
+    {
+      "id": "8be3cabe-ff07-592c-3b9c-5f3601dee012",
+      "type": "mc",
+      "bankQ": "من فوائد الحديث (2- جبريل): أن الإسلامدين اتباع لا دين ابتداع؟",
+      "preparedQ": "من فَوَائِدِ الْحَدِيثِ 2- جِبْرِيلَ أَنَّ الإسلامدين اتِّبَاعُ لَا دِينَ ابْتِدَاعٍ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.565
+    },
+    {
+      "id": "98e27a6b-d241-4d3c-a1a6-bab114689db0",
+      "type": "mc",
+      "bankQ": "من هو رأس الطواغيت؟",
+      "preparedQ": "مَنْ هُوَ رَأْسُ الطَّوَاغِيتِ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.8
+    },
+    {
+      "id": "cbe119d0-2dd7-6ef0-2f2f-521675e8f85b",
+      "type": "mc",
+      "bankQ": "من فوائد الحديث (17- الإحسان): الحث على الاكثار من الصلاة؛ لنها نور للمسلم؟",
+      "preparedQ": "من فَوَائِدِ الْحَدِيثِ 17- الْإِحْسَانِ الْحَثُّ عَلَى الْإِكْثَارِ من الصَّلَاةِ لنها نُورٌ لِلْمُسْلِمِ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.655
+    },
+    {
+      "id": "c657e959-434b-4c9c-b1c7-60206d85138d",
+      "type": "tf",
+      "bankQ": "علاج الغضب أن يقول: أعوذ بالله من الشيطان الرجيم.",
+      "preparedQ": "عِلَاجُ الْغَضَبِ أَنْ يَقُولَ أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ",
+      "verseKey": null,
+      "optionCount": 2,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.769
+    },
+    {
+      "id": "d3ef73b7-d767-4445-a6d7-c1f92032be45",
+      "type": "mc",
+      "bankQ": "الحلف بغير الله مثل (وحياة أبي) حكمه:",
+      "preparedQ": "الحَلِفُ بِغَيْرِ اللَّهِ مِثْلُ وَحَيَاةِ أَبِي حُكْمُهُ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.821
+    },
+    {
+      "id": "288554fc-7b6d-4532-b1a7-018cb647e5e2",
+      "type": "mc",
+      "bankQ": "ما الفرق بين الرياء والسمعة؟",
+      "preparedQ": "مَا الْفَرْقُ بَيْنَ الرِّيَاءِ وَالسُّمْعَةِ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.783
+    },
+    {
+      "id": "fcbcf713-b692-4fbf-a3e4-097b3dcb5320",
+      "type": "mc",
+      "bankQ": "ما حكم الذبح لغير الله (كالأضرحة أو الجن)؟",
+      "preparedQ": "مَا حُكْمُ الذَّبْحِ لِغَيْرِ اللَّهِ كَالْأَضْرِحَةِ أَوِ الْجِنِّ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.875
+    },
+    {
+      "id": "b2f4d852-0565-19f0-0844-8b82158b6815",
+      "type": "mc",
+      "bankQ": "التولة شيء يصنع يزعم أنه يحبب:",
+      "preparedQ": "التَّوَلَةُ شَيْءٌ يُصنع يُزعم أَنَّهُ يحبّب",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.625
+    },
+    {
+      "id": "8285fb94-48e6-ff29-55f5-c45f1c8269e2",
+      "type": "mc",
+      "bankQ": "الفرق بين الشرك الأكبر والأصغر أن الأكبر:",
+      "preparedQ": "الْفَرْقُ بَيْنَ الشِّرْكِ الْأَكْبَرِ وَالْأَصْغَرِ أَنَّ الْأَكْبَرَ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.882
+    },
+    {
+      "id": "5160169e-5368-44b1-81b7-cf4074a86523",
+      "type": "mc",
+      "bankQ": "دليل النذر لله:",
+      "preparedQ": "دَلِيلُ النَّذْرِ لِلَّهِ",
+      "verseKey": "76:7",
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.917
+    },
+    {
+      "id": "6d926dd8-cfe5-8573-4427-38044f6ed8b8",
+      "type": "mc",
+      "bankQ": "من فوائد الحديث (10- الحلال): حرص الصحابة على وصايا الرسول ؟",
+      "preparedQ": "مِنْ فَوَائِدِ الْحَدِيثِ 10- الْحَلَالُ حِرْصَ الصَّحَابَةِ عَلَى وَصَايَا الرَّسُولِ",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.721
+    },
+    {
+      "id": "88cd103c-248f-4ded-c9c8-58b008cd53fb",
+      "type": "mc",
+      "bankQ": "\"الثقلان\" المذكوران في الخلق هما:",
+      "preparedQ": "الثَّقَلَانِ الْمَذْكُورَانِ فِي الْخَلْقِ هُمَا",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.692
+    },
+    {
+      "id": "9fee6ce4-3b95-41e4-7e24-06f327cac297",
+      "type": "mc",
+      "bankQ": "التمائم: شيء يعلق على الأولاد ل:",
+      "preparedQ": "التَّمَائِمِ شَيْءٌ يُعلّق عَلَى الْأَوْلَادِ ل",
+      "verseKey": null,
+      "optionCount": 4,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 0.68
+    },
+    {
+      "id": "390a98fa-c43d-41d2-80f0-82a6894ba5db",
+      "type": "tf",
+      "bankQ": "المؤلف ولد في مكة.",
+      "preparedQ": "الْمُؤَلِّفُ وُلِدَ فِي مَكَّةَ",
+      "verseKey": null,
+      "optionCount": 2,
+      "mismatches": [],
+      "prepDrift": [],
+      "harakatRatioQ": 1
+    }
+  ]
+}
