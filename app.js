@@ -1693,7 +1693,7 @@ const TTS_VOICE = 'c3e5d81d807f4cbc9a0c2872a4dea9ea';
 /** Must match baked-tts.js / collect_tts_strings.mjs (file hashes use this ver). */
 const TTS_CACHE_VER = 'v30';
 /** Bump to drop stale IndexedDB blobs from prior Yousef/v29 bake. */
-const TTS_IDB_NAME = 'alhudaTtsCache_v3';
+const TTS_IDB_NAME = 'alhudaTtsCache_v4';
 const TTS_BLOB_CACHE_MAX = 220;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
@@ -1704,6 +1704,8 @@ if (typeof window !== 'undefined' && window.__alhudaBakedTtsOnly == null) {
 }
 const ttsPreloadedAudio = new Map(); // key -> HTMLAudioElement (decoded ahead of play)
 const TTS_IDB_STORE = 'audio';
+/** Set true from a real tap so later async Audio.play() is allowed (iOS). */
+let ttsGestureUnlocked = false;
 
 function ttsCacheKey(text, voice) {
   return `${TTS_CACHE_VER}::${voice || TTS_VOICE}::${String(text || '').slice(0, 600)}`;
@@ -1719,6 +1721,18 @@ function touchTtsMemoryCache(key) {
 
 function isTtsSpeaking() {
   return !!(ttsAudio && !ttsAudio.paused && !ttsAudio.ended);
+}
+
+/** iOS-safe Audio element — blob URLs alone often stay silent without playsInline. */
+function makePlayableAudio(src) {
+  const a = new Audio();
+  a.preload = 'auto';
+  a.playsInline = true;
+  a.setAttribute('playsinline', '');
+  a.setAttribute('webkit-playsinline', 'true');
+  try { a.muted = false; a.volume = 1; } catch { /* ignore */ }
+  if (src) a.src = src;
+  return a;
 }
 
 function openTtsIdb() {
@@ -1778,9 +1792,7 @@ function rememberTtsObjectUrl(key, objectUrl) {
   ttsBlobMemoryCache.set(key, objectUrl);
   // Decode ahead so play() starts without a cold media-pipeline stall.
   try {
-    const warm = new Audio();
-    warm.preload = 'auto';
-    warm.src = objectUrl;
+    const warm = makePlayableAudio(objectUrl);
     ttsPreloadedAudio.set(key, warm);
   } catch { /* ignore */ }
   while (ttsBlobMemoryCache.size > TTS_BLOB_CACHE_MAX) {
@@ -3654,7 +3666,7 @@ async function playQuranRecitation(verseKey, btn, { interruptAll = true } = {}) 
 
   const tryPlay = async (src) => {
     if (playToken !== quranPlayToken) return;
-    quranAudio = new Audio(src);
+    quranAudio = makePlayableAudio(src);
     quranAudio.preload = 'auto';
     quranAudio.playbackRate = QURAN_PLAYBACK_RATE;
     quranAudio.preservesPitch = true;
@@ -3878,7 +3890,27 @@ async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
 
 async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
   const key = ttsCacheKey(text, voice);
-  // Hot path: play from memory URL immediately — no IDB / network / blob re-fetch.
+  // 1) Prefer direct HTTPS baked URL — most reliable on iOS (blob: often stays silent).
+  if (typeof bakedTtsAssetPath === 'function') {
+    try {
+      const bakedUrl = await bakedTtsAssetPath(text, voice);
+      const bust = typeof window !== 'undefined' && window.ALHUDA_ASSETS?.sw
+        ? `?v=${window.ALHUDA_ASSETS.sw}`
+        : '';
+      const direct = `${bakedUrl}${bust}`;
+      ttsObjectUrl = direct;
+      ttsAudio = makePlayableAudio(direct);
+      await playTtsElement(btn, playbackRate);
+      // Warm blob cache in background for offline — don't block playback.
+      void ensureTtsObjectUrl(text, voice).catch(() => {});
+      return;
+    } catch (e) {
+      if (e?.name === 'AbortError') throw e;
+      if (String(e?.message || '').includes('needs tap')) throw e;
+      // Fall through to blob / network path.
+    }
+  }
+  // 2) Memory / IDB / network blob path
   let url = ttsBlobMemoryCache.get(key) || null;
   if (url) touchTtsMemoryCache(key);
   if (!url) {
@@ -3887,12 +3919,7 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_D
   }
   if (!url) throw new Error('empty audio');
   ttsObjectUrl = url;
-  const preloaded = ttsPreloadedAudio.get(key);
-  // Prefer a fresh element — reusing a preloaded Audio that already ended is flaky on iOS.
-  ttsAudio = new Audio(url);
-  if (preloaded && preloaded !== ttsAudio) {
-    try { preloaded.pause(); } catch { /* ignore */ }
-  }
+  ttsAudio = makePlayableAudio(url);
   await playTtsElement(btn, playbackRate);
 }
 
@@ -4040,9 +4067,20 @@ async function speakText(text, btn, { allowAnswers = false, question = null } = 
 
 /** Best-effort unlock so later async Audio.play() works on iOS/Safari. */
 function unlockTtsAudio() {
+  ttsGestureUnlocked = true;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') void audioCtx.resume();
+    // Tiny silent buffer under the user gesture — unlocks the audio session.
+    const buf = audioCtx.createBuffer(1, 1, 22050);
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    src.connect(audioCtx.destination);
+    src.start(0);
+  } catch { /* ignore */ }
   try {
     const silent = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYoRwmHAAAAAAD/+1DEAAAGAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==';
-    const a = new Audio(silent);
+    const a = makePlayableAudio(silent);
     a.volume = 0.01;
     const p = a.play();
     if (p && typeof p.then === 'function') {
@@ -4226,10 +4264,8 @@ function applyOfflineVoicePolicy() {
 }
 
 function onQuestionSpeakerClick() {
+  // MUST run unlock synchronously in the tap handler (iOS kills async play otherwise).
   unlockTtsAudio();
-  // While audio is playing: tap = mute (stop).
-  // While idle with voice on: tap = replay (do NOT mute — that looked like "no sound").
-  // While muted: tap = unmute + speak.
   if (voiceOn && isTtsSpeaking()) {
     voiceOn = false;
     localStorage.setItem('voiceOn', 'false');
@@ -6822,11 +6858,11 @@ async function restoreSession() {
     localStorage.setItem('voiceOn', 'true');
     localStorage.setItem('voiceForceOnV221', '1');
   }
-  // V240: speaker idle-tap used to mute instead of replay — re-enable anyone stuck muted.
-  if (localStorage.getItem('voiceForceOnV240') !== '1') {
+  // V241: force voice on + clear any stuck mute from speaker-toggle confusion.
+  if (localStorage.getItem('voiceForceOnV241') !== '1') {
     voiceOn = true;
     localStorage.setItem('voiceOn', 'true');
-    localStorage.setItem('voiceForceOnV240', '1');
+    localStorage.setItem('voiceForceOnV241', '1');
   }
   // One-time: turn answer read-aloud on for everyone (was default-off).
   // V3: re-enable after Fish full-bank bake so every option is spoken again.
@@ -6853,6 +6889,16 @@ async function restoreSession() {
   }
   applyLoginLockUI();
   void refreshTtsProviderBadge();
+  // Unlock audio on the first real tap anywhere — critical for iPhone Safari.
+  const unlockOnce = () => {
+    unlockTtsAudio();
+    document.removeEventListener('pointerdown', unlockOnce, true);
+    document.removeEventListener('touchstart', unlockOnce, true);
+    document.removeEventListener('click', unlockOnce, true);
+  };
+  document.addEventListener('pointerdown', unlockOnce, true);
+  document.addEventListener('touchstart', unlockOnce, true);
+  document.addEventListener('click', unlockOnce, true);
   // Defer Quran warm until demo/game start — avoid competing with first paint.
   window.addEventListener('offline', () => applyOfflineVoicePolicy());
   if (navigator.onLine === false) applyOfflineVoicePolicy();
