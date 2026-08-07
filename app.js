@@ -2677,12 +2677,22 @@ function applyWordDiacritics(text) {
   const wordMap = (typeof window !== 'undefined' && window.SPEECH_WORD_MAP) || null;
   const lex = (typeof window !== 'undefined' && window.SPEECH_PRON_LEXICON) || null;
   if (!wordMap && !lex) return text;
+  const letters = (s) => String(s || '')
+    .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي');
   return String(text).replace(SPEECH_WORD_RE, (tok) => {
     // Curated tashkeel wins — lexicon/word-map must not reorder marks.
     if (ARABIC_HARAKAT_RE.test(tok)) return tok;
     const bare = stripHarakat(tok);
-    if (lex?.[bare]) return lex[bare];
-    return (wordMap && wordMap[bare]) || tok;
+    const tryCand = (cand) => {
+      if (!cand) return null;
+      // Never change consonants/words vs on-screen token.
+      if (letters(cand) !== letters(bare)) return null;
+      return cand;
+    };
+    return tryCand(lex?.[bare]) || tryCand(wordMap?.[bare]) || tok;
   });
 }
 
@@ -2697,9 +2707,13 @@ function applyManualSpeechDiacritics(text) {
   if (!out) return '';
   const phraseMap = (typeof window !== 'undefined' && window.SPEECH_PHRASE_MAP) || {};
   const exact = normalizeArabicForMatch(out);
-  if (phraseMap[exact]) return phraseMap[exact];
+  if (phraseMap[exact] && speechMatchesDisplay(phraseMap[exact], out)) {
+    return phraseMap[exact];
+  }
   for (const [plain, diacritized] of MANUAL_SPEECH_DIACRITICS) {
-    if (exact === normalizeArabicForMatch(plain)) return diacritized;
+    if (exact === normalizeArabicForMatch(plain) && speechMatchesDisplay(diacritized, out)) {
+      return diacritized;
+    }
   }
   for (const [plain, diacritized] of getSortedManualSpeech()) {
     // Whole-token only — never splice into already-diacritized words (النبيُّ + النبي → النَّبِيُِّّ).
@@ -2713,10 +2727,38 @@ function applyManualSpeechDiacritics(text) {
   return applyWordDiacritics(out);
 }
 
+/** Spoken text must match visible text (harakat/ﷺ expansion OK; no extra/missing clauses). */
+function speechMatchesDisplay(spoken, displayed) {
+  const expandHonorifics = (s) => String(s || '')
+    .replace(/\uFDFA/g, ' صلى الله عليه وسلم ')
+    .replace(/\uFDFB/g, ' جل جلاله ')
+    .replace(/صلعم/g, ' صلى الله عليه وسلم ')
+    .replace(/\(ص\)/g, ' صلى الله عليه وسلم ');
+  const norm = (s) => expandHonorifics(s)
+    .replace(/[\u064B-\u065F\u0670\u0610-\u061A\u0640\u200c\u200f]/g, '')
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي')
+    .replace(/ؤ/g, 'و')
+    .replace(/ئ/g, 'ي')
+    .replace(/\bلو\s+لا\b/g, 'لولا')
+    .replace(/[؟?!.،,;؛:«»"'“”‘’\(\)\[\]\{\}✓✗—–\-…]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return norm(spoken) === norm(displayed);
+}
+
 function speechTextFor(q, field, raw) {
   const byId = (typeof window !== 'undefined' && window.SPEECH_BY_QUESTION_ID) || {};
   const hit = q?.id && byId[q.id]?.[field];
-  const base = String(hit || raw || '').trim();
+  const original = String(raw || '').trim();
+  // Reject wrong map rows (different wording than on-screen text).
+  let base = String(hit || '').trim();
+  if (base && original && !speechMatchesDisplay(base, original)) {
+    base = original;
+  } else if (!base) {
+    base = original;
+  }
   if (!base) return '';
   // Hadith / quote-hadith: keep curated form (Gemini or source) — no word-map rewrite.
   if (isHadithPassage(base) || (field === 'quote' && isHadithPassage(base))) {
@@ -2976,7 +3018,7 @@ function buildQuestionOptionSpeechList(q) {
       if (t) items.push(t);
     });
   } else if (q?.type === 'tf') {
-    // Must match baked clips (not "أولاً، صح" composites).
+    // Must match on-screen buttons «صح ✓» / «خطأ ✗» (harakat OK for TTS).
     items.push('صَحّ');
     items.push('خَطَأٌ');
   }
@@ -4313,23 +4355,10 @@ function speakQuestion() {
         await waitForQuranIdle();
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 3) Hadith / book citation — TTS only (never Hudhaify).
-        const citeRaw = String(q.quote || '').trim();
-        if (citeRaw && isHadithPassage(citeRaw) && !citationLooksLikeAyah(citeRaw, verseKey)) {
-          const citeSpeak = speechPart(q, 'quote', citeRaw) || citeRaw;
-          const citeClean = prepareTtsPayload(citeSpeak);
-          if (citeClean) {
-            try {
-              await speakTtsSegment(citeClean, btn, { clearAfter: false, alreadyPrepared: true });
-            } catch (e) {
-              if (e?.name === 'AbortError' && token !== hybridSpeechToken) return;
-              console.warn('hadith cite tts:', e?.message || e);
-            }
-          }
-        }
-        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+        // Never speak quote/exp here — they are not on the question card.
+        // Citations belong in the feedback panel only (spoken≡displayed).
 
-        // 4) Answers — every option with retries (never skip after ayah).
+        // Answers — every visible option with retries (never skip after ayah).
         if (opts.length) {
           for (const opt of opts) {
             if (token !== hybridSpeechToken || state.idx !== askIdx) return;
@@ -4455,9 +4484,11 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
     sp.setAttribute('aria-label', 'اقرأ الإجابة');
     sp.textContent = '🔊';
     const rawSpeak = raw.replace(/[✓✗]/g, '').trim();
-    const toSpeak = speechField
-      ? speechPart(q, speechField, rawSpeak)
-      : prepareArabicForSpeech(applyManualSpeechDiacritics(rawSpeak));
+    let toSpeak;
+    if (speechField === 'tf0') toSpeak = 'صَحّ';
+    else if (speechField === 'tf1') toSpeak = 'خَطَأٌ';
+    else if (speechField) toSpeak = speechPart(q, speechField, rawSpeak);
+    else toSpeak = prepareArabicForSpeech(applyManualSpeechDiacritics(rawSpeak));
     prefetchTtsText(toSpeak);
     sp.onclick = (e) => {
       e.stopPropagation();
@@ -6112,8 +6143,9 @@ function renderQ() {
   grid.innerHTML = '';
   if (q.type === 'tf') {
     state.displayAnswerOrder = null;
+    // Explicit TF speech fields — never let phrase-map invent alternate wording.
     ['صح ✓', 'خطأ ✗'].forEach((txt, i) => {
-      appendAnswerOption(grid, txt, (i === 0) === q.tf, i === 0 ? 0 : 3, q, null);
+      appendAnswerOption(grid, txt, (i === 0) === q.tf, i === 0 ? 0 : 3, q, i === 0 ? 'tf0' : 'tf1');
     });
   } else {
     const order = (prior?.displayAnswerOrder?.length
