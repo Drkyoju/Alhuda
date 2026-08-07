@@ -4,8 +4,14 @@
   "terminals": [
     {
       "name": "dev-server",
-      "command": "python3 -m http.server 8765"
+      "command": "python3 -m http.server 8765",
+      "description": "Static dev server for the PWA at http://127.0.0.1:8765 (Playwright BASE_URL)."
     }
   ],
-  "ports": [8765]
+  "ports": [
+    {
+      "name": "dev-server",
+      "port": 8765
+    }
+  ]
 }
