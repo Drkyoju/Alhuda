@@ -238,7 +238,7 @@ async function handleTts(request, env) {
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: cors });
   }
-  if (!rateLimit(request, 'tts', 40, 60000)) {
+  if (!rateLimit(request, 'tts', 200, 60000)) {
     return rateLimitedResponse(cors);
   }
   if (request.method !== 'POST') {
