@@ -23,12 +23,12 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   latency: 'normal', // best quality (vs balanced/low)
   normalize: false, // keep Arabic harakat — do not rewrite diacritics
   chunk_length: 300, // max continuity for long vocalized sentences
-  temperature: 0.28, // stick tightly to provided tashkeel/iʿrāb
+  temperature: 0.26, // stick tightly to provided tashkeel/iʿrāb
   top_p: 0.45,
   repetition_penalty: 1.35,
   prosody: {
     speed: 0.96, // natural pace (was 0.88 — felt sluggish); override via FISH_TTS_SPEED
-    volume: 2,
+    volume: 5, // louder without clipping (-20..20); was 2
     normalize_loudness: true,
   },
 });
@@ -71,6 +71,12 @@ export function stripTtsPunctuation(text) {
     .trim();
 }
 
+/** Whole-token عبد/عَبْد… after ما → passive عُبِدَ (not عبده / عبد الله). */
+const MA_UBIDA_RE =
+  /م[\u064B-\u065F\u0670]*ا[\u064B-\u065F\u0670]*\s+ع[\u064B-\u065F\u0670]*ب[\u064B-\u065F\u0670]*د[\u064B-\u065F\u0670]*(?![\u0621-\u064A])(?!\s*[اأإآٱ][\u064B-\u065F\u0670]*ل)/g;
+const KULLU_MA_UBIDA_RE =
+  /ك[\u064B-\u065F\u0670]*ل[\u064B-\u065F\u0670]*\s+م[\u064B-\u065F\u0670]*ا[\u064B-\u065F\u0670]*\s+ع[\u064B-\u065F\u0670]*ب[\u064B-\u065F\u0670]*د[\u064B-\u065F\u0670]*(?![\u0621-\u064A])(?!\s*[اأإآٱ][\u064B-\u065F\u0670]*ل)/g;
+
 export function prepareFishTtsText(text) {
   // Preserve formation (harakat); expand honorifics; drop marks spoken as words.
   // NEVER strip mid-word harakat — Fish needs tashkeel to avoid «اللاه» / mangled iʿrāb.
@@ -79,13 +85,9 @@ export function prepareFishTtsText(text) {
   s = s.replace(/\uFDFB/g, ' جَلَّ جَلَالُهُ ');
   s = s.replace(/صلعم/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
   s = s.replace(/\(ص\)/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
-  // Critical passive «عُبِدَ» — never leave bare/broken عَبْد after مَا (look past any harakat).
-  s = s.replace(/مَا\s+ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/g, (m) =>
-    /عُبِدَ/.test(m) ? m : 'مَا عُبِدَ'
-  );
-  s = s.replace(/كُلُّ?\s+مَا\s+ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/g, (m) =>
-    /عُبِدَ/.test(m) ? m.replace(/^[\s\S]*مَا/, 'كُلُّ مَا').replace(/ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/, 'عُبِدَ') : 'كُلُّ مَا عُبِدَ'
-  );
+  // Critical passive «عُبِدَ» — bare/broken ما عبد / مَا عَبْد (not عبده / عبد الله).
+  s = s.replace(MA_UBIDA_RE, 'مَا عُبِدَ');
+  s = s.replace(KULLU_MA_UBIDA_RE, 'كُلُّ مَا عُبِدَ');
   // Verb لَعَنَ takes الله as فاعل مرفوع.
   s = s.replace(/لَعَنَ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "لَعَنَ اللَّهُ");
   s = s.replace(/لعن\s+الله/g, "لَعَنَ اللَّهُ");
@@ -94,9 +96,16 @@ export function prepareFishTtsText(text) {
   s = s.replace(/تَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "تَعْبُدُ اللَّهَ");
   s = s.replace(/نَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "نَعْبُدُ اللَّهَ");
   s = s.replace(/أَنْ\s+تَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ اللَّهَ");
+  s = s.replace(/يعبد\s+الله/g, "يَعْبُدُ اللَّهَ");
+  s = s.replace(/تعبد\s+الله/g, "تَعْبُدُ اللَّهَ");
+  s = s.replace(/نعبد\s+الله/g, "نَعْبُدُ اللَّهَ");
   s = s.replace(/فَقَدْ\s+كُفْر[\u064B-\u065F\u0670]*/g, 'فَقَدْ كَفَرَ');
   s = s.replace(/فقد\s+كفر/g, 'فَقَدْ كَفَرَ');
   s = s.replace(/مَنْ\s+دُون/g, 'مِنْ دُون');
+  s = s.replace(/من\s+دون\s+الله/g, "مِنْ دُونِ اللَّهِ");
+  s = s.replace(/حق\s+الله\s+على\s+العباد/g, "حَقُّ اللَّهِ عَلَى الْعِبَادِ");
+  s = s.replace(/حَقُّ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*\s+عَلَى\s+الْ?عِ?بَاد[\u064B-\u065F\u0670]*/g, "حَقُّ اللَّهِ عَلَى الْعِبَادِ");
+  s = s.replace(/على العباد/g, 'عَلَى الْعِبَادِ');
   s = s.replace(/عَبْد[\u064B-\u065F\u0670]*\s+الل/g, "عَبْدِ الل");
   return fixAllahIrabInText(stripTtsPunctuation(s));
 }

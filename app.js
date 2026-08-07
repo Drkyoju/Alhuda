@@ -2276,14 +2276,18 @@ function scrubSpeechDiacriticsNoise(text) {
   // Classic corruptions from word-map harvest
   s = s.split('َّمَنْ').join('مَنْ');
   s = s.split('َّوَمَنْ').join('وَمَنْ');
-  // Passive «عُبِدَ» (was worshipped) — never collapse to bare عَبْد.
-  // Fix broken map forms: مَا عَبْد / كُلُّ مَا عَبْد → عُبِدَ (consume trailing harakat).
-  s = s.replace(/مَا\s+ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/g, (m) =>
-    /عُبِدَ/.test(m) ? m : 'مَا عُبِدَ'
+  // Passive «عُبِدَ» (was worshipped) — never collapse to bare عَبْد / عبد.
+  // Fix broken map forms: ما عبد / مَا عَبْد / كُلُّ مَا عَبْد → عُبِدَ (not عبده / عبد الله).
+  s = s.replace(
+    /م[\u064B-\u065F\u0670]*ا[\u064B-\u065F\u0670]*\s+ع[\u064B-\u065F\u0670]*ب[\u064B-\u065F\u0670]*د[\u064B-\u065F\u0670]*(?![\u0621-\u064A])(?!\s*[اأإآٱ][\u064B-\u065F\u0670]*ل)/g,
+    'مَا عُبِدَ'
   );
-  s = s.replace(/كُلُّ?\s+مَا\s+ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/g, (m) =>
-    /عُبِدَ/.test(m) ? m : 'كُلُّ مَا عُبِدَ'
+  s = s.replace(
+    /ك[\u064B-\u065F\u0670]*ل[\u064B-\u065F\u0670]*\s+م[\u064B-\u065F\u0670]*ا[\u064B-\u065F\u0670]*\s+ع[\u064B-\u065F\u0670]*ب[\u064B-\u065F\u0670]*د[\u064B-\u065F\u0670]*(?![\u0621-\u064A])(?!\s*[اأإآٱ][\u064B-\u065F\u0670]*ل)/g,
+    'كُلُّ مَا عُبِدَ'
   );
+  s = s.replace(/حق\s+الله\s+على\s+العباد/g, "حَقُّ اللَّهِ عَلَى الْعِبَادِ");
+  s = s.replace(/على العباد/g, 'عَلَى الْعِبَادِ');
   s = s.split('الن ي').join('النبي');
   s = s.split("اللََّّ").join("اللَّه");
   // Critical iʿrāb fixes (wrong case/harakat → mangled Fish narrator reads)

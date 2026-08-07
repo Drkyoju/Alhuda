@@ -4,7 +4,7 @@
 // On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
 // without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v256';
+const CACHE = 'alhuda-v257';
 // Keep install precache lean — large speech-diacritics-map.js loads on demand.
 const ASSETS = [
   './',
@@ -35,7 +35,7 @@ const ASSETS = [
   './fonts/tajawal-arabic-700-normal.woff2',
 ];
 
-const VERSION = 'v256';
+const VERSION = 'v257';
 
 self.addEventListener('message', (e) => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
