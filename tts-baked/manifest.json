@@ -3,10 +3,10 @@
   "voice": "c3e5d81d807f4cbc9a0c2872a4dea9ea",
   "voiceLabel": "Fish Audio Arabic narrator (راوي عربي)",
   "provider": "fish-audio-baked",
-  "totalStrings": 4217,
-  "bakedThisRun": 13,
-  "skippedExisting": 4204,
+  "totalStrings": 4218,
+  "bakedThisRun": 1,
+  "skippedExisting": 4217,
   "failed": 0,
-  "approxChars": 210650,
-  "generatedAt": "2026-08-07T07:27:30.379Z"
+  "approxChars": 210671,
+  "generatedAt": "2026-08-07T07:36:44.967Z"
 }

@@ -227,6 +227,7 @@ export function collectTtsStrings() {
   add('صَحّ');
   add('خَطَأٌ');
   add('الْإِجَابَةُ الصَّحِيحَةُ');
+  add('إِجَابَتُكَ خَاطِئَةٌ');
   // Live API smoke (tests/api-live.spec.js) — bake exact raw string too.
   out.add('السلام عليكم');
   // Standalone الله-family forms only when already baked (CI coverage stays green).

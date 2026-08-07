@@ -2838,10 +2838,20 @@ function diacritizeFieldText(q, rawText) {
  */
 function buildFeedbackSpeechPlan(q, wrongText) {
   const plan = [];
+  // Separate TTS segments (never join with commas) so each string hits a baked MP3.
+  // Joined "الإجابة الصحيحة، …" composites were always cache misses → silent button.
   const wrong = String(wrongText || '').trim();
-  if (wrong) plan.push({ type: 'tts', text: `إِجَابَتُكَ خَاطِئَةٌ، ${diacritizeFieldText(q, wrong)}` });
+  if (wrong) {
+    plan.push({ type: 'tts', text: 'إِجَابَتُكَ خَاطِئَةٌ' });
+    const wrongSpeech = diacritizeFieldText(q, wrong);
+    if (wrongSpeech) plan.push({ type: 'tts', text: wrongSpeech });
+  }
   const correct = getCorrectAnswerText(q);
-  if (correct) plan.push({ type: 'tts', text: `الْإِجَابَةُ الصَّحِيحَةُ، ${diacritizeFieldText(q, correct)}` });
+  if (correct) {
+    plan.push({ type: 'tts', text: "الْإِجَابَةُ الصَّحِيحَةُ" });
+    const correctSpeech = diacritizeFieldText(q, correct);
+    if (correctSpeech) plan.push({ type: 'tts', text: correctSpeech });
+  }
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   const citeBody = (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '') || '';
   const quoteIsAyah = typeof citationLooksLikeAyah === 'function'
@@ -2849,12 +2859,14 @@ function buildFeedbackSpeechPlan(q, wrongText) {
     : false;
   // Hadith / book prose → TTS. Quran ayah only → Hudhaify (never TTS the ayah wording).
   if (isHadithPassage(citeBody) || (citeBody && !quoteIsAyah && !fieldHasEmbeddedAyah(citeBody))) {
-    plan.push({ type: 'tts', text: diacritizeFieldText(q, citeBody) });
+    const citeSpeech = diacritizeFieldText(q, citeBody);
+    if (citeSpeech) plan.push({ type: 'tts', text: citeSpeech });
   } else if (verseKey && quoteIsAyah) {
     plan.push({ type: 'quran', verseKey });
   } else if (citeBody) {
     // Mixed or unresolved — TTS the prose (ayah markers stripped in prepareTtsPayload path).
-    plan.push({ type: 'tts', text: diacritizeFieldText(q, citeBody) });
+    const citeSpeech = diacritizeFieldText(q, citeBody);
+    if (citeSpeech) plan.push({ type: 'tts', text: citeSpeech });
   } else if (verseKey) {
     plan.push({ type: 'quran', verseKey });
   }
@@ -2906,15 +2918,23 @@ async function speakFeedbackOnce(q, wrongText, btn) {
   if (btn) btn.classList.add('speaking');
   try {
     const plan = buildFeedbackSpeechPlan(q, wrongText);
+    let anyFail = false;
     for (const seg of plan) {
       if (token !== hybridSpeechToken) break;
-      if (seg.type === 'quran' && seg.verseKey) {
-        await playQuranRecitation(seg.verseKey, btn, { interruptAll: false });
-      } else if (seg.type === 'tts' && seg.text?.trim()) {
-        const clean = prepareTtsPayload(seg.text) || stripForSpeech(seg.text);
-        if (clean) await speakTtsSegment(clean, btn, { alreadyPrepared: true });
+      try {
+        if (seg.type === 'quran' && seg.verseKey) {
+          await playQuranRecitation(seg.verseKey, btn, { interruptAll: false });
+        } else if (seg.type === 'tts' && seg.text?.trim()) {
+          const clean = prepareTtsPayload(seg.text) || stripForSpeech(seg.text);
+          if (clean) await speakTtsSegment(clean, btn, { alreadyPrepared: true });
+        }
+      } catch (e) {
+        if (e.name === 'AbortError') throw e;
+        anyFail = true;
+        console.warn('feedback segment:', e);
       }
     }
+    if (anyFail) toastTtsFail();
   } catch (e) {
     if (e.name !== 'AbortError') {
       console.warn('feedback tts:', e);
