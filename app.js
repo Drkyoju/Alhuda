@@ -243,6 +243,11 @@ function closeGameTutorial() {
     ov.setAttribute('aria-hidden', 'true');
     releaseFocusTrap(ov);
   }
+  // Auto-speak often fired (and was blocked) while the tutorial covered the game.
+  // Re-speak on dismiss so the first question is never silent after "فهمت".
+  if (voiceOn && document.getElementById('game')?.classList.contains('active')) {
+    speakQuestion();
+  }
 }
 
 function getProgress() {
@@ -1689,7 +1694,7 @@ const TTS_VOICE = 'c3e5d81d807f4cbc9a0c2872a4dea9ea';
 const TTS_CACHE_VER = 'v30';
 /** Bump to drop stale IndexedDB blobs from prior Yousef/v29 bake. */
 const TTS_IDB_NAME = 'alhudaTtsCache_v3';
-const TTS_BLOB_CACHE_MAX = 120;
+const TTS_BLOB_CACHE_MAX = 220;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
 const ttsKnownMissCache = new Set(); // avoid /api/tts storms for known baked misses
@@ -1700,10 +1705,20 @@ if (typeof window !== 'undefined' && window.__alhudaBakedTtsOnly == null) {
 const ttsPreloadedAudio = new Map(); // key -> HTMLAudioElement (decoded ahead of play)
 const TTS_IDB_STORE = 'audio';
 
-
-
 function ttsCacheKey(text, voice) {
   return `${TTS_CACHE_VER}::${voice || TTS_VOICE}::${String(text || '').slice(0, 600)}`;
+}
+
+/** LRU touch so warm/prefetch of later questions does not revoke the clip in play. */
+function touchTtsMemoryCache(key) {
+  if (!key || !ttsBlobMemoryCache.has(key)) return;
+  const url = ttsBlobMemoryCache.get(key);
+  ttsBlobMemoryCache.delete(key);
+  ttsBlobMemoryCache.set(key, url);
+}
+
+function isTtsSpeaking() {
+  return !!(ttsAudio && !ttsAudio.paused && !ttsAudio.ended);
 }
 
 function openTtsIdb() {
@@ -1786,6 +1801,7 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
   // Memory hit = already playable via object URL — do not re-materialize a Blob
   // (that was an extra await tick before every warm/prefetch join).
   if (ttsBlobMemoryCache.has(key)) {
+    touchTtsMemoryCache(key);
     return null;
   }
   if (ttsKnownMissCache.has(key)) {
@@ -3838,12 +3854,21 @@ function stopSpeaking() {
 async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
   if (!ttsAudio) return;
   try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
+  try { ttsAudio.muted = false; ttsAudio.volume = 1; } catch { /* ignore */ }
   if (btn) btn.classList.add('speaking');
   try {
     await ttsAudio.play();
-  } catch {
+  } catch (first) {
     unlockTtsAudio();
-    await ttsAudio.play();
+    try {
+      await ttsAudio.play();
+    } catch (second) {
+      const msg = String(second?.name || first?.name || second?.message || first?.message || '');
+      if (/NotAllowedError|not allowed|user.*gesture/i.test(msg)) {
+        throw new Error('tts needs tap');
+      }
+      throw second || first;
+    }
   }
   await new Promise((resolve, reject) => {
     ttsAudio.onended = resolve;
@@ -3855,6 +3880,7 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_D
   const key = ttsCacheKey(text, voice);
   // Hot path: play from memory URL immediately — no IDB / network / blob re-fetch.
   let url = ttsBlobMemoryCache.get(key) || null;
+  if (url) touchTtsMemoryCache(key);
   if (!url) {
     ttsAbort = new AbortController();
     url = await ensureTtsObjectUrl(text, voice, ttsAbort.signal);
@@ -3862,11 +3888,10 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_D
   if (!url) throw new Error('empty audio');
   ttsObjectUrl = url;
   const preloaded = ttsPreloadedAudio.get(key);
-  if (preloaded) {
-    ttsAudio = preloaded;
-    try { ttsAudio.currentTime = 0; } catch { /* ignore */ }
-  } else {
-    ttsAudio = new Audio(url);
+  // Prefer a fresh element — reusing a preloaded Audio that already ended is flaky on iOS.
+  ttsAudio = new Audio(url);
+  if (preloaded && preloaded !== ttsAudio) {
+    try { preloaded.pause(); } catch { /* ignore */ }
   }
   await playTtsElement(btn, playbackRate);
 }
@@ -3974,8 +3999,13 @@ async function speakHybrid(text, q, btn, { allowAnswers = false } = {}) {
 
 function toastTtsFail() {
   const stats = getTtsErrorStats();
+  const last = String(ttsLastErrorMsg || '');
   // Soft baked misses are expected for uncovered bank strings — don't alarm the student.
-  if (String(ttsLastErrorMsg || '').includes('baked miss') && ttsSessionFailCount < 3 && stats.fails < 5) {
+  if (last.includes('baked miss') && ttsSessionFailCount < 3 && stats.fails < 5) {
+    return;
+  }
+  if (last.includes('needs tap')) {
+    if (typeof showToast === 'function') showToast('اضغط/ي 🔊 لتشغيل الصوت', 'ok');
     return;
   }
   const msg = ttsSessionFailCount >= 3 || stats.fails >= 5
@@ -4196,16 +4226,22 @@ function applyOfflineVoicePolicy() {
 }
 
 function onQuestionSpeakerClick() {
-  if (voiceOn) {
+  unlockTtsAudio();
+  // While audio is playing: tap = mute (stop).
+  // While idle with voice on: tap = replay (do NOT mute — that looked like "no sound").
+  // While muted: tap = unmute + speak.
+  if (voiceOn && isTtsSpeaking()) {
     voiceOn = false;
     localStorage.setItem('voiceOn', 'false');
     stopSpeaking();
     updateVoiceUI();
     return;
   }
-  voiceOn = true;
-  localStorage.setItem('voiceOn', 'true');
-  updateVoiceUI();
+  if (!voiceOn) {
+    voiceOn = true;
+    localStorage.setItem('voiceOn', 'true');
+    updateVoiceUI();
+  }
   speakQuestion();
 }
 
@@ -6785,6 +6821,12 @@ async function restoreSession() {
     voiceOn = true;
     localStorage.setItem('voiceOn', 'true');
     localStorage.setItem('voiceForceOnV221', '1');
+  }
+  // V240: speaker idle-tap used to mute instead of replay — re-enable anyone stuck muted.
+  if (localStorage.getItem('voiceForceOnV240') !== '1') {
+    voiceOn = true;
+    localStorage.setItem('voiceOn', 'true');
+    localStorage.setItem('voiceForceOnV240', '1');
   }
   // One-time: turn answer read-aloud on for everyone (was default-off).
   // V3: re-enable after Fish full-bank bake so every option is spoken again.
