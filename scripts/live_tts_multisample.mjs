@@ -13,9 +13,10 @@ import { fileURLToPath } from 'url';
 import { prepareFishTtsText } from '../fish-audio-tts.js';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const baseIdx = process.argv.indexOf('--base');
 const base =
   process.argv.find((a) => a.startsWith('--base='))?.slice(7) ||
-  process.argv[process.argv.indexOf('--base') + 1] ||
+  (baseIdx >= 0 ? process.argv[baseIdx + 1] : null) ||
   'https://alhuda.ryodan71.workers.dev';
 
 function loadWindow(file) {
