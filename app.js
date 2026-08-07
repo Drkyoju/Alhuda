@@ -1693,16 +1693,16 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v49';
+const TTS_CACHE_VER = 'v51';
 /**
  * Lesson Fish TTS only — mild loudness (NOT v267 3.6× / heavy EQ).
  * Never applied to Quran Hudhaify.
  */
 const TTS_PLAYBACK_GAIN = 1.3;
-/** Fish prosody for question prose — snappy, not sluggish (was 0.97). */
-const TTS_FISH_SPEED_QUESTION = 1.05;
-/** Fish prosody for answer options — same pace as questions; snappy back-to-back. */
-const TTS_FISH_SPEED_ANSWER = 1.05;
+/** Fish prosody for question prose — slight bump (was 1.05); keep natural, not chipmunk. */
+const TTS_FISH_SPEED_QUESTION = 1.08;
+/** Fish prosody for answer options — same modest pace as questions. */
+const TTS_FISH_SPEED_ANSWER = 1.08;
 let ttsAudioGraph = null; // { source, nodes[] }
 /** createMediaElementSource may only bind once per element — reuse across replays. */
 const ttsMediaSources = new WeakMap(); // HTMLMediaElement -> MediaElementAudioSourceNode
@@ -1856,6 +1856,17 @@ function rememberTtsObjectUrl(key, objectUrl) {
   }
 }
 
+function ttsBlobLooksLikeMp3(blob) {
+  if (!(blob instanceof Blob) || !(blob.size > 500)) return Promise.resolve(false);
+  return blob.slice(0, 4).arrayBuffer().then((buf) => {
+    const head = new Uint8Array(buf);
+    return (
+      (head[0] === 0xff && (head[1] & 0xe0) === 0xe0) ||
+      (head[0] === 0x49 && head[1] === 0x44 && head[2] === 0x33) // ID3
+    );
+  }).catch(() => false);
+}
+
 async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FISH_SPEED_QUESTION) {
   const lookupVoice =
     voice === TTS_VOICE || /Neural|google|Wavenet/i.test(String(voice || ''))
@@ -1871,6 +1882,9 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
   if (ttsKnownMissCache.has(key)) {
     throw new Error('tts baked miss');
   }
+  // Join kick/prefetch BEFORE IDB — speak must not wait on IndexedDB while network is live.
+  if (ttsPrefetchInFlight.has(key)) return ttsPrefetchInFlight.get(key);
+
   // Prefer static baked MP3s only when explicitly enabled (legacy offline mode).
   if (window.__alhudaSkipBakedTts !== true && typeof bakedTtsAssetPath === 'function') {
     try {
@@ -1887,16 +1901,10 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
           /* miss — cached HTML must not be treated as speech */
         } else {
           const blob = await bakedRes.blob();
-          if (blob.size > 500) {
-            const head = new Uint8Array(await blob.slice(0, 4).arrayBuffer());
-            const isMp3 =
-              (head[0] === 0xff && (head[1] & 0xe0) === 0xe0) ||
-              (head[0] === 0x49 && head[1] === 0x44 && head[2] === 0x33); // ID3
-            if (isMp3) {
-              rememberTtsObjectUrl(key, URL.createObjectURL(blob));
-              void putTtsBlobInIdb(key, blob);
-              return blob;
-            }
+          if (await ttsBlobLooksLikeMp3(blob)) {
+            rememberTtsObjectUrl(key, URL.createObjectURL(blob));
+            void putTtsBlobInIdb(key, blob);
+            return blob;
           }
         }
       }
@@ -1904,22 +1912,39 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
       /* fall through */
     }
   }
-  const cached = await getTtsBlobFromIdb(key);
-  if (cached?.size > 500) {
-    try {
-      const head = new Uint8Array(await cached.slice(0, 4).arrayBuffer());
-      const isMp3 =
-        (head[0] === 0xff && (head[1] & 0xe0) === 0xe0) ||
-        (head[0] === 0x49 && head[1] === 0x44 && head[2] === 0x33);
-      if (isMp3) {
-        const objectUrl = URL.createObjectURL(cached);
-        rememberTtsObjectUrl(key, objectUrl);
-        return cached;
-      }
-    } catch { /* ignore bad idb */ }
+  // Live Fish path: do not block first-byte on a slow IDB open — race a short IDB window.
+  // Offline: wait fully for IDB (only source).
+  const idbLookup = (async () => {
+    const cached = await getTtsBlobFromIdb(key);
+    if (cached && await ttsBlobLooksLikeMp3(cached)) return cached;
+    return null;
+  })();
+  let cached = null;
+  if (navigator.onLine === false) {
+    cached = await idbLookup;
+  } else {
+    cached = await Promise.race([
+      idbLookup,
+      new Promise((r) => setTimeout(() => r(null), 20)),
+    ]);
+    // If IDB wins later, still hydrate memory for replay (non-blocking).
+    void idbLookup.then((late) => {
+      if (!late || ttsBlobMemoryCache.has(key)) return;
+      rememberTtsObjectUrl(key, URL.createObjectURL(late));
+    }).catch(() => {});
+  }
+  if (cached) {
+    rememberTtsObjectUrl(key, URL.createObjectURL(cached));
+    return cached;
   }
   // Offline: play from memory/IDB only — never turn voice off globally.
   if (navigator.onLine === false) {
+    // Final IDB wait (race above may have timed out with null while IDB still pending).
+    const late = await idbLookup;
+    if (late) {
+      rememberTtsObjectUrl(key, URL.createObjectURL(late));
+      return late;
+    }
     throw new Error('tts offline cache miss');
   }
   // Baked-only deploy: skip /api/tts after a static miss — POSTs only 404 and burn the rate limit.
@@ -2025,18 +2050,61 @@ async function ensureTtsObjectUrl(text, voice = TTS_VOICE, signal, fishSpeed = T
   return url;
 }
 
+/**
+ * Quoted hadith stem + frame ("…" — هذا الحديث رواه) — strip quotes/dashes to a
+ * pause so Fish does not stumble on «نقطتان» / em-dash silence.
+ */
+function normalizeQuotedLessonStemForSpeech(text) {
+  let s = String(text || '');
+  s = s.replace(
+    /[«"\u201C\u2018]([^»"\u201D\u2019]{6,})[»"\u201D\u2019]\s*[—–\-:]+\s*/gu,
+    (_, body) => `${String(body || '').trim()}  `
+  );
+  s = s.replace(/^[«"\u201C\u2018]+/, '').replace(/[»"\u201D\u2019]+$/, '');
+  return s;
+}
+
+/**
+ * Systemic lesson fixes: تِوَلَة (not تَوَلَة→«توالى»), هذا الحديثُ, common sahaba.
+ * Applied after maps so wrong curated fatḥa cannot reach Fish.
+ */
+function fixLessonHadithPronunciation(text) {
+  let s = String(text || '');
+  // التولة — classical kasra on ت (تِوَلَة), never fatḥa (Fish→توالى).
+  s = s.replace(/التَّوَلَة/g, 'التِّوَلَة');
+  s = s.replace(/وَالتَّوَلَة/g, 'وَالتِّوَلَة');
+  s = s.replace(/التّوَلَة/g, 'التِّوَلَة');
+  s = s.replace(/وَالتّوَلَة/g, 'وَالتِّوَلَة');
+  // Bare / OCR
+  s = s.replace(/(^|[^\u0621-\u064A])التولة(?=[\u064B-\u065F\u0670]|[^\u0621-\u064A]|$)/g, '$1التِّوَلَةَ');
+  s = s.replace(/(^|[^\u0621-\u064A])والتولة(?=[\u064B-\u065F\u0670]|[^\u0621-\u064A]|$)/g, '$1وَالتِّوَلَةَ');
+  s = s.replace(/هَذَا الْحَدِيثِ/g, 'هَذَا الْحَدِيثُ');
+  s = s.replace(/هذا الحديثِ/g, 'هَذَا الْحَدِيثُ');
+  // Narrator names (options + frames)
+  s = s.replace(/عُقْبَةُ\s+بْنُ\s+عَامِرٍ/g, 'عُقْبَةُ بْنُ عَامِرٍ');
+  s = s.replace(/(^|[^\u0621-\u064A])عقبة\s+بن\s+عامر(?=[^\u0621-\u064A]|$)/g, '$1عُقْبَةُ بْنُ عَامِرٍ');
+  s = s.replace(/(^|[^\u0621-\u064A])ابن\s+مسعود(?=[^\u0621-\u064A]|$)/g, '$1ابْنُ مَسْعُودٍ');
+  s = s.replace(/(^|[^\u0621-\u064A])أبو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
+  s = s.replace(/(^|[^\u0621-\u064A])ابو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
+  return s;
+}
+
 /** Single TTS text pipeline — prefetch and playback MUST share this or cache misses.
  *  Policy: full harakat on normal lesson text; hadith kept as curated; ayahs never
  *  go through here (Hudhaify only via buildSpeechPlan). */
 function prepareTtsPayload(text) {
-  const cleaned = String(text || '')
-    .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const cleaned = normalizeQuotedLessonStemForSpeech(
+    String(text || '')
+      .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
   if (!cleaned) return '';
   // Hadith: speak curated wording — drop any embedded ayah markers, keep ﷺ expansion.
   if (isHadithPassage(cleaned)) {
-    const hadith = prepareArabicForSpeech(removeQuranicVersesForSpeech(cleaned));
+    const hadith = fixLessonHadithPronunciation(
+      prepareArabicForSpeech(removeQuranicVersesForSpeech(cleaned))
+    );
     return sanitizeTtsText(
       typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(hadith) : hadith
     );
@@ -2048,6 +2116,7 @@ function prepareTtsPayload(text) {
     : applyPronunciationLexicon(applyWordDiacritics(applyManualSpeechDiacritics(cleaned)));
   // Never send Quran ayah wording to Fish — Hudhaify recites ayahs separately.
   forTts = removeQuranicVersesForSpeech(forTts);
+  forTts = fixLessonHadithPronunciation(forTts);
   forTts = typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(forTts) : forTts;
   return sanitizeTtsText(prepareArabicForSpeech(forTts));
 }
@@ -2084,7 +2153,7 @@ function cancelBackgroundTtsWarms() {
 
 /**
  * Kick CURRENT question TTS the instant the question is known (before/during paint).
- * Does NOT wait on full map timeout, next-Q, or answer prefetch.
+ * Does NOT wait on maps, next-Q, or answer prefetch — fetch starts on bank text ASAP.
  */
 function kickCurrentQuestionTts(q) {
   if (!q || !voiceOn) return null;
@@ -2095,13 +2164,7 @@ function kickCurrentQuestionTts(q) {
     return currentQuestionTtsKick.promise;
   }
   const work = (async () => {
-    // Prefer curated BY_ID if already present; otherwise wait briefly (not full 4s).
-    if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID?.[q.id]) {
-      await Promise.race([
-        ensureSpeechMapsLoaded(),
-        new Promise((r) => setTimeout(r, 40)),
-      ]);
-    }
+    // Maps load in parallel — never gate first-byte on them (was up to 40ms silence).
     void ensureSpeechMapsLoaded();
     const { questionText } = buildQuestionSpeechParts(q);
     // Same Fish prose as speakQuestion (incl. ayah-strip) so kick hits the play cache key.
@@ -2188,15 +2251,16 @@ async function prefetchHybridSpeechForQuestion(q, signal) {
 
 function prefetchUpcomingTts(fromIdx = state.idx) {
   // Never warm CURRENT idx here — kickCurrentQuestionTts / speakQuestion own it.
-  // Warm next two question texts only (abortable); answers after speak starts.
+  // Immediate next is non-abortable; N+2 stays abortable. Answers after speak starts.
   const start = Math.max(0, (fromIdx | 0) + 1);
   const qs = state.questions || [];
   const sig = backgroundTtsSignal();
   for (let i = start; i < start + 2 && i < qs.length; i++) {
     const q = qs[i];
     if (!q) continue;
-    void prefetchHybridSpeechForQuestion(q, sig);
-    if (i === start) void warmQuestionSpeech(q, { allowAnswers: false, signal: sig });
+    const warmSig = i === start ? null : sig;
+    void prefetchHybridSpeechForQuestion(q, warmSig);
+    if (i === start) void warmQuestionSpeech(q, { allowAnswers: false, signal: null });
   }
 }
 
@@ -3517,12 +3581,12 @@ const QURAN_RECITER_BITRATE = 64;
 /** Faster than natural pace so تلاوة finishes sooner without sounding rushed. */
 const QURAN_PLAYBACK_RATE = 1.28;
 /**
- * Client playbackRate on answer clips — mild only.
- * Main answer pace comes from Fish prosody (TTS_FISH_SPEED_ANSWER ≈ 1.05).
+ * Client playbackRate on answer clips — mild only (cap ~1.12; never old 1.38).
+ * Main answer pace comes from Fish prosody (TTS_FISH_SPEED_ANSWER ≈ 1.08).
  */
-const TTS_ANSWER_PLAYBACK_RATE = 1.08;
-/** Question clips — modest client boost on top of Fish 1.05 (was 1.0 / sluggish). */
-const TTS_DEFAULT_PLAYBACK_RATE = 1.08;
+const TTS_ANSWER_PLAYBACK_RATE = 1.12;
+/** Question clips — slight client boost on top of Fish 1.08; natural, not distorted. */
+const TTS_DEFAULT_PLAYBACK_RATE = 1.12;
 /** Intentional silence between answer options (ms). Keep tiny for back-to-back. */
 const TTS_ANSWER_GAP_MS = 40;
 const QURAN_BLOB_CACHE_MAX = 32;
@@ -4635,24 +4699,10 @@ function speakQuestion() {
   unlockTtsAudio();
   void (async () => {
     try {
-      // Never block speech on full map — start ASAP with bank+core+lexicon;
-      // full map loads in parallel and helps later questions.
+      // Never block on maps or kick join — speakTtsSegment joins in-flight / memory.
       void ensureSpeechMapsLoaded();
-      // Join early kick only briefly — skip wait if Q clip already in memory.
-      if (currentQuestionTtsKick?.qId === askId) {
-        const { questionText: earlyQt } = buildQuestionSpeechParts(q);
-        const earlyProse = prepareQuestionFishProse(q, earlyQt);
-        const alreadyReady = earlyProse && ttsPayloadReadyInMemory(earlyProse);
-        if (!alreadyReady) {
-          await Promise.race([
-            currentQuestionTtsKick.promise,
-            new Promise((r) => setTimeout(r, 20)),
-          ]);
-        }
-      }
       // Only wait briefly if FISH_VOICE_ID not yet applied (avoids fish-live 400).
       if (!isFishVoiceIdClient(TTS_VOICE)) {
-        void ensureTtsVoiceReady();
         await Promise.race([
           ensureTtsVoiceReady(),
           new Promise((r) => setTimeout(r, 40)),
@@ -4675,7 +4725,8 @@ function speakQuestion() {
         cancelBackgroundTtsWarms();
         const next = state.questions[askIdx + 1];
         const bg = backgroundTtsSignal();
-        if (next) void warmQuestionSpeech(next, { allowAnswers: false, signal: bg });
+        // Immediate next: non-abortable so advancing does not kill a near-ready clip.
+        if (next) void warmQuestionSpeech(next, { allowAnswers: false, signal: null });
         for (const opt of opts) {
           prefetchTtsText(opt, TTS_VOICE, bg, TTS_FISH_SPEED_ANSWER);
         }
@@ -6641,19 +6692,12 @@ function renderQ() {
     document.getElementById('fb-self-correct').style.display = 'none';
     startQuestionTimer();
     questionShownAt = Date.now();
-    // Speak ASAP after paint is visible — one rAF (not double) so first audio starts sooner.
-    // Fetch already started in kickCurrentQuestionTts above.
-    const askIdx = state.idx;
-    const askId = q.id;
+    // Speak in the same turn as paint — fetch already kicked above (no rAF lag).
     if (voiceOn) {
-      requestAnimationFrame(() => {
-        if (!voiceOn) return;
-        if (state.idx !== askIdx || state.questions[state.idx]?.id !== askId) return;
-        if (!document.getElementById('game')?.classList.contains('active')) return;
-        const painted = document.getElementById('q-text')?.textContent?.trim();
-        if (!painted) return;
+      const painted = document.getElementById('q-text')?.textContent?.trim();
+      if (painted && document.getElementById('game')?.classList.contains('active')) {
         speakQuestion();
-      });
+      }
     }
   }
   updatePrevQBtn();

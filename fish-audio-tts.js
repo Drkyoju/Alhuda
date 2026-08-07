@@ -28,8 +28,8 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   top_p: 0.4,
   repetition_penalty: 1.35,
   prosody: {
-    // v278+ question/default pace — snappy (was 0.97 / felt slow).
-    speed: 1.05,
+    // v279+ question/default pace — slightly quicker, still natural (was 1.05).
+    speed: 1.08,
     volume: 9,
     normalize_loudness: true,
   },
@@ -176,7 +176,22 @@ export function prepareFishTtsText(text) {
   s = s.replace(/ان\s*واط/g, 'أَنْوَاط');
   s = s.replace(/الري\s*اء/g, 'الرِّيَاء');
   s = s.replace(/فر\s*ائض/g, 'فَرَائِض');
+  // التولة — always تِوَلَة (kasra); fatḥa → Fish «توالى» (lesson-wide)
+  s = s.replace(/التَّوَلَة/g, 'التِّوَلَة');
+  s = s.replace(/وَالتَّوَلَة/g, 'وَالتِّوَلَة');
+  s = s.replace(/التّوَلَة/g, 'التِّوَلَة');
+  s = s.replace(/(^|[^\u0621-\u064A])التولة(?=[^\u0621-\u064A]|$)/g, '$1التِّوَلَةَ');
+  s = s.replace(/هَذَا الْحَدِيثِ/g, 'هَذَا الْحَدِيثُ');
+  // Sahaba bare → vocalized (gaps added after stripTtsPunctuation)
+  s = s.replace(/(^|[^\u0621-\u064A])عقبة\s+بن\s+عامر(?=[^\u0621-\u064A]|$)/g, '$1عُقْبَةُ بْنُ عَامِرٍ');
+  s = s.replace(/(^|[^\u0621-\u064A])ابن\s+مسعود(?=[^\u0621-\u064A]|$)/g, '$1ابْنُ مَسْعُودٍ');
+  s = s.replace(/(^|[^\u0621-\u064A])أبو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
+  s = s.replace(/(^|[^\u0621-\u064A])ابو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
   s = stripTtsPunctuation(s);
+  // Micro-gaps AFTER strip (strip collapses whitespace) — clearer sahaba names
+  s = s.replace(/عُقْبَةُ بْنُ عَامِرٍ/g, 'عُقْبَةُ  بْنُ  عَامِرٍ');
+  s = s.replace(/ابْنُ مَسْعُودٍ/g, 'ابْنُ  مَسْعُودٍ');
+  s = s.replace(/أَبُو هُرَيْرَةَ/g, 'أَبُو  هُرَيْرَةَ');
   // After quote-strip: بِ «ثُمَّ» → بِ ثُمَّ (Fish reads «بسما»); glue particle
   // Only standalone particle بِ/ب — never word-final …بِ (بابِ / كتابِ / طَلَبِ).
   // Harakat before ب must not count as a boundary (طَلَبِ = letter+fatha+بِ).
@@ -285,7 +300,7 @@ function buildFishTtsBody(cleanText, selectedVoice, env = process.env, opts = {}
   };
 }
 
-/** @param {{ speed?: number }} [opts] — per-request prosody speed (default 1.05). */
+/** @param {{ speed?: number }} [opts] — per-request prosody speed (default 1.08). */
 export async function synthesizeFishArabicSpeech(text, voiceId, env = process.env, opts = {}) {
   const apiKey = String(env?.FISH_API_KEY || '').trim();
   if (!apiKey) throw new Error('Fish Audio not configured (missing FISH_API_KEY)');
