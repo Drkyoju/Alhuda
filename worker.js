@@ -21,6 +21,8 @@ import { bakedTtsAssetPath, BAKED_TTS_VOICE } from './baked-tts.js';
 import {
   DEFAULT_FISH_VOICE_ID,
   fishAudioConfigured,
+  resolveFishModel,
+  resolveFishVoiceId,
   synthesizeFishArabicSpeech,
 } from './fish-audio-tts.js';
 
@@ -79,14 +81,20 @@ async function handleTtsStatus(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
   const bakedOnly = String(env?.BAKED_TTS_ONLY || '').trim() === '1';
+  const skipBaked = String(env?.SKIP_BAKED_TTS || '').trim() === '1' || !bakedOnly;
   const fish = fishAudioConfigured(env);
   const eleven = elevenLabsConfigured(env);
   const google = googleTtsConfigured(env);
   const azure = azureSpeechConfigured(env);
+  const fishVoice = resolveFishVoiceId(null, env);
+  const fishModel = resolveFishModel(env);
   return new Response(JSON.stringify({
     ok: true,
     bakedTtsOnly: bakedOnly,
+    skipBakedTts: skipBaked,
     fishConfigured: fish,
+    fishModel: fish ? fishModel : null,
+    fishVoiceConfigured: !!(fish && fishVoice),
     elevenLabsConfigured: eleven,
     googleConfigured: google,
     azureConfigured: azure,
@@ -96,7 +104,7 @@ async function handleTtsStatus(request, env) {
     voice: bakedOnly
       ? BAKED_TTS_VOICE
       : fish
-      ? (String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim() || DEFAULT_FISH_VOICE_ID)
+      ? (fishVoice || '(set FISH_VOICE_ID)')
       : eleven
       ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
       : google
@@ -314,7 +322,7 @@ async function handleTts(request, env) {
     : (elevenLabsConfigured(env)
       ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
       : fishAudioConfigured(env)
-      ? (String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim() || DEFAULT_FISH_VOICE_ID)
+      ? (resolveFishVoiceId(null, env) || 'fish')
       : googleTtsConfigured(env)
       ? DEFAULT_GOOGLE_ARABIC_VOICE
       : azureSpeechConfigured(env)
@@ -322,30 +330,33 @@ async function handleTts(request, env) {
         : DEFAULT_ARABIC_VOICE);
 
   const bakedOnly = String(env?.BAKED_TTS_ONLY || '').trim() === '1';
-  // All baked MP3s are keyed under BAKED_TTS_VOICE (Fish narrator hash namespace).
+  // Live custom Fish voice: never serve old baked narrator MP3s.
+  const skipBaked = String(env?.SKIP_BAKED_TTS || '').trim() === '1' || (!bakedOnly && fishAudioConfigured(env));
   const lookupVoice = BAKED_TTS_VOICE;
 
   try {
-    const bakedPath = await bakedTtsAssetPath(text, lookupVoice);
-    const assetRes = await env.ASSETS.fetch(new URL(bakedPath, request.url));
-    // SPA not_found can return index.html with 200 — reject non-audio.
-    const ctype = (assetRes.headers.get('content-type') || '').toLowerCase();
-    const looksAudio =
-      ctype.includes('audio') ||
-      ctype.includes('mpeg') ||
-      ctype.includes('octet-stream') ||
-      (!ctype.includes('html') && !ctype.includes('json') && !ctype.includes('text/'));
-    if (assetRes.ok && looksAudio) {
-      return new Response(assetRes.body, {
-        status: 200,
-        headers: {
-          ...cors,
-          'Content-Type': 'audio/mpeg',
-          'Cache-Control': 'public, max-age=31536000, immutable',
-          'X-TTS-Provider': 'baked',
-          'X-TTS-Chars': String(text.length),
-        },
-      });
+    if (!skipBaked) {
+      const bakedPath = await bakedTtsAssetPath(text, lookupVoice);
+      const assetRes = await env.ASSETS.fetch(new URL(bakedPath, request.url));
+      // SPA not_found can return index.html with 200 — reject non-audio.
+      const ctype = (assetRes.headers.get('content-type') || '').toLowerCase();
+      const looksAudio =
+        ctype.includes('audio') ||
+        ctype.includes('mpeg') ||
+        ctype.includes('octet-stream') ||
+        (!ctype.includes('html') && !ctype.includes('json') && !ctype.includes('text/'));
+      if (assetRes.ok && looksAudio) {
+        return new Response(assetRes.body, {
+          status: 200,
+          headers: {
+            ...cors,
+            'Content-Type': 'audio/mpeg',
+            'Cache-Control': 'public, max-age=31536000, immutable',
+            'X-TTS-Provider': 'baked',
+            'X-TTS-Chars': String(text.length),
+          },
+        });
+      }
     }
     if (bakedOnly) {
       return new Response(JSON.stringify({ ok: false, error: 'Baked TTS miss' }), {
@@ -356,10 +367,10 @@ async function handleTts(request, env) {
 
     let stream;
     let provider = 'edge';
-    // Prefer Fish Audio for live Arabic (ElevenLabs Yousef is blocked on free plans).
+    // Prefer Fish Audio for live Arabic (your voice + s2-pro).
     if (fishAudioConfigured(env)) {
       try {
-        const fishVoice = String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim() || DEFAULT_FISH_VOICE_ID;
+        const fishVoice = resolveFishVoiceId(null, env);
         stream = await synthesizeFishArabicSpeech(text, fishVoice, env);
         provider = 'fish';
       } catch (fishErr) {

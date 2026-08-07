@@ -1688,12 +1688,12 @@ function toggleSound() {
 }
 
 /* ── Voice reading (Yousef baked MP3s; no browser/Edge fallback for lesson TTS) ── */
-/** Fish Audio Arabic narrator (راوي) — all bank clips baked under this id. */
-const TTS_VOICE = 'c3e5d81d807f4cbc9a0c2872a4dea9ea';
-/** Must match baked-tts.js / collect_tts_strings.mjs (file hashes use this ver). */
-const TTS_CACHE_VER = 'v30';
-/** Bump to drop stale IndexedDB blobs from prior Yousef/v29 bake. */
-const TTS_IDB_NAME = 'alhudaTtsCache_v4';
+/** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
+let TTS_VOICE = 'fish-live';
+/** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
+const TTS_CACHE_VER = 'v31';
+/** Bump to drop stale IndexedDB blobs from prior Yousef/v29/v30 bake. */
+const TTS_IDB_NAME = 'alhudaTtsCache_v5';
 const TTS_BLOB_CACHE_MAX = 220;
 const ttsBlobMemoryCache = new Map(); // key -> objectUrl
 const ttsPrefetchInFlight = new Map();
@@ -1701,6 +1701,10 @@ const ttsKnownMissCache = new Set(); // avoid /api/tts storms for known baked mi
 if (typeof window !== 'undefined' && window.__alhudaBakedTtsOnly == null) {
   // Refined by /api/tts-status on boot (wrangler BAKED_TTS_ONLY).
   window.__alhudaBakedTtsOnly = false;
+}
+if (typeof window !== 'undefined' && window.__alhudaSkipBakedTts == null) {
+  // Default ON — live Fish custom voice; status endpoint can refine.
+  window.__alhudaSkipBakedTts = true;
 }
 const ttsPreloadedAudio = new Map(); // key -> HTMLAudioElement (decoded ahead of play)
 const TTS_IDB_STORE = 'audio';
@@ -1819,8 +1823,8 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
   if (ttsKnownMissCache.has(key)) {
     throw new Error('tts baked miss');
   }
-  // Prefer static baked Yousef MP3s over IndexedDB (IDB may hold older wrong-provider audio).
-  if (typeof bakedTtsAssetPath === 'function') {
+  // Prefer static baked MP3s only when explicitly enabled (legacy offline mode).
+  if (window.__alhudaSkipBakedTts !== true && typeof bakedTtsAssetPath === 'function') {
     try {
       const bakedUrl = await bakedTtsAssetPath(text, lookupVoice);
       // Never force-cache: a prior SPA HTML 200 for a missing MP3 poisons silence forever.
@@ -2183,14 +2187,27 @@ function maybeRemindAzureKeyRotation(hint) {
   }
 }
 
+function applyTtsStatusConfig(data) {
+  if (!data || typeof data !== 'object') return;
+  if (typeof data.bakedTtsOnly === 'boolean') {
+    window.__alhudaBakedTtsOnly = data.bakedTtsOnly;
+  }
+  if (typeof data.skipBakedTts === 'boolean') {
+    window.__alhudaSkipBakedTts = data.skipBakedTts;
+  } else if (data.provider === 'fish' && !data.bakedTtsOnly) {
+    window.__alhudaSkipBakedTts = true;
+  }
+  if (data.voice && data.provider === 'fish' && data.voice !== '(set FISH_VOICE_ID)') {
+    TTS_VOICE = String(data.voice);
+  }
+}
+
 async function refreshTtsProviderBadge() {
   const badge = document.getElementById('tts-provider-badge');
   try {
     const res = await fetch('/api/tts-status', { cache: 'no-store' });
     const data = await res.json();
-    if (typeof data?.bakedTtsOnly === 'boolean') {
-      window.__alhudaBakedTtsOnly = data.bakedTtsOnly;
-    }
+    applyTtsStatusConfig(data);
   } catch { /* ignore */ }
   if (!badge) return;
   const showDiag = localStorage.getItem('showTtsDiag') === '1'
@@ -2202,15 +2219,16 @@ async function refreshTtsProviderBadge() {
   try {
     const res = await fetch('/api/tts-status', { cache: 'no-store' });
     const data = await res.json();
-    if (typeof data?.bakedTtsOnly === 'boolean') {
-      window.__alhudaBakedTtsOnly = data.bakedTtsOnly;
-    }
+    applyTtsStatusConfig(data);
     const usage = getAzureTtsUsage();
     const pct = Math.min(100, Math.round((usage.chars / 500000) * 100));
     const errStats = getTtsErrorStats();
     const serverFails = data.errors?.tts ? Object.values(data.errors.tts).reduce((a, b) => a + (Number(b) || 0), 0) : 0;
     badge.hidden = false;
-    badge.textContent = (data.azureConfigured ? 'TTS: Azure' : 'TTS: Edge') +
+    const providerLabel = data.provider === 'fish'
+      ? `TTS: Fish ${data.fishModel || 's2-pro'}`.trim()
+      : (data.azureConfigured ? 'TTS: Azure' : 'TTS: Edge');
+    badge.textContent = providerLabel +
       ` · ${usage.chars}/${500000} (~${pct}%)` +
       (data.isolateAzureChars != null ? ` · isolate ${data.isolateAzureChars}` : '') +
       ` · fails ${ttsSessionFailCount}/${errStats.fails}` +
@@ -3890,8 +3908,8 @@ async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
 
 async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
   const key = ttsCacheKey(text, voice);
-  // 1) Prefer direct HTTPS baked URL — most reliable on iOS (blob: often stays silent).
-  if (typeof bakedTtsAssetPath === 'function') {
+  // Live Fish mode: never play old baked narrator URLs.
+  if (window.__alhudaSkipBakedTts !== true && typeof bakedTtsAssetPath === 'function') {
     try {
       const bakedUrl = await bakedTtsAssetPath(text, voice);
       const bust = typeof window !== 'undefined' && window.ALHUDA_ASSETS?.sw
@@ -3901,16 +3919,14 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_D
       ttsObjectUrl = direct;
       ttsAudio = makePlayableAudio(direct);
       await playTtsElement(btn, playbackRate);
-      // Warm blob cache in background for offline — don't block playback.
       void ensureTtsObjectUrl(text, voice).catch(() => {});
       return;
     } catch (e) {
       if (e?.name === 'AbortError') throw e;
       if (String(e?.message || '').includes('needs tap')) throw e;
-      // Fall through to blob / network path.
     }
   }
-  // 2) Memory / IDB / network blob path
+  // Memory / IDB / live /api/tts
   let url = ttsBlobMemoryCache.get(key) || null;
   if (url) touchTtsMemoryCache(key);
   if (!url) {

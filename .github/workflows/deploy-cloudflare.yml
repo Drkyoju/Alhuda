@@ -48,6 +48,7 @@ jobs:
           secrets: |
             FISH_API_KEY
             FISH_VOICE_ID
+            FISH_TTS_MODEL
             ELEVENLABS_API_KEY
             GOOGLE_TTS_API_KEY
             AZURE_SPEECH_KEY
@@ -56,6 +57,7 @@ jobs:
         env:
           FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
           FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
+          FISH_TTS_MODEL: ${{ secrets.FISH_TTS_MODEL }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
           AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}

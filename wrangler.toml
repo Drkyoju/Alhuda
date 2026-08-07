@@ -5,6 +5,9 @@ main = "worker.js"
 
 [vars]
 BAKED_TTS_ONLY = "0"
+# Skip old baked narrator MP3s — always synthesize with live Fish (your voice + s2-pro).
+SKIP_BAKED_TTS = "1"
+FISH_TTS_MODEL = "s2-pro"
 
 [assets]
 directory = "."
