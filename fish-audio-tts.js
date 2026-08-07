@@ -23,11 +23,11 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   latency: 'normal', // best quality (vs balanced/low)
   normalize: false, // keep Arabic harakat — do not rewrite diacritics
   chunk_length: 300, // max continuity for long vocalized sentences
-  temperature: 0.4, // lower = stick closer to provided tashkeel/iʿrāb
-  top_p: 0.55,
-  repetition_penalty: 1.3,
+  temperature: 0.32, // lower = stick closer to provided tashkeel/iʿrāb
+  top_p: 0.5,
+  repetition_penalty: 1.35,
   prosody: {
-    speed: 0.9, // slower → clearer harakat for students
+    speed: 0.88, // slower → clearer harakat for students
     volume: 2,
     normalize_loudness: true,
   },
@@ -74,10 +74,10 @@ export function stripTtsPunctuation(text) {
 export function prepareFishTtsText(text) {
   // Preserve formation (harakat); expand honorifics; drop marks spoken as words.
   let s = String(text || '');
-  s = s.replace(/\uFDFA/g, ' صلى الله عليه وسلم ');
-  s = s.replace(/\uFDFB/g, ' جل جلاله ');
-  s = s.replace(/صلعم/g, ' صلى الله عليه وسلم ');
-  s = s.replace(/\(ص\)/g, ' صلى الله عليه وسلم ');
+  s = s.replace(/\uFDFA/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
+  s = s.replace(/\uFDFB/g, ' جَلَّ جَلَالُهُ ');
+  s = s.replace(/صلعم/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
+  s = s.replace(/\(ص\)/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
   return fixAllahIrabInText(stripTtsPunctuation(s));
 }
 

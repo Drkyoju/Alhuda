@@ -54,7 +54,9 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/ +[\u064B-\u065F\u0670]+/g, ' ');
   s = s.split('َّمَنْ').join('مَنْ');
   s = s.split('َّوَمَنْ').join('وَمَنْ');
-  s = s.split('عُبِدَ').join('عَبْد');
+  // Passive passive عُبِدَ; fix broken bare عَبْد after مَا.
+  s = s.replace(/مَا\s+عَبْد(?![َُِّْ])/g, 'مَا عُبِدَ');
+  s = s.replace(/مَا\s+عَبَد(?![َُِّْ])/g, 'مَا عُبِدَ');
   s = s.split('الن ي').join('النبي');
   s = s.split("اللََّّ").join("اللَّه");
   s = s.split("لَعَنَ اللَّهِ").join("لَعَنَ اللَّهُ");

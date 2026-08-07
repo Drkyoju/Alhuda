@@ -1691,7 +1691,7 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v32';
+const TTS_CACHE_VER = 'v33';
 let ttsStatusReadyPromise = null;
 
 function isFishVoiceIdClient(id) {
@@ -2274,7 +2274,10 @@ function scrubSpeechDiacriticsNoise(text) {
   // Classic corruptions from word-map harvest
   s = s.split('َّمَنْ').join('مَنْ');
   s = s.split('َّوَمَنْ').join('وَمَنْ');
-  s = s.split('عُبِدَ').join('عَبْد');
+  // Passive «عُبِدَ» (was worshipped) — never collapse to bare عَبْد.
+  // Fix broken map forms: مَا عَبْد / كُلُّ مَا عَبْد → عُبِدَ
+  s = s.replace(/مَا\s+عَبْد(?![َُِّْ])/g, 'مَا عُبِدَ');
+  s = s.replace(/مَا\s+عَبَد(?![َُِّْ])/g, 'مَا عُبِدَ');
   s = s.split('الن ي').join('النبي');
   s = s.split("اللََّّ").join("اللَّه");
   // Critical iʿrāb fixes (wrong case/harakat → mangled Fish narrator reads)
@@ -2748,6 +2751,46 @@ function stripForSpeech(text) {
   return sanitizeTtsText(forTts);
 }
 
+/**
+ * Strip known Quran snippets from Fish TTS (Hudhaify recites them separately).
+ * Matches vocalized text via harakat-tolerant regex from AYAH_SNIPPET_MAP.
+ */
+function stripKnownAyahSnippetsForSpeech(text) {
+  let s = String(text || '');
+  if (!s.trim()) return '';
+  const map = (typeof window !== 'undefined' && window.AYAH_SNIPPET_MAP) || {};
+  const snippets = Object.keys(map).sort((a, b) => b.length - a.length);
+  for (const snippet of snippets) {
+    const bare = normalizeArabicForMatch(snippet);
+    if (bare.length < 10) continue;
+    const re = harakatTolerantArabicRe(bare);
+    if (!re) continue;
+    s = s.replace(re, ' ');
+  }
+  return s.replace(/\s+/g, ' ').trim();
+}
+
+/** Match bare Arabic letters in vocalized lesson text (optional harakat between). */
+function harakatTolerantArabicRe(bareNormalized) {
+  const norm = String(bareNormalized || '').trim();
+  if (norm.length < 10) return null;
+  const parts = [];
+  for (const ch of norm) {
+    if (/\s/.test(ch)) {
+      parts.push('[\\s\\u064B-\\u065F\\u0670]*');
+      continue;
+    }
+    if (!/[\u0621-\u064A\u0671]/.test(ch)) continue;
+    let alts = ch;
+    if (ch === 'ا') alts = '[اأإآٱ]';
+    else if (ch === 'ه') alts = '[هة]';
+    else if (ch === 'ي') alts = '[يى]';
+    parts.push(`${alts}[\\u064B-\\u065F\\u0670\\u0640]*`);
+  }
+  if (parts.length < 6) return null;
+  return new RegExp(parts.join(''), 'g');
+}
+
 /** Remove Quranic ayat from TTS — hadith and lesson text stay.
  *  Never strip ﷺ / ﷻ — expand them so Fish speaks the honorific. */
 function removeQuranicVersesForSpeech(text) {
@@ -2766,18 +2809,48 @@ function removeQuranicVersesForSpeech(text) {
   s = s.replace(/\[[^\]]*سورة[^\]]*\]/gi, ' ');
   s = s.replace(/[-–—]\s*[^\s.]+\s*:\s*\d+/g, ' ');
 
+  // قال / قوله / قالت + تعالى — allow harakat between letters (speech-map vocalized text).
+  const taalaVerb =
+    'ق[\\u064B-\\u065F\\u0670]*[او][\\u064B-\\u065F\\u0670]*ل[\\u064B-\\u065F\\u0670]*ه?[\\u064B-\\u065F\\u0670]*';
+  const taalaAllah =
+    '(?:ا[\\u064B-\\u065F\\u0670]*ل[\\u064B-\\u065F\\u0670]*ل[\\u064B-\\u065F\\u0670]*ه[\\u064B-\\u065F\\u0670]*\\s+)?';
+  const taalaWord =
+    'ت[\\u064B-\\u065F\\u0670]*ع[\\u064B-\\u065F\\u0670]*ا[\\u064B-\\u065F\\u0670]*ل[\\u064B-\\u065F\\u0670]*[ىي][\\u064B-\\u065F\\u0670]*';
+  const quotedAyah = '(?:\\([^)]*\\)|«[^»]*»|"[^"]*"|\'[^\']*\'|「[^」]*」)';
   s = s.replace(
-    /(قال|قوله|قالت)\s+(الله\s+)?تعالى\s*[:،]?\s*(?:\([^)]*\)|«[^»]*»|"[^"]*"|'[^']*')/gi,
-    (_, verb, allah) => `${verb} ${allah ? 'الله ' : ''}تعالى`
+    new RegExp(`(${taalaVerb})\\s+${taalaAllah}${taalaWord}\\s*[:،:]?\\s*${quotedAyah}`, 'gi'),
+    (m) => m.replace(new RegExp(`${quotedAyah}\\s*$`), '').trim()
   );
-  s = s.replace(
-    /(قال|قوله|قالت)\s+(الله\s+)?تعالى\s*"[^"]*"/gi,
-    (_, verb, allah) => `${verb} ${allah ? 'الله ' : ''}تعالى`
-  );
-  s = s.replace(/«\s*(قال|قوله|قالت)\s+(الله\s+)?تعالى[^»]*»/gi, '«$1 $2تعالى»');
 
-  s = s.replace(/\(\s*([^)]{10,})\s*\)/g, (m, inner) => (isQuranicAyahText(inner) ? ' ' : m));
-  s = s.replace(/"([^"]{10,})"/g, (m, inner) => (isQuranicAyahText(inner) ? ' ' : m));
+  // في قوله: (آية) without تعالى
+  s = s.replace(
+    new RegExp(
+      `ق[\\u064B-\\u065F\\u0670]*و[\\u064B-\\u065F\\u0670]*ل[\\u064B-\\u065F\\u0670]*ه[\\u064B-\\u065F\\u0670]*\\s*[:،:]?\\s*\\(([^)]{10,})\\)`,
+      'gi'
+    ),
+    (m, inner) => {
+      if (typeof lookupKnownVerseKey === 'function' && lookupKnownVerseKey(inner)) {
+        return m.replace(/\([^)]*\)/, ' ').replace(/[:،:]\s*$/, ' ');
+      }
+      return isQuranicAyahText(inner) ? m.replace(/\([^)]*\)/, ' ').replace(/[:،:]\s*$/, ' ') : m;
+    }
+  );
+
+  s = s.replace(/\(\s*([^)]{10,})\s*\)/g, (m, inner) => {
+    if (typeof lookupKnownVerseKey === 'function' && lookupKnownVerseKey(inner)) return ' ';
+    return isQuranicAyahText(inner) ? ' ' : m;
+  });
+  s = s.replace(/"([^"]{10,})"/g, (m, inner) => {
+    if (typeof lookupKnownVerseKey === 'function' && lookupKnownVerseKey(inner)) return ' ';
+    return isQuranicAyahText(inner) ? ' ' : m;
+  });
+  s = s.replace(/«([^»]{10,})»/g, (m, inner) => {
+    if (typeof lookupKnownVerseKey === 'function' && lookupKnownVerseKey(inner)) return ' ';
+    return isQuranicAyahText(inner) ? ' ' : m;
+  });
+
+  // Do NOT blanket-strip AYAH_SNIPPET_MAP here — MC answers may be ayah wording
+  // and must still be spoken by Fish (Hudhaify only runs on the question verse).
 
   return s.replace(/\s+/g, ' ').replace(/\s+([،.؛:])/g, '$1').trim();
 }
@@ -2801,13 +2874,15 @@ function isHadithPassage(s) {
 }
 
 function isQuranicAyahText(s) {
-  const t = (s || '').replace(/[،.؛:!؟«»"[\]]/g, '').trim();
+  // Normalize harakat first — vocalized speech-map text must still match.
+  const t = normalizeArabicForMatch(s);
   if (!t || t.length < 10) return false;
-  if (isHadithPassage(t)) return false;
-  if (/^الإجابة\s*الصحيحة/i.test(t)) return false;
-  if (/^(إنما\s+الأعمال|إن\s+الله\s+تجاوز|لا\s+يؤمن|من\s+حلف|إن\s+الحلال|البر\s+حسن)/i.test(t)) return false;
-  if (/^(إن|إني|إنا|الذين|فمن|ومن|يا\s+أيها|تبارك|سبحان|قل|لقد|وما\s+خلقت|فلا\s+تخاف|فلا\s+تجعل)/i.test(t)) return true;
-  if (t.length >= 28 && /الله|إيمان|كفر|شرك|جنة|نار|عباد|ربك/i.test(t)) return true;
+  if (isHadithPassage(s) || isHadithPassage(t)) return false;
+  if (typeof lookupKnownVerseKey === 'function' && lookupKnownVerseKey(s)) return true;
+  if (/^الاجابه\s*الصحيحه/.test(t)) return false;
+  if (/^(انما\s+الاعمال|ان\s+الله\s+تجاوز|لا\s+يومن|من\s+حلف|ان\s+الحلال|البر\s+حسن)/.test(t)) return false;
+  if (/^(ان|اني|انا|الذين|فمن|ومن|يا\s+ايها|تبارك|سبحان|قل|لقد|وما\s+خلقت|فلا\s+تخاف|فلا\s+تجعل)/.test(t)) return true;
+  if (t.length >= 28 && /الله|ايمان|كفر|شرك|جنه|نار|عباد|ربك/.test(t)) return true;
   return false;
 }
 
@@ -2861,7 +2936,9 @@ function dedupeTtsPlan(plan) {
 function fieldHasEmbeddedAyah(text) {
   const src = String(text || '');
   if (!src.trim()) return false;
-  if (/﴿|قال\s+(الله\s+)?تعالى|قوله\s+تعالى/.test(src)) return true;
+  if (/﴿/.test(src)) return true;
+  const bare = normalizeArabicForMatch(src);
+  if (/قال\s+(الله\s+)?تعالى|قوله\s+تعالى/.test(bare)) return true;
   return findVerseKeysSync(src).length > 0;
 }
 
@@ -4176,11 +4253,22 @@ function speakQuestion() {
 
       if (btn) btn.classList.add('speaking');
       try {
-        // 1) Question prose — strip embedded ayah markers (Hudhaify handles ayah next).
+        // 1) Question prose — strip embedded ayah (Hudhaify handles ayah next; never Fish ayah).
         const qProseRaw = String(questionText || q.q || '')
           .replace(/﴿[^﴾]*﴾/g, ' ')
           .replace(/「[^」]*」/g, ' ');
-        const qProse = prepareTtsPayload(qProseRaw) || qClean;
+        let qProse = prepareTtsPayload(qProseRaw);
+        if (!qProse) {
+          qProse = prepareTtsPayload(String(q.q || '').trim())
+            || stripForSpeech(String(q.q || '').trim());
+        }
+        // When Hudhaify will recite, strip any leftover known ayah wording from Fish prose.
+        if (qProse && verseKey && shouldReciteHudhaifyForQuestion(q, questionText || q.q)) {
+          const withoutAyah = stripKnownAyahSnippetsForSpeech(qProse);
+          qProse = withoutAyah
+            ? (prepareTtsPayload(withoutAyah) || sanitizeTtsText(withoutAyah) || withoutAyah)
+            : '';
+        }
         if (qProse) {
           for (let attempt = 0; attempt < 3; attempt++) {
             if (token !== hybridSpeechToken || state.idx !== askIdx) return;
