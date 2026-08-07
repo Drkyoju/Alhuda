@@ -1691,7 +1691,7 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v33';
+const TTS_CACHE_VER = 'v34';
 let ttsStatusReadyPromise = null;
 
 function isFishVoiceIdClient(id) {
@@ -2277,13 +2277,22 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.split('َّمَنْ').join('مَنْ');
   s = s.split('َّوَمَنْ').join('وَمَنْ');
   // Passive «عُبِدَ» (was worshipped) — never collapse to bare عَبْد.
-  // Fix broken map forms: مَا عَبْد / كُلُّ مَا عَبْد → عُبِدَ
-  s = s.replace(/مَا\s+عَبْد(?![َُِّْ])/g, 'مَا عُبِدَ');
-  s = s.replace(/مَا\s+عَبَد(?![َُِّْ])/g, 'مَا عُبِدَ');
+  // Fix broken map forms: مَا عَبْد / كُلُّ مَا عَبْد → عُبِدَ (consume trailing harakat).
+  s = s.replace(/مَا\s+ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/g, (m) =>
+    /عُبِدَ/.test(m) ? m : 'مَا عُبِدَ'
+  );
+  s = s.replace(/كُلُّ?\s+مَا\s+ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/g, (m) =>
+    /عُبِدَ/.test(m) ? m : 'كُلُّ مَا عُبِدَ'
+  );
   s = s.split('الن ي').join('النبي');
   s = s.split("اللََّّ").join("اللَّه");
   // Critical iʿrāb fixes (wrong case/harakat → mangled Fish narrator reads)
-  s = s.split("لَعَنَ اللَّهِ").join("لَعَنَ اللَّهُ");
+  s = s.replace(/لَعَنَ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "لَعَنَ اللَّهُ");
+  s = s.replace(/يَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "يَعْبُدُ اللَّهَ");
+  s = s.replace(/تَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "تَعْبُدُ اللَّهَ");
+  s = s.replace(/نَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "نَعْبُدُ اللَّهَ");
+  s = s.replace(/أَنْ\s+تَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ اللَّهَ");
+  s = s.replace(/فَقَدْ\s+كُفْر[\u064B-\u065F\u0670]*/g, 'فَقَدْ كَفَرَ');
   s = s.split('الْحِكْمَةُ مَنْ خَلَقَ').join('الْحِكْمَةُ مِنْ خَلْقِ');
   s = s.split('الْحِكْمَةُ مَنْ').join('الْحِكْمَةُ مِنْ');
   s = s.split("بَعَثَ النَّبِيِّ").join("بَعَثَ النَّبِيُّ");
@@ -2332,6 +2341,7 @@ function scrubSpeechDiacriticsNoise(text) {
     ['نَعْبُدُ اللَّهِ', 'نَعْبُدُ اللَّهَ'],
     ['يَعْبُدَ اللَّهِ', 'يَعْبُدَ اللَّهَ'],
     ['تَعْبُدَ اللَّهِ', 'تَعْبُدَ اللَّهَ'],
+    ['أَنْ تَعْبُدَ اللَّهِ', 'أَنْ تَعْبُدَ اللَّهَ'],
     ['وب فِيهِ للأم ة', 'وَبَيَّنَ فِيهِ لِلْأُمَّةِ'],
     ['وب فيه للأم ة', 'وَبَيَّنَ فِيهِ لِلْأُمَّةِ'],
     // بين preposition — never بَيِّنٌ (adjective) before a noun
@@ -2343,9 +2353,13 @@ function scrubSpeechDiacriticsNoise(text) {
     ['بَيِّنٌ الشِّرْك', 'بَيْنَ الشِّرْك'],
     ['بَيِّنٌ الْمُس', 'بَيْنَ الْمُس'],
     ['بَيِّنٌ الْحَلَالُ', 'بَيْنَ الْحَلَالِ'],
-    // لولا: split for Fish narrator (avoid mashed «lawlāllāh»)
+    // Restore adjective بَيِّنٌ after الحلال/الحرام (hadith) — lexicon default is prep بَيْنَ
+    ['الْحَلَالَ بَيْنَ', 'الْحَلَالَ بَيِّنٌ'],
+    ['الْحَرَامَ بَيْنَ', 'الْحَرَامَ بَيِّنٌ'],
+    ['الْحَلَالُ بَيْنَ', 'الْحَلَالُ بَيِّنٌ'],
+    ['الْحَرَامُ بَيْنَ', 'الْحَرَامُ بَيِّنٌ'],
+    // لولا قبل الله فقط — تفادي mash «lawlāllāh» مع الإبقاء على كلمة واحدة عادةً
     ['لَوْلَا الل', 'لَوْ لَا الل'],
-    ['لَوْلَا', 'لَوْ لَا'],
     // غير (اسم) لا فعل غَيَّرَ
     ['عَلَى غَيَّرَ الل', 'عَلَى غَيْرِ الل'],
     ['تَعْظِيمُ غَيَّرَ الل', 'تَعْظِيمِ غَيْرِ الل'],
@@ -2423,6 +2437,11 @@ function scrubSpeechDiacriticsNoise(text) {
     ['العراض', 'الْأَعْرَاضِ'],
     ['الخيات', 'الْخَيْرَاتِ'],
     ['عَمَلٌ الخيرات', 'عَمَلِ الْخَيْرَاتِ'],
+    ["خَلَقَ اللَّهِ", "خَلَقَ اللَّهُ"],
+    ["أَمَرَ اللَّهِ", "أَمَرَ اللَّهُ"],
+    ["شَاءَ اللَّهِ", "شَاءَ اللَّهُ"],
+    ["رَضِيَ اللَّهِ", "رَضِيَ اللَّهُ"],
+    ["صَلَّى اللَّهِ", "صَلَّى اللَّهُ"],
 
   ];
   for (const [a, b] of prep) s = s.split(a).join(b);
@@ -4304,19 +4323,24 @@ function speakQuestion() {
   const btn = document.getElementById('btn-speak-question');
   const askIdx = state.idx;
   const askId = q.id;
-  // Cut previous audio instantly so the new question never waits behind feedback.
+  // Cut previous audio once. Avoid a second stopSpeaking later that aborts the
+  // just-started clip (token bump + ttsAbort race).
   stopSpeaking();
   const token = hybridSpeechToken;
   unlockTtsAudio();
   void (async () => {
     try {
-      // Never block speech on map/status — start ASAP; maps upgrade quality in background.
+      // Never block speech on full map — start ASAP with bank+core+lexicon;
+      // full map loads in parallel and helps later questions.
       void ensureSpeechMapsLoaded();
-      void ensureTtsVoiceReady();
-      await Promise.race([
-        ensureTtsVoiceReady(),
-        new Promise((r) => setTimeout(r, 400)),
-      ]);
+      // Only wait briefly if FISH_VOICE_ID not yet applied (avoids fish-live 400).
+      if (!isFishVoiceIdClient(TTS_VOICE)) {
+        void ensureTtsVoiceReady();
+        await Promise.race([
+          ensureTtsVoiceReady(),
+          new Promise((r) => setTimeout(r, 60)),
+        ]);
+      }
       if (token !== hybridSpeechToken || !voiceOn || state.idx !== askIdx) return;
       if (state.questions[state.idx]?.id !== askId) return;
 
@@ -4332,9 +4356,6 @@ function speakQuestion() {
       const verseKey = getPrimaryVerseKeyForQuestion(q);
 
       if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
-      // Prefetch answers after question starts — don't compete with first clip.
-      const next = state.questions[askIdx + 1];
-      if (next) void warmQuestionSpeech(next);
 
       if (btn) btn.classList.add('speaking');
       try {
@@ -4363,7 +4384,7 @@ function speakQuestion() {
             } catch (e) {
               if (e?.name === 'AbortError') {
                 if (token !== hybridSpeechToken) return;
-                await new Promise((r) => setTimeout(r, 120));
+                await new Promise((r) => setTimeout(r, 80));
                 continue;
               }
               console.warn('question tts:', e);
@@ -4388,12 +4409,17 @@ function speakQuestion() {
                   }
                 }
               } else {
-                await new Promise((r) => setTimeout(r, 300 * (attempt + 1)));
+                await new Promise((r) => setTimeout(r, 200 * (attempt + 1)));
               }
             }
           }
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+
+        // Prefetch next/answers only AFTER current question audio has started.
+        const next = state.questions[askIdx + 1];
+        if (next) void warmQuestionSpeech(next);
+        for (const opt of (opts || []).slice(0, 2)) prefetchTtsText(opt);
 
         // 2) Ayah — sync key only (never hang on network verse search).
         const verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
@@ -4425,7 +4451,7 @@ function speakQuestion() {
                 played = true;
               } catch (e) {
                 if (e?.name === 'AbortError' && token !== hybridSpeechToken) return;
-                if (attempt === 0) await new Promise((r) => setTimeout(r, 250));
+                if (attempt === 0) await new Promise((r) => setTimeout(r, 200));
                 else console.warn('option tts miss:', e?.message || e);
               }
             }
@@ -6243,10 +6269,7 @@ function renderQ() {
     });
   }
   updateQuranReciteSlot(q);
-  // Start current-question audio fetch immediately so speakQuestion joins the
-  // in-flight request (shared cache) instead of waiting cold (~1.2s).
-  const nextQ = state.questions[state.idx + 1];
-  if (nextQ) void warmQuestionSpeech(nextQ);
+  // Current-question warm only — next/answers warm after speak starts (speakQuestion).
   if (prior) {
     clearQuestionTimer();
     setTimerVisible(false);
@@ -6258,19 +6281,19 @@ function renderQ() {
     document.getElementById('fb-self-correct').style.display = 'none';
     startQuestionTimer();
     questionShownAt = Date.now();
-    // Speak only AFTER the question is painted and visible (never before the user sees it).
+    // Speak ASAP after paint is visible — double-rAF (~0–16ms), no 80ms wait.
     const askIdx = state.idx;
     const askId = q.id;
     if (voiceOn) {
       requestAnimationFrame(() => {
-        setTimeout(() => {
+        requestAnimationFrame(() => {
           if (!voiceOn) return;
           if (state.idx !== askIdx || state.questions[state.idx]?.id !== askId) return;
           if (!document.getElementById('game')?.classList.contains('active')) return;
           const painted = document.getElementById('q-text')?.textContent?.trim();
           if (!painted) return;
           speakQuestion();
-        }, 80);
+        });
       });
     }
   }

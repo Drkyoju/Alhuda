@@ -23,11 +23,11 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   latency: 'normal', // best quality (vs balanced/low)
   normalize: false, // keep Arabic harakat — do not rewrite diacritics
   chunk_length: 300, // max continuity for long vocalized sentences
-  temperature: 0.32, // lower = stick closer to provided tashkeel/iʿrāb
-  top_p: 0.5,
+  temperature: 0.28, // stick tightly to provided tashkeel/iʿrāb
+  top_p: 0.45,
   repetition_penalty: 1.35,
   prosody: {
-    speed: 0.88, // slower → clearer harakat for students
+    speed: 0.96, // natural pace (was 0.88 — felt sluggish); override via FISH_TTS_SPEED
     volume: 2,
     normalize_loudness: true,
   },
@@ -73,11 +73,31 @@ export function stripTtsPunctuation(text) {
 
 export function prepareFishTtsText(text) {
   // Preserve formation (harakat); expand honorifics; drop marks spoken as words.
+  // NEVER strip mid-word harakat — Fish needs tashkeel to avoid «اللاه» / mangled iʿrāb.
   let s = String(text || '');
   s = s.replace(/\uFDFA/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
   s = s.replace(/\uFDFB/g, ' جَلَّ جَلَالُهُ ');
   s = s.replace(/صلعم/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
   s = s.replace(/\(ص\)/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
+  // Critical passive «عُبِدَ» — never leave bare/broken عَبْد after مَا (look past any harakat).
+  s = s.replace(/مَا\s+ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/g, (m) =>
+    /عُبِدَ/.test(m) ? m : 'مَا عُبِدَ'
+  );
+  s = s.replace(/كُلُّ?\s+مَا\s+ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/g, (m) =>
+    /عُبِدَ/.test(m) ? m.replace(/^[\s\S]*مَا/, 'كُلُّ مَا').replace(/ع[َُِ]?ب[ْ]?د[\u064B-\u065F\u0670]*/, 'عُبِدَ') : 'كُلُّ مَا عُبِدَ'
+  );
+  // Verb لَعَنَ takes الله as فاعل مرفوع.
+  s = s.replace(/لَعَنَ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "لَعَنَ اللَّهُ");
+  s = s.replace(/لعن\s+الله/g, "لَعَنَ اللَّهُ");
+  // يعبد/تعبد/نعبد + الله → منصوب
+  s = s.replace(/يَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "يَعْبُدُ اللَّهَ");
+  s = s.replace(/تَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "تَعْبُدُ اللَّهَ");
+  s = s.replace(/نَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "نَعْبُدُ اللَّهَ");
+  s = s.replace(/أَنْ\s+تَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ اللَّهَ");
+  s = s.replace(/فَقَدْ\s+كُفْر[\u064B-\u065F\u0670]*/g, 'فَقَدْ كَفَرَ');
+  s = s.replace(/فقد\s+كفر/g, 'فَقَدْ كَفَرَ');
+  s = s.replace(/مَنْ\s+دُون/g, 'مِنْ دُون');
+  s = s.replace(/عَبْد[\u064B-\u065F\u0670]*\s+الل/g, "عَبْدِ الل");
   return fixAllahIrabInText(stripTtsPunctuation(s));
 }
 
