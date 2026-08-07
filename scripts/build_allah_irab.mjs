@@ -99,7 +99,19 @@ chunk = chunk.replace(
 );
 
 const header = `/**\n * Case-aware الله-family i'rab for Arabic TTS.\n * Generated — node scripts/build_allah_irab.mjs\n */\n\n`;
-const footer = `\n/** Fix الله-family i'rab in any Arabic TTS string. */\nexport function fixAllahIrabInText(text) {\n  return applyWordLexicon(normalizeAllahTokens(applyPhraseRules(String(text || ''))));\n}\n`;
+const footer = `
+/** Fish / clone voices need shadda THEN vowel — never vowel-before-shadda («اللاه»). */
+function normalizeShaddaVowelOrder(text) {
+  return String(text || '').replace(/([\\u064B-\\u0650\\u0652-\\u065F])(\\u0651)/g, '$2$1');
+}
+
+/** Fix الله-family i'rab in any Arabic TTS string. */
+export function fixAllahIrabInText(text) {
+  return normalizeShaddaVowelOrder(
+    applyWordLexicon(normalizeAllahTokens(applyPhraseRules(String(text || ''))))
+  );
+}
+`;
 
 const esm = header + chunk + footer;
 writeFileSync(join(root, 'allah-irab.js'), esm);

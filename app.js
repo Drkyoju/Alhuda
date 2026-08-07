@@ -50,7 +50,7 @@ function chapterSortIndex(book, chapter) {
 }
 
 let QUESTIONS = { tawheed:[], usool:[], nawawi:[] };
-let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:15, bankVersion:0, wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:15 };
+let state = { user:null, userType:'', userName:'', userEmail:'', book:'tawheed', level:'easy', questions:[], idx:0, score:0, hearts:5, streak:0, maxStreak:0, correct:0, wrong:0, answered:false, total:15, qFrom:1, bankVersion:0, wrongLog:[], answerLog:[], reviewIdx:0, reviewReturn:'results', homeworkId:null, activeStageNum:1, stageReviewMode:false, useManualRange:false, displayAnswerOrder:null, roundSize:15 };
 let trainingMode = false, soundOn = true, voiceOn = true, voiceReadAnswers = true, lastGameXp = 0, loginInProgress = false;
 let countdownTimer = null, questionTimerId = null, questionTimerLeft = QUESTION_TIME_SEC;
 let gameEndTimer = null, syncPendingScoresInFlight = null;
@@ -1230,7 +1230,9 @@ function onRangeInputChange() {
 
 
 function arabicNum(n) {
-  return String(n).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[+d]);
+  const v = Number(n);
+  if (!Number.isFinite(v)) return '٠';
+  return String(Math.trunc(v)).replace(/\d/g, (d) => '٠١٢٣٤٥٦٧٨٩'[+d]);
 }
 
 
@@ -6565,8 +6567,11 @@ function renderQ() {
   const stagePrefix = (!state.homeworkId && !state.useManualRange && LEVEL_FLOW.includes(state.level))
     ? `${LEVEL_LABELS_AR[state.level] || ''} — `
     : '';
+  const qBase = Number.isFinite(Number(state.qFrom)) ? Number(state.qFrom) : 1;
+  const qIdx = Number.isFinite(Number(state.idx)) ? Number(state.idx) : 0;
+  const qTotal = Math.max(1, Number(state.total) || state.questions?.length || 1);
   document.getElementById('q-num').textContent =
-    `${stagePrefix}سؤال ${state.qFrom + state.idx} — ${state.idx + 1}/${state.total}`;
+    `${stagePrefix}سؤال ${qBase + qIdx} — ${qIdx + 1}/${qTotal}`;
   updateStageGameBadge();
   // Show bare text (no tashkeel) — speech maps keep harakat for TTS only.
   const qEl = document.getElementById('q-text');
