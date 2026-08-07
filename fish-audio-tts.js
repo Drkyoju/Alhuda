@@ -207,13 +207,14 @@ export function prepareFishTtsText(text) {
   // خطأ alone → شطأ; pad when whole utterance
   s = s.replace(/^خَطَأٌ$/u, 'هَذَا خَطَأٌ');
   s = s.replace(/^خطأ$/u, 'هَذَا خَطَأٌ');
-  // المراد بـ → المقصود بـ for Fish clarity (same lesson sense; UI keeps المراد)
-  s = s.replace(/مَا\s+اَلْمُرَادْ\s+بِ/g, 'مَا مَعْنَى');
-  s = s.replace(/مَا\s+الْمُرَادُ\s+بِ/g, 'مَا مَعْنَى');
-  s = s.replace(/مَا\s+الْمُرَادْ\s+بِ/g, 'مَا مَعْنَى');
+  // المراد بـ → أوضح للـ clone (الواجهة تبقى «المراد»)
+  s = s.replace(/مَا\s+اَلْمُرَادْ\s+بِ/g, 'مَا مَعْنَى ');
+  s = s.replace(/مَا\s+الْمُرَادُ\s+بِ/g, 'مَا مَعْنَى ');
+  s = s.replace(/مَا\s+الْمُرَادْ\s+بِ/g, 'مَا مَعْنَى ');
   s = s.replace(/(^|[\s،])اَلْمُرَادْ\s+بِ/g, '$1الْمَقْصُودُ بِ');
   s = s.replace(/(^|[\s،])الْمُرَادُ\s+بِ/g, '$1الْمَقْصُودُ بِ');
-  s = s.replace(/(^|[\s،])المراد\s+ب/g, '$1الْمَقْصُودُ بِ');
+  s = s.replace(/(^|[\s،])المراد\s+ب/g, '$1الْمَقْصُودُ ب');
+  s = s.replace(/مَعْنَى(?=[\u0621-\u064A])/g, 'مَعْنَى ');
   s = s.replace(/الْمُرَادُ\s+بِالْبِضْع/g, 'اَلْمُرَادْ بِالْبِضْع');
   s = s.replace(/الْمُرَادُ\s+بالبِ?\s*ضع/g, 'اَلْمُرَادْ بِالْبِضْعِ');
   // Idol names — lam+sukun clarity; avoid shadda that collapses to «لا تـ»
