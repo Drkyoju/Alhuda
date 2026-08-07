@@ -24,14 +24,13 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   latency: 'balanced',
   normalize: false, // keep Arabic harakat — do not rewrite diacritics
   chunk_length: 300, // max continuity for long vocalized sentences
-  temperature: 0.2, // stick tightly to provided tashkeel/iʿrāb — clearer MSA
-  top_p: 0.35,
-  repetition_penalty: 1.4,
-  // Request-scoped Fish backend flag for clearer synthesis when available.
-  features: Object.freeze(['quality-guard']),
+  temperature: 0.22, // stick tightly to provided tashkeel/iʿrāb (v265 baseline)
+  top_p: 0.4,
+  repetition_penalty: 1.35,
   prosody: {
-    speed: 0.92, // slower → clearer, less mumbled articulation
-    volume: 18, // near-max classroom loudness (-20..20); was 12
+    // v265 pace (0.97) — do NOT slow to 0.92; mild volume bump only (was 6).
+    speed: 0.97,
+    volume: 9,
     normalize_loudness: true,
   },
 });
@@ -171,6 +170,9 @@ export function prepareFishTtsText(text) {
   s = s.replace(/الرِّيَاءُ\s+مِنْ\s+أَمْثِلَةِ/g, 'الرِّيَـاءُ مِنْ أَمْـثِلَةِ');
   s = s.replace(/فِي\s+بُضْعِ\s+أَحَدِكُمْ\s+صَدَقَةٌ/g, 'فِي بُضْـعِ أَحَدِكُمْ صَدَقَـةٌ');
   s = s.replace(/^ذُكِرَتْ\s+فِي\s+سُورَةِ$/g, 'ذُكِـرَتْ فِي سُورَةِ');
+  // Clone often slurs دَمُ امْرِئٍ مُسْلِمٍ → «جم/مرئ/النسلم» — light tatweel only.
+  s = s.replace(/دَمُ\s+امْرِئٍ\s+مُسْلِمٍ/g, 'دَمْـُ امْرِئٍ مُسْلِمٍ');
+  s = s.replace(/دم\s+امرئ\s+مسلم/g, 'دَمْـُ امْرِئٍ مُسْلِمٍ');
   return fixAllahIrabInText(s);
 }
 
@@ -194,7 +196,6 @@ function buildFishTtsBody(cleanText, selectedVoice, env = process.env) {
     temperature: Number.isFinite(temperature) && temperature > 0 ? temperature : q.temperature,
     top_p: Number.isFinite(topP) && topP > 0 ? topP : q.top_p,
     repetition_penalty: q.repetition_penalty,
-    features: Array.isArray(q.features) ? [...q.features] : undefined,
     prosody: {
       speed: Number.isFinite(speed) && speed >= 0.5 && speed <= 2 ? speed : q.prosody.speed,
       volume: Number.isFinite(volume) && volume >= -20 && volume <= 20 ? volume : q.prosody.volume,

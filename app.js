@@ -1691,13 +1691,13 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v44';
+const TTS_CACHE_VER = 'v45';
 /**
- * Lesson Fish TTS only — HTMLAudioElement.volume caps at 1.
- * Aggressive Web Audio loudness + de-mud clarity (never applied to Quran Hudhaify).
+ * Lesson Fish TTS only — mild loudness (NOT v267 3.6× / heavy EQ).
+ * Never applied to Quran Hudhaify.
  */
-const TTS_PLAYBACK_GAIN = 3.6;
-let ttsAudioGraph = null; // { source, nodes[] } — never used for Quran Hudhaify
+const TTS_PLAYBACK_GAIN = 1.3;
+let ttsAudioGraph = null; // { source, nodes[] }
 /** createMediaElementSource may only bind once per element — reuse across replays. */
 const ttsMediaSources = new WeakMap(); // HTMLMediaElement -> MediaElementAudioSourceNode
 let ttsStatusReadyPromise = null;
@@ -4224,30 +4224,18 @@ function disconnectTtsAudioGraph() {
   if (!ttsAudioGraph) return;
   const { source, nodes } = ttsAudioGraph;
   ttsAudioGraph = null;
-  // Keep MediaElementSource alive in WeakMap — only detach from the clarity chain.
+  // Keep MediaElementSource alive in WeakMap — only detach from the mild loudness chain.
   try { source?.disconnect(); } catch { /* ignore */ }
   for (const n of nodes || []) {
     try { n.disconnect(); } catch { /* ignore */ }
   }
 }
 
-/** Soft-clip curve so high makeup gain stays loud without harsh digital clipping. */
-function makeTtsSoftClipCurve(drive = 2.2) {
-  const n = 2048;
-  const curve = new Float32Array(n);
-  const denom = Math.tanh(drive) || 1;
-  for (let i = 0; i < n; i++) {
-    const x = (i * 2) / n - 1;
-    curve[i] = Math.tanh(x * drive) / denom;
-  }
-  return curve;
-}
-
 /**
- * Noticeably louder + clearer lesson Fish playback via Web Audio.
- * Quran Hudhaify must NOT call this — it uses makePlayableAudio → play() directly.
+ * Mild lesson Fish loudness via Web Audio (gain ~1.3 + soft compressor).
+ * No highpass/presence EQ — those made v267 sound سيء. Quran Hudhaify must NOT call this.
  */
-function routeTtsThroughClarityBoost(audioEl) {
+function routeTtsThroughMildBoost(audioEl) {
   if (!audioEl) return;
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -4260,71 +4248,28 @@ function routeTtsThroughClarityBoost(audioEl) {
     }
     const nodes = [];
     try {
-      // Cut low mud that makes clone voice sound مكتوم / distant.
-      const deMud = audioCtx.createBiquadFilter();
-      deMud.type = 'highpass';
-      deMud.frequency.value = 120;
-      deMud.Q.value = 0.7;
-      nodes.push(deMud);
-      // Strong presence — consonants / تاء / سين become intelligible.
-      const presence = audioCtx.createBiquadFilter();
-      presence.type = 'peaking';
-      presence.frequency.value = 2800;
-      presence.Q.value = 1.05;
-      presence.gain.value = 8.5;
-      nodes.push(presence);
-      const air = audioCtx.createBiquadFilter();
-      air.type = 'highshelf';
-      air.frequency.value = 4800;
-      air.gain.value = 5.5;
-      nodes.push(air);
-      // Pre-boost into compressor so quiet RMS rises hard.
-      const preGain = audioCtx.createGain();
-      preGain.gain.value = 1.85;
-      nodes.push(preGain);
-      // Aggressive loudness compressor → soft limiter behavior.
       const compressor = audioCtx.createDynamicsCompressor();
-      compressor.threshold.value = -28;
-      compressor.knee.value = 22;
-      compressor.ratio.value = 6;
-      compressor.attack.value = 0.003;
-      compressor.release.value = 0.16;
+      compressor.threshold.value = -18;
+      compressor.knee.value = 12;
+      compressor.ratio.value = 2.5;
+      compressor.attack.value = 0.008;
+      compressor.release.value = 0.22;
       nodes.push(compressor);
-      const makeup = audioCtx.createGain();
-      makeup.gain.value = TTS_PLAYBACK_GAIN;
-      nodes.push(makeup);
-      const softClip = audioCtx.createWaveShaper();
-      softClip.curve = makeTtsSoftClipCurve(2.4);
-      softClip.oversample = '2x';
-      nodes.push(softClip);
-      // Final gentle ceiling so soft-clip output stays full but controlled.
-      const ceiling = audioCtx.createDynamicsCompressor();
-      ceiling.threshold.value = -3;
-      ceiling.knee.value = 4;
-      ceiling.ratio.value = 12;
-      ceiling.attack.value = 0.001;
-      ceiling.release.value = 0.08;
-      nodes.push(ceiling);
-
-      source.connect(deMud);
-      deMud.connect(presence);
-      presence.connect(air);
-      air.connect(preGain);
-      preGain.connect(compressor);
-      compressor.connect(makeup);
-      makeup.connect(softClip);
-      softClip.connect(ceiling);
-      ceiling.connect(audioCtx.destination);
+      const gain = audioCtx.createGain();
+      gain.gain.value = TTS_PLAYBACK_GAIN;
+      nodes.push(gain);
+      source.connect(compressor);
+      compressor.connect(gain);
+      gain.connect(audioCtx.destination);
       ttsAudioGraph = { source, nodes };
     } catch (chainErr) {
       // MediaElementSource hijacks element output — must still reach speakers.
       try { source.connect(audioCtx.destination); } catch { /* ignore */ }
       ttsAudioGraph = { source, nodes: [] };
-      console.warn('tts clarity chain fallback:', chainErr);
+      console.warn('tts mild boost fallback:', chainErr);
     }
   } catch (e) {
-    // Keep plain HTMLAudioElement path if Web Audio unavailable.
-    console.warn('tts clarity boost unavailable:', e);
+    console.warn('tts mild boost unavailable:', e);
   }
 }
 
@@ -4363,7 +4308,7 @@ async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
   try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
   try { ttsAudio.muted = false; ttsAudio.volume = 1; } catch { /* ignore */ }
   // Lesson Fish only (this helper). Quran path never enters here.
-  routeTtsThroughClarityBoost(ttsAudio);
+  routeTtsThroughMildBoost(ttsAudio);
   if (btn) btn.classList.add('speaking');
   try {
     await ttsAudio.play();
