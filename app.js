@@ -2418,13 +2418,15 @@ function sanitizeTtsText(text) {
     scrubSpeechDiacriticsNoise(
       (text || '')
         .replace(/[\u{1F300}-\u{1FAFF}\u2600-\u26FF\u2700-\u27BF]/gu, ' ')
-        // Expand honorific ligatures so the voice actually says them (symbol alone is silent).
+        // Honorifics must be spoken (symbol alone is silent or stripped elsewhere).
         .replace(/\uFDFA/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ')
         .replace(/\uFDFB/g, ' جَلَّ جَلَالُهُ ')
+        .replace(/صلعم/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ')
+        .replace(/\(ص\)/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ')
         .replace(/رضي الله عنهما/g, ' رضي الله عنهما ')
         .replace(/رضي الله عنها/g, ' رضي الله عنها ')
         .replace(/رضي الله عنه/g, ' رضي الله عنه ')
-        // Drop ALL quote / bracket / punctuation — never read «نقطتان» / commas / dashes.
+        // Drop quotes / brackets / punctuation — never read «نقطتان» / colons / periods.
         .replace(/[\u00AB\u00BB\u2018-\u201F\u2039\u203A\u300C-\u300F\u301D\u301E\uFF02\uFF07«»"'“”‘’‹›「」『』„‚]/g, ' ')
         .replace(/[﴿﴾]/g, ' ')
         .replace(/[.؟!…‥∶::：;؛،٫٬%٪‰()\[\]{}*_#<>+=~^`\\/|–—―•·\-_]+/g, ' ')
@@ -2734,13 +2736,21 @@ function stripForSpeech(text) {
   return sanitizeTtsText(forTts);
 }
 
-/** Remove Quranic ayat from TTS — hadith and lesson text stay. */
+/** Remove Quranic ayat from TTS — hadith and lesson text stay.
+ *  Never strip ﷺ / ﷻ — expand them so Fish speaks the honorific. */
 function removeQuranicVersesForSpeech(text) {
   let s = (text || '').trim();
   if (!s) return '';
 
+  // Expand honorifics BEFORE any presentation-form scrub (ﷺ is U+FDFA).
+  s = s.replace(/\uFDFA/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
+  s = s.replace(/\uFDFB/g, ' جَلَّ جَلَالُهُ ');
+  s = s.replace(/\uFDF2/g, 'الله');
+  s = s.replace(/صلعم/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
+
   s = s.replace(/﴿[\s\S]*?﴾/g, ' ');
-  s = s.replace(/[\uFD40-\uFDFF\uFDF0-\uFDFF]+/g, ' ');
+  // Drop leftover presentation forms EXCEPT ones we already expanded.
+  s = s.replace(/[\uFD40-\uFDF1\uFDF3-\uFDF9\uFDFC-\uFDFF]+/g, ' ');
   s = s.replace(/\[[^\]]*سورة[^\]]*\]/gi, ' ');
   s = s.replace(/[-–—]\s*[^\s.]+\s*:\s*\d+/g, ' ');
 
@@ -4131,9 +4141,8 @@ function speakQuestion() {
       const verseKey = getPrimaryVerseKeyForQuestion(q);
 
       if (verseKey) void fetchQuranAudioObjectUrl(verseKey).catch(() => {});
-      if (voiceReadAnswers) {
-        for (const opt of opts) prefetchTtsText(opt);
-      }
+      // Always warm answers when voice is on — answers are always spoken after ayah.
+      for (const opt of opts) prefetchTtsText(opt);
       const next = state.questions[askIdx + 1];
       if (next) {
         void prefetchHybridSpeechForQuestion(next);
@@ -4154,34 +4163,17 @@ function speakQuestion() {
       try {
         const recited = new Set();
 
-        // 1) Question — start ASAP; soft-fail and continue to answers.
-        if (qClean && textMayHaveQuranAyah(questionText, q)) {
+        // Order: سؤال (نص فقط) → آية الحذيفي → حديث/اقتباس → كل الإجابات.
+        // Never skip answers after an ayah.
+
+        // 1) Question prose — strip embedded ayah markers (Hudhaify handles ayah next).
+        const qProseRaw = String(questionText || '')
+          .replace(/﴿[^﴾]*﴾/g, ' ')
+          .replace(/「[^」]*」/g, ' ');
+        const qProse = prepareTtsPayload(qProseRaw) || qClean;
+        if (qProse) {
           try {
-            // Prefer mapped Hudhaify + TTS prose; avoid network search stalls.
-            const mappedKey = getPrimaryVerseKeyForQuestion(q);
-            if (mappedKey && shouldReciteHudhaifyForQuestion(q, questionText)) {
-              const prose = prepareTtsPayload(
-                String(questionText || '')
-                  .replace(/﴿[^﴾]*﴾/g, ' ')
-                  .replace(/「[^」]*」/g, ' ')
-              );
-              if (prose) {
-                await speakTtsSegment(prose, btn, { clearAfter: false, alreadyPrepared: true });
-              }
-              if (token !== hybridSpeechToken || state.idx !== askIdx) return;
-              recited.add(mappedKey);
-              await awaitHudhaifyThenContinue(mappedKey, btn, { interruptAll: false });
-            } else {
-              const fromQ = await playSpeechForText(questionText, q, btn, token);
-              fromQ.forEach((k) => recited.add(k));
-            }
-          } catch (e) {
-            if (e?.name === 'AbortError') return;
-            console.warn('question hybrid tts:', e);
-          }
-        } else if (qClean) {
-          try {
-            await speakTtsSegment(qClean, btn, { clearAfter: false, alreadyPrepared: true });
+            await speakTtsSegment(qProse, btn, { clearAfter: false, alreadyPrepared: true });
           } catch (e) {
             if (e?.name === 'AbortError') return;
             console.warn('question tts:', e);
@@ -4190,7 +4182,20 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 1b) Hadith / book citation — read aloud after the question (never as Hudhaify).
+        // 2) Ayah — الحذيفي فقط، كاملًا قبل الإجابات.
+        const verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
+        if (
+          verseKeyForRecite
+          && shouldReciteHudhaifyForQuestion(q, questionText)
+        ) {
+          recited.add(verseKeyForRecite);
+          await awaitHudhaifyThenContinue(verseKeyForRecite, btn, { interruptAll: false });
+        }
+        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+        await waitForQuranIdle();
+        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+
+        // 3) Hadith / book citation — TTS only (never Hudhaify).
         const citeRaw = String(q.quote || '').trim();
         if (citeRaw && isHadithPassage(citeRaw) && !citationLooksLikeAyah(citeRaw, verseKey)) {
           const citeSpeak = speechPart(q, 'quote', citeRaw) || citeRaw;
@@ -4206,24 +4211,8 @@ function speakQuestion() {
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
 
-        // 2) Ayah — الحذيفي فقط (never TTS ayah text; never Hudhaify a hadith).
-        //    Must fully finish before answers — no short timeout that overlaps TTS.
-        const verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
-        if (
-          verseKeyForRecite
-          && !recited.has(verseKeyForRecite)
-          && shouldReciteHudhaifyForQuestion(q, questionText)
-        ) {
-          recited.add(verseKeyForRecite);
-          await awaitHudhaifyThenContinue(verseKeyForRecite, btn, { interruptAll: false });
-        }
-        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
-        await waitForQuranIdle();
-        if (token !== hybridSpeechToken || state.idx !== askIdx) return;
-
-        // 3) Answers — every option via baked TTS (faster playback so the chain finishes sooner).
-        //    Hadith wording in options/questions stays TTS; mapped Quran ayahs use Hudhaify above.
-        if (voiceReadAnswers && opts.length) {
+        // 4) Answers — always when voice is on (every option; never skip after ayah).
+        if (opts.length) {
           for (const opt of opts) {
             if (token !== hybridSpeechToken || state.idx !== askIdx) return;
             const oClean = prepareTtsPayload(opt);
@@ -4236,7 +4225,6 @@ function speakQuestion() {
               });
             } catch (e) {
               if (e?.name === 'AbortError') return;
-              // Fallback: sanitize again (never speak raw punctuation/quotes).
               try {
                 const rawClean = prepareTtsPayload(String(opt || '').trim());
                 if (rawClean && rawClean !== oClean) {
@@ -6877,12 +6865,11 @@ async function restoreSession() {
     localStorage.setItem('voiceOn', 'true');
     localStorage.setItem('voiceForceOnV241', '1');
   }
-  // One-time: turn answer read-aloud on for everyone (was default-off).
-  // V3: re-enable after Fish full-bank bake so every option is spoken again.
-  if (localStorage.getItem('voiceReadAnswersMigratedV3') !== '1') {
+  // V246: always read every answer aloud after question/ayah.
+  if (localStorage.getItem('voiceReadAnswersMigratedV246') !== '1') {
     localStorage.setItem('voiceReadAnswers', 'true');
+    localStorage.setItem('voiceReadAnswersMigratedV246', '1');
     localStorage.setItem('voiceReadAnswersMigratedV3', '1');
-    localStorage.setItem('voiceReadAnswersMigratedV2', '1');
   }
   voiceReadAnswers = localStorage.getItem('voiceReadAnswers') !== 'false';
   if (localStorage.getItem('voiceOn') == null) localStorage.setItem('voiceOn', 'true');

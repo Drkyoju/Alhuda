@@ -64,8 +64,13 @@ export function stripTtsPunctuation(text) {
 }
 
 export function prepareFishTtsText(text) {
-  // Preserve formation (harakat); only drop marks that get spoken as words.
-  return fixAllahIrabInText(stripTtsPunctuation(text));
+  // Preserve formation (harakat); expand honorifics; drop marks spoken as words.
+  let s = String(text || '');
+  s = s.replace(/\uFDFA/g, ' صلى الله عليه وسلم ');
+  s = s.replace(/\uFDFB/g, ' جل جلاله ');
+  s = s.replace(/صلعم/g, ' صلى الله عليه وسلم ');
+  s = s.replace(/\(ص\)/g, ' صلى الله عليه وسلم ');
+  return fixAllahIrabInText(stripTtsPunctuation(s));
 }
 
 function buildFishTtsBody(cleanText, selectedVoice, env = process.env) {
