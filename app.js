@@ -1691,7 +1691,12 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v42';
+const TTS_CACHE_VER = 'v43';
+/** Lesson Fish TTS only — HTMLAudioElement.volume caps at 1; Web Audio raises perceived loudness/clarity. */
+const TTS_PLAYBACK_GAIN = 2.15;
+let ttsAudioGraph = null; // { source, nodes[] } — never used for Quran Hudhaify
+/** createMediaElementSource may only bind once per element — reuse across replays. */
+const ttsMediaSources = new WeakMap(); // HTMLMediaElement -> MediaElementAudioSourceNode
 let ttsStatusReadyPromise = null;
 /** AbortController for background (next-Q / answer) warms — cancelled when current Q speaks. */
 let ttsBackgroundWarmAbort = null;
@@ -4212,11 +4217,81 @@ function updateQuranReciteSlot(q) {
 
 
 
+function disconnectTtsAudioGraph() {
+  if (!ttsAudioGraph) return;
+  const { source, nodes } = ttsAudioGraph;
+  ttsAudioGraph = null;
+  // Keep MediaElementSource alive in WeakMap — only detach from the clarity chain.
+  try { source?.disconnect(); } catch { /* ignore */ }
+  for (const n of nodes || []) {
+    try { n.disconnect(); } catch { /* ignore */ }
+  }
+}
+
+/**
+ * Louder + clearer lesson Fish playback via Web Audio.
+ * Quran Hudhaify must NOT call this — it uses makePlayableAudio → play() directly.
+ */
+function routeTtsThroughClarityBoost(audioEl) {
+  if (!audioEl) return;
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') void audioCtx.resume();
+    disconnectTtsAudioGraph();
+    let source = ttsMediaSources.get(audioEl);
+    if (!source) {
+      source = audioCtx.createMediaElementSource(audioEl);
+      ttsMediaSources.set(audioEl, source);
+    }
+    const nodes = [];
+    try {
+      // Presence boost — counters muffled/distant clone timbre without crushing peaks alone.
+      const presence = audioCtx.createBiquadFilter();
+      presence.type = 'peaking';
+      presence.frequency.value = 3000;
+      presence.Q.value = 1.15;
+      presence.gain.value = 5;
+      nodes.push(presence);
+      const air = audioCtx.createBiquadFilter();
+      air.type = 'highshelf';
+      air.frequency.value = 5200;
+      air.gain.value = 2.8;
+      nodes.push(air);
+      // Soft limiter / loudness raiser — live Fish peaks near FS but RMS is low.
+      const compressor = audioCtx.createDynamicsCompressor();
+      compressor.threshold.value = -24;
+      compressor.knee.value = 18;
+      compressor.ratio.value = 3.5;
+      compressor.attack.value = 0.004;
+      compressor.release.value = 0.2;
+      nodes.push(compressor);
+      const gain = audioCtx.createGain();
+      gain.gain.value = TTS_PLAYBACK_GAIN;
+      nodes.push(gain);
+      source.connect(presence);
+      presence.connect(air);
+      air.connect(compressor);
+      compressor.connect(gain);
+      gain.connect(audioCtx.destination);
+      ttsAudioGraph = { source, nodes };
+    } catch (chainErr) {
+      // MediaElementSource hijacks element output — must still reach speakers.
+      try { source.connect(audioCtx.destination); } catch { /* ignore */ }
+      ttsAudioGraph = { source, nodes: [] };
+      console.warn('tts clarity chain fallback:', chainErr);
+    }
+  } catch (e) {
+    // Keep plain HTMLAudioElement path if Web Audio unavailable.
+    console.warn('tts clarity boost unavailable:', e);
+  }
+}
+
 function clearTtsAudio(btn) {
   if (ttsAbort) {
     ttsAbort.abort();
     ttsAbort = null;
   }
+  disconnectTtsAudioGraph();
   if (ttsAudio) {
     ttsAudio.onended = null;
     ttsAudio.onerror = null;
@@ -4245,6 +4320,8 @@ async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE) {
   if (!ttsAudio) return;
   try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
   try { ttsAudio.muted = false; ttsAudio.volume = 1; } catch { /* ignore */ }
+  // Lesson Fish only (this helper). Quran path never enters here.
+  routeTtsThroughClarityBoost(ttsAudio);
   if (btn) btn.classList.add('speaking');
   try {
     await ttsAudio.play();
@@ -4308,8 +4385,11 @@ async function playPreloadedAudio(audio, btn, playbackRate = TTS_DEFAULT_PLAYBAC
     ttsAudio.onerror = null;
     ttsAudio.pause();
   }
-  ttsAudio = audio;
-  ttsObjectUrl = audio.src || ttsObjectUrl;
+  disconnectTtsAudioGraph();
+  // Fresh element preferred — MediaElementSource binds once; warm clones may already be wired.
+  const src = audio.src || '';
+  ttsAudio = src ? makePlayableAudio(src) : audio;
+  ttsObjectUrl = src || ttsObjectUrl;
   await playTtsElement(btn, playbackRate);
 }
 

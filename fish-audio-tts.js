@@ -27,9 +27,11 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   temperature: 0.22, // stick tightly to provided tashkeel/iʿrāb
   top_p: 0.4,
   repetition_penalty: 1.35,
+  // Request-scoped Fish backend flag for clearer synthesis when available.
+  features: Object.freeze(['quality-guard']),
   prosody: {
-    speed: 0.97, // clear MSA pace; override via FISH_TTS_SPEED
-    volume: 6, // loud classroom playback (-20..20)
+    speed: 0.95, // slightly slower → clearer articulation for students
+    volume: 12, // louder classroom playback (-20..20); was 6
     normalize_loudness: true,
   },
 });
@@ -192,6 +194,7 @@ function buildFishTtsBody(cleanText, selectedVoice, env = process.env) {
     temperature: Number.isFinite(temperature) && temperature > 0 ? temperature : q.temperature,
     top_p: Number.isFinite(topP) && topP > 0 ? topP : q.top_p,
     repetition_penalty: q.repetition_penalty,
+    features: Array.isArray(q.features) ? [...q.features] : undefined,
     prosody: {
       speed: Number.isFinite(speed) && speed >= 0.5 && speed <= 2 ? speed : q.prosody.speed,
       volume: Number.isFinite(volume) && volume >= -20 && volume <= 20 ? volume : q.prosody.volume,
