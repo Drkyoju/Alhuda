@@ -298,6 +298,7 @@ async function handleTts(request, env) {
         'Cache-Control': 'public, max-age=604800',
         'X-TTS-Provider': 'fish',
         'X-TTS-Model': resolveFishModel(env),
+        'X-TTS-Quality': 'hq',
         'X-TTS-Chars': String(text.length),
       },
     });
