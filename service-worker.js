@@ -4,7 +4,7 @@
 // On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
 // without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v261';
+const CACHE = 'alhuda-v262';
 // Keep install precache lean — large speech-diacritics-map.js loads on demand.
 const ASSETS = [
   './',
@@ -35,7 +35,7 @@ const ASSETS = [
   './fonts/tajawal-arabic-700-normal.woff2',
 ];
 
-const VERSION = 'v257';
+const VERSION = 'v262';
 
 self.addEventListener('message', (e) => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
@@ -199,11 +199,27 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       caches.open(CACHE).then(async (cache) => {
         const hit = await cache.match(e.request);
-        if (hit) return hit;
+        if (hit) {
+          const ctype = (hit.headers.get('content-type') || '').toLowerCase();
+          const clen = Number(hit.headers.get('content-length') || 0);
+          if (
+            (ctype.includes('audio') || ctype.includes('mpeg') || ctype.includes('octet-stream'))
+            && (clen === 0 || clen > 800)
+          ) {
+            return hit;
+          }
+          // Drop poisoned HTML / tiny bodies cached under quran-audio.
+          try { await cache.delete(e.request); } catch { /* ignore */ }
+        }
         try {
           const res = await fetch(e.request);
           const ctype = (res.headers.get('content-type') || '').toLowerCase();
-          if (res.ok && (ctype.includes('audio') || ctype.includes('mpeg') || ctype.includes('octet-stream'))) {
+          const clen = Number(res.headers.get('content-length') || 0);
+          if (
+            res.ok
+            && (ctype.includes('audio') || ctype.includes('mpeg') || ctype.includes('octet-stream'))
+            && (clen === 0 || clen > 800)
+          ) {
             cache.put(e.request, res.clone());
           }
           return res;

@@ -1691,11 +1691,17 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v41';
+const TTS_CACHE_VER = 'v42';
 let ttsStatusReadyPromise = null;
 /** AbortController for background (next-Q / answer) warms — cancelled when current Q speaks. */
 let ttsBackgroundWarmAbort = null;
 let currentQuestionTtsKick = null;
+
+/** Signal for next-Q / answer warms only — never attach to current-question fetch. */
+function backgroundTtsSignal() {
+  if (!ttsBackgroundWarmAbort) ttsBackgroundWarmAbort = new AbortController();
+  return ttsBackgroundWarmAbort.signal;
+}
 
 function isFishVoiceIdClient(id) {
   return /^[a-f0-9]{32}$/i.test(String(id || '').trim());
@@ -1941,7 +1947,13 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal) {
         }
         if (!res.ok) throw new Error(`tts failed:${res.status}`);
         const blob = await res.blob();
-        if (!blob.size) throw new Error('empty audio');
+        // Reject tiny/corrupt bodies so they never poison memory or IDB.
+        if (!blob.size || blob.size < 500) throw new Error('empty audio');
+        const head = new Uint8Array(await blob.slice(0, 4).arrayBuffer());
+        const isMp3 =
+          (head[0] === 0xff && (head[1] & 0xe0) === 0xe0) ||
+          (head[0] === 0x49 && head[1] === 0x44 && head[2] === 0x33);
+        if (!isMp3) throw new Error('tts not mp3');
         const provider = (res.headers.get('X-TTS-Provider') || '').toLowerCase();
         rememberTtsObjectUrl(key, URL.createObjectURL(blob));
         // Persist Fish clips too — faster replay across questions in the same session.
@@ -2016,13 +2028,16 @@ function prepareTtsPayload(text) {
   return sanitizeTtsText(prepareArabicForSpeech(forTts));
 }
 
-function prefetchTtsText(text, voice = TTS_VOICE) {
+function prefetchTtsText(text, voice = TTS_VOICE, signal) {
   void ensureSpeechMapsLoaded().then(() => {
+    if (signal?.aborted) return;
     const clean = prepareTtsPayload(text);
     if (!clean || clean.length < 2) return;
     const key = ttsCacheKey(clean, voice);
     if (ttsBlobMemoryCache.has(key) || ttsPrefetchInFlight.has(key)) return;
-    void fetchTtsBlob(clean, voice).catch(() => {});
+    // Background warms are abortable; current-Q callers pass undefined signal.
+    const sig = signal === undefined ? backgroundTtsSignal() : signal;
+    void fetchTtsBlob(clean, voice, sig || undefined).catch(() => {});
   });
 }
 
@@ -2065,13 +2080,11 @@ function kickCurrentQuestionTts(q) {
     }
     void ensureSpeechMapsLoaded();
     const { questionText } = buildQuestionSpeechParts(q);
-    let qClean = prepareTtsPayload(questionText);
-    if (!qClean) {
-      qClean = prepareTtsPayload(String(q.q || '').trim())
-        || stripForSpeech(String(q.q || '').trim());
-    }
+    // Same Fish prose as speakQuestion (incl. ayah-strip) so kick hits the play cache key.
+    const qClean = prepareQuestionFishProse(q, questionText);
     if (qClean && qClean.length >= 2) {
       const key = ttsCacheKey(qClean);
+      // Current Q must not use background abort — cancelBackgroundTtsWarms must not kill it.
       if (!ttsBlobMemoryCache.has(key) && !ttsPrefetchInFlight.has(key)) {
         void fetchTtsBlob(qClean).catch(() => null);
       } else if (ttsPrefetchInFlight.has(key)) {
@@ -2085,26 +2098,29 @@ function kickCurrentQuestionTts(q) {
 }
 
 /** Warm only question audio — never steal bandwidth with answers/next before speak. */
-async function warmQuestionSpeech(q, { allowAnswers = false } = {}) {
+async function warmQuestionSpeech(q, { allowAnswers = false, signal } = {}) {
   if (!q) return null;
   const existing = questionSpeechWarmPromises.get(q);
   if (existing) return existing;
+  const sig = signal === undefined ? backgroundTtsSignal() : signal;
   const work = (async () => {
+    if (sig?.aborted) return null;
     if (typeof window === 'undefined' || !window.SPEECH_BY_QUESTION_ID?.[q.id]) {
       await Promise.race([
         ensureSpeechMapsLoaded(),
         new Promise((r) => setTimeout(r, 80)),
       ]);
     }
+    if (sig?.aborted) return null;
     const { questionText, optionList } = buildQuestionSpeechParts(q);
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => null);
-    const qClean = prepareTtsPayload(questionText);
+    const qClean = prepareQuestionFishProse(q, questionText);
     try {
       if (qClean && qClean.length >= 2) {
         const key = ttsCacheKey(qClean);
         if (!ttsBlobMemoryCache.has(key)) {
-          await fetchTtsBlob(qClean).catch(() => null);
+          await fetchTtsBlob(qClean, TTS_VOICE, sig || undefined).catch(() => null);
         }
       }
       // Answers only when explicitly allowed (after current Q audio has started).
@@ -2112,7 +2128,7 @@ async function warmQuestionSpeech(q, { allowAnswers = false } = {}) {
         const opts = primaryVerse
           ? (optionList || [])
           : (optionList || []).slice(0, 2);
-        for (const opt of opts) prefetchTtsText(opt);
+        for (const opt of opts) prefetchTtsText(opt, TTS_VOICE, sig || undefined);
       }
       return null;
     } catch {
@@ -2125,36 +2141,38 @@ async function warmQuestionSpeech(q, { allowAnswers = false } = {}) {
   return work;
 }
 
-async function prefetchHybridSpeechForQuestion(q) {
+async function prefetchHybridSpeechForQuestion(q, signal) {
   if (!q) return;
+  const sig = signal === undefined ? backgroundTtsSignal() : signal;
   try {
     await Promise.race([
       ensureSpeechMapsLoaded(),
       new Promise((r) => setTimeout(r, 400)),
     ]);
+    if (sig?.aborted) return;
     const primaryVerse = getPrimaryVerseKeyForQuestion(q);
     if (primaryVerse) void fetchQuranAudioObjectUrl(primaryVerse).catch(() => {});
     const { questionText, optionList } = buildQuestionSpeechParts(q);
-    if (questionText?.trim()) prefetchTtsText(questionText);
-    if (voiceReadAnswers) {
-      for (const opt of (optionList || [])) prefetchTtsText(opt);
-    }
+    const qClean = prepareQuestionFishProse(q, questionText);
+    if (qClean?.trim()) prefetchTtsText(qClean, TTS_VOICE, sig || undefined);
+    // Do not prefetch answers here — that races current-Q first byte (speakQuestion warms them).
   } catch (e) {
     console.warn('hybrid prefetch:', e);
-    if (q.q) prefetchTtsText(q.q);
+    if (q.q && !sig?.aborted) prefetchTtsText(q.q, TTS_VOICE, sig || undefined);
   }
 }
 
 function prefetchUpcomingTts(fromIdx = state.idx) {
-  // Warm current + next two — enough for seamless continue without Azure 429 storms.
-  const start = Math.max(0, fromIdx | 0);
+  // Never warm CURRENT idx here — kickCurrentQuestionTts / speakQuestion own it.
+  // Warm next two question texts only (abortable); answers after speak starts.
+  const start = Math.max(0, (fromIdx | 0) + 1);
   const qs = state.questions || [];
-  for (let i = start; i < start + 3 && i < qs.length; i++) {
+  const sig = backgroundTtsSignal();
+  for (let i = start; i < start + 2 && i < qs.length; i++) {
     const q = qs[i];
     if (!q) continue;
-    void prefetchHybridSpeechForQuestion(q);
-    // Fully resolve blobs for current + immediate next only.
-    if (i <= start + 1) void warmQuestionSpeech(q);
+    void prefetchHybridSpeechForQuestion(q, sig);
+    if (i === start) void warmQuestionSpeech(q, { allowAnswers: false, signal: sig });
   }
 }
 
@@ -2179,7 +2197,7 @@ async function warmRoundAudioForOffline(questions, { notify = true } = {}) {
   const q = questions[start];
   if (!q) return;
   await ensureSpeechMapsLoaded();
-  try { await warmQuestionSpeech(q, { allowAnswers: false }); } catch { /* ignore */ }
+  try { await warmQuestionSpeech(q, { allowAnswers: false, signal: null }); } catch { /* ignore */ }
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   if (verseKey) {
     try { await fetchQuranAudioObjectUrl(verseKey); } catch { /* ignore */ }
@@ -2348,15 +2366,23 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/نَعْبُدُ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "نَعْبُدُ اللَّهَ");
   s = s.replace(/أَنْ\s+تَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ اللَّهَ");
   // أن / بِأَن المصدرية before imperfect — NEVER أنّ (Fish reads أنَّ يعلّم as garbage).
-  // NFC: accept fatha↔shadda order; require haraka on ي/ت/ن so أنّ+اسم stays.
+  // Keep أنّ before ism stems that start with ي/ت/ن (نزولها / توحيد / يوم…) —
+  // older “any يتن(+haraka)” rewrites falsely mangled بِأَنَّ نزولها → بِأَنْ نزولها.
   s = s.replace(/([\u064E\u064F\u0650])(\u0651)/g, '$2$1');
-  s = s.replace(/(?:بِ)?أَنَّ(\s+)([يتن][\u064B-\u065F\u0670])/g, (m, sp, verb) =>
-    (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb
-  );
-  s = s.replace(/(?:بِ)?أَنّ(\s+)([يتن][\u064B-\u065F\u0670])/g, (m, sp, verb) =>
-    (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb
-  );
-  s = s.replace(/أَنَّ(\s+)([يتن][\u0621-\u064A])/g, 'أَنْ$1$2');
+  {
+    const keepIsm =
+      /^(نزول|نزور|نفس|نوع|نصيب|نحو|نهي|نور|نار|يوم|يوسف|يونس|يهود|توحيد|توبة|ترك|تميم|تيسير|يأس|يقين)/;
+    const toMasdar = (m, sp, verb) => {
+      const bare = String(verb || '').replace(/[\u064B-\u065F\u0670]/g, '');
+      if (keepIsm.test(bare)) return m;
+      return (m.startsWith('بِ') ? 'بِأَنْ' : 'أَنْ') + sp + verb;
+    };
+    // Full vocalized token (harakat between letters) — bare «نز» alone must not miss «نُزُولَهَا».
+    s = s.replace(/(?:بِ)?أَنَّ(\s+)([يتن][\u0621-\u064A\u0671\u064B-\u065F\u0670]*)/g, toMasdar);
+    s = s.replace(/(?:بِ)?أَنّ(\s+)([يتن][\u0621-\u064A\u0671\u064B-\u065F\u0670]*)/g, toMasdar);
+  }
+  // Construct عبد + ال… (الوهاب / الله) — never bare nominative عَبْدٌ ال
+  s = s.replace(/عَبْد[\u064B\u064C\u064E\u064F]*\s+(ال)/g, 'عَبْدِ $1');
   s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, "بَعْدَ التَّوْحِيدِ");
   s = s.replace(/بَعْدَ\s+التَّوْحِيدُ/g, 'بَعْدَ التَّوْحِيدِ');
   s = s.replace(/أَمَرَ\s+مُعَاذٍ/g, 'أَمَرَ مُعَاذٌ');
@@ -2907,6 +2933,30 @@ function stripKnownAyahSnippetsForSpeech(text) {
     s = s.replace(re, ' ');
   }
   return s.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Fish prose for the on-screen question — shared by kick / warm / speak so cache keys match.
+ * Strips ﴿﴾ and known ayah snippets when Hudhaify will recite (never Fish-speak ayah body).
+ */
+function prepareQuestionFishProse(q, questionText) {
+  const src = String(questionText || q?.q || '');
+  const qProseRaw = src
+    .replace(/﴿[^﴾]*﴾/g, ' ')
+    .replace(/「[^」]*」/g, ' ');
+  let qProse = prepareTtsPayload(qProseRaw);
+  if (!qProse) {
+    qProse = prepareTtsPayload(String(q?.q || '').trim())
+      || stripForSpeech(String(q?.q || '').trim());
+  }
+  const verseKey = getPrimaryVerseKeyForQuestion(q);
+  if (qProse && verseKey && shouldReciteHudhaifyForQuestion(q, questionText || q?.q)) {
+    const withoutAyah = stripKnownAyahSnippetsForSpeech(qProse);
+    qProse = withoutAyah
+      ? (prepareTtsPayload(withoutAyah) || sanitizeTtsText(withoutAyah) || withoutAyah)
+      : '';
+  }
+  return qProse || '';
 }
 
 /** Match bare Arabic letters in vocalized lesson text (optional harakat between). */
@@ -4442,13 +4492,6 @@ function speakQuestion() {
       if (state.questions[state.idx]?.id !== askId) return;
 
       const { questionText, optionList } = buildQuestionSpeechParts(q);
-      let qClean = prepareTtsPayload(questionText);
-      // Fallback: never leave a question silent if map/sanitize emptied the text.
-      if (!qClean) {
-        qClean = prepareTtsPayload(String(q.q || '').trim())
-          || stripForSpeech(String(q.q || '').trim())
-          || String(q.q || '').replace(/[\u{1F300}-\u{1FAFF}]/gu, '').trim();
-      }
       const opts = optionList || [];
       const verseKey = getPrimaryVerseKeyForQuestion(q);
 
@@ -4456,22 +4499,8 @@ function speakQuestion() {
 
       if (btn) btn.classList.add('speaking');
       try {
-        // 1) Question prose — strip embedded ayah (Hudhaify handles ayah next; never Fish ayah).
-        const qProseRaw = String(questionText || q.q || '')
-          .replace(/﴿[^﴾]*﴾/g, ' ')
-          .replace(/「[^」]*」/g, ' ');
-        let qProse = prepareTtsPayload(qProseRaw);
-        if (!qProse) {
-          qProse = prepareTtsPayload(String(q.q || '').trim())
-            || stripForSpeech(String(q.q || '').trim());
-        }
-        // When Hudhaify will recite, strip any leftover known ayah wording from Fish prose.
-        if (qProse && verseKey && shouldReciteHudhaifyForQuestion(q, questionText || q.q)) {
-          const withoutAyah = stripKnownAyahSnippetsForSpeech(qProse);
-          qProse = withoutAyah
-            ? (prepareTtsPayload(withoutAyah) || sanitizeTtsText(withoutAyah) || withoutAyah)
-            : '';
-        }
+        // 1) Question prose — identical pipeline to kickCurrentQuestionTts (shared cache key).
+        const qProse = prepareQuestionFishProse(q, questionText);
         if (qProse) {
           for (let attempt = 0; attempt < 3; attempt++) {
             if (token !== hybridSpeechToken || state.idx !== askIdx) return;
@@ -4488,13 +4517,7 @@ function speakQuestion() {
               if (attempt === 2) {
                 // Last resort: still never Fish-speak ayah wording (Hudhaify owns that).
                 try {
-                  let raw = stripForSpeech(String(q.q || '').trim()) || String(q.q || '').trim();
-                  if (raw && verseKey && shouldReciteHudhaifyForQuestion(q, questionText || q.q)) {
-                    raw = stripKnownAyahSnippetsForSpeech(raw);
-                    raw = raw
-                      ? (prepareTtsPayload(raw) || sanitizeTtsText(raw) || raw)
-                      : '';
-                  }
+                  const raw = prepareQuestionFishProse(q, String(q.q || '').trim());
                   if (raw && raw !== qProse) {
                     await speakTtsSegment(raw, btn, { clearAfter: false, alreadyPrepared: true });
                   } else if (!String(e?.message || '').includes('baked miss')) {
@@ -4516,9 +4539,10 @@ function speakQuestion() {
         // Prefetch next/answers only AFTER current question audio has started.
         cancelBackgroundTtsWarms();
         const next = state.questions[askIdx + 1];
-        if (next) void warmQuestionSpeech(next, { allowAnswers: false });
-        void warmQuestionSpeech(q, { allowAnswers: true });
-        for (const opt of (opts || []).slice(0, 2)) prefetchTtsText(opt);
+        const bg = backgroundTtsSignal();
+        if (next) void warmQuestionSpeech(next, { allowAnswers: false, signal: bg });
+        void warmQuestionSpeech(q, { allowAnswers: true, signal: bg });
+        for (const opt of (opts || []).slice(0, 2)) prefetchTtsText(opt, TTS_VOICE, bg);
 
         // 2) Ayah — sync key only (never hang on network verse search).
         const verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
@@ -4734,8 +4758,29 @@ function stripArabicDiacritics(s) {
   return (s || '').replace(/[\u064B-\u065F\u0670\u0610-\u061A\u0640\u200c\u200f]/g, '');
 }
 
+/** Soft OCR: mid-word letter breaks that keep singles-ratio under 0.35 (ي ؤمن، الل ه، ق ل…). */
+function hasSoftOcrLetterBreaks(s) {
+  const t = String(s || '');
+  if (!t) return false;
+  // Known torn stems from PDF/worksheet OCR (avoid \\b — it breaks on Arabic letters).
+  if (/(?:ي\s+ؤ(?:من)?|بالل\s+ه|الل\s+ه|(?:^|[\s«"'])ق\s+ل(?:[\s»"'،,]|$)|(?:^|[\s«"'])إ\s+ن(?:[\s»"'،,]|$)|ف\s+لي|ل\s+يص|أم\s+تي|الخ\s+طأ|است\s+كره|عل\s+يه|يعني\s+ه(?:[\s»"'،.]|$)|ف\s+لي\s*قل|ل\s+يص\s*مت)/.test(t)) {
+    return true;
+  }
+  // ≥3 short (1–2 letter) Arabic tokens adjacent to longer Arabic tokens → torn words.
+  const toks = t.split(/\s+/).filter(Boolean);
+  let torn = 0;
+  for (let i = 0; i < toks.length - 1; i++) {
+    const a = toks[i].replace(/[^\u0621-\u064A\u0671]/g, '');
+    const b = toks[i + 1].replace(/[^\u0621-\u064A\u0671]/g, '');
+    if (!a || !b) continue;
+    if ((a.length <= 2 && b.length >= 2) || (a.length >= 2 && b.length === 1)) torn++;
+  }
+  return torn >= 3;
+}
+
 function hasBrokenArabicSpacing(s) {
   if (hasOcrTashkeelGaps(s)) return true;
+  if (hasSoftOcrLetterBreaks(s)) return true;
   const toks = (s || '').split(/\s+/).filter(Boolean);
   const arabicToks = toks.filter((t) => t.replace(/[^\u0621-\u064A\u0671]/g, '').length > 0);
   if (arabicToks.length < 4) return false;
