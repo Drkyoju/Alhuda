@@ -3271,7 +3271,8 @@ function buildQuestionOptionSpeechList(q) {
     // Must match on-screen buttons «صح ✓» / «خطأ ✗» (harakat OK for TTS).
     // صَحّ alone often heard as «صحن» on Fish clone — speak كامل (UI still «صح»)
     items.push('صَحِيحٌ');
-    items.push('خَطَأٌ');
+    // خَطَأٌ alone often → «شطأ»; pad slightly (UI still «خطأ»)
+    items.push('هَذَا خَطَأٌ');
   }
   return items;
 }
@@ -4889,7 +4890,7 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
     const rawSpeak = raw.replace(/[✓✗]/g, '').trim();
     let toSpeak;
     if (speechField === 'tf0') toSpeak = 'صَحِيحٌ';
-    else if (speechField === 'tf1') toSpeak = 'خَطَأٌ';
+    else if (speechField === 'tf1') toSpeak = 'هَذَا خَطَأٌ';
     else if (speechField) toSpeak = speechPart(q, speechField, rawSpeak);
     else toSpeak = prepareArabicForSpeech(applyManualSpeechDiacritics(rawSpeak));
     prefetchTtsText(toSpeak);
