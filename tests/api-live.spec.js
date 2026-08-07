@@ -18,10 +18,9 @@ test.describe('Live Worker APIs', () => {
     expect(res.ok()).toBeTruthy();
     const json = await res.json();
     expect(json.ok).toBeTruthy();
-    expect(['baked', 'fish', 'elevenlabs', 'google', 'azure', 'edge']).toContain(json.provider);
-    if (json.bakedTtsOnly) {
-      expect(json.provider).toBe('baked');
-    }
+    expect(['fish', 'none']).toContain(json.provider);
+    expect(json.quranReciter || 'hudhaify').toBe('hudhaify');
+    expect(json.skipBakedTts).toBeTruthy();
     if (json.errors) {
       expect(json.errors.tts).toBeTruthy();
       expect(json.errors.quran).toBeTruthy();
@@ -35,7 +34,7 @@ test.describe('Live Worker APIs', () => {
     expect(res.ok()).toBeTruthy();
     expect(res.headers()['content-type'] || '').toMatch(/audio\/mpeg/);
     const provider = res.headers()['x-tts-provider'];
-    expect(provider).toBeTruthy();
+    expect(provider).toBe('fish');
     const body = await res.body();
     expect(body.length).toBeGreaterThan(1000);
   });

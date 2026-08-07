@@ -48,18 +48,10 @@ jobs:
           secrets: |
             FISH_API_KEY
             FISH_VOICE_ID
-            ELEVENLABS_API_KEY
-            GOOGLE_TTS_API_KEY
-            AZURE_SPEECH_KEY
-            AZURE_SPEECH_REGION
             AUTH_NAME_PEPPER
         env:
           FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
           FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
-          AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}
-          AZURE_SPEECH_REGION: ${{ secrets.AZURE_SPEECH_REGION }}
           AUTH_NAME_PEPPER: ${{ secrets.AUTH_NAME_PEPPER }}
 
       - name: Live API smoke (TTS + Quran)

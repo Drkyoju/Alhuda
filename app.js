@@ -2220,21 +2220,18 @@ async function refreshTtsProviderBadge() {
     const res = await fetch('/api/tts-status', { cache: 'no-store' });
     const data = await res.json();
     applyTtsStatusConfig(data);
-    const usage = getAzureTtsUsage();
-    const pct = Math.min(100, Math.round((usage.chars / 500000) * 100));
     const errStats = getTtsErrorStats();
     const serverFails = data.errors?.tts ? Object.values(data.errors.tts).reduce((a, b) => a + (Number(b) || 0), 0) : 0;
     badge.hidden = false;
     const providerLabel = data.provider === 'fish'
       ? `TTS: Fish ${data.fishModel || 's2-pro'}`.trim()
-      : (data.azureConfigured ? 'TTS: Azure' : 'TTS: Edge');
+      : 'TTS: —';
     badge.textContent = providerLabel +
-      ` · ${usage.chars}/${500000} (~${pct}%)` +
-      (data.isolateAzureChars != null ? ` · isolate ${data.isolateAzureChars}` : '') +
+      (data.voice && data.voice !== '(set FISH_VOICE_ID)' ? ` · ${String(data.voice).slice(0, 8)}` : '') +
       ` · fails ${ttsSessionFailCount}/${errStats.fails}` +
       (serverFails ? ` · srv ${serverFails}` : '');
-    badge.classList.toggle('is-azure', !!data.azureConfigured);
-    badge.classList.toggle('is-warn', usage.chars >= AZURE_F0_SOFT_LIMIT || ttsSessionFailCount > 0 || errStats.fails >= 3);
+    badge.classList.toggle('is-azure', false);
+    badge.classList.toggle('is-warn', ttsSessionFailCount > 0 || errStats.fails >= 3);
     badge.setAttribute('aria-hidden', 'false');
     if (data.keyRotationHint) {
       badge.title = data.keyRotationHint;
@@ -2427,10 +2424,10 @@ function sanitizeTtsText(text) {
         .replace(/رضي الله عنهما/g, ' رضي الله عنهما ')
         .replace(/رضي الله عنها/g, ' رضي الله عنها ')
         .replace(/رضي الله عنه/g, ' رضي الله عنه ')
-        // Drop ALL quote / bracket / punctuation marks so TTS never says «نقطتان» or reads « ».
+        // Drop ALL quote / bracket / punctuation — never read «نقطتان» / commas / dashes.
         .replace(/[\u00AB\u00BB\u2018-\u201F\u2039\u203A\u300C-\u300F\u301D\u301E\uFF02\uFF07«»"'“”‘’‹›「」『』„‚]/g, ' ')
         .replace(/[﴿﴾]/g, ' ')
-        .replace(/[.؟!…,:：;؛،()\[\]{}*_#<>=+~^`\/\\|–—•·\-_]+/g, ' ')
+        .replace(/[.؟!…‥∶::：;؛،٫٬%٪‰()\[\]{}*_#<>+=~^`\\/|–—―•·\-_]+/g, ' ')
         .replace(/\s+/g, ' ')
         .trim()
     )

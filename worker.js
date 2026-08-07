@@ -1,28 +1,10 @@
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
-import { DEFAULT_ARABIC_VOICE, synthesizeArabicSpeech } from './edge-tts.js';
 import {
-  DEFAULT_ELEVENLABS_VOICE_ID,
-  elevenLabsConfigured,
-  synthesizeElevenLabsArabicSpeech,
-  normalizeForElevenLabs,
-} from './elevenlabs-tts.js';
-import {
-  DEFAULT_GOOGLE_ARABIC_VOICE,
-  googleTtsConfigured,
-  synthesizeGoogleArabicSpeech,
-} from './google-tts.js';
-import {
-  DEFAULT_AZURE_ARABIC_VOICE,
-  azureSpeechConfigured,
-  synthesizeAzureArabicSpeech,
-} from './azure-tts.js';
-import { bakedTtsAssetPath, BAKED_TTS_VOICE } from './baked-tts.js';
-import {
-  DEFAULT_FISH_VOICE_ID,
   fishAudioConfigured,
   resolveFishModel,
   resolveFishVoiceId,
+  prepareFishTtsText,
   synthesizeFishArabicSpeech,
 } from './fish-audio-tts.js';
 
@@ -31,9 +13,6 @@ const apiErrorCounters = {
   tts: { total: 0, byCode: {} },
   quran: { total: 0, byCode: {} },
 };
-
-/** Approximate Azure TTS chars billed in this isolate (not durable across deploys). */
-let isolateAzureChars = 0;
 
 function bumpApiError(kind, code) {
   const bucket = apiErrorCounters[kind];
@@ -80,45 +59,23 @@ function verseKeyToGlobalAyahNumW(surah, ayah) {
 async function handleTtsStatus(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
-  const bakedOnly = String(env?.BAKED_TTS_ONLY || '').trim() === '1';
-  const skipBaked = String(env?.SKIP_BAKED_TTS || '').trim() === '1' || !bakedOnly;
   const fish = fishAudioConfigured(env);
-  const eleven = elevenLabsConfigured(env);
-  const google = googleTtsConfigured(env);
-  const azure = azureSpeechConfigured(env);
   const fishVoice = resolveFishVoiceId(null, env);
   const fishModel = resolveFishModel(env);
   return new Response(JSON.stringify({
     ok: true,
-    bakedTtsOnly: bakedOnly,
-    skipBakedTts: skipBaked,
+    bakedTtsOnly: false,
+    skipBakedTts: true,
     fishConfigured: fish,
     fishModel: fish ? fishModel : null,
     fishVoiceConfigured: !!(fish && fishVoice),
-    elevenLabsConfigured: eleven,
-    googleConfigured: google,
-    azureConfigured: azure,
-    provider: bakedOnly
-      ? 'baked'
-      : fish ? 'fish' : eleven ? 'elevenlabs' : google ? 'google' : azure ? 'azure' : 'edge',
-    voice: bakedOnly
-      ? BAKED_TTS_VOICE
-      : fish
-      ? (fishVoice || '(set FISH_VOICE_ID)')
-      : eleven
-      ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
-      : google
-        ? DEFAULT_GOOGLE_ARABIC_VOICE
-        : azure
-          ? DEFAULT_AZURE_ARABIC_VOICE
-          : DEFAULT_ARABIC_VOICE,
+    elevenLabsConfigured: false,
+    googleConfigured: false,
+    azureConfigured: false,
+    provider: fish ? 'fish' : 'none',
+    quranReciter: 'hudhaify',
+    voice: fishVoice || '(set FISH_VOICE_ID)',
     errors: apiErrorCounters,
-    isolateAzureChars,
-    azureF0SoftLimit: 450000,
-    azureF0HardLimit: 500000,
-    keyRotationHint: azure
-      ? '⚠️ أمان: إن ظهر مفتاح Azure في شات/سجل سابقاً — ألغِ المفتاح فوراً من Azure Portal → Keys، أنشئ مفتاحاً جديداً، ثم حدّث GitHub Secret AZURE_SPEECH_KEY وأعد النشر'
-      : '',
   }), { status: 200, headers: { ...cors, ...JSON_HEADERS } });
 }
 
@@ -308,8 +265,14 @@ async function handleTts(request, env) {
       headers: { ...cors, ...JSON_HEADERS },
     });
   }
-  // Align with bake keys + client prepareTtsPayload (keep اللَّهُ/ِ/َ).
-  const text = normalizeForElevenLabs(textRaw) || textRaw;
+  // Punctuation stripped server-side — Fish reads words/harakat only.
+  const text = prepareFishTtsText(textRaw);
+  if (!text) {
+    return new Response(JSON.stringify({ ok: false, error: 'Empty after punctuation strip' }), {
+      status: 400,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
   if (text.length > TTS_MAX_CHARS) {
     return new Response(JSON.stringify({ ok: false, error: 'Text too long' }), {
       status: 400,
@@ -317,154 +280,32 @@ async function handleTts(request, env) {
     });
   }
 
-  const voice = typeof body?.voice === 'string' && body.voice.trim()
-    ? body.voice.trim()
-    : (elevenLabsConfigured(env)
-      ? (String(env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID)
-      : fishAudioConfigured(env)
-      ? (resolveFishVoiceId(null, env) || 'fish')
-      : googleTtsConfigured(env)
-      ? DEFAULT_GOOGLE_ARABIC_VOICE
-      : azureSpeechConfigured(env)
-        ? DEFAULT_AZURE_ARABIC_VOICE
-        : DEFAULT_ARABIC_VOICE);
-
-  const bakedOnly = String(env?.BAKED_TTS_ONLY || '').trim() === '1';
-  // Live custom Fish voice: never serve old baked narrator MP3s.
-  const skipBaked = String(env?.SKIP_BAKED_TTS || '').trim() === '1' || (!bakedOnly && fishAudioConfigured(env));
-  const lookupVoice = BAKED_TTS_VOICE;
+  if (!fishAudioConfigured(env)) {
+    return new Response(JSON.stringify({ ok: false, error: 'Fish Audio not configured' }), {
+      status: 503,
+      headers: { ...cors, ...JSON_HEADERS },
+    });
+  }
 
   try {
-    if (!skipBaked) {
-      const bakedPath = await bakedTtsAssetPath(text, lookupVoice);
-      const assetRes = await env.ASSETS.fetch(new URL(bakedPath, request.url));
-      // SPA not_found can return index.html with 200 — reject non-audio.
-      const ctype = (assetRes.headers.get('content-type') || '').toLowerCase();
-      const looksAudio =
-        ctype.includes('audio') ||
-        ctype.includes('mpeg') ||
-        ctype.includes('octet-stream') ||
-        (!ctype.includes('html') && !ctype.includes('json') && !ctype.includes('text/'));
-      if (assetRes.ok && looksAudio) {
-        return new Response(assetRes.body, {
-          status: 200,
-          headers: {
-            ...cors,
-            'Content-Type': 'audio/mpeg',
-            'Cache-Control': 'public, max-age=31536000, immutable',
-            'X-TTS-Provider': 'baked',
-            'X-TTS-Chars': String(text.length),
-          },
-        });
-      }
-    }
-    if (bakedOnly) {
-      return new Response(JSON.stringify({ ok: false, error: 'Baked TTS miss' }), {
-        status: 404,
-        headers: { ...cors, ...JSON_HEADERS },
-      });
-    }
-
-    let stream;
-    let provider = 'edge';
-    // Prefer Fish Audio for live Arabic (your voice + s2-pro).
-    if (fishAudioConfigured(env)) {
-      try {
-        const fishVoice = resolveFishVoiceId(null, env);
-        stream = await synthesizeFishArabicSpeech(text, fishVoice, env);
-        provider = 'fish';
-      } catch (fishErr) {
-        console.warn('[tts] fish failed, falling back:', fishErr);
-        if (elevenLabsConfigured(env)) {
-          try {
-            stream = await synthesizeElevenLabsArabicSpeech(text, voice, env);
-            provider = 'elevenlabs-fallback';
-          } catch (elevenErr) {
-            console.warn('[tts] elevenlabs failed, falling back:', elevenErr);
-            if (googleTtsConfigured(env)) {
-              stream = await synthesizeGoogleArabicSpeech(text, DEFAULT_GOOGLE_ARABIC_VOICE, env);
-              provider = 'google-fallback';
-            } else if (azureSpeechConfigured(env)) {
-              stream = await synthesizeAzureArabicSpeech(text, DEFAULT_AZURE_ARABIC_VOICE, env);
-              provider = 'azure-fallback';
-              isolateAzureChars += text.length;
-            } else {
-              stream = await synthesizeArabicSpeech(text, DEFAULT_ARABIC_VOICE);
-              provider = 'edge-fallback';
-            }
-          }
-        } else if (googleTtsConfigured(env)) {
-          stream = await synthesizeGoogleArabicSpeech(text, DEFAULT_GOOGLE_ARABIC_VOICE, env);
-          provider = 'google-fallback';
-        } else if (azureSpeechConfigured(env)) {
-          stream = await synthesizeAzureArabicSpeech(text, DEFAULT_AZURE_ARABIC_VOICE, env);
-          provider = 'azure-fallback';
-          isolateAzureChars += text.length;
-        } else {
-          stream = await synthesizeArabicSpeech(text, DEFAULT_ARABIC_VOICE);
-          provider = 'edge-fallback';
-        }
-      }
-    } else if (elevenLabsConfigured(env)) {
-      try {
-        stream = await synthesizeElevenLabsArabicSpeech(text, voice, env);
-        provider = 'elevenlabs';
-      } catch (elevenErr) {
-        console.warn('[tts] elevenlabs failed, falling back:', elevenErr);
-        if (googleTtsConfigured(env)) {
-          stream = await synthesizeGoogleArabicSpeech(text, DEFAULT_GOOGLE_ARABIC_VOICE, env);
-          provider = 'google-fallback';
-        } else if (azureSpeechConfigured(env)) {
-          stream = await synthesizeAzureArabicSpeech(text, DEFAULT_AZURE_ARABIC_VOICE, env);
-          provider = 'azure-fallback';
-          isolateAzureChars += text.length;
-        } else {
-          stream = await synthesizeArabicSpeech(text, DEFAULT_ARABIC_VOICE);
-          provider = 'edge-fallback';
-        }
-      }
-    } else if (googleTtsConfigured(env)) {
-      try {
-        stream = await synthesizeGoogleArabicSpeech(text, voice, env);
-        provider = 'google';
-      } catch (googleErr) {
-        console.warn('[tts] google failed, falling back:', googleErr);
-        if (azureSpeechConfigured(env)) {
-          stream = await synthesizeAzureArabicSpeech(text, DEFAULT_AZURE_ARABIC_VOICE, env);
-          provider = 'azure-fallback';
-          isolateAzureChars += text.length;
-        } else {
-          stream = await synthesizeArabicSpeech(text, DEFAULT_ARABIC_VOICE);
-          provider = 'edge-fallback';
-        }
-      }
-    } else if (azureSpeechConfigured(env)) {
-      try {
-        stream = await synthesizeAzureArabicSpeech(text, voice, env);
-        provider = 'azure';
-        isolateAzureChars += text.length;
-      } catch (azureErr) {
-        console.warn('[tts] azure failed, falling back to edge:', azureErr);
-        stream = await synthesizeArabicSpeech(text, voice);
-        provider = 'edge-fallback';
-      }
-    } else {
-      stream = await synthesizeArabicSpeech(text, voice);
-    }
+    const fishVoice = resolveFishVoiceId(body?.voice, env);
+    const stream = await synthesizeFishArabicSpeech(text, fishVoice, env);
     return new Response(stream, {
       status: 200,
       headers: {
         ...cors,
         'Content-Type': 'audio/mpeg',
         'Cache-Control': 'public, max-age=604800',
-        'X-TTS-Provider': provider,
+        'X-TTS-Provider': 'fish',
+        'X-TTS-Model': resolveFishModel(env),
         'X-TTS-Chars': String(text.length),
       },
     });
   } catch (err) {
     console.warn('[tts]', err);
     bumpApiError('tts', 502);
-    return new Response(JSON.stringify({ ok: false, error: 'TTS failed' }), {
+    const msg = String(err?.message || 'TTS failed').slice(0, 200);
+    return new Response(JSON.stringify({ ok: false, error: msg }), {
       status: 502,
       headers: { ...cors, ...JSON_HEADERS },
     });
