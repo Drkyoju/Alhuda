@@ -1,0 +1,48 @@
+{
+  "model": "small",
+  "n": 7,
+  "results": [
+    {
+      "file": "anwat.mp3",
+      "id": "anwat",
+      "transcript": "ذاك أنواط كانت",
+      "ok": true
+    },
+    {
+      "file": "budu.mp3",
+      "id": "budu",
+      "transcript": "في بضعي أحدكم صدقة",
+      "ok": true
+    },
+    {
+      "file": "faraid.mp3",
+      "id": "faraid",
+      "transcript": "إن الله فرض فرائد فلا",
+      "ok": true
+    },
+    {
+      "file": "lat.mp3",
+      "id": "lat",
+      "transcript": "لا تول عزاء ومنات السالثة ذكرت في سورة",
+      "ok": true
+    },
+    {
+      "file": "murad.mp3",
+      "id": "murad",
+      "transcript": "المراجب الظلم في قوله هو",
+      "ok": true
+    },
+    {
+      "file": "murad_bida.mp3",
+      "id": "murad_bida",
+      "transcript": "ما المراد بالبضع",
+      "ok": true
+    },
+    {
+      "file": "riya.mp3",
+      "id": "riya",
+      "transcript": "الرياء من أمثلة",
+      "ok": true
+    }
+  ]
+}

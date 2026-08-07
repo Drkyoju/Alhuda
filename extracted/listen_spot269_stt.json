@@ -1,0 +1,66 @@
+{
+  "model": "small",
+  "n": 10,
+  "results": [
+    {
+      "file": "anwat.mp3",
+      "id": "anwat",
+      "transcript": "ذات أنواق كانت",
+      "ok": true
+    },
+    {
+      "file": "budu.mp3",
+      "id": "budu",
+      "transcript": "في بضعي أحدكم صدقة",
+      "ok": true
+    },
+    {
+      "file": "dirar.mp3",
+      "id": "dirar",
+      "transcript": "لا ضرر ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "faraid.mp3",
+      "id": "faraid",
+      "transcript": "إن الله سرض فرائط فلا",
+      "ok": true
+    },
+    {
+      "file": "ibada.mp3",
+      "id": "ibada",
+      "transcript": "العبادة شرعا اسم جامع لي",
+      "ok": true
+    },
+    {
+      "file": "lat.mp3",
+      "id": "lat",
+      "transcript": "لا تولعزا ومناة السالثة ذكرت في سورة",
+      "ok": true
+    },
+    {
+      "file": "murad.mp3",
+      "id": "murad",
+      "transcript": "المراجب الظلم في قوله هوا",
+      "ok": true
+    },
+    {
+      "file": "murad_bida.mp3",
+      "id": "murad_bida",
+      "transcript": "مالنراج بالبضع",
+      "ok": true
+    },
+    {
+      "file": "riya.mp3",
+      "id": "riya",
+      "transcript": "الرياق من أمثلة",
+      "ok": true
+    },
+    {
+      "file": "yukanna.mp3",
+      "id": "yukanna",
+      "transcript": "يُكَنَّ الرجلُ بأكبرِ",
+      "ok": true
+    }
+  ]
+}

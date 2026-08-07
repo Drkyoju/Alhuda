@@ -166,13 +166,40 @@ export function prepareFishTtsText(text) {
   // After quote-strip: بِ «ثُمَّ» → بِ ثُمَّ (Fish reads «بسما»); glue particle
   s = s.replace(/بِ\s+ثُمَّ/g, 'بِثُمَّ');
   s = s.replace(/بِ\s+ثم(?![ا-ي])/g, 'بِثُمَّ');
-  // Tatweel clarity for short Fish-mangled stems (stripped from bare/display match)
-  s = s.replace(/الرِّيَاءُ\s+مِنْ\s+أَمْثِلَةِ/g, 'الرِّيَـاءُ مِنْ أَمْـثِلَةِ');
-  s = s.replace(/فِي\s+بُضْعِ\s+أَحَدِكُمْ\s+صَدَقَةٌ/g, 'فِي بُضْـعِ أَحَدِكُمْ صَدَقَـةٌ');
-  s = s.replace(/^ذُكِرَتْ\s+فِي\s+سُورَةِ$/g, 'ذُكِـرَتْ فِي سُورَةِ');
-  // Clone often slurs دَمُ امْرِئٍ مُسْلِمٍ → «جم/مرئ/النسلم» — light tatweel only.
-  s = s.replace(/دَمُ\s+امْرِئٍ\s+مُسْلِمٍ/g, 'دَمْـُ امْرِئٍ مُسْلِمٍ');
-  s = s.replace(/دم\s+امرئ\s+مسلم/g, 'دَمْـُ امْرِئٍ مُسْلِمٍ');
+  // After quote-strip: floating بِ + next word → glue (بِ الظلم → بِالظلم). Never leave «ب » alone.
+  s = s.replace(/بِ\s+(?=[\u0621-\u064A\u0671])/g, 'بِ');
+  s = s.replace(/(^|[^\u0621-\u064A\u0671])ب\s+(?=[\u0621-\u064A\u0671])/g, '$1بِ');
+  // Wrong case / OCR that Fish reads as different words
+  s = s.replace(/الْعِبَادَةِ\s+شَرْعًا/g, 'الْعِبَادَةُ شَرْعًا');
+  s = s.replace(/العبادةِ\s+شرعا/g, 'الْعِبَادَةُ شَرْعًا');
+  s = s.replace(/(^|[^\u0621-\u064A])الذَّبْحِ\s+لِغَيْر/g, '$1الذَّبْحُ لِغَيْر');
+  s = s.replace(/فِي\s+قَوْلُهُ/g, 'فِي قَوْلِهِ');
+  s = s.replace(/اَلطَّاعَةُ/g, 'الطَّاعَةِ');
+  s = s.replace(/اَلطَّاعَةِ/g, 'الطَّاعَةِ');
+  // Tanween on أنواط → clone often adds phantom ن («أنواطن»); sukun is clearer.
+  s = s.replace(/أَنْوَاطٍ/g, 'أَنْوَاطْ');
+  s = s.replace(/انواطٍ/g, 'أَنْوَاطْ');
+  // Truncated fill-blank: sukun on فرائض so clone doesn't slur into فَلَا.
+  s = s.replace(/فَرَائِضَ\s*فَلَا/g, 'فَرَائِضْ فَلَا');
+  s = s.replace(/فرائض\s*فلا/g, 'فَرَائِضْ فَلَا');
+  // Soft-OCR torn البضع
+  s = s.replace(/بالبِ?\s+ضع/g, 'بِالْبِضْعِ');
+  s = s.replace(/الْمُرَادُ\s+بالبِ?\s*ضع/g, 'الْمُرَادُ بِالْبِضْعِ');
+  // Idol names — clone often drops اللات / merges العزى
+  s = s.replace(/اللَّاتُ/g, 'اللَاتُ');
+  s = s.replace(/اللّاتُ/g, 'اللَاتُ');
+  s = s.replace(/وَمَنَاةُ/g, 'وَمَنَاةُ');
+  s = s.replace(/مَنَاةُ الثَّالِثَةُ/g, 'مَنَاةُ الثَّالِثَةِ');
+  // المراد — wasla+fatha on ال helps some clones avoid «مراجب»
+  s = s.replace(/الْمُرَادُ/g, 'اَلْمُرَادُ');
+  // أنواط as object of ذات — fatha clearer than tanween/sukun for this clone
+  s = s.replace(/ذَات[َِ]?\s+أَنْوَاطْ/g, 'ذَاتَ أَنْوَاطَ');
+  s = s.replace(/ذَات[َِ]?\s+أَنْوَاطٍ/g, 'ذَاتَ أَنْوَاطَ');
+  s = s.replace(/ذَاتِ\s+أَنْوَاطْ/g, 'ذَاتِ أَنْوَاطَ');
+  // بُضْع clarity without tatweel: separate from أحدكم
+  s = s.replace(/بُضْعِ\s+أَحَدِكُمْ/g, 'بُضْعِ  أَحَدِكُمْ');
+  // DO NOT insert mid-word tatweel — v265 tried it for «clarity» and Whisper proved
+  // بُضْـع/صَدَقَـة/رياء/ذُكِـرَت → mangled (بضعي/صديقاتون/رياق/لكرة).
   return fixAllahIrabInText(s);
 }
 

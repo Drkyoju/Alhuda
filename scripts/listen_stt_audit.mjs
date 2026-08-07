@@ -275,9 +275,13 @@ function prepareField(q, field, spoken, { stripAyah = false } = {}) {
       .replace(/「[^」]*」/g, ' ');
     prepared = api.prepareTtsPayload(stripped) || prepared;
     const without = api.stripKnownAyahSnippetsForSpeech(prepared);
-    prepared = without
+    const bareOrig = String(prepared || '').replace(/[\u064B-\u065F\u0670\s]/g, '');
+    const bareWithout = String(without || '').replace(/[\u064B-\u065F\u0670\s]/g, '');
+    const stripOk = bareWithout.length >= 8
+      && bareWithout.length >= Math.min(14, Math.floor(bareOrig.length * 0.4));
+    prepared = without && stripOk
       ? api.prepareTtsPayload(without) || api.sanitizeTtsText(without) || without
-      : '';
+      : prepared;
   }
   const fish = prepared ? prepareFishTtsText(prepared) : '';
   return { spoken: String(spoken || ''), prepared: prepared || '', fish };

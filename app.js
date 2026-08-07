@@ -1691,7 +1691,7 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v45';
+const TTS_CACHE_VER = 'v46';
 /**
  * Lesson Fish TTS only — mild loudness (NOT v267 3.6× / heavy EQ).
  * Never applied to Quran Hudhaify.
@@ -2404,10 +2404,28 @@ function scrubSpeechDiacriticsNoise(text) {
   // Hadith بُضْع (not بِضْع «a few»)
   s = s.replace(/فِي\s+بِضْعِ\s+أَحَد/g, 'فِي بُضْعِ أَحَد');
   s = s.replace(/في\s+بضع\s+احد/g, 'فِي بُضْعِ أَحَد');
+  s = s.replace(/فِي\s+بِضْع/g, 'فِي بُضْع');
   s = s.replace(/شرعاً/g, 'شَرْعًا');
   s = s.replace(/ذُكرت/g, 'ذُكِرَتْ');
   s = s.replace(/يُكنّى/g, 'يُكَنَّى');
   s = s.replace(/والعزّى/g, 'وَالْعُزَّى');
+  // After quote-strip: glue floating بِ (ب الظلم → بِالظلم) — else Fish → «المراجب».
+  s = s.replace(/بِ\s+(?=[\u0621-\u064A\u0671])/g, 'بِ');
+  s = s.replace(/(^|[^\u0621-\u064A\u0671])ب\s+(?=[\u0621-\u064A\u0671])/g, '$1بِ');
+  s = s.replace(/الْعِبَادَةِ\s+شَرْعًا/g, 'الْعِبَادَةُ شَرْعًا');
+  s = s.replace(/(^|[^\u0621-\u064A])الذَّبْحِ\s+لِغَيْر/g, '$1الذَّبْحُ لِغَيْر');
+  s = s.replace(/فِي\s+قَوْلُهُ/g, 'فِي قَوْلِهِ');
+  s = s.replace(/اَلطَّاعَةُ/g, 'الطَّاعَةِ');
+  s = s.replace(/اَلطَّاعَةِ/g, 'الطَّاعَةِ');
+  s = s.replace(/أَنْوَاطٍ/g, 'أَنْوَاطْ');
+  s = s.replace(/فَرَائِضَ\s*فَلَا/g, 'فَرَائِضْ فَلَا');
+  s = s.replace(/بالبِ?\s+ضع/g, 'بِالْبِضْعِ');
+  s = s.replace(/الْمُرَادُ\s+بالبِ?\s*ضع/g, 'الْمُرَادُ بِالْبِضْعِ');
+  // Soft OCR / wasla alef leftovers from harvest
+  s = s.replace(/ثَلَاثَةٍ\s+أَنْوَاع/g, 'ثَلَاثَةُ أَنْوَاعٍ');
+  s = s.replace(/بُنِيَ\s+إِسْرَائِيل/g, 'بَنِي إِسْرَائِيل');
+  s = s.replace(/مَنْ\s+الثَّلَاثَةِ\s+إِلَى\s+التِّسْعَةِ/g, 'مِنَ الثَّلَاثَةِ إِلَى التِّسْعَةِ');
+  s = s.replace(/مَنْ\s+الثَّلَاثَةِ\s+إِلَى\s+التِّسْعَةِ/g, 'مِنَ الثَّلَاثَةِ إِلَى التِّسْعَةِ');
   s = s.split('الْحِكْمَةُ مَنْ خَلَقَ').join('الْحِكْمَةُ مِنْ خَلْقِ');
   s = s.split('الْحِكْمَةُ مَنْ').join('الْحِكْمَةُ مِنْ');
   s = s.split("بَعَثَ النَّبِيِّ").join("بَعَثَ النَّبِيُّ");
@@ -2973,9 +2991,16 @@ function prepareQuestionFishProse(q, questionText) {
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   if (qProse && verseKey && shouldReciteHudhaifyForQuestion(q, questionText || q?.q)) {
     const withoutAyah = stripKnownAyahSnippetsForSpeech(qProse);
-    qProse = withoutAyah
-      ? (prepareTtsPayload(withoutAyah) || sanitizeTtsText(withoutAyah) || withoutAyah)
-      : '';
+    const bareOrig = stripArabicDiacritics(qProse).replace(/\s+/g, '');
+    const bareWithout = stripArabicDiacritics(withoutAyah).replace(/\s+/g, '');
+    // Keep full Fish prose when strip ate the stem (e.g. «اللات والعزى…ذكرت في سورة»
+    // → only «ذكرت في سورة»). Hudhaify may still recite; Fish must not lose the topic.
+    const stripOk = bareWithout.length >= 8
+      && bareWithout.length >= Math.min(14, Math.floor(bareOrig.length * 0.4));
+    if (withoutAyah && stripOk) {
+      qProse = prepareTtsPayload(withoutAyah) || sanitizeTtsText(withoutAyah) || withoutAyah;
+    }
+    // else keep full qProse
   }
   return qProse || '';
 }
