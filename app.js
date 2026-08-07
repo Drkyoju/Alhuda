@@ -1972,9 +1972,9 @@ function prepareTtsPayload(text) {
     .replace(/\s+/g, ' ')
     .trim();
   if (!cleaned) return '';
-  // Hadith: speak the curated wording as-is — do not rewrite tokens via word map.
+  // Hadith: speak curated wording — drop any embedded ayah markers, keep ﷺ expansion.
   if (isHadithPassage(cleaned)) {
-    const hadith = prepareArabicForSpeech(cleaned);
+    const hadith = prepareArabicForSpeech(removeQuranicVersesForSpeech(cleaned));
     return sanitizeTtsText(
       typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(hadith) : hadith
     );
@@ -1984,6 +1984,8 @@ function prepareTtsPayload(text) {
   let forTts = hasWellFormedTashkeel(cleaned)
     ? applyPronunciationLexicon(cleaned)
     : applyPronunciationLexicon(applyWordDiacritics(applyManualSpeechDiacritics(cleaned)));
+  // Never send Quran ayah wording to Fish — Hudhaify recites ayahs separately.
+  forTts = removeQuranicVersesForSpeech(forTts);
   forTts = typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(forTts) : forTts;
   return sanitizeTtsText(prepareArabicForSpeech(forTts));
 }

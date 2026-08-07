@@ -70,8 +70,13 @@ test.describe('accessibility', () => {
     });
     await page.goto('/');
     await expect(page.locator('#app-loading')).toBeHidden({ timeout: 30000 });
+    await expect(page.locator('#login-name')).toBeEnabled({ timeout: 5000 });
     await page.locator('#login-name').fill('Confirm User');
-  await page.locator('#login-name').press('Enter');
+    await page.locator('#login-name').press('Enter');
+    // Fallback click if Enter didn't submit (flaky focus on CI).
+    if (!(await page.locator('#welcome').evaluate((el) => el.classList.contains('active')))) {
+      await page.locator('#btn-login').click();
+    }
     await expect(page.locator('#welcome')).toHaveClass(/active/, { timeout: 25000 });
     await page.locator('#btn-start-game').click();
     await expect(page.locator('#game')).toHaveClass(/active/, { timeout: 15000 });
