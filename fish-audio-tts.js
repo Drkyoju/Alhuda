@@ -24,14 +24,14 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   latency: 'balanced',
   normalize: false, // keep Arabic harakat — do not rewrite diacritics
   chunk_length: 300, // max continuity for long vocalized sentences
-  temperature: 0.22, // stick tightly to provided tashkeel/iʿrāb
-  top_p: 0.4,
-  repetition_penalty: 1.35,
+  temperature: 0.2, // stick tightly to provided tashkeel/iʿrāb — clearer MSA
+  top_p: 0.35,
+  repetition_penalty: 1.4,
   // Request-scoped Fish backend flag for clearer synthesis when available.
   features: Object.freeze(['quality-guard']),
   prosody: {
-    speed: 0.95, // slightly slower → clearer articulation for students
-    volume: 12, // louder classroom playback (-20..20); was 6
+    speed: 0.92, // slower → clearer, less mumbled articulation
+    volume: 18, // near-max classroom loudness (-20..20); was 12
     normalize_loudness: true,
   },
 });
