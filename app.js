@@ -1693,16 +1693,30 @@ function toggleSound() {
 /** حامد — locked lesson voice (Saudi MSA Neural). No Fish/EL/other voices. */
 const TTS_AZURE_HAMED = 'ar-SA-HamedNeural';
 let TTS_VOICE = TTS_AZURE_HAMED;
-/** Bump when SSML/voice/prep changes so IndexedDB never replays old clips. */
-const TTS_CACHE_VER = 'v73';
+/** Bump when SSML/voice/prep changes so IndexedDB never replays old (slow −8%) clips. */
+const TTS_CACHE_VER = 'v74';
 /**
  * Lesson Azure only — light gain, no Fish EQ chain.
  * Never applied to Quran Hudhaify.
  */
 const TTS_PLAYBACK_GAIN = 1.12;
-/** Legacy speed tags kept for cache-key stability (Worker ignores speed for Azure). */
+/**
+ * Cache-key tags for Azure SSML rate buckets (Worker uses `rate`, not Fish speed).
+ * Question +8%; answers +12% so option clips do not share the slow Q key.
+ */
 const TTS_FISH_SPEED_QUESTION = 1;
-const TTS_FISH_SPEED_ANSWER = 1;
+const TTS_FISH_SPEED_ANSWER = 1.04;
+/** Azure SSML rates — must match azure-tts.js defaults. */
+const TTS_AZURE_SSML_RATE_QUESTION = '+8%';
+const TTS_AZURE_SSML_RATE_ANSWER = '+12%';
+
+function azureSsmlRateForSpeed(fishSpeed) {
+  const sp = Number(fishSpeed);
+  if (Number.isFinite(sp) && Math.abs(sp - TTS_FISH_SPEED_ANSWER) < 0.001) {
+    return TTS_AZURE_SSML_RATE_ANSWER;
+  }
+  return TTS_AZURE_SSML_RATE_QUESTION;
+}
 let ttsAudioGraph = null; // { source, nodes[] }
 /** createMediaElementSource may only bind once per element — reuse across replays. */
 const ttsMediaSources = new WeakMap(); // HTMLMediaElement -> MediaElementAudioSourceNode
@@ -1971,7 +1985,12 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
         let res;
         try {
           // Always Hamed — Worker also locks; client never sends Fish/EL ids.
-          const ttsBody = { text, voice: TTS_AZURE_HAMED };
+          // rate: Azure SSML only (Q +8% / answers +12%). Text/Allah path untouched.
+          const ttsBody = {
+            text,
+            voice: TTS_AZURE_HAMED,
+            rate: azureSsmlRateForSpeed(fishSpeed),
+          };
           res = await fetch('/api/tts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -3614,10 +3633,10 @@ const QURAN_RECITER_BITRATE = 64;
 /** Faster than natural pace so تلاوة finishes sooner without sounding rushed. */
 const QURAN_PLAYBACK_RATE = 1.28;
 /**
- * Client playbackRate — keep 1.0; Azure SSML rate/volume control clarity (no Fish EQ).
+ * Client playbackRate — keep 1.0; Azure SSML (+8%/+12%) owns pace (no Fish EQ).
  */
 const TTS_ANSWER_PLAYBACK_RATE = 1.0;
-/** Question clips — natural pace; SSML already slows slightly for clarity. */
+/** Question clips — SSML +8%; client leaves rate at 1.0. */
 const TTS_DEFAULT_PLAYBACK_RATE = 1.0;
 /** Intentional silence between answer options (ms). Keep tiny for back-to-back. */
 const TTS_ANSWER_GAP_MS = 40;

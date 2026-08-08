@@ -258,29 +258,46 @@ export function resolveAzureArabicVoice(_requested, _env) {
   return DEFAULT_AZURE_ARABIC_VOICE;
 }
 
-function buildSsml(text, voice) {
+/** Snappy fusHa (v292) — reverse v290 −8% slowdown; stay below chipmunk. */
+export const AZURE_SSML_RATE_QUESTION = '+8%';
+/** Answers/options — equal-or-slightly-faster than questions. */
+export const AZURE_SSML_RATE_ANSWER = '+12%';
+const AZURE_SSML_VOLUME = '+10%';
+
+/** Allow only mild ±20% prosody rates from the client. */
+export function resolveAzureSsmlRate(requested) {
+  const raw = String(requested || '').trim();
+  const m = raw.match(/^([+-]?\d{1,2})%$/);
+  if (!m) return AZURE_SSML_RATE_QUESTION;
+  const n = Number(m[1]);
+  if (!Number.isFinite(n) || n < -20 || n > 20) return AZURE_SSML_RATE_QUESTION;
+  return `${n > 0 ? '+' : ''}${n}%`;
+}
+
+function buildSsml(text, voice, rate = AZURE_SSML_RATE_QUESTION) {
   const lang = 'ar-SA';
-  // Clearer educational MSA: slight slowdown + mild volume (SSML only — no client EQ).
-  const rate = '-8%';
-  const volume = '+10%';
+  // Educational MSA: slight speedup + mild volume (SSML only — no client EQ).
+  // Do not touch normalizeForAzure / Allah NFC here — sibling owns iʿrāb.
+  const rateResolved = resolveAzureSsmlRate(rate);
   const body = textToSsmlBody(normalizeForAzure(text));
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +
     `<voice name="${escapeXml(voice)}">` +
     `<lang xml:lang="${lang}">` +
-    `<prosody rate="${rate}" volume="${volume}">${body}</prosody>` +
+    `<prosody rate="${rateResolved}" volume="${AZURE_SSML_VOLUME}">${body}</prosody>` +
     `</lang>` +
     `</voice></speak>`
   );
 }
 
-export async function synthesizeAzureArabicSpeech(text, voiceShortName, env) {
+export async function synthesizeAzureArabicSpeech(text, voiceShortName, env, opts = {}) {
   const key = env?.AZURE_SPEECH_KEY;
   const region = env?.AZURE_SPEECH_REGION;
   if (!key || !region) {
     throw new Error('Azure Speech not configured (missing AZURE_SPEECH_KEY / AZURE_SPEECH_REGION)');
   }
   const voice = resolveAzureArabicVoice(voiceShortName, env);
+  const rate = resolveAzureSsmlRate(opts?.rate);
   const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
 
   async function post(ssml, format = OUTPUT_FORMAT) {
@@ -296,9 +313,9 @@ export async function synthesizeAzureArabicSpeech(text, voiceShortName, env) {
     });
   }
 
-  let res = await post(buildSsml(text, voice));
+  let res = await post(buildSsml(text, voice, rate));
   if (!res.ok && res.status === 400) {
-    res = await post(buildSsml(text, voice), OUTPUT_FORMAT_FALLBACK);
+    res = await post(buildSsml(text, voice, rate), OUTPUT_FORMAT_FALLBACK);
   }
   if (!res.ok) {
     const detail = await res.text().catch(() => '');

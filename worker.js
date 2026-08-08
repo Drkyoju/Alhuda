@@ -2,9 +2,11 @@ const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
 import {
   azureSpeechConfigured,
+  AZURE_SSML_RATE_QUESTION,
   DEFAULT_AZURE_ARABIC_VOICE,
   normalizeForAzure,
   resolveAzureArabicVoice,
+  resolveAzureSsmlRate,
   synthesizeAzureArabicSpeech,
 } from './azure-tts.js';
 
@@ -299,8 +301,12 @@ async function handleTts(request, env) {
 
   try {
     const voice = resolveAzureArabicVoice(body?.voice, env);
+    // Optional SSML rate (+8% Q / +12% answers). Text pipeline unchanged (Allah/carriers).
+    const rate = resolveAzureSsmlRate(
+      typeof body?.rate === 'string' ? body.rate : AZURE_SSML_RATE_QUESTION
+    );
     // Pass original textRaw — synthesizeAzureArabicSpeech normalizes again via SSML.
-    const stream = await synthesizeAzureArabicSpeech(textRaw, voice, env);
+    const stream = await synthesizeAzureArabicSpeech(textRaw, voice, env, { rate });
     return new Response(stream, {
       status: 200,
       headers: {
@@ -310,6 +316,7 @@ async function handleTts(request, env) {
         'X-TTS-Provider': 'azure',
         'X-TTS-Voice': voice,
         'X-TTS-Quality': 'hq',
+        'X-TTS-Rate': rate,
         'X-TTS-Chars': String(text.length),
       },
     });
