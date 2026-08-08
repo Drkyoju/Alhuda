@@ -226,13 +226,13 @@ export function prepareFishTtsText(text) {
   s = s.replace(/هَذَا الْحَدِيثِ/g, 'هَذَا الْحَدِيثُ');
   // Sahaba bare → vocalized (gaps added after stripTtsPunctuation)
   s = s.replace(/(^|[^\u0621-\u064A])عقبة\s+بن\s+عامر(?=[^\u0621-\u064A]|$)/g, '$1عُقْبَةُ بْنُ عَامِرٍ');
-  s = s.replace(/(^|[^\u0621-\u064A])ابن\s+مسعود(?=[^\u0621-\u064A]|$)/g, '$1ابْنُ مَسْعُودٍ');
+  s = s.replace(/(^|[^\u0621-\u064A])ابن\s+مسعود(?=[^\u0621-\u064A]|$)/g, '$1ابْنْ مَسْعُودٍ');
   s = s.replace(/(^|[^\u0621-\u064A])أبو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
   s = s.replace(/(^|[^\u0621-\u064A])ابو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
   s = stripTtsPunctuation(s);
   // Micro-gaps AFTER strip (strip collapses whitespace) — clearer sahaba names
   s = s.replace(/عُقْبَةُ بْنُ عَامِرٍ/g, 'عُقْبَةُ  بْنُ  عَامِرٍ');
-  s = s.replace(/ابْنُ مَسْعُودٍ/g, 'ابْنُ  مَسْعُودٍ');
+  s = s.replace(/ابْن[ُِْ]?\s*مَسْعُودٍ/g, 'ابْنْ  مَسْعُودٍ');
   s = s.replace(/أَبُو هُرَيْرَةَ/g, 'أَبُو  هُرَيْرَةَ');
   // After quote-strip: بِ «ثُمَّ» → بِ ثُمَّ (Fish reads «بسما»); glue particle
   // Only standalone particle بِ/ب — never word-final …بِ (بابِ / كتابِ / طَلَبِ).
@@ -253,17 +253,28 @@ export function prepareFishTtsText(text) {
   s = s.replace(/طَلَبٌ\s+الصَّحَابَة[ُِ]/g, 'طَلَبُ الصَّحَابَةِ');
   s = s.replace(/قَوْلُ\s+الصَّحَابَةُ/g, 'قَوْلُ الصَّحَابَةِ');
   s = s.replace(/لَم[َّ]*ا\s+طَلَبٌ/g, 'لَمَّا طَلَبَ');
-  // Tanween on أنواط → phantom ن; prefer fatha after ذات, clear fatha standalone
-  s = s.replace(/أَنْوَاطٍ/g, 'أَنْوَاطَ');
-  s = s.replace(/انواطٍ/g, 'أَنْوَاطَ');
-  s = s.replace(/أَنْوَاطْ/g, 'أَنْوَاطَ');
+  // Tanween on أنواط → phantom ن / أنواع; prefer sukun (not fatha→أنواع)
+  s = s.replace(/أَنْوَاط[ٍَ]/g, 'أَنْوَاطْ');
+  s = s.replace(/انواط[ٍَ]?/g, 'أَنْوَاطْ');
+  s = s.replace(/(^|[^\u0621-\u064A])أنواط(?=[^\u0621-\u064A]|$)/g, '$1أَنْوَاطْ');
   // Truncated fill-blank: sukun + gap so clone doesn't slur فرائض→فلا
   s = s.replace(/فَرَائِضَ\s*فَلَا/g, 'فَرَائِضْ  فَلَا');
   s = s.replace(/فَرَائِض\s*فَلَا/g, 'فَرَائِضْ  فَلَا');
   s = s.replace(/فرائض\s*فلا/g, 'فَرَائِضْ  فَلَا');
   // خطأ alone → شطأ; pad when whole utterance
   s = s.replace(/^خَطَأٌ$/u, 'هَذَا خَطَأٌ');
+  s = s.replace(/^خَطَأ$/u, 'هَذَا خَطَأٌ');
   s = s.replace(/^خطأ$/u, 'هَذَا خَطَأٌ');
+  // Ultra-short MC options Fish mangles — article/pad like صح→صحيح (UI bare unchanged)
+  s = s.replace(/^إِكْرَاه[ٍُِ]?$/u, 'الْإِكْرَاهُ');
+  s = s.replace(/^اكراه$/u, 'الْإِكْرَاهُ');
+  s = s.replace(/^إكراه$/u, 'الْإِكْرَاهُ');
+  s = s.replace(/^السِّحْر[َُِ]?$/u, 'السِّحْرْ');
+  s = s.replace(/^السِّحْر[َُِ]?$/u, 'السِّحْرْ');
+  s = s.replace(/^السحر$/u, 'السِّحْرْ');
+  s = s.replace(/^الزَّمَان[َُِ]?$/u, 'الزَّمَانْ');
+  s = s.replace(/^الزَّمَان[َُِ]?$/u, 'الزَّمَانْ');
+  s = s.replace(/^الزمان$/u, 'الزَّمَانْ');
   // المراد بـ → أوضح للـ clone (الواجهة تبقى «المراد»)
   s = s.replace(/مَا\s+اَلْمُرَادْ\s+بِ/g, 'مَا مَعْنَى ');
   s = s.replace(/مَا\s+الْمُرَادُ\s+بِ/g, 'مَا مَعْنَى ');
@@ -285,9 +296,9 @@ export function prepareFishTtsText(text) {
   s = s.replace(/اَلْمُرَادُ\s+بِ/g, 'اَلْمُرَادْ بِ');
   s = s.replace(/الْمُرَادُ/g, 'اَلْمُرَادْ');
   s = s.replace(/اَلْمُرَادُ/g, 'اَلْمُرَادْ');
-  // أنواط after ذات — keep genitive ذاتِ in construct; else ذاتَ
-  s = s.replace(/ذَاتِ\s+أَنْوَاط[ٍَْ]?/g, 'ذَاتِ أَنْوَاطَ');
-  s = s.replace(/ذَات[َ]?\s+أَنْوَاط[ٍَْ]?/g, 'ذَاتَ أَنْوَاطَ');
+  // أنواط after ذات — genitive ذاتِ + sukun أنواط (avoid أنواع)
+  s = s.replace(/ذَات[َُِ]?\s+أَنْوَاطْ?/g, 'ذَاتِ  أَنْوَاطْ');
+  s = s.replace(/ذات\s+أنواط/g, 'ذَاتِ  أَنْوَاطْ');
   // بُضْع clarity without tatweel: separate from أحدكم
   s = s.replace(/بُضْعِ\s+أَحَدِكُمْ/g, 'بُضْعِ  أَحَدِكُمْ');
   // TF / ultra-short options — صَحّ often heard as «صحن»; speak كامل
@@ -299,8 +310,41 @@ export function prepareFishTtsText(text) {
   s = s.replace(/^عِبَادَةٌ$/u, 'عِبَادَة');
   // دم امرئ — micro-gaps (prep letters stay correct; helps clone not slur)
   s = s.replace(/دَمُ\s+امْرِئٍ\s+مُسْلِمٍ/g, 'دَمُ  امْرِئٍ  مُسْلِمٍ');
-  // لا ضرر ولا ضرار — micro-gap before second ضر
-  s = s.replace(/لَا\s+ضَرَرَ\s+وَلَا\s+ضِرَارَ/g, 'لَا ضَرَرَ  وَلَا ضِرَارَ');
+  // قرب ذبابا لصنم — gaps so قرب≠خراب / ذباب≠جباب
+  s = s.replace(/قَرَّبَ\s+ذُبَابًا\s+لِصَنَمٍ/g, 'قَرَّبَ  ذُبَابًا  لِصَنَمٍ');
+  s = s.replace(/قَرَّبَ\s+ذُبَابًا\s+لِصَنَمٍ/g, 'قَرَّبَ  ذُبَابًا  لِصَنَمٍ');
+  s = s.replace(/قرب\s+ذباباً?\s+لصنم/g, 'قَرَّبَ  ذُبَابًا  لِصَنَمٍ');
+  // الشرك الأصغر — gap + sukun so أصغر≠أصدر
+  s = s.replace(/الشِّرْكِ\s+الْأَصْغَر[َُِ]?/g, "الشِّرْكِ  الْأَصْغَرْ");
+  s = s.replace(/الشِّرْكِ\s+الْأَصْغَر[َُِ]?/g, "الشِّرْكِ  الْأَصْغَرْ");
+  s = s.replace(/الشرك\s+الأصغر/g, "الشِّرْكِ  الْأَصْغَرْ");
+  // رقى / تمائم / تولة / شرك — gaps; شركْ avoids شركم/شركة tanween slur
+  s = s.replace(
+    /إِنَّ\s+الرُّقَى\s+وَالتَّمَائِمَ\s+وَالتِّوَلَةَ\s+شِرْك[ٌْ]?/g,
+    "إِنَّ الرُّقَى  وَالتَّمَائِمَ  وَالتِّوَلَةَ  شِرْكْ"
+  );
+  s = s.replace(
+    /إِنَّ\s+الرُّقَى\s+وَالتَّمَائِمَ\s+وَالتِّوَلَةَ\s+شِرْك[ٌْ]?/g,
+    "إِنَّ الرُّقَى  وَالتَّمَائِمَ  وَالتِّوَلَةَ  شِرْكْ"
+  );
+  s = s.replace(
+    /ان\s+الرقى\s+والتمائم\s+والتولة\s+شرك/g,
+    "إِنَّ الرُّقَى  وَالتَّمَائِمَ  وَالتِّوَلَةَ  شِرْكْ"
+  );
+  // أهل اليمن — sukun + gap (اليمان/اليمد)
+  s = s.replace(/أَهْل[َِ]?\s+الْيَمَن[َُِ]?/g, 'أَهْلَ  الْيَمَنْ');
+  s = s.replace(/اهل\s+اليمن/g, 'أَهْلَ  الْيَمَنْ');
+  // ابن مسعود — sukun on ن (damma→ابنو); wide gap
+  s = s.replace(/ابْن[ُِ]?\s+مَسْعُودٍ/g, 'ابْنْ  مَسْعُودٍ');
+  s = s.replace(/ابن\s+مسعود/g, 'ابْنْ  مَسْعُودٍ');
+  // عقبة بن عامر — reinforce micro-gaps (also set earlier; re-assert after strip)
+  s = s.replace(/عُقْبَةُ\s+بْنُ\s+عَامِرٍ/g, 'عُقْبَةُ  بْنُ  عَامِرٍ');
+  // أن تعبد الله — residual تعبو/دلله: clear mansub + gap before الله
+  s = s.replace(/أَنْ\s+تَعْبُد[َُ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ  اللَّهَ");
+  s = s.replace(/ان\s+تعبد\s+الله/g, "أَنْ تَعْبُدَ  اللَّهَ");
+  // لا ضرر ولا ضرار — wider gaps + sukun (ضرر→ذرر)
+  s = s.replace(/لَا\s+ضَرَر[َْ]?\s+وَلَا\s+ضِرَار[َْ]?/g, 'لَا  ضَرَرْ  وَلَا  ضِرَارْ');
+  s = s.replace(/لا\s+ضرر\s+ولا\s+ضرار/g, 'لَا  ضَرَرْ  وَلَا  ضِرَارْ');
   // DO NOT insert mid-word tatweel — v265 tried it for «clarity» and Whisper proved
   // بُضْـع/صَدَقَـة/رياء/ذُكِـرَت → mangled (بضعي/صديقاتون/رياق/لكرة).
   s = applySystematicCaseEndings(s);
