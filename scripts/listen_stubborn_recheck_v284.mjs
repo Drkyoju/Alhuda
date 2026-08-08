@@ -293,9 +293,10 @@ async function main() {
   const sttOut = join(outDir, `stt_${WHISPER_MODEL}.json`);
   console.log(`Whisper model=${WHISPER_MODEL} on ${whisperDir}…`);
   const sttRaw = await runWhisper(whisperDir, WHISPER_MODEL, sttOut);
+  const sttList = Array.isArray(sttRaw) ? sttRaw : sttRaw.results || [];
   const byHash = new Map();
-  for (const e of sttRaw) {
-    const h = String(e.file || e.name || '').replace(/\.mp3$/i, '');
+  for (const e of sttList) {
+    const h = String(e.file || e.name || e.id || '').replace(/\.mp3$/i, '');
     byHash.set(h, e.transcript || e.text || '');
   }
 
