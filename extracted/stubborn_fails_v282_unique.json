@@ -1,0 +1,4292 @@
+{
+  "timestamp": "2026-08-08T10:06:08.518Z",
+  "totalFailClips": 306,
+  "unique": 199,
+  "prepChangedNow": 36,
+  "unchanged": 163,
+  "items": [
+    {
+      "bare": "صح",
+      "spoken": "صَحّ",
+      "prepared_v282": "صَحِيحٌ",
+      "fish_v282": "صَحِيحٌ",
+      "fish_now": "هَذَا صَحِيحٌ",
+      "fish_from_prep": "هَذَا صَحِيحٌ",
+      "stt_v282": "سحيح",
+      "count": 41,
+      "books": [
+        "usool",
+        "nawawi"
+      ],
+      "fields": [
+        "tf0"
+      ],
+      "ids": [
+        "tf0_5556e086-7f16-4278-9896-2e6a809ae5d4",
+        "tf0_d3e5d0d4-711f-46ac-b7a3-840b9258f67c",
+        "tf0_390a98fa-c43d-41d2-80f0-82a6894ba5db",
+        "tf0_79aede6f-0a02-4c6e-b467-0d0445355194",
+        "tf0_38050b3a-babc-450a-8904-aa43288de9b8"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "سنة",
+      "spoken": "63 سَنَةً",
+      "prepared_v282": "63 سَنَةً",
+      "fish_v282": "ثَلَاثٌ وَسِتُّونَ سَنَةً",
+      "fish_now": "ثَلَاثٌ وَسِتُّونَ سَنَةً",
+      "fish_from_prep": "ثَلَاثٌ وَسِتُّونَ سَنَةً",
+      "stt_v282": "سلامة وستمسكون سنة",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_3de5c20f-1bb6-4549-b43b-be29806bc6f8"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "جائز",
+      "spoken": "جَائِزٌ",
+      "prepared_v282": "جَائِزٌ",
+      "fish_v282": "جَائِزٌ",
+      "fish_now": "هَذَا جَائِزٌ",
+      "fish_from_prep": "هَذَا جَائِزٌ",
+      "stt_v282": "بزdireك بزن",
+      "count": 11,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "fields": [
+        "a1",
+        "a0",
+        "a2"
+      ],
+      "ids": [
+        "a1_1cb55316-5773-4fd4-9cbc-ed8a3ad77fcf",
+        "a1_34f0da6e-4ab8-4721-b1eb-1105c59d76f2",
+        "a1_13d43d42-9990-4713-b002-fb1a5a675b9c",
+        "a1_f48ef856-cf46-4a40-8e36-5f7104f14a90",
+        "a1_cab8d777-a5ef-4376-a28f-a2eb43fdea02"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "بدعة",
+      "spoken": "بِدْعَةٌ",
+      "prepared_v282": "بِدْعَةٌ",
+      "fish_v282": "بِدْعَةٌ",
+      "fish_now": "هِيَ بِدْعَةٌ",
+      "fish_from_prep": "هِيَ بِدْعَةٌ",
+      "stt_v282": "بجأة ها",
+      "count": 4,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2",
+        "a3"
+      ],
+      "ids": [
+        "a2_c68cab87-c801-4d1f-bd2f-869373b36903",
+        "a3_e45e88e0-322b-8e97-68f4-d8500c8b98a5",
+        "a3_3b72e0c1-01bc-e81d-73ed-a739183539cc",
+        "a3_a0cd9a30-0663-ff17-2f92-32ba946394e7"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الطب",
+      "spoken": "الطِّبِّ",
+      "prepared_v282": "الطِّبِّ",
+      "fish_v282": "الطِّبِّ",
+      "fish_now": "الطِّبُّ النَّبَوِيُّ",
+      "fish_from_prep": "الطِّبُّ النَّبَوِيُّ",
+      "stt_v282": "ال terme",
+      "count": 4,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_383da44e-91d3-2a0c-5224-50f23cdf3ece",
+        "a1_3460b2d5-3198-5ec6-517b-ec6fd26de2bc",
+        "a1_005a6ec5-283a-aa14-df0e-ebe166acb033",
+        "a1_1660db39-87f6-00de-4f68-e08a728e4878"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "سافر",
+      "spoken": "سَافَرَ",
+      "prepared_v282": "سَافَرَ",
+      "fish_v282": "سَافَرَ",
+      "fish_now": "قَدْ سَافَرَ",
+      "fish_from_prep": "قَدْ سَافَرَ",
+      "stt_v282": "شافرة",
+      "count": 2,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_569e7192-7b3b-3027-e0b6-ec7e9b70296f",
+        "a3_963542fc-c630-6925-1386-98fe6d5a097e"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "كافر",
+      "spoken": "كَافِرٌ",
+      "prepared_v282": "كَافِرٌ",
+      "fish_v282": "كَافِرٌ",
+      "fish_now": "هُوَ كَافِرٌ",
+      "fish_from_prep": "هُوَ كَافِرٌ",
+      "stt_v282": "كلا básicamente",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0",
+        "a1"
+      ],
+      "ids": [
+        "a0_cb699104-13a4-c4d2-b960-2d755a7acc1b",
+        "a1_272794ec-4981-1e28-3199-eceefebda72a"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الرب",
+      "spoken": "الرَّبِّ",
+      "prepared_v282": "الرَّبِّ",
+      "fish_v282": "الرَّبِّ",
+      "fish_now": "هُوَ الرَّبُّ سُبْحَانَهُ",
+      "fish_from_prep": "هُوَ الرَّبُّ سُبْحَانَهُ",
+      "stt_v282": "ربي",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2",
+        "a0"
+      ],
+      "ids": [
+        "a2_39e56524-4689-3754-f7c7-7b3f5d144f9a",
+        "a0_82dd4e52-6c26-63c2-58c5-489ab067703c"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "صدقة",
+      "spoken": "صَدَقَةٍ",
+      "prepared_v282": "صَدَقَةٍ",
+      "fish_v282": "صَدَقَةٍ",
+      "fish_now": "صَدَقَةٍ",
+      "fish_from_prep": "صَدَقَةٍ",
+      "stt_v282": "شجقة",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1",
+        "a2"
+      ],
+      "ids": [
+        "a1_7242bea4-a5bd-6559-d95f-1a5b3be6f64e",
+        "a2_4d44fecd-56a7-0a37-f7ef-8592d55ffa1b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ليلا",
+      "spoken": "ليلاً",
+      "prepared_v282": "ليلاً",
+      "fish_v282": "ليلاً",
+      "fish_now": "ليلاً",
+      "fish_from_prep": "ليلاً",
+      "stt_v282": "ليلن",
+      "count": 2,
+      "books": [
+        "usool",
+        "nawawi"
+      ],
+      "fields": [
+        "a2",
+        "a3"
+      ],
+      "ids": [
+        "a2_39a78741-7390-e1e9-ce72-d9999e7c58fb",
+        "a3_d4161bab-404d-2657-a0ed-267ce6957756"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "نافق",
+      "spoken": "نَافَقَ",
+      "prepared_v282": "نَافَقَ",
+      "fish_v282": "نَافَقَ",
+      "fish_now": "نَافَقَ",
+      "fish_from_prep": "نَافَقَ",
+      "stt_v282": "نأسة שלי",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_adc7a568-4e61-f5de-b5c8-6066befcd2af"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "عوقب",
+      "spoken": "عُوقِبَ",
+      "prepared_v282": "عُوقِبَ",
+      "fish_v282": "عُوقِبَ",
+      "fish_now": "عُوقِبَ",
+      "fish_from_prep": "عُوقِبَ",
+      "stt_v282": "إنها refreshing",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_f9b205c9-d036-dcce-37a6-92d32684064b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "غفلة",
+      "spoken": "غَفْلَةٌ",
+      "prepared_v282": "غَفْلَةٌ",
+      "fish_v282": "غَفْلَةٌ",
+      "fish_now": "غَفْلَةٌ",
+      "fish_from_prep": "غَفْلَةٌ",
+      "stt_v282": "رفلتن",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_cf01dde6-f233-bcb0-c1ef-9dfc31188179"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "انحر",
+      "spoken": "انْحَرْ",
+      "prepared_v282": "انْحَرْ",
+      "fish_v282": "انْحَرْ",
+      "fish_now": "انْحَرْ",
+      "fish_from_prep": "انْحَرْ",
+      "stt_v282": "教ق",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_da5fd343-b6f1-ca1f-0ac7-4e9d3b3eeede"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "عمله",
+      "spoken": "عَمَلُهُ",
+      "prepared_v282": "عَمَلُهُ",
+      "fish_v282": "عَمَلُهُ",
+      "fish_now": "عَمَلُهُ",
+      "fish_from_prep": "عَمَلُهُ",
+      "stt_v282": "حماله",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_4bd70525-216d-9c50-492c-ad0e11e6123c"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بصره",
+      "spoken": "بَصَرَهُ",
+      "prepared_v282": "بَصَرَهُ",
+      "fish_v282": "بَصَرَهُ",
+      "fish_now": "بَصَرَهُ",
+      "fish_from_prep": "بَصَرَهُ",
+      "stt_v282": "بصراحب",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_4bd70525-216d-9c50-492c-ad0e11e6123c"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "معاذ",
+      "spoken": "مُعَاذٌ",
+      "prepared_v282": "مُعَاذٌ",
+      "fish_v282": "مُعَاذٌ",
+      "fish_now": "مُعَاذٌ",
+      "fish_from_prep": "مُعَاذٌ",
+      "stt_v282": "مؤذن",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_b5fecca4-b8fe-63ec-28fd-4087d1f6a403"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "صنما",
+      "spoken": "صَنَمًا",
+      "prepared_v282": "صَنَمًا",
+      "fish_v282": "صَنَمًا",
+      "fish_now": "صَنَمًا",
+      "fish_from_prep": "صَنَمًا",
+      "stt_v282": "فنمن",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_d608ce45-fe60-a99f-7383-4a963d20451b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "حجره",
+      "spoken": "حَجَرِهِ",
+      "prepared_v282": "حَجَرِهِ",
+      "fish_v282": "حَجَرِهِ",
+      "fish_now": "حَجَرِهِ",
+      "fish_from_prep": "حَجَرِهِ",
+      "stt_v282": "بيac",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_478be838-386d-07f2-f07c-1767b52f48d2"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تردد",
+      "spoken": "تَرَدُّدٍ",
+      "prepared_v282": "تَرَدُّدٍ",
+      "fish_v282": "تَرَدُّدٍ",
+      "fish_now": "تَرَدُّدٍ",
+      "fish_from_prep": "تَرَدُّدٍ",
+      "stt_v282": "קlli معبرJOHN",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_b94c3f18-c6e1-fb19-2f4d-a0ad6e4e76be"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "يرضى",
+      "spoken": "يَرْضَى",
+      "prepared_v282": "يَرْضَى",
+      "fish_v282": "يَرْضَى",
+      "fish_now": "يَرْضَى",
+      "fish_from_prep": "يَرْضَى",
+      "stt_v282": "يارضا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_da9c7827-2b87-6681-f91b-52c8291fd87a"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "يصمت",
+      "spoken": "يَصْمُتَ",
+      "prepared_v282": "يَصْمُتَ",
+      "fish_v282": "يَصْمُتَ",
+      "fish_now": "يَصْمُتَ",
+      "fish_from_prep": "يَصْمُتَ",
+      "stt_v282": "Yes, mÖtle .",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_da9c7827-2b87-6681-f91b-52c8291fd87a"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "يشهد",
+      "spoken": "يَشْهَدَ",
+      "prepared_v282": "يَشْهَدَ",
+      "fish_v282": "يَشْهَدَ",
+      "fish_now": "يَشْهَدَ",
+      "fish_from_prep": "يَشْهَدَ",
+      "stt_v282": "يشحج",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_da9c7827-2b87-6681-f91b-52c8291fd87a"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "يصدق",
+      "spoken": "يصدُق",
+      "prepared_v282": "يصدُق",
+      "fish_v282": "يصدُق",
+      "fish_now": "يصدُق",
+      "fish_from_prep": "يصدُق",
+      "stt_v282": "يساعد دقو",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_b5c332c6-99b0-c89f-97ed-837e4c1db634"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "يكثر",
+      "spoken": "يُكْثِرَ",
+      "prepared_v282": "يُكْثِرَ",
+      "fish_v282": "يُكْثِرَ",
+      "fish_now": "يُكْثِرَ",
+      "fish_from_prep": "يُكْثِرَ",
+      "stt_v282": "بيكسر",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_b5c332c6-99b0-c89f-97ed-837e4c1db634"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "يكرر",
+      "spoken": "يُكَرِّرَ",
+      "prepared_v282": "يُكَرِّرَ",
+      "fish_v282": "يُكَرِّرَ",
+      "fish_now": "يُكَرِّرَ",
+      "fish_from_prep": "يُكَرِّرَ",
+      "stt_v282": "هل تريك؟",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_b5c332c6-99b0-c89f-97ed-837e4c1db634"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "رزقا",
+      "spoken": "رزقاً",
+      "prepared_v282": "رزقاً",
+      "fish_v282": "رزقاً",
+      "fish_now": "رزقاً",
+      "fish_from_prep": "رزقاً",
+      "stt_v282": "اللي ك Almost",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_320cbcbb-b9c0-5f5b-1e83-b6b6ba51200d"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "سواه",
+      "spoken": "سِوَاهُ",
+      "prepared_v282": "سِوَاهُ",
+      "fish_v282": "سِوَاهُ",
+      "fish_now": "سِوَاهُ",
+      "fish_from_prep": "سِوَاهُ",
+      "stt_v282": "سواحو",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_649bc12b-6203-aab8-429c-ac035ff905d0"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "قبله",
+      "spoken": "قَبْلَهُ",
+      "prepared_v282": "قَبْلَهُ",
+      "fish_v282": "قَبْلَهُ",
+      "fish_now": "قَبْلَهُ",
+      "fish_from_prep": "قَبْلَهُ",
+      "stt_v282": "باب الهو",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_649bc12b-6203-aab8-429c-ac035ff905d0"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "أصغر",
+      "spoken": "أَصْغَرُ",
+      "prepared_v282": "أَصْغَرُ",
+      "fish_v282": "أَصْغَرُ",
+      "fish_now": "أَصْغَرُ",
+      "fish_from_prep": "أَصْغَرُ",
+      "stt_v282": "أسجلًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_36cfda46-eb08-83b8-ad47-2e258a22f23d"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "قطعه",
+      "spoken": "قَطْعِهِ",
+      "prepared_v282": "قَطْعِهِ",
+      "fish_v282": "قَطْعِهِ",
+      "fish_now": "قَطْعِهِ",
+      "fish_from_prep": "قَطْعِهِ",
+      "stt_v282": "باتاي",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_de4b07b3-68a9-b768-ed20-5ded56815d07"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تركه",
+      "spoken": "تَرْكِهِ",
+      "prepared_v282": "تَرْكِهِ",
+      "fish_v282": "تَرْكِهِ",
+      "fish_now": "تَرْكِهِ",
+      "fish_from_prep": "تَرْكِهِ",
+      "stt_v282": "كاراكي",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_de4b07b3-68a9-b768-ed20-5ded56815d07"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "آلهة",
+      "spoken": "آلِهَةً",
+      "prepared_v282": "آلِهَةً",
+      "fish_v282": "آلِهَةً",
+      "fish_now": "آلِهَةً",
+      "fish_from_prep": "آلِهَةً",
+      "stt_v282": "النهاق",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_52d01861-7b83-8cf4-fed3-1a5baf8c65df"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ذباب",
+      "spoken": "ذُباب",
+      "prepared_v282": "ذُباب",
+      "fish_v282": "ذُباب",
+      "fish_now": "ذُباب",
+      "fish_from_prep": "ذُباب",
+      "stt_v282": "وغا武",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_4d44fecd-56a7-0a37-f7ef-8592d55ffa1b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بريء",
+      "spoken": "بَرِيءٌ",
+      "prepared_v282": "بَرِيءٌ",
+      "fish_v282": "بَرِيءٌ",
+      "fish_now": "بَرِيءٌ",
+      "fish_from_prep": "بَرِيءٌ",
+      "stt_v282": "بريون",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_74959bce-d2f2-9144-73b8-10c9972290ba"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "قطعت",
+      "spoken": "قُطعت",
+      "prepared_v282": "قُطعت",
+      "fish_v282": "قُطعت",
+      "fish_now": "قُطعت",
+      "fish_from_prep": "قُطعت",
+      "stt_v282": "طوطة اك",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_ea3f8f19-a1d9-a32c-9650-8b8ec47507b4"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تركت",
+      "spoken": "تُركت",
+      "prepared_v282": "تُركت",
+      "fish_v282": "تُركت",
+      "fish_now": "تُركت",
+      "fish_from_prep": "تُركت",
+      "stt_v282": "شكرا لك",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_ea3f8f19-a1d9-a32c-9650-8b8ec47507b4"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "سبعة",
+      "spoken": "سَبْعَةُ",
+      "prepared_v282": "سَبْعَةُ",
+      "fish_v282": "سَبْعَةُ",
+      "fish_now": "سَبْعَةُ",
+      "fish_from_prep": "سَبْعَةُ",
+      "stt_v282": "سبع",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_98fe6055-17c6-cacc-3c5b-36fb2fa958a1"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ماله",
+      "spoken": "مَالُهُ",
+      "prepared_v282": "مَالُهُ",
+      "fish_v282": "مَالُهُ",
+      "fish_now": "مَالُهُ",
+      "fish_from_prep": "مَالُهُ",
+      "stt_v282": "مالو",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_e36e4015-64c3-ae5a-bac2-5c435db8157d"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "مسلم",
+      "spoken": "مُسْلِمٌ",
+      "prepared_v282": "مُسْلِمٌ",
+      "fish_v282": "مُسْلِمٌ",
+      "fish_now": "مُسْلِمٌ",
+      "fish_from_prep": "مُسْلِمٌ",
+      "stt_v282": "موشليمون",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_ff6b7cba-3fad-47e1-a748-5ea7336bc1e5"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "صامه",
+      "spoken": "صَامَهُ",
+      "prepared_v282": "صَامَهُ",
+      "fish_v282": "صَامَهُ",
+      "fish_now": "صَامَهُ",
+      "fish_from_prep": "صَامَهُ",
+      "stt_v282": "شامعه",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_74076c42-5f23-4e68-8de6-2864ca262829"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تاجر",
+      "spoken": "تاجر",
+      "prepared_v282": "تاجر",
+      "fish_v282": "تاجر",
+      "fish_now": "تاجر",
+      "fish_from_prep": "تاجر",
+      "stt_v282": "تجر",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_3ba3317a-9fef-4994-9535-07520ea0fdc2"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "اليد",
+      "spoken": "الْيَدُ",
+      "prepared_v282": "الْيَدُ",
+      "fish_v282": "الْيَدُ",
+      "fish_now": "الْيَدُ",
+      "fish_from_prep": "الْيَدُ",
+      "stt_v282": "له тоже",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_11047b53-8a8b-a67b-a8fe-cc6dc50a0543"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "قدسي",
+      "spoken": "قُدْسِيٌّ",
+      "prepared_v282": "قُدْسِيٌّ",
+      "fish_v282": "قُدْسِيٌّ",
+      "fish_now": "قُدْسِيٌّ",
+      "fish_from_prep": "قُدْسِيٌّ",
+      "stt_v282": "تكون في صغيرة",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_ec222f45-8bbf-390a-fa68-3ad07048f867"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "طيبا",
+      "spoken": "طيّباً",
+      "prepared_v282": "طيّباً",
+      "fish_v282": "طيّباً",
+      "fish_now": "طيّباً",
+      "fish_from_prep": "طيّباً",
+      "stt_v282": "هذه هي صفل",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_e3396519-1790-df74-a90c-fdf7a609a1cb"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "صدرك",
+      "spoken": "صَدْرِكَ",
+      "prepared_v282": "صَدْرِكَ",
+      "fish_v282": "صَدْرِكَ",
+      "fish_now": "صَدْرِكَ",
+      "fish_from_prep": "صَدْرِكَ",
+      "stt_v282": "فدريقا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_5857fb36-2fdb-85e1-d433-933632aa6394"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "عقلك",
+      "spoken": "عَقْلِكَ",
+      "prepared_v282": "عَقْلِكَ",
+      "fish_v282": "عَقْلِكَ",
+      "fish_now": "عَقْلِكَ",
+      "fish_from_prep": "عَقْلِكَ",
+      "stt_v282": "مع بhrlich",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_5857fb36-2fdb-85e1-d433-933632aa6394"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الصوم",
+      "spoken": "الصَّوْمِ",
+      "prepared_v282": "الصَّوْمِ",
+      "fish_v282": "الصَّوْمِ",
+      "fish_now": "صَوْمُ رَمَضَانَ",
+      "fish_from_prep": "صَوْمُ رَمَضَانَ",
+      "stt_v282": "أسول",
+      "count": 4,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "fields": [
+        "a3",
+        "a2"
+      ],
+      "ids": [
+        "a3_2ce7876d-da2d-771f-1bcf-846c44ce4181",
+        "a3_8f89d3ad-1032-db79-10a8-11bf2a058481",
+        "a2_eed50ffa-6e5a-3224-ae1f-a781a900653c",
+        "a3_769249a0-e86d-71e2-b22b-6615bcf37391"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الزنا",
+      "spoken": "الزِّنَا",
+      "prepared_v282": "الزِّنَا",
+      "fish_v282": "الزِّنَا",
+      "fish_now": "فَاحِشَةُ الزِّنَا",
+      "fish_from_prep": "فَاحِشَةُ الزِّنَا",
+      "stt_v282": "ازينة",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2",
+        "a1"
+      ],
+      "ids": [
+        "a2_67831742-cfc3-4c12-a11c-4be748e40bda",
+        "a1_06457497-1ae6-4bec-8658-6013bb90d3d9",
+        "a2_aba366ee-ee58-27a8-59a0-988961e1a38a"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "صغيرة",
+      "spoken": "صَغِيرَةٌ",
+      "prepared_v282": "صَغِيرَةٌ",
+      "fish_v282": "صَغِيرَةٌ",
+      "fish_now": "هِيَ صَغِيرَةٌ",
+      "fish_from_prep": "هِيَ صَغِيرَةٌ",
+      "stt_v282": "سعيدة",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3",
+        "a1"
+      ],
+      "ids": [
+        "a3_2b205783-bc0c-749a-2898-854ddddf8f65",
+        "a3_6e7cce8a-102f-8014-8d3f-641c62a6f4d6",
+        "a1_1e0f8eb8-fb5d-489e-9d37-f0572539b34e"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "النوم",
+      "spoken": "النَّوْمُ",
+      "prepared_v282": "النَّوْمُ",
+      "fish_v282": "النَّوْمُ",
+      "fish_now": "هُوَ النَّوْمُ",
+      "fish_from_prep": "هُوَ النَّوْمُ",
+      "stt_v282": "أو",
+      "count": 3,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "fields": [
+        "a1",
+        "a3",
+        "a2"
+      ],
+      "ids": [
+        "a1_5ad52d9e-878d-9cff-5c86-676aa7551f7f",
+        "a3_7bf71509-12cb-415e-9974-2ea1b237c14a",
+        "a2_9a483832-b4ef-4e89-a30b-b93486aa91b0"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "ثلاثة",
+      "spoken": "ثَلَاثَةٍ",
+      "prepared_v282": "ثَلَاثَةٍ",
+      "fish_v282": "ثَلَاثَةٍ",
+      "fish_now": "هِيَ ثَلَاثَةٌ",
+      "fish_from_prep": "هِيَ ثَلَاثَةٌ",
+      "stt_v282": "سلام عليكم",
+      "count": 3,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "fields": [
+        "a1",
+        "a3"
+      ],
+      "ids": [
+        "a1_f753ea43-605b-e427-0f91-a6cb245795e2",
+        "a1_c549c1de-82ac-4d19-9a1c-f02cc6b3da5a",
+        "a3_98fe6055-17c6-cacc-3c5b-36fb2fa958a1"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الربا",
+      "spoken": "الرِّبَا",
+      "prepared_v282": "الرِّبَا",
+      "fish_v282": "الرِّبَا",
+      "fish_now": "هُوَ الرِّبَا",
+      "fish_from_prep": "هُوَ الرِّبَا",
+      "stt_v282": "الريدة",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2",
+        "a3"
+      ],
+      "ids": [
+        "a2_06457497-1ae6-4bec-8658-6013bb90d3d9",
+        "a3_aba366ee-ee58-27a8-59a0-988961e1a38a"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "موقوف",
+      "spoken": "مَوْقُوفٌ",
+      "prepared_v282": "مَوْقُوفٌ",
+      "fish_v282": "مَوْقُوفٌ",
+      "fish_now": "هُوَ مَوْقُوفٌ",
+      "fish_from_prep": "هُوَ مَوْقُوفٌ",
+      "stt_v282": "نوقف",
+      "count": 2,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_04f0e7ba-0689-0e29-8837-a95309fb3b29",
+        "a3_ec222f45-8bbf-390a-fa68-3ad07048f867"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الجوع",
+      "spoken": "الْجُوعَ",
+      "prepared_v282": "الْجُوعَ",
+      "fish_v282": "الْجُوعَ",
+      "fish_now": "هُوَ الْجُوعُ",
+      "fish_from_prep": "هُوَ الْجُوعُ",
+      "stt_v282": "نشروعelf",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3",
+        "a1"
+      ],
+      "ids": [
+        "a3_a1ac427f-0ef1-b3c4-dddb-7c1ed0132da6",
+        "a1_0b57c0bd-0666-e1f9-e03f-a59f92704a0e"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "النفس",
+      "spoken": "النَّفْسِ",
+      "prepared_v282": "النَّفْسِ",
+      "fish_v282": "النَّفْسِ",
+      "fish_now": "هِيَ النَّفْسُ",
+      "fish_from_prep": "هِيَ النَّفْسُ",
+      "stt_v282": "ونفس",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3",
+        "a1"
+      ],
+      "ids": [
+        "a3_3f235e4e-2499-065f-db2c-0af2a5a2d13f",
+        "a1_82dd4e52-6c26-63c2-58c5-489ab067703c"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الظلم",
+      "spoken": "الظُّلْمِ",
+      "prepared_v282": "الظُّلْمِ",
+      "fish_v282": "الظُّلْمِ",
+      "fish_now": "الظُّلْمُ كَبِيرَةٌ",
+      "fish_from_prep": "الظُّلْمُ كَبِيرَةٌ",
+      "stt_v282": "أولمي",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3",
+        "a2"
+      ],
+      "ids": [
+        "a3_fa9ff40e-4c9d-a6e4-3593-d3a8083e5345",
+        "a2_29a83d41-8344-0fa1-2da6-28465ba5e4fd"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "خاتما",
+      "spoken": "خاتماً",
+      "prepared_v282": "خاتماً",
+      "fish_v282": "خاتماً",
+      "fish_now": "خاتماً",
+      "fish_from_prep": "خاتماً",
+      "stt_v282": "خلق من",
+      "count": 2,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_6c71a8c8-dc70-2a62-ef90-94e21c535a51",
+        "a2_bb712df7-5aa7-7e07-7cd8-89a90d6efb19"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "حفظها",
+      "spoken": "حِفْظُهَا",
+      "prepared_v282": "حِفْظُهَا",
+      "fish_v282": "حِفْظُهَا",
+      "fish_now": "حِفْظُهَا",
+      "fish_from_prep": "حِفْظُهَا",
+      "stt_v282": "حيف enjoying",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_8f0b87fc-a2fc-4a90-9dbd-7b333fc1f919"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "أنواط",
+      "spoken": "أَنْوَاطٍ",
+      "prepared_v282": "أَنْوَاطْ",
+      "fish_v282": "أَنْوَاطْ",
+      "fish_now": "ذَاتُ أَنْوَاطْ",
+      "fish_from_prep": "ذَاتُ أَنْوَاطْ",
+      "stt_v282": "and what",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_4ff8f624-b5e4-d550-fd73-c7e6393b4a73"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "السنن",
+      "spoken": "السُّنَنِ",
+      "prepared_v282": "السُّنَنِ",
+      "fish_v282": "السُّنَنِ",
+      "fish_now": "السُّنَنِ",
+      "fish_from_prep": "السُّنَنِ",
+      "stt_v282": "أشتنن",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_bbf392cb-a947-1661-ccbd-d9890511efa0"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "عبادة",
+      "spoken": "عِبَادَةٌ",
+      "prepared_v282": "عِبَادَةٌ",
+      "fish_v282": "عِبَادَة",
+      "fish_now": "عِبَادَة",
+      "fish_from_prep": "عِبَادَة",
+      "stt_v282": "ويبَا انَرْكَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_b878ea91-91ae-ff0b-7415-a26a2c629b0d"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "طلبها",
+      "spoken": "طَلَبَهَا",
+      "prepared_v282": "طَلَبَهَا",
+      "fish_v282": "طَلَبَهَا",
+      "fish_now": "طَلَبَهَا",
+      "fish_from_prep": "طَلَبَهَا",
+      "stt_v282": "quierع الزبلές",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_5d35540a-f040-ca4c-2a2e-d039b63dbd7a"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الأمر",
+      "spoken": "الْأَمْرُ",
+      "prepared_v282": "الْأَمْرُ",
+      "fish_v282": "الْأَمْرُ",
+      "fish_now": "الْأَمْرُ",
+      "fish_from_prep": "الْأَمْرُ",
+      "stt_v282": "قل أم",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_39d543ed-8c5d-a3ba-9480-c85261e939ca"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بصيرة",
+      "spoken": "بَصِيرَةٍ",
+      "prepared_v282": "بَصِيرَةٍ",
+      "fish_v282": "بَصِيرَةٍ",
+      "fish_now": "بَصِيرَةٍ",
+      "fish_from_prep": "بَصِيرَةٍ",
+      "stt_v282": "بسيرا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_b94c3f18-c6e1-fb19-2f4d-a0ad6e4e76be"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بئرهم",
+      "spoken": "بِئْرِهِمْ",
+      "prepared_v282": "بِئْرِهِمْ",
+      "fish_v282": "بِئْرِهِمْ",
+      "fish_now": "بِئْرِهِمْ",
+      "fish_from_prep": "بِئْرِهِمْ",
+      "stt_v282": "مرحبا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_2df4c9b6-6eb9-bfc1-8d78-ff092cdba9b5"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "البغي",
+      "spoken": "الْبَغْيُ",
+      "prepared_v282": "الْبَغْيُ",
+      "fish_v282": "الْبَغْيُ",
+      "fish_now": "الْبَغْيُ",
+      "fish_from_prep": "الْبَغْيُ",
+      "stt_v282": "الباريو",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_fa9ff40e-4c9d-a6e4-3593-d3a8083e5345"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الرجل",
+      "spoken": "الرَّجُلُ",
+      "prepared_v282": "الرَّجُلُ",
+      "fish_v282": "الرَّجُلُ",
+      "fish_now": "الرَّجُلُ",
+      "fish_from_prep": "الرَّجُلُ",
+      "stt_v282": "حاللي ي Rahmenد",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_7521ae78-8c58-6a1b-d97a-21d108d2a89b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الصرع",
+      "spoken": "الصَّرْعِ",
+      "prepared_v282": "الصَّرْعِ",
+      "fish_v282": "الصَّرْعِ",
+      "fish_now": "الصَّرْعِ",
+      "fish_from_prep": "الصَّرْعِ",
+      "stt_v282": "السادار",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_43b1d026-0657-6c22-aa53-33494ad66de7"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الذبح",
+      "spoken": "الذَّبْحِ",
+      "prepared_v282": "الذَّبْحِ",
+      "fish_v282": "الذَّبْحِ",
+      "fish_now": "الذَّبْحِ",
+      "fish_from_prep": "الذَّبْحِ",
+      "stt_v282": "ماذبع",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_97710dbd-3c05-7a32-f876-ad445be0ea78"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الطفل",
+      "spoken": "الطِّفْلُ",
+      "prepared_v282": "الطِّفْلُ",
+      "fish_v282": "الطِّفْلُ",
+      "fish_now": "الطِّفْلُ",
+      "fish_from_prep": "الطِّفْلُ",
+      "stt_v282": "اتفلو",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_aaeba64a-6965-c291-3f4e-80d5d7c0e643"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الضيف",
+      "spoken": "الضَّيْفُ",
+      "prepared_v282": "الضَّيْفُ",
+      "fish_v282": "الضَّيْفُ",
+      "fish_now": "الضَّيْفُ",
+      "fish_from_prep": "الضَّيْفُ",
+      "stt_v282": "أه واليف",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_aaeba64a-6965-c291-3f4e-80d5d7c0e643"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الواو",
+      "spoken": "الْوَاوِ",
+      "prepared_v282": "الْوَاوِ",
+      "fish_v282": "الْوَاوِ",
+      "fish_now": "الْوَاوِ",
+      "fish_from_prep": "الْوَاوِ",
+      "stt_v282": "ً تنوكbal<|el|> الهارはは",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_7d4d2b6c-ae59-7c72-70ca-2722ba99da30"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "مغفور",
+      "spoken": "مَغْفُورٌ",
+      "prepared_v282": "مَغْفُورٌ",
+      "fish_v282": "مَغْفُورٌ",
+      "fish_now": "مَغْفُورٌ",
+      "fish_from_prep": "مَغْفُورٌ",
+      "stt_v282": "مارفورا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_0275a719-afbb-f0d9-06e8-2dc9cdf36dd0"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الودع",
+      "spoken": "الْوَدَعِ",
+      "prepared_v282": "الْوَدَعِ",
+      "fish_v282": "الْوَدَعِ",
+      "fish_now": "الْوَدَعِ",
+      "fish_from_prep": "الْوَدَعِ",
+      "stt_v282": "أنواه ده",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_97a5074b-b348-0ac7-1aef-03828a508009"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "رمضان",
+      "spoken": "رَمَضَانَ",
+      "prepared_v282": "رَمَضَانَ",
+      "fish_v282": "رَمَضَانَ",
+      "fish_now": "رَمَضَانَ",
+      "fish_from_prep": "رَمَضَانَ",
+      "stt_v282": "الأ yük",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_b0d7fe00-2b72-a49e-2c28-309dd65fa569"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الشرك",
+      "spoken": "الشِّرْكُ",
+      "prepared_v282": "الشِّرْكُ",
+      "fish_v282": "الشِّرْكُ",
+      "fish_now": "الشِّرْكُ",
+      "fish_from_prep": "الشِّرْكُ",
+      "stt_v282": "أشراك",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_c0177eaf-4cb9-4c0a-8e87-1092a0729381"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الناس",
+      "spoken": "النَّاسِ",
+      "prepared_v282": "النَّاسِ",
+      "fish_v282": "النَّاسِ",
+      "fish_now": "النَّاسِ",
+      "fish_from_prep": "النَّاسِ",
+      "stt_v282": "ولا تسمي",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_d510b762-1fe3-2f22-dd1e-88163a00e52b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "القوة",
+      "spoken": "الْقُوَّةِ",
+      "prepared_v282": "الْقُوَّةِ",
+      "fish_v282": "الْقُوَّةِ",
+      "fish_now": "الْقُوَّةِ",
+      "fish_from_prep": "الْقُوَّةِ",
+      "stt_v282": "حلقوا",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_3ec18b14-719b-cc9a-4f47-8fd2b5a537d8"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "استقم",
+      "spoken": "اسْتَقِمْ",
+      "prepared_v282": "اسْتَقِمْ",
+      "fish_v282": "اسْتَقِمْ",
+      "fish_now": "اسْتَقِمْ",
+      "fish_from_prep": "اسْتَقِمْ",
+      "stt_v282": "المتوجه",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_8b903aae-b88a-48a8-a498-cecfc51f8a03"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تضاعف",
+      "spoken": "تُضَاعَفُ",
+      "prepared_v282": "تُضَاعَفُ",
+      "fish_v282": "تُضَاعَفُ",
+      "fish_now": "تُضَاعَفُ",
+      "fish_from_prep": "تُضَاعَفُ",
+      "stt_v282": "طويلة تمامز مط Consumer Protection",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_850c6a73-1256-4c7a-998a-a20d527e9d5c"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "أغناه",
+      "spoken": "أغناه",
+      "prepared_v282": "أغناه",
+      "fish_v282": "أغناه",
+      "fish_now": "أغناه",
+      "fish_from_prep": "أغناه",
+      "stt_v282": "ما كان يقaxter",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_4e0c618e-520b-4511-9a67-5b9f328aa7c3"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ينصرك",
+      "spoken": "يَنْصُرْكَ",
+      "prepared_v282": "يَنْصُرْكَ",
+      "fish_v282": "يَنْصُرْكَ",
+      "fish_now": "يَنْصُرْكَ",
+      "fish_from_prep": "يَنْصُرْكَ",
+      "stt_v282": "يلسوا روكة",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_41b189f4-a2e6-43a3-ba4f-e27fb4f6627b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "يرزقك",
+      "spoken": "يَرْزُقْكَ",
+      "prepared_v282": "يَرْزُقْكَ",
+      "fish_v282": "يَرْزُقْكَ",
+      "fish_now": "يَرْزُقْكَ",
+      "fish_from_prep": "يَرْزُقْكَ",
+      "stt_v282": "ال� ordinary",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_41b189f4-a2e6-43a3-ba4f-e27fb4f6627b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الزهد",
+      "spoken": "الزُّهْدُ",
+      "prepared_v282": "الزُّهْدُ",
+      "fish_v282": "الزُّهْدُ",
+      "fish_now": "الزُّهْدُ",
+      "fish_from_prep": "الزُّهْدُ",
+      "stt_v282": "hunch نتبع لؤكاء",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_76f476ff-04be-4845-49fb-df97aaceacf7"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الشام",
+      "spoken": "الشَّامِ",
+      "prepared_v282": "الشَّامِ",
+      "fish_v282": "الشَّامِ",
+      "fish_now": "الشَّامِ",
+      "fish_from_prep": "الشَّامِ",
+      "stt_v282": "أشعر",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_bb75112b-febb-9faa-7c11-71a057a47a74"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "اليمن",
+      "spoken": "الْيَمَنِ",
+      "prepared_v282": "الْيَمَنِ",
+      "fish_v282": "الْيَمَنِ",
+      "fish_now": "الْيَمَنِ",
+      "fish_from_prep": "الْيَمَنِ",
+      "stt_v282": "للماني",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_bb75112b-febb-9faa-7c11-71a057a47a74"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تركته",
+      "spoken": "تَرَكْتُهُ",
+      "prepared_v282": "تَرَكْتُهُ",
+      "fish_v282": "تَرَكْتُهُ",
+      "fish_now": "تَرَكْتُهُ",
+      "fish_from_prep": "تَرَكْتُهُ",
+      "stt_v282": "كلاك تهو",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_90740421-cfa1-e46f-042e-73d598f0c7b0"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الذكر",
+      "spoken": "الذِّكْرُ",
+      "prepared_v282": "الذِّكْرُ",
+      "fish_v282": "الذِّكْرُ",
+      "fish_now": "الذِّكْرُ",
+      "fish_from_prep": "الذِّكْرُ",
+      "stt_v282": ".",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_1b0f4867-ddf6-9c9f-08e7-6553f70bcf05"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "صلاته",
+      "spoken": "صَلَاتُهُ",
+      "prepared_v282": "صَلَاتُهُ",
+      "fish_v282": "صَلَاتُهُ",
+      "fish_now": "صَلَاتُهُ",
+      "fish_from_prep": "صَلَاتُهُ",
+      "stt_v282": "سلاك حو",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_ba58c1dc-be65-ec48-4fc5-103b1397ffff"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "صدقته",
+      "spoken": "صَدَقَتُهُ",
+      "prepared_v282": "صَدَقَتُهُ",
+      "fish_v282": "صَدَقَتُهُ",
+      "fish_now": "صَدَقَتُهُ",
+      "fish_from_prep": "صَدَقَتُهُ",
+      "stt_v282": "سذر قاكرك لكم",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_ba58c1dc-be65-ec48-4fc5-103b1397ffff"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الدعاء",
+      "spoken": "الدُّعَاءِ",
+      "prepared_v282": "الدُّعَاءِ",
+      "fish_v282": "الدُّعَاءِ",
+      "fish_now": "هُوَ الدُّعَاءُ",
+      "fish_from_prep": "هُوَ الدُّعَاءُ",
+      "stt_v282": "أدرأ",
+      "count": 9,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "fields": [
+        "a3",
+        "a2",
+        "a1"
+      ],
+      "ids": [
+        "a3_0a39f855-482c-f146-569d-3d385c8375df",
+        "a2_f508a223-2d15-9036-b3be-c8c4b67d067d",
+        "a3_6f510ff6-25e8-0848-a982-09c25418cdcf",
+        "a1_6239765b-3c79-0f72-7df7-6d8632ee6443",
+        "a3_d4e74d12-8b9d-625b-1856-4b8f458758df"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الرياء",
+      "spoken": "الرِّيَاءُ",
+      "prepared_v282": "الرِّيَاءُ",
+      "fish_v282": "الرِّيَاءُ",
+      "fish_now": "هُوَ الرِّيَاءُ",
+      "fish_from_prep": "هُوَ الرِّيَاءُ",
+      "stt_v282": "بعدا",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0",
+        "a3",
+        "a2"
+      ],
+      "ids": [
+        "a0_cdcf1909-c177-465a-8192-c6ba6fd2bdd7",
+        "a3_e1813046-ad39-e7f6-ceaa-d21fffc5ca9c",
+        "a2_0c67dd3b-35b7-fb8e-9893-cf70b19549f6"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الزمان",
+      "spoken": "الزَّمَانِ",
+      "prepared_v282": "الزَّمَانْ",
+      "fish_v282": "هُوَ الزَّمَانُ",
+      "fish_now": "هُوَ الزَّمَانُ",
+      "fish_from_prep": "هُوَ الزَّمَانُ",
+      "stt_v282": "君 ، مياس",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2",
+        "a1"
+      ],
+      "ids": [
+        "a2_76230816-1cbf-f6ad-a143-4893c85c06d2",
+        "a1_83d2f116-519f-02d1-a9e7-e03e4d9831d8",
+        "a2_c3392727-5339-0873-d08b-efd125e28b91"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الصيام",
+      "spoken": "الصِّيَامِ",
+      "prepared_v282": "الصِّيَامِ",
+      "fish_v282": "الصِّيَامِ",
+      "fish_now": "هُوَ الصِّيَامُ",
+      "fish_from_prep": "هُوَ الصِّيَامُ",
+      "stt_v282": "أسياء",
+      "count": 3,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2",
+        "a3"
+      ],
+      "ids": [
+        "a2_14691ce7-a4a6-4aae-b4c1-084fe8dd206c",
+        "a3_7ca5574a-1866-4575-91d2-abec2ef3166e",
+        "a2_5d714abc-747b-4e95-8ab4-e31e6f985a3d"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الطائف",
+      "spoken": "الطَّائِفِ",
+      "prepared_v282": "الطَّائِفِ",
+      "fish_v282": "الطَّائِفِ",
+      "fish_now": "هُوَ الطَّائِفُ",
+      "fish_from_prep": "هُوَ الطَّائِفُ",
+      "stt_v282": "اطلع اذا",
+      "count": 2,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "fields": [
+        "a2",
+        "a1"
+      ],
+      "ids": [
+        "a2_4ff8f624-b5e4-d550-fd73-c7e6393b4a73",
+        "a1_bb75112b-febb-9faa-7c11-71a057a47a74"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الرقية",
+      "spoken": "الرُّقْيَةِ",
+      "prepared_v282": "الرُّقْيَةِ",
+      "fish_v282": "الرُّقْيَةِ",
+      "fish_now": "هِيَ الرُّقْيَةُ",
+      "fish_from_prep": "هِيَ الرُّقْيَةُ",
+      "stt_v282": "ations",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3",
+        "a1"
+      ],
+      "ids": [
+        "a3_a5af1bac-9a02-7cc5-95b5-ab4197068011",
+        "a1_d4e74d12-8b9d-625b-1856-4b8f458758df"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الوضوء",
+      "spoken": "الوُضُوءُ",
+      "prepared_v282": "الوُضُوءُ",
+      "fish_v282": "الوُضُوءُ",
+      "fish_now": "الوُضُوءُ",
+      "fish_from_prep": "الوُضُوءُ",
+      "stt_v282": "أنت again",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_da419f24-e82d-4e63-800d-0bde0f05c9d2"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تعليمه",
+      "spoken": "تَعْلِيمِهِ",
+      "prepared_v282": "تَعْلِيمِهِ",
+      "fish_v282": "تَعْلِيمِهِ",
+      "fish_now": "تَعْلِيمِهِ",
+      "fish_from_prep": "تَعْلِيمِهِ",
+      "stt_v282": "كلم علامة",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_ec30c523-46b4-dc9c-1f73-c43fac4f8848"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الزواج",
+      "spoken": "الزَّوَاجِ",
+      "prepared_v282": "الزَّوَاجِ",
+      "fish_v282": "الزَّوَاجِ",
+      "fish_now": "الزَّوَاجِ",
+      "fish_from_prep": "الزَّوَاجِ",
+      "stt_v282": "ازالي سب يهج an",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_fb5c41b3-eba0-54a2-c53c-8c0133d1b17e"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "التطوع",
+      "spoken": "التَّطَوُّعِ",
+      "prepared_v282": "التَّطَوُّعِ",
+      "fish_v282": "التَّطَوُّعِ",
+      "fish_now": "التَّطَوُّعِ",
+      "fish_from_prep": "التَّطَوُّعِ",
+      "stt_v282": "كطوء",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_e6cca78e-0f71-6b6d-dcec-080c56648ab1"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الأثاث",
+      "spoken": "الْأَثَاثِ",
+      "prepared_v282": "الْأَثَاثِ",
+      "fish_v282": "الْأَثَاثِ",
+      "fish_now": "الْأَثَاثِ",
+      "fish_from_prep": "الْأَثَاثِ",
+      "stt_v282": "الأساسي",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_9f381fa9-d7ec-ae89-331a-713f12e7e4a1"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الرجال",
+      "spoken": "الرِّجَالُ",
+      "prepared_v282": "الرِّجَالُ",
+      "fish_v282": "الرِّجَالُ",
+      "fish_now": "الرِّجَالُ",
+      "fish_from_prep": "الرِّجَالُ",
+      "stt_v282": "برجان",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_ae30c919-3a52-7ab5-a806-74e087ee5d8a"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "فليغضب",
+      "spoken": "فَلْيَغْضَبْ",
+      "prepared_v282": "فَلْيَغْضَبْ",
+      "fish_v282": "فَلْيَغْضَبْ",
+      "fish_now": "فَلْيَغْضَبْ",
+      "fish_from_prep": "فَلْيَغْضَبْ",
+      "stt_v282": "فاليه觀 verlام",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_53c4fad7-c99a-31c3-8200-b25822879097"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الغفلة",
+      "spoken": "الْغَفْلَةُ",
+      "prepared_v282": "الْغَفْلَةُ",
+      "fish_v282": "الْغَفْلَةُ",
+      "fish_now": "الْغَفْلَةُ",
+      "fish_from_prep": "الْغَفْلَةُ",
+      "stt_v282": "انا رفلك",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_5ad52d9e-878d-9cff-5c86-676aa7551f7f"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الفسوق",
+      "spoken": "الْفُسُوقِ",
+      "prepared_v282": "الْفُسُوقِ",
+      "fish_v282": "الْفُسُوقِ",
+      "fish_now": "الْفُسُوقِ",
+      "fish_from_prep": "الْفُسُوقِ",
+      "stt_v282": "الفشوكي",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_194c609c-81c0-3d96-6c8c-c1b6f9111b8c"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الطيرة",
+      "spoken": "الطِّيَرَةُ",
+      "prepared_v282": "الطِّيَرَةُ",
+      "fish_v282": "الطِّيَرَةُ",
+      "fish_now": "الطِّيَرَةُ",
+      "fish_from_prep": "الطِّيَرَةُ",
+      "stt_v282": "اط فعلب",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_a5af1bac-9a02-7cc5-95b5-ab4197068011"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الطائر",
+      "spoken": "الطَّائِرُ",
+      "prepared_v282": "الطَّائِرُ",
+      "fish_v282": "الطَّائِرُ",
+      "fish_now": "الطَّائِرُ",
+      "fish_from_prep": "الطَّائِرُ",
+      "stt_v282": "أطüt",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_365a234b-354a-d307-145c-8a75e7115ebe"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الغيبة",
+      "spoken": "الْغِيبَةُ",
+      "prepared_v282": "الْغِيبَةُ",
+      "fish_v282": "الْغِيبَةُ",
+      "fish_now": "الْغِيبَةُ",
+      "fish_from_prep": "الْغِيبَةُ",
+      "stt_v282": "أن ريبة",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_c0177eaf-4cb9-4c0a-8e87-1092a0729381"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "السرقة",
+      "spoken": "السَّرِقَةُ",
+      "prepared_v282": "السَّرِقَةُ",
+      "fish_v282": "السَّرِقَةُ",
+      "fish_now": "السَّرِقَةُ",
+      "fish_from_prep": "السَّرِقَةُ",
+      "stt_v282": "السريق",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_c0177eaf-4cb9-4c0a-8e87-1092a0729381"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بالقوة",
+      "spoken": "بِالْقُوَّةِ",
+      "prepared_v282": "بِالْقُوَّةِ",
+      "fish_v282": "بِالْقُوَّةِ",
+      "fish_now": "بِالْقُوَّةِ",
+      "fish_from_prep": "بِالْقُوَّةِ",
+      "stt_v282": "دلقوة",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_a4593996-fcf0-4afe-eaaa-257c6d18a74a"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الصراخ",
+      "spoken": "الصُّرَاخِ",
+      "prepared_v282": "الصُّرَاخِ",
+      "fish_v282": "الصُّرَاخِ",
+      "fish_now": "الصُّرَاخِ",
+      "fish_from_prep": "الصُّرَاخِ",
+      "stt_v282": "الصراحي",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_7bf71509-12cb-415e-9974-2ea1b237c14a"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بالسيف",
+      "spoken": "بالسيف",
+      "prepared_v282": "بالسيف",
+      "fish_v282": "بالسيف",
+      "fish_now": "بالسيف",
+      "fish_from_prep": "بالسيف",
+      "stt_v282": "lin",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_e5367815-958c-4ec4-9138-ed6455725381"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بالصمت",
+      "spoken": "بالصمت",
+      "prepared_v282": "بالصمت",
+      "fish_v282": "بالصمت",
+      "fish_now": "بالصمت",
+      "fish_from_prep": "بالصمت",
+      "stt_v282": "هنا تسمض",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_e5367815-958c-4ec4-9138-ed6455725381"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "اللسان",
+      "spoken": "اللِّسَانُ",
+      "prepared_v282": "اللِّسَانُ",
+      "fish_v282": "اللِّسَانُ",
+      "fish_now": "اللِّسَانُ",
+      "fish_from_prep": "اللِّسَانُ",
+      "stt_v282": "الولايب",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_11047b53-8a8b-a67b-a8fe-cc6dc50a0543"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الرعاة",
+      "spoken": "الرُّعَاةُ",
+      "prepared_v282": "الرُّعَاةُ",
+      "fish_v282": "الرُّعَاةُ",
+      "fish_now": "الرُّعَاةُ",
+      "fish_from_prep": "الرُّعَاةُ",
+      "stt_v282": "الوقت",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_8a6f4c97-74bc-18ca-a752-ca26b0d2f948"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تنظيفها",
+      "spoken": "تَنْظِيفِهَا",
+      "prepared_v282": "تَنْظِيفِهَا",
+      "fish_v282": "تَنْظِيفِهَا",
+      "fish_now": "تَنْظِيفِهَا",
+      "fish_from_prep": "تَنْظِيفِهَا",
+      "stt_v282": "كم ذيفها",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2",
+        "a3"
+      ],
+      "ids": [
+        "a2_464f92f2-8cfd-6a09-0fea-fc7562da176d",
+        "a3_d753dca5-cc6a-7ded-d4da-9b283ce8289e"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "النسيان",
+      "spoken": "النِّسْيَانِ",
+      "prepared_v282": "النِّسْيَانِ",
+      "fish_v282": "النِّسْيَانِ",
+      "fish_now": "هُوَ النِّسْيَانُ",
+      "fish_from_prep": "هُوَ النِّسْيَانُ",
+      "stt_v282": "ونثيان",
+      "count": 2,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "fields": [
+        "a3",
+        "a2"
+      ],
+      "ids": [
+        "a3_29a83d41-8344-0fa1-2da6-28465ba5e4fd",
+        "a2_9ab05330-bb0d-27e5-72fe-c230e166c37d"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الإخلاص",
+      "spoken": "الْإِخْلَاصُ",
+      "prepared_v282": "الْإِخْلَاصُ",
+      "fish_v282": "الْإِخْلَاصُ",
+      "fish_now": "هُوَ الْإِخْلَاصُ",
+      "fish_from_prep": "هُوَ الْإِخْلَاصُ",
+      "stt_v282": "وإخلاص",
+      "count": 2,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_d510b762-1fe3-2f22-dd1e-88163a00e52b",
+        "a2_57609348-66fa-19c8-6db5-4f13174e5c6e"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "التاريخ",
+      "spoken": "التَّارِيخِ",
+      "prepared_v282": "التَّارِيخِ",
+      "fish_v282": "التَّارِيخِ",
+      "fish_now": "هُوَ التَّارِيخُ",
+      "fish_from_prep": "هُوَ التَّارِيخُ",
+      "stt_v282": "أكاريخي",
+      "count": 2,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2",
+        "a3"
+      ],
+      "ids": [
+        "a2_a4c50029-5e4e-2e4d-bd89-3621a5fa6cf2",
+        "a3_6ec151b4-f674-25cd-8f25-7c9ca637ab2a"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "مئة ألف",
+      "spoken": "مِئَةُ أَلْفٍ",
+      "prepared_v282": "مِئَةُ أَلْفٍ",
+      "fish_v282": "مِئَةُ أَلْفٍ",
+      "fish_now": "مِئَةُ أَلْفٍ",
+      "fish_from_prep": "مِئَةُ أَلْفٍ",
+      "stt_v282": "100 عالفن",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_dcdd2714-5e35-4b4c-811d-feaab1306cfd"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بالدعاء",
+      "spoken": "بِالدُّعَاءِ",
+      "prepared_v282": "بِالدُّعَاءِ",
+      "fish_v282": "بِالدُّعَاءِ",
+      "fish_now": "أَعْنِي بِالدُّعَاءِ",
+      "fish_from_prep": "أَعْنِي بِالدُّعَاءِ",
+      "stt_v282": "العهي",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_933e4b70-e0aa-c29c-a3e1-07a1c99a22dc"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "العيينة",
+      "spoken": "الْعُيَيْنَةُ",
+      "prepared_v282": "الْعُيَيْنَةُ",
+      "fish_v282": "الْعُيَيْنَةُ",
+      "fish_now": "الْعُيَيْنَةُ",
+      "fish_from_prep": "الْعُيَيْنَةُ",
+      "stt_v282": "العينا",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_971de374-b952-4843-bd00-fbbb9f29be49"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بالصلاة",
+      "spoken": "بِالصَّلَاةِ",
+      "prepared_v282": "بِالصَّلَاةِ",
+      "fish_v282": "بِالصَّلَاةِ",
+      "fish_now": "أَعْنِي بِالصَّلَاةِ",
+      "fish_from_prep": "أَعْنِي بِالصَّلَاةِ",
+      "stt_v282": "بسلام عليكم",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_0291b09c-537f-45e0-b8b0-bfaf14d919bc"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "بالزكاة",
+      "spoken": "بِالزَّكَاةِ",
+      "prepared_v282": "بِالزَّكَاةِ",
+      "fish_v282": "بِالزَّكَاةِ",
+      "fish_now": "أَعْنِي بِالزَّكَاةِ",
+      "fish_from_prep": "أَعْنِي بِالزَّكَاةِ",
+      "stt_v282": "بزكاتي",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_0291b09c-537f-45e0-b8b0-bfaf14d919bc"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "بالصيام",
+      "spoken": "بِالصِّيَامِ",
+      "prepared_v282": "بِالصِّيَامِ",
+      "fish_v282": "بِالصِّيَامِ",
+      "fish_now": "بِالصِّيَامِ",
+      "fish_from_prep": "بِالصِّيَامِ",
+      "stt_v282": "بيس سيام",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_0291b09c-537f-45e0-b8b0-bfaf14d919bc"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الصابئة",
+      "spoken": "الصَّابِئَةِ",
+      "prepared_v282": "الصَّابِئَةِ",
+      "fish_v282": "الصَّابِئَةِ",
+      "fish_now": "الصَّابِئَةِ",
+      "fish_from_prep": "الصَّابِئَةِ",
+      "stt_v282": "أصابئة",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_ca5f6fad-133f-7a44-160f-9261db308743"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "للتجارة",
+      "spoken": "لِلتِّجَارَةِ",
+      "prepared_v282": "لِلتِّجَارَةِ",
+      "fish_v282": "لِلتِّجَارَةِ",
+      "fish_now": "لِلتِّجَارَةِ",
+      "fish_from_prep": "لِلتِّجَارَةِ",
+      "stt_v282": "نتجارة",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_9f0d840c-cbf5-1b33-f54b-3ccc7b0446b8"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "حبه فقط",
+      "spoken": "حُبَّهُ فَقَطْ",
+      "prepared_v282": "حُبَّهُ فَقَطْ",
+      "fish_v282": "حُبَّهُ فَقَطْ",
+      "fish_now": "حُبَّهُ فَقَطْ",
+      "fish_from_prep": "حُبَّهُ فَقَطْ",
+      "stt_v282": "حده فقط",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_5d48a971-422a-6cc7-d309-d4799d6cf1e0"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "البر هو",
+      "spoken": "الْبِرُّ هُوَ...",
+      "prepared_v282": "الْبِرُّ هُوَ",
+      "fish_v282": "الْبِرُّ هُوَ",
+      "fish_now": "مَا هُوَ الْبِرُّ",
+      "fish_from_prep": "مَا هُوَ الْبِرُّ",
+      "stt_v282": "هل بير روحوة؟",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "q"
+      ],
+      "ids": [
+        "q_5d714abc-747b-4e95-8ab4-e31e6f985a3d"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "يهاجروا",
+      "spoken": "يُهَاجِرُوا",
+      "prepared_v282": "يُهَاجِرُوا",
+      "fish_v282": "يُهَاجِرُوا",
+      "fish_now": "أَنْ يُهَاجِرُوا",
+      "fish_from_prep": "أَنْ يُهَاجِرُوا",
+      "stt_v282": "يهاج聯 cups",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_e993741b-058c-44ef-932a-e438bbf48942"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "ما يشاء",
+      "spoken": "مَا يَشَاءُ",
+      "prepared_v282": "مَا يَشَاءُ",
+      "fish_v282": "مَا يَشَاءُ",
+      "fish_now": "مَا يَشَاءُ",
+      "fish_from_prep": "مَا يَشَاءُ",
+      "stt_v282": "نايش leash",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_6ed4bd4d-321c-48b4-b26f-0d6426edfc6d"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "النافلة",
+      "spoken": "النَّافِلَةُ",
+      "prepared_v282": "النَّافِلَةُ",
+      "fish_v282": "النَّافِلَةُ",
+      "fish_now": "النَّافِلَةُ",
+      "fish_from_prep": "النَّافِلَةُ",
+      "stt_v282": "واما رسال",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_6e3a3e38-6070-4352-8eb3-1a5848052bf3"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الطهارة",
+      "spoken": "الطَّهَارَةِ",
+      "prepared_v282": "الطَّهَارَةِ",
+      "fish_v282": "الطَّهَارَةِ",
+      "fish_now": "الطَّهَارَةِ",
+      "fish_from_prep": "الطَّهَارَةِ",
+      "stt_v282": "حتى حارة",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_419ce45b-acf0-f6ae-6c52-ae3bb1565f50"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الإلزام",
+      "spoken": "الْإِلْزَامِ",
+      "prepared_v282": "الْإِلْزَامِ",
+      "fish_v282": "الْإِلْزَامِ",
+      "fish_now": "الْإِلْزَامِ",
+      "fish_from_prep": "الْإِلْزَامِ",
+      "stt_v282": "ال ايزام",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_1ee43245-3fe9-14ea-1e14-6805cad62a82"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ذكر مطلق",
+      "spoken": "ذِكْرٌ مُطْلَقٌ",
+      "prepared_v282": "ذِكْرٌ مُطْلَقٌ",
+      "fish_v282": "ذِكْرٌ مُطْلَقٌ",
+      "fish_now": "ذِكْرٌ مُطْلَقٌ",
+      "fish_from_prep": "ذِكْرٌ مُطْلَقٌ",
+      "stt_v282": "ذكرون مطلاقون",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_e7ee3a7e-f954-7c5b-2abd-dece5ca3ac4a"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "غزوة بدر",
+      "spoken": "غَزْوَةِ بَدْرٍ",
+      "prepared_v282": "غَزْوَةِ بَدْرٍ",
+      "fish_v282": "غَزْوَةِ بَدْرٍ",
+      "fish_now": "غَزْوَةِ بَدْرٍ",
+      "fish_from_prep": "غَزْوَةِ بَدْرٍ",
+      "stt_v282": "رزول<|fr|>",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_e7bdf5fb-5aca-ead8-d265-89ed6e5a9b3a"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بالتخمين",
+      "spoken": "بِالتَّخْمِينِ",
+      "prepared_v282": "بِالتَّخْمِينِ",
+      "fish_v282": "بِالتَّخْمِينِ",
+      "fish_now": "بِالتَّخْمِينِ",
+      "fish_from_prep": "بِالتَّخْمِينِ",
+      "stt_v282": "بيتحمين",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_cae566ed-4e67-442d-a8bd-df8c76928ebd"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "عشر سنين",
+      "spoken": "عَشْرَ سِنِينَ",
+      "prepared_v282": "عَشْرَ سِنِينَ",
+      "fish_v282": "عَشْرَ سِنِينَ",
+      "fish_now": "عَشْرَ سِنِينَ",
+      "fish_from_prep": "عَشْرَ سِنِينَ",
+      "stt_v282": "عشرة سنيم",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_a004480b-4a29-4568-9962-95152cd0dade"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "خمس سنين",
+      "spoken": "خَمْسَ سِنِينَ",
+      "prepared_v282": "خَمْسَ سِنِينَ",
+      "fish_v282": "خَمْسَ سِنِينَ",
+      "fish_now": "خَمْسَ سِنِينَ",
+      "fish_from_prep": "خَمْسَ سِنِينَ",
+      "stt_v282": "خمسة نين",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_a004480b-4a29-4568-9962-95152cd0dade"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "اليهودية",
+      "spoken": "الْيَهُودِيَّةُ",
+      "prepared_v282": "الْيَهُودِيَّةُ",
+      "fish_v282": "الْيَهُودِيَّةُ",
+      "fish_now": "الْيَهُودِيَّةُ",
+      "fish_from_prep": "الْيَهُودِيَّةُ",
+      "stt_v282": "هل يهوديه؟",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_ca5f6fad-133f-7a44-160f-9261db308743"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ذكره فقط",
+      "spoken": "ذِكْرَهُ فَقَطْ",
+      "prepared_v282": "ذِكْرَهُ فَقَطْ",
+      "fish_v282": "ذِكْرَهُ فَقَطْ",
+      "fish_now": "ذِكْرَهُ فَقَطْ",
+      "fish_from_prep": "ذِكْرَهُ فَقَطْ",
+      "stt_v282": "ذكره فتاة",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_5d48a971-422a-6cc7-d309-d4799d6cf1e0"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ابن عباس",
+      "spoken": "ابْنُ عَبَّاسٍ",
+      "prepared_v282": "ابْنُ عَبَّاسٍ",
+      "fish_v282": "ابْنُ عَبَّاسٍ",
+      "fish_now": "ابْنُ عَبَّاسٍ",
+      "fish_from_prep": "ابْنُ عَبَّاسٍ",
+      "stt_v282": "سنختب من أنك thermometer",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_18aa1c12-194c-29fe-ca5f-31ccf419f8ee"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "المملوكة",
+      "spoken": "الْمَمْلُوكَةُ",
+      "prepared_v282": "الْمَمْلُوكَةُ",
+      "fish_v282": "الْمَمْلُوكَةُ",
+      "fish_now": "الْمَمْلُوكَةُ",
+      "fish_from_prep": "الْمَمْلُوكَةُ",
+      "stt_v282": "المملكة",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_4336ca8e-6857-af62-9d20-dbb932298be9"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الأغنياء",
+      "spoken": "الْأَغْنِيَاءُ",
+      "prepared_v282": "الْأَغْنِيَاءُ",
+      "fish_v282": "الْأَغْنِيَاءُ",
+      "fish_now": "الْأَغْنِيَاءُ",
+      "fish_from_prep": "الْأَغْنِيَاءُ",
+      "stt_v282": "الأرنية",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_8a6f4c97-74bc-18ca-a752-ca26b0d2f948"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "أبو هريرة",
+      "spoken": "أَبُو هُرَيْرَةَ",
+      "prepared_v282": "أَبُو هُرَيْرَةَ",
+      "fish_v282": "أَبُو  هُرَيْرَةَ",
+      "fish_now": "هُوَ أَبُو هُرَيْرَةَ",
+      "fish_from_prep": "هُوَ أَبُو هُرَيْرَةَ",
+      "stt_v282": "ابو غريرا",
+      "count": 4,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2",
+        "a1"
+      ],
+      "ids": [
+        "a2_f7731378-0f5e-38b5-e757-b5852091bd54",
+        "a1_aa7a71f2-14f8-9970-3b73-9d4cbf88d079",
+        "a2_18aa1c12-194c-29fe-ca5f-31ccf419f8ee",
+        "a2_40de4c27-f6cc-b509-95fc-a186a2a2e4f9"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "قتل النفس",
+      "spoken": "قَتْلُ النَّفْسِ",
+      "prepared_v282": "قَتْلُ النَّفْسِ",
+      "fish_v282": "قَتْلُ النَّفْسِ",
+      "fish_now": "قَتْلُ النَّفْسِ",
+      "fish_from_prep": "قَتْلُ النَّفْسِ",
+      "stt_v282": "شكرا لك",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_67831742-cfc3-4c12-a11c-4be748e40bda"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "البشر فقط",
+      "spoken": "الْبَشَرُ فَقَطْ",
+      "prepared_v282": "الْبَشَرُ فَقَطْ",
+      "fish_v282": "الْبَشَرُ فَقَطْ",
+      "fish_now": "الْبَشَرُ فَقَطْ",
+      "fish_from_prep": "الْبَشَرُ فَقَطْ",
+      "stt_v282": "أن بشهر فقط",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_e51e1871-5d53-4f6d-81b1-4a34343497af"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "فقط بالشر",
+      "spoken": "فَقَطْ بِالشَّرِّ",
+      "prepared_v282": "فَقَطْ بِالشَّرِّ",
+      "fish_v282": "فَقَطْ بِالشَّرِّ",
+      "fish_now": "فَقَطْ بِالشَّرِّ",
+      "fish_from_prep": "فَقَطْ بِالشَّرِّ",
+      "stt_v282": "فقط الشرön",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_be04d3f7-8a37-4530-8555-2c66c59d9970"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ثلاث سنين",
+      "spoken": "ثَلَاثَ سِنِينَ",
+      "prepared_v282": "ثَلَاثَ سِنِينَ",
+      "fish_v282": "ثَلَاثَ سِنِينَ",
+      "fish_now": "ثَلَاثَ سِنِينَ",
+      "fish_from_prep": "ثَلَاثَ سِنِينَ",
+      "stt_v282": "سلسة سنين",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_a004480b-4a29-4568-9962-95152cd0dade"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "عشرين سنة",
+      "spoken": "عِشْرِينَ سَنَةً",
+      "prepared_v282": "عِشْرِينَ سَنَةً",
+      "fish_v282": "عِشْرِينَ سَنَةً",
+      "fish_now": "عِشْرِينَ سَنَةً",
+      "fish_from_prep": "عِشْرِينَ سَنَةً",
+      "stt_v282": "عشلي مسنة",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_a004480b-4a29-4568-9962-95152cd0dade"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "كأنك تراه",
+      "spoken": "كَأَنَّكَ تَرَاهُ",
+      "prepared_v282": "كَأَنَّكَ تَرَاهُ",
+      "fish_v282": "كَأَنَّكَ تَرَاهُ",
+      "fish_now": "كَأَنَّكَ تَرَاهُ",
+      "fish_from_prep": "كَأَنَّكَ تَرَاهُ",
+      "stt_v282": "كأنك ترى",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_39a78741-7390-e1e9-ce72-d9999e7c58fb"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "علم اللغة",
+      "spoken": "عَلَّمَ اللُّغَةِ",
+      "prepared_v282": "عَلَّمَ اللُّغَةِ",
+      "fish_v282": "عَلَّمَ اللُّغَةِ",
+      "fish_now": "عَلَّمَ اللُّغَةِ",
+      "fish_from_prep": "عَلَّمَ اللُّغَةِ",
+      "stt_v282": "علم اللغتين",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_51c0a21a-8e4f-628d-7676-4148114aca38"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الشهادتان",
+      "spoken": "الشَّهَادَتَانِ",
+      "prepared_v282": "الشَّهَادَتَانِ",
+      "fish_v282": "الشَّهَادَتَانِ",
+      "fish_now": "الشَّهَادَتَانِ",
+      "fish_from_prep": "الشَّهَادَتَانِ",
+      "stt_v282": "الشهد كان",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_769249a0-e86d-71e2-b22b-6615bcf37391"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "على المال",
+      "spoken": "عَلَى الْمَالِ",
+      "prepared_v282": "عَلَى الْمَالِ",
+      "fish_v282": "عَلَى الْمَالِ",
+      "fish_now": "عَلَى الْمَالِ",
+      "fish_from_prep": "عَلَى الْمَالِ",
+      "stt_v282": "حل المال",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_d1612563-8194-6203-ef2a-5131e9299d10"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "إلى تجارة",
+      "spoken": "إِلَى تِجَارَةٍ",
+      "prepared_v282": "إِلَى تِجَارَةٍ",
+      "fish_v282": "إِلَى تِجَارَةٍ",
+      "fish_now": "إِلَى تِجَارَةٍ",
+      "fish_from_prep": "إِلَى تِجَارَةٍ",
+      "stt_v282": "الاتجارة",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_1b0341c0-5655-4f88-abde-09ae69cb7fcd"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "للنفس فقط",
+      "spoken": "لِلنَّفْسِ فَقَطْ",
+      "prepared_v282": "لِلنَّفْسِ فَقَطْ",
+      "fish_v282": "لِلنَّفْسِ فَقَطْ",
+      "fish_now": "لِلنَّفْسِ فَقَطْ",
+      "fish_from_prep": "لِلنَّفْسِ فَقَطْ",
+      "stt_v282": "لنفسي سقات",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_6d80017a-77d3-4857-99b8-3a193479a911"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الصدق فقط",
+      "spoken": "الصِّدْقَ فَقَطْ",
+      "prepared_v282": "الصِّدْقَ فَقَطْ",
+      "fish_v282": "الصِّدْقَ فَقَطْ",
+      "fish_now": "الصِّدْقَ فَقَطْ",
+      "fish_from_prep": "الصِّدْقَ فَقَطْ",
+      "stt_v282": "الآUFFEL من كدseen",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_6ed4bd4d-321c-48b4-b26f-0d6426edfc6d"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ما هو أحب",
+      "spoken": "مَا هُوَ أَحَبَّ",
+      "prepared_v282": "مَا هُوَ أَحَبَّ",
+      "fish_v282": "مَا هُوَ أَحَبَّ",
+      "fish_now": "مَا هُوَ أَحَبَّ",
+      "fish_from_prep": "مَا هُوَ أَحَبَّ",
+      "stt_v282": "نهو أحدة",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_8913f815-94e4-4e3c-b899-d09e92d717f8"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "صدقة تطوع",
+      "spoken": "صَدَقَةٍ تَطَوُّعٍ",
+      "prepared_v282": "صَدَقَةٍ تَطَوُّعٍ",
+      "fish_v282": "صَدَقَةٍ تَطَوُّعٍ",
+      "fish_now": "صَدَقَةٍ تَطَوُّعٍ",
+      "fish_from_prep": "صَدَقَةٍ تَطَوُّعٍ",
+      "stt_v282": "صودك ل knightخيئكの مantry",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_6921f42b-ed91-9bfb-59cc-5e3518dc4a59"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ترك النوم",
+      "spoken": "تَرْكُ النَّوْمِ",
+      "prepared_v282": "تَرْكُ النَّوْمِ",
+      "fish_v282": "تَرْكُ النَّوْمِ",
+      "fish_now": "تَرْكُ النَّوْمِ",
+      "fish_from_prep": "تَرْكُ النَّوْمِ",
+      "stt_v282": "كرقناون",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_30d816fb-da99-58a8-9976-c643b27b5de0"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ترك متعمد",
+      "spoken": "تَرْكٌ مُتَعَمَّدٌ",
+      "prepared_v282": "تَرْكٌ مُتَعَمَّدٌ",
+      "fish_v282": "تَرْكٌ مُتَعَمَّدٌ",
+      "fish_now": "تَرْكٌ مُتَعَمَّدٌ",
+      "fish_from_prep": "تَرْكٌ مُتَعَمَّدٌ",
+      "stt_v282": "كركن مجمد",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_24298053-bdf7-d3bc-f61c-0586b69520de"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الصلاة فقط",
+      "spoken": "الصَّلَاةُ فَقَطْ",
+      "prepared_v282": "الصَّلَاةُ فَقَطْ",
+      "fish_v282": "الصَّلَاةُ فَقَطْ",
+      "fish_now": "الصَّلَاةُ  فَقَطْ",
+      "fish_from_prep": "الصَّلَاةُ  فَقَطْ",
+      "stt_v282": "الصناة ثقت",
+      "count": 4,
+      "books": [
+        "usool",
+        "nawawi"
+      ],
+      "fields": [
+        "a1",
+        "a2"
+      ],
+      "ids": [
+        "a1_51b3515c-278d-4df5-a4fb-a7b71c920153",
+        "a1_ba9248fa-89c6-4afc-bc87-75de3d59fe13",
+        "a1_14691ce7-a4a6-4aae-b4c1-084fe8dd206c",
+        "a2_2d138f54-6f13-6935-33d2-146edf167b2e"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "ثبت الكهان",
+      "spoken": "ثَبَتَ الْكُهَّانُ",
+      "prepared_v282": "ثَبَتَ الْكُهَّانُ",
+      "fish_v282": "ثَبَتَ الْكُهَّانُ",
+      "fish_now": "ثَبَتَ الْكُهَّانُ",
+      "fish_from_prep": "ثَبَتَ الْكُهَّانُ",
+      "stt_v282": "سبك الكوحان",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_135c6d8a-b625-60b3-c79a-e0ded8387af8"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "لأنها فصول",
+      "spoken": "لِأَنَّهَا 3 فُصُولٍ",
+      "prepared_v282": "لِأَنَّهَا 3 فُصُولٍ",
+      "fish_v282": "لِأَنَّهَا 3 فُصُولٍ",
+      "fish_now": "لِأَنَّهَا 3 فُصُولٍ",
+      "fish_from_prep": "لِأَنَّهَا 3 فُصُولٍ",
+      "stt_v282": "لأنها ثلاثة فصول",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_45b11c1a-6569-4653-85ee-fc3397d5dce7"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "لأنها أدلة",
+      "spoken": "لِأَنَّهَا 3 أَدِلَّةٍ",
+      "prepared_v282": "لِأَنَّهَا 3 أَدِلَّةٍ",
+      "fish_v282": "لِأَنَّهَا 3 أَدِلَّةٍ",
+      "fish_now": "لِأَنَّهَا 3 أَدِلَّةٍ",
+      "fish_from_prep": "لِأَنَّهَا 3 أَدِلَّةٍ",
+      "stt_v282": "لأنها سلسة عدلة",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_45b11c1a-6569-4653-85ee-fc3397d5dce7"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بالكتب فقط",
+      "spoken": "بِالْكُتُبِ فَقَطْ",
+      "prepared_v282": "بِالْكُتُبِ فَقَطْ",
+      "fish_v282": "بِالْكُتُبِ فَقَطْ",
+      "fish_now": "بِالْكُتُبِ فَقَطْ",
+      "fish_from_prep": "بِالْكُتُبِ فَقَطْ",
+      "stt_v282": "بالكوطبي فقط",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_cae566ed-4e67-442d-a8bd-df8c76928ebd"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "معرفة الله",
+      "spoken": "مَعْرِفَةُ اللَّهِ",
+      "prepared_v282": "مَعْرِفَةُ اللَّهِ",
+      "fish_v282": "مَعْرِفَةُ اللَّهِ",
+      "fish_now": "مَعْرِفَةُ اللَّهِ",
+      "fish_from_prep": "مَعْرِفَةُ اللَّهِ",
+      "stt_v282": "مرعبك الله",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_eed50ffa-6e5a-3224-ae1f-a781a900653c"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تزيد الرزق",
+      "spoken": "تَزِيدُ الرِّزْقَ",
+      "prepared_v282": "تَزِيدُ الرِّزْقَ",
+      "fish_v282": "تَزِيدُ الرِّزْقَ",
+      "fish_now": "تَزِيدُ الرِّزْقَ",
+      "fish_from_prep": "تَزِيدُ الرِّزْقَ",
+      "stt_v282": "تزيد your list",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_b21de284-8a66-491d-8b8c-f73373989d28"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تطفئ الغضب",
+      "spoken": "تُطْفِئُ الْغَضَبَ",
+      "prepared_v282": "تُطْفِئُ الْغَضَبَ",
+      "fish_v282": "تُطْفِئُ الْغَضَبَ",
+      "fish_now": "تُطْفِئُ الْغَضَبَ",
+      "fish_from_prep": "تُطْفِئُ الْغَضَبَ",
+      "stt_v282": "خرب إلىносي",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_b21de284-8a66-491d-8b8c-f73373989d28"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الصدقة فقط",
+      "spoken": "الصَّدَقَةُ فَقَطْ",
+      "prepared_v282": "الصَّدَقَةُ فَقَطْ",
+      "fish_v282": "الصَّدَقَةُ فَقَطْ",
+      "fish_now": "الصَّدَقَةُ فَقَطْ",
+      "fish_from_prep": "الصَّدَقَةُ فَقَطْ",
+      "stt_v282": "اتمنفي على فقط",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_6e3a3e38-6070-4352-8eb3-1a5848052bf3"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الطواف فقط",
+      "spoken": "الطَّوَافُ فَقَطْ",
+      "prepared_v282": "الطَّوَافُ فَقَطْ",
+      "fish_v282": "الطَّوَافُ فَقَطْ",
+      "fish_now": "الطَّوَافُ فَقَطْ",
+      "fish_from_prep": "الطَّوَافُ فَقَطْ",
+      "stt_v282": "حطواف سقات",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_708a6e20-fb10-b7d2-138e-31dd98d2081b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تعمد الذنب",
+      "spoken": "تَعَمُّدُ الذَّنْبِ",
+      "prepared_v282": "تَعَمُّدُ الذَّنْبِ",
+      "fish_v282": "تَعَمُّدُ الذَّنْبِ",
+      "fish_now": "تَعَمُّدُ الذَّنْبِ",
+      "fish_from_prep": "تَعَمُّدُ الذَّنْبِ",
+      "stt_v282": "يبدو أن escidency",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_9ab05330-bb0d-27e5-72fe-c230e166c37d"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "يصلون كثيرا",
+      "spoken": "يُصَلُّونَ كَثِيرًا",
+      "prepared_v282": "يُصَلُّونَ كَثِيرًا",
+      "fish_v282": "يُصَلُّونَ كَثِيرًا",
+      "fish_now": "يُصَلُّونَ كَثِيرًا",
+      "fish_from_prep": "يُصَلُّونَ كَثِيرًا",
+      "stt_v282": "يوسى اللونة كثيرا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_a0843318-ca13-4eb8-8738-14b57dcb6919"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "عبادته وحده",
+      "spoken": "عِبَادَتُهُ وَحْدَهُ",
+      "prepared_v282": "عِبَادَتُهُ وَحْدَهُ",
+      "fish_v282": "عِبَادَتُهُ وَحْدَهُ",
+      "fish_now": "عِبَادَتُهُ وَحْدَهُ",
+      "fish_from_prep": "عِبَادَتُهُ وَحْدَهُ",
+      "stt_v282": ".هيبان يaksوره وحده ترون",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_79060455-082e-4ede-9964-2c3c684bd269"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "بالسؤال فقط",
+      "spoken": "بِالسُّؤَالِ فَقَطْ",
+      "prepared_v282": "بِالسُّؤَالِ فَقَطْ",
+      "fish_v282": "بِالسُّؤَالِ فَقَطْ",
+      "fish_now": "بِالسُّؤَالِ فَقَطْ",
+      "fish_from_prep": "بِالسُّؤَالِ فَقَطْ",
+      "stt_v282": "بسؤالي فقط",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_cae566ed-4e67-442d-a8bd-df8c76928ebd"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الحب والخوف",
+      "spoken": "الحُبُّ وَالخَوْفُ",
+      "prepared_v282": "الحُبُّ وَالخَوْفُ",
+      "fish_v282": "الحُبُّ وَالخَوْفُ",
+      "fish_now": "الحُبُّ وَالخَوْفُ",
+      "fish_from_prep": "الحُبُّ وَالخَوْفُ",
+      "stt_v282": "أحبه الخوف",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_01b52421-bfcb-42b0-9034-591c60e3d641"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الزكاة شرعا",
+      "spoken": "\"الزَّكَاةِ\" شرعاً:",
+      "prepared_v282": "الزَّكَاةِ شَرْعًا",
+      "fish_v282": "الزَّكَاةِ شَرْعًا",
+      "fish_now": "الزَّكَاةُ  شَرْعًا",
+      "fish_from_prep": "الزَّكَاةُ  شَرْعًا",
+      "stt_v282": "الزكات شرعين",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "q"
+      ],
+      "ids": [
+        "q_6921f42b-ed91-9bfb-59cc-5e3518dc4a59"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "كثرة الصلاة",
+      "spoken": "كَثْرَةُ الصَّلَاةِ",
+      "prepared_v282": "كَثْرَةُ الصَّلَاةِ",
+      "fish_v282": "كَثْرَةُ الصَّلَاةِ",
+      "fish_now": "كَثْرَةُ الصَّلَاةِ",
+      "fish_from_prep": "كَثْرَةُ الصَّلَاةِ",
+      "stt_v282": "كثل كثلا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_5d714abc-747b-4e95-8ab4-e31e6f985a3d"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "وآتوا الزكاة",
+      "spoken": "وَآتُوا الزَّكَاةَ",
+      "prepared_v282": "وَآتُوا الزَّكَاةَ",
+      "fish_v282": "وَآتُوا الزَّكَاةَ",
+      "fish_now": "وَآتُوا  الزَّكَاةَ",
+      "fish_from_prep": "وَآتُوا  الزَّكَاةَ",
+      "stt_v282": "وعطو الزكات",
+      "count": 3,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_44c0fa04-4e25-40dc-8b0e-9a4ea3ff9291",
+        "a2_06ded618-669a-40ce-8574-4da46b041242",
+        "a2_5160169e-5368-44b1-81b7-cf4074a86523"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "عقبة بن عامر",
+      "spoken": "عُقْبَةُ بْنُ عَامِرٍ",
+      "prepared_v282": "عُقْبَةُ بْنُ عَامِرٍ",
+      "fish_v282": "عُقْبَةُ  بْنُ  عَامِرٍ",
+      "fish_now": "هُوَ عُقْبَةُ  بْنُ  عَامِرٍ",
+      "fish_from_prep": "هُوَ عُقْبَةُ  بْنُ  عَامِرٍ",
+      "stt_v282": "ارط بك<|sn|> هل ب really and",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2",
+        "a0"
+      ],
+      "ids": [
+        "a2_4d63611d-ee84-9809-0edb-bcd81fed7f0a",
+        "a0_1cc9fb32-7441-2bf5-ea1e-d267ad9e7198"
+      ],
+      "prepChanged": true,
+      "likelyCarrierHelps": true
+    },
+    {
+      "bare": "الملائكة فقط",
+      "spoken": "الْمَلَائِكَةُ فَقَطْ",
+      "prepared_v282": "الْمَلَائِكَةُ فَقَطْ",
+      "fish_v282": "الْمَلَائِكَةُ فَقَطْ",
+      "fish_now": "الْمَلَائِكَةُ فَقَطْ",
+      "fish_from_prep": "الْمَلَائِكَةُ فَقَطْ",
+      "stt_v282": "الملاعق يكاتف قطر",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_cabe3338-0c2a-4919-8fda-3ff1f5683271"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "ابدأ بالجزية",
+      "spoken": "ابْدَأْ بِالْجِزْيَةِ",
+      "prepared_v282": "ابْدَأْ بِالْجِزْيَةِ",
+      "fish_v282": "ابْدَأْ بِالْجِزْيَةِ",
+      "fish_now": "ابْدَأْ بِالْجِزْيَةِ",
+      "fish_from_prep": "ابْدَأْ بِالْجِزْيَةِ",
+      "stt_v282": "بدي عال العهزية",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_de6475f4-5d82-4bb1-a4c6-2708898479dd"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "تجلب الزبائن",
+      "spoken": "تَجْلِبُ الزَّبَائِنَ",
+      "prepared_v282": "تَجْلِبُ الزَّبَائِنَ",
+      "fish_v282": "تَجْلِبُ الزَّبَائِنَ",
+      "fish_now": "تَجْلِبُ الزَّبَائِنَ",
+      "fish_from_prep": "تَجْلِبُ الزَّبَائِنَ",
+      "stt_v282": "كجريبو ازباء",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_832b2f83-6d67-f7b2-0149-d7d865a8172b"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "لأنها مؤلفين",
+      "spoken": "لِأَنَّهَا 3 مُؤَلِّفِينَ",
+      "prepared_v282": "لِأَنَّهَا 3 مُؤَلِّفِينَ",
+      "fish_v282": "لِأَنَّهَا 3 مُؤَلِّفِينَ",
+      "fish_now": "لِأَنَّهَا 3 مُؤَلِّفِينَ",
+      "fish_from_prep": "لِأَنَّهَا 3 مُؤَلِّفِينَ",
+      "stt_v282": "لأنها ثلاثة مؤلفين",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_45b11c1a-6569-4653-85ee-fc3397d5dce7"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الأكل والشرب",
+      "spoken": "الْأَكْلُ وَالشُّرْبُ",
+      "prepared_v282": "الْأَكْلُ وَالشُّرْبُ",
+      "fish_v282": "الْأَكْلُ وَالشُّرْبُ",
+      "fish_now": "الْأَكْلُ وَالشُّرْبُ",
+      "fish_from_prep": "الْأَكْلُ وَالشُّرْبُ",
+      "stt_v282": "وأكلوا الشرم",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_68277684-9448-4d6e-816c-9ea1d9f4eb91"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "يوفون بالنذر",
+      "spoken": "يُوفُونَ بِالنَّذْرِ",
+      "prepared_v282": "يُوفُونَ بِالنَّذْرِ",
+      "fish_v282": "يُوفُونَ بِالنَّذْرِ",
+      "fish_now": "يُوفُونَ بِالنَّذْرِ",
+      "fish_from_prep": "يُوفُونَ بِالنَّذْرِ",
+      "stt_v282": "يوفون بنذري",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_5160169e-5368-44b1-81b7-cf4074a86523"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "العلم والعمل",
+      "spoken": "العِلْمُ وَالعَمَلُ",
+      "prepared_v282": "العِلْمُ وَالعَمَلُ",
+      "fish_v282": "العِلْمُ وَالعَمَلُ",
+      "fish_now": "العِلْمُ وَالعَمَلُ",
+      "fish_from_prep": "العِلْمُ وَالعَمَلُ",
+      "stt_v282": "العلم والأمن",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_01b52421-bfcb-42b0-9034-591c60e3d641"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الصيام كثيرا",
+      "spoken": "الصِّيَامُ كَثِيرًا",
+      "prepared_v282": "الصِّيَامُ كَثِيرًا",
+      "fish_v282": "الصِّيَامُ كَثِيرًا",
+      "fish_now": "الصِّيَامُ كَثِيرًا",
+      "fish_from_prep": "الصِّيَامُ كَثِيرًا",
+      "stt_v282": "قسيام ما كثيراً",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_3d67e37f-25a0-4485-adb0-1e9601625d14"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "عيسى بن مريم",
+      "spoken": "عِيسَى بْنُ مَرْيَمَ",
+      "prepared_v282": "عِيسَى بْنُ مَرْيَمَ",
+      "fish_v282": "عِيسَى بْنُ مَرْيَمَ",
+      "fish_now": "عِيسَى بْنُ مَرْيَمَ",
+      "fish_from_prep": "عِيسَى بْنُ مَرْيَمَ",
+      "stt_v282": "عيشة بن مريم",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a1"
+      ],
+      "ids": [
+        "a1_3c6a55b5-9c87-4cbe-8963-9ea596edf789"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "نفي الأنبياء",
+      "spoken": "نَفْيَ الْأَنْبِيَاءِ",
+      "prepared_v282": "نَفْيَ الْأَنْبِيَاءِ",
+      "fish_v282": "نَفْيَ الْأَنْبِيَاءِ",
+      "fish_now": "نَفْيَ الْأَنْبِيَاءِ",
+      "fish_from_prep": "نَفْيَ الْأَنْبِيَاءِ",
+      "stt_v282": "نفعل أنبياء",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_ef35ad7a-6c9d-fac3-ea1f-c2baf59810f7"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "نفي الملائكة",
+      "spoken": "نَفْيَ الْمَلَائِكَةُ",
+      "prepared_v282": "نَفْيَ الْمَلَائِكَةُ",
+      "fish_v282": "نَفْيَ الْمَلَائِكَةُ",
+      "fish_now": "نَفْيَ الْمَلَائِكَةُ",
+      "fish_from_prep": "نَفْيَ الْمَلَائِكَةُ",
+      "stt_v282": "نفيا الملاعقة",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a3"
+      ],
+      "ids": [
+        "a3_ef35ad7a-6c9d-fac3-ea1f-c2baf59810f7"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "افترضته عليه",
+      "spoken": "افْتَرَضْتُهُ عَلَيْهِ",
+      "prepared_v282": "افْتَرَضْتُهُ عَلَيْهِ",
+      "fish_v282": "افْتَرَضْتُهُ عَلَيْهِ",
+      "fish_now": "افْتَرَضْتُهُ عَلَيْهِ",
+      "fish_from_prep": "افْتَرَضْتُهُ عَلَيْهِ",
+      "stt_v282": "角كك على�ه",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_74076c42-5f23-4e68-8de6-2864ca262829"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "موسى بن عمران",
+      "spoken": "مُوسَى بْنُ عِمْرَانَ",
+      "prepared_v282": "مُوسَى بْنُ عِمْرَانَ",
+      "fish_v282": "مُوسَى بْنُ عِمْرَانَ",
+      "fish_now": "مُوسَى بْنُ عِمْرَانَ",
+      "fish_from_prep": "مُوسَى بْنُ عِمْرَانَ",
+      "stt_v282": "موسى بنوعاً ران",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a2"
+      ],
+      "ids": [
+        "a2_3c6a55b5-9c87-4cbe-8963-9ea596edf789"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "خيرا أو ليصمت",
+      "spoken": "خَيْرًا أَوْ لِيَصْمُتْ",
+      "prepared_v282": "خَيْرًا أَوْ لِيَصْمُتْ",
+      "fish_v282": "خَيْرًا أَوْ لِيَصْمُتْ",
+      "fish_now": "خَيْرًا أَوْ لِيَصْمُتْ",
+      "fish_from_prep": "خَيْرًا أَوْ لِيَصْمُتْ",
+      "stt_v282": "خيراً أو ليس مد",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_6ed4bd4d-321c-48b4-b26f-0d6426edfc6d"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "عمر بن الخطاب",
+      "spoken": "عُمَرُ بْنُ الْخَطَّابِ",
+      "prepared_v282": "عُمَرُ بْنُ الْخَطَّابِ",
+      "fish_v282": "عُمَرُ بْنُ الْخَطَّابِ",
+      "fish_now": "عُمَرُ بْنُ الْخَطَّابِ",
+      "fish_from_prep": "عُمَرُ بْنُ الْخَطَّابِ",
+      "stt_v282": "عمره دني الخطاب",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_f7731378-0f5e-38b5-e757-b5852091bd54"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "كل ما سوى الله",
+      "spoken": "كُلُّ مَا سِوَى اللَّهِ",
+      "prepared_v282": "كُلُّ مَا سِوَى اللَّهِ",
+      "fish_v282": "كُلُّ مَا سِوَى اللَّهِ",
+      "fish_now": "كُلُّ مَا سِوَى اللَّهِ",
+      "fish_from_prep": "كُلُّ مَا سِوَى اللَّهِ",
+      "stt_v282": "كل ما شو الله",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_e51e1871-5d53-4f6d-81b1-4a34343497af"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "أن تلد الأمة ربتها",
+      "spoken": "أَنْ تَلِدَ الْأَمَةُ رَبَّتَهَا",
+      "prepared_v282": "أَنْ تَلِدَ الْأَمَةُ رَبَّتَهَا",
+      "fish_v282": "أَنْ تَلِدَ الْأَمَةُ رَبَّتَهَا",
+      "fish_now": "أَنْ تَلِدَ الْأَمَةُ رَبَّتَهَا",
+      "fish_from_prep": "أَنْ تَلِدَ الْأَمَةُ رَبَّتَهَا",
+      "stt_v282": "عن تلج الأمه طببكة",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_bca53c44-9668-4fdd-a671-cbe8dbe507bf"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    },
+    {
+      "bare": "الكلمة الطيبة صدقة",
+      "spoken": "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
+      "prepared_v282": "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
+      "fish_v282": "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
+      "fish_now": "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
+      "fish_from_prep": "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
+      "stt_v282": "El inanب lower enough",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "fields": [
+        "a0"
+      ],
+      "ids": [
+        "a0_9a483832-b4ef-4e89-a30b-b93486aa91b0"
+      ],
+      "prepChanged": false,
+      "likelyCarrierHelps": false
+    }
+  ]
+}
