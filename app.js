@@ -1693,7 +1693,7 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v57';
+const TTS_CACHE_VER = 'v58';
 /**
  * Lesson Fish TTS only — mild loudness (NOT v267 3.6× / heavy EQ).
  * Never applied to Quran Hudhaify.
