@@ -1693,8 +1693,8 @@ function toggleSound() {
 /** Locked Fish lesson voice — resolved from /api/tts-status (FISH_VOICE_ID / حكيم). */
 const TTS_FISH_HAKIM = 'aa9c8260269c411d9863ab1b1bfa3158';
 let TTS_VOICE = TTS_FISH_HAKIM;
-/** Bump: switch lesson TTS to Fish حكيم — kill Azure Hamed clips. */
-const TTS_CACHE_VER = 'v79';
+/** Bump: permanent Fish حكيم-only lock — kill any residual non-hakim clips. */
+const TTS_CACHE_VER = 'v80';
 /**
  * Lesson Fish TTS only — moderate clarity (HP + presence + gain).
  * Never applied to Quran Hudhaify.
@@ -2393,11 +2393,8 @@ function applyTtsStatusConfig(data) {
   } else if (data.provider === 'fish' && !data.bakedTtsOnly) {
     window.__alhudaSkipBakedTts = true;
   }
-  if (data.voice && data.provider === 'fish' && data.voice !== '(set FISH_VOICE_ID)') {
-    TTS_VOICE = String(data.voice);
-  } else if (data.provider === 'fish') {
-    TTS_VOICE = TTS_FISH_HAKIM;
-  }
+  // Permanent lock — never accept another lesson voice from status/env.
+  TTS_VOICE = TTS_FISH_HAKIM;
 }
 
 async function refreshTtsProviderBadge() {

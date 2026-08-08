@@ -9,8 +9,8 @@ import {
   DEFAULT_FISH_VOICE_ID,
 } from './fish-audio-tts.js';
 
-// Lesson /api/tts = Fish Audio «راوٍ عربي حكيم» + NFC/iʿrāb prepareFishTtsText.
-// Quran remains Hudhaify. Azure Hamed is not the lesson voice.
+// Lesson /api/tts = Fish Audio «راوٍ عربي حكيم» ONLY + NFC/iʿrāb prepareFishTtsText.
+// Quran = Hudhaify ONLY. Azure / ElevenLabs / Google / other Fish voices are disabled.
 
 /** Lightweight in-isolate error counters (reset when isolate recycles). */
 const apiErrorCounters = {

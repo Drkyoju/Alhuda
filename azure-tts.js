@@ -245,43 +245,11 @@ function buildSsml(text, voice, rate = AZURE_SSML_RATE_QUESTION, { lexiconUri } 
   );
 }
 
-export async function synthesizeAzureArabicSpeech(text, voiceShortName, env, opts = {}) {
-  const key = env?.AZURE_SPEECH_KEY;
-  const region = env?.AZURE_SPEECH_REGION;
-  if (!key || !region) {
-    throw new Error('Azure Speech not configured (missing AZURE_SPEECH_KEY / AZURE_SPEECH_REGION)');
-  }
-  const voice = resolveAzureArabicVoice(voiceShortName, env);
-  const rate = resolveAzureSsmlRate(opts?.rate);
-  const base = String(env?.PUBLIC_BASE_URL || DEFAULT_PUBLIC_BASE).replace(/\/$/, '');
-  const lexiconUri = `${base}${ALLAH_LEXICON_PATH}`;
-  const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
-
-  async function post(ssml, format = OUTPUT_FORMAT) {
-    return fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Ocp-Apim-Subscription-Key': key,
-        'Content-Type': 'application/ssml+xml',
-        'X-Microsoft-OutputFormat': format,
-        'User-Agent': 'AlhudaApp',
-      },
-      body: ssml,
-    });
-  }
-
-  // Fish-prep NFC text + PLS lexicon (no IPA phoneme — that mangled الله).
-  let res = await post(buildSsml(text, voice, rate, { lexiconUri }));
-  if (!res.ok && res.status === 400) {
-    res = await post(buildSsml(text, voice, rate, {}), OUTPUT_FORMAT_FALLBACK);
-  }
-  if (!res.ok) {
-    const detail = await res.text().catch(() => '');
-    throw new Error(`Azure TTS ${res.status}: ${detail.slice(0, 180)}`);
-  }
-  return res.body;
+export async function synthesizeAzureArabicSpeech(_text, _voiceShortName, _env, _opts = {}) {
+  throw new Error('Azure TTS disabled — lesson voice is Fish راوٍ عربي حكيم only; Quran uses Hudhaify');
 }
 
-export function azureSpeechConfigured(env) {
-  return !!(env?.AZURE_SPEECH_KEY && env?.AZURE_SPEECH_REGION);
+export function azureSpeechConfigured(_env) {
+  // Never advertise Azure as available for lesson TTS.
+  return false;
 }

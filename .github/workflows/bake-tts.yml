@@ -1,6 +1,6 @@
 name: Bake missing TTS (Fish Audio)
 
-# DEPRECATED — live Fish TTS only. Old tts-baked MP3s were removed from the repo.
+# DEPRECATED — live Fish «راوٍ عربي حكيم» only. Old tts-baked MP3s were removed.
 # Do not re-enable unless restoring offline baked mode intentionally.
 on:
   workflow_dispatch:
@@ -11,6 +11,7 @@ jobs:
     steps:
       - name: Baked TTS disabled
         run: |
-          echo "Baked TTS is disabled. Lesson speech uses live Azure (ar-SA-HamedNeural)."
-          echo "Quran ayahs use Hudhaify CDN — not tts-baked."
+          echo "Baked TTS is disabled."
+          echo "Lesson speech = Fish Audio راوٍ عربي حكيم (aa9c8260269c411d9863ab1b1bfa3158)."
+          echo "Quran ayahs = Hudhaify CDN only."
           exit 0

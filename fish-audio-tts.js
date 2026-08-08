@@ -3,16 +3,12 @@
 import { fixAllahIrabInText } from './allah-irab.js';
 
 /**
- * Locked lesson voice: «راوٍ عربي حكيم» (sample set 19_fish_hakim_*).
- * Env FISH_VOICE_ID may override; request body voice is ignored by the Worker.
+ * PERMANENT lesson voice — «راوٍ عربي حكيم» only (sample set 19_fish_hakim_*).
+ * No other Fish / Azure / ElevenLabs / Google voices are selectable.
  */
 export const DEFAULT_FISH_VOICE_ID = 'aa9c8260269c411d9863ab1b1bfa3158';
 export const FISH_VOICE_NAME_AR = 'راوٍ عربي حكيم';
-/**
- * Best Arabic-quality model on paid Fish plans.
- * Docs: s2.1-pro is recommended for production (better than s2-pro).
- * Override with FISH_TTS_MODEL if needed.
- */
+/** Production Fish model — Quran ayahs stay Hudhaify, not this engine. */
 export const DEFAULT_FISH_MODEL = 's2.1-pro';
 export const FISH_TTS_ENDPOINT = 'https://api.fish.audio/v1/tts';
 
@@ -46,15 +42,13 @@ export function isFishReferenceId(voiceId) {
   return /^[a-f0-9]{32}$/i.test(String(voiceId || '').trim());
 }
 
-export function resolveFishVoiceId(_voiceId, env = process.env) {
-  // Lesson voice locked to حكيم — ignore Azure/legacy/client reference ids.
-  const fromEnv = String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim();
-  if (isFishReferenceId(fromEnv)) return fromEnv;
+export function resolveFishVoiceId(_voiceId, _env = process.env) {
+  // Hard lock — ignore request body, env overrides, and legacy voice catalogs.
   return DEFAULT_FISH_VOICE_ID;
 }
 
-export function resolveFishModel(env = process.env) {
-  return String(env?.FISH_TTS_MODEL || DEFAULT_FISH_MODEL).trim() || DEFAULT_FISH_MODEL;
+export function resolveFishModel(_env = process.env) {
+  return DEFAULT_FISH_MODEL;
 }
 
 /**
