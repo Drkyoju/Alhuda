@@ -79,6 +79,47 @@ const MA_UBIDA_RE =
 const KULLU_MA_UBIDA_RE =
   /ك[\u064B-\u065F\u0670]*ل[\u064B-\u065F\u0670]*\s+م[\u064B-\u065F\u0670]*ا[\u064B-\u065F\u0670]*\s+ع[\u064B-\u065F\u0670]*ب[\u064B-\u065F\u0670]*د[\u064B-\u065F\u0670]*(?![\u0621-\u064A])(?!\s*[اأإآٱ][\u064B-\u065F\u0670]*ل)/g;
 
+/**
+ * Systematic case endings for Fish: مجرور after حرف جر / ظرف، منصوب after أنْ لا،
+ * إنّ/أنّ + الله. Safe ending swaps only — bare letters unchanged.
+ */
+export function applySystematicCaseEndings(text) {
+  let s = String(text || '');
+  // أنْ لا + مضارع → منصوب (َ)
+  s = s.replace(/أن\s+لا\s+يعبد\s+الله/g, "أَنْ لَا يَعْبُدَ اللَّهَ");
+  s = s.replace(/أَنْ\s+لَا\s+يَعْبُدُ/g, 'أَنْ لَا يَعْبُدَ');
+  s = s.replace(/أَنْ\s+لَا\s+تَعْبُدُ/g, 'أَنْ لَا تَعْبُدَ');
+  s = s.replace(/أَنْ\s+لَا\s+نَعْبُدُ/g, 'أَنْ لَا نَعْبُدَ');
+  s = s.replace(/أَنْ\s+لَا\s+يُشْرِكُ/g, 'أَنْ لَا يُشْرِكَ');
+  // حرف جر / ظرف + اسم معرف بـال wrong *final* damma → kasra (مجرور).
+  // Greedy stem + trailing ُ — never touch mid-word damma (أُصُول).
+  for (const prep of ['فِي', 'مِنْ', 'مِنَ', 'إِلَى', 'عَلَى', 'عَنْ', 'عَنِ', 'بَعْدَ', 'قَبْلَ', 'عِنْدَ', 'مَعَ']) {
+    s = s.replace(
+      new RegExp(`(${prep})\\s+((?:ال|الْ)[\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670]*)ُ(?![\\u0621-\\u064A\\u0671])`, 'g'),
+      '$1 $2ِ'
+    );
+  }
+  s = s.replace(/(^|[^\u0621-\u064A])في\s+((?:ال|الْ)[\u0621-\u064A\u0671\u064B-\u065F\u0670]*)ُ(?![\u0621-\u064A\u0671])/g, '$1فِي $2ِ');
+  s = s.replace(/(^|[^\u0621-\u064A])من\s+((?:ال|الْ)[\u0621-\u064A\u0671\u064B-\u065F\u0670]*)ُ(?![\u0621-\u064A\u0671])/g, '$1مِنْ $2ِ');
+  s = s.replace(/(^|[^\u0621-\u064A])بعد\s+((?:ال|الْ)[\u0621-\u064A\u0671\u064B-\u065F\u0670]*)ُ(?![\u0621-\u064A\u0671])/g, '$1بَعْدَ $2ِ');
+  // في قولُه → قولِه
+  s = s.replace(/فِي\s+قَوْلُه/g, 'فِي قَوْلِه');
+  s = s.replace(/في\s+قولُه/g, 'فِي قَوْلِه');
+  s = s.replace(/في\s+قوله/g, 'فِي قَوْلِهِ');
+  // مِنَ الشِّرْكُ → مجرور
+  s = s.replace(/مِنَ\s+الشِّرْكُ/g, "مِنَ الشِّرْكِ");
+  s = s.replace(/مِنَ\s+الشِّرْكُ/g, 'مِنَ الشِّرْكِ');
+  s = s.replace(/من\s+الشركُ/g, "مِنَ الشِّرْكِ");
+  // إنّ/أنّ الله — منصوب
+  s = s.replace(/إِنَّ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "إِنَّ اللَّهَ");
+  s = s.replace(/أَنَّ\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنَّ اللَّهَ");
+  s = s.replace(/(^|[^\u0621-\u064A])إن\s+الله/g, "$1إِنَّ اللَّهَ");
+  s = s.replace(/(^|[^\u0621-\u064A])أن\s+الله(?!\s*إلا)/g, "$1أَنَّ اللَّهَ");
+  s = s.replace(/عَلَى\s+طَاعَةُ/g, 'عَلَى طَاعَةِ');
+  s = s.replace(/عَلَى\s+مَعْصِيَةُ/g, 'عَلَى مَعْصِيَةِ');
+  return s;
+}
+
 export function prepareFishTtsText(text) {
   // Preserve formation (harakat); expand honorifics; drop marks spoken as words.
   // NEVER strip mid-word harakat — Fish needs tashkeel to avoid «اللاه» / mangled iʿrāb.
@@ -104,6 +145,7 @@ export function prepareFishTtsText(text) {
   s = s.replace(/أَنْ\s+لَا\s+يُعْبَد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ لَا يُعْبَدَ اللَّهُ");
   s = s.replace(/أَنْ\s+لَا\s+يَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ لَا يَعْبُدَ اللَّهَ");
   s = s.replace(/ان\s+لا\s+يعبد\s+الله/g, "أَنْ لَا يَعْبُدَ اللَّهَ");
+  s = s.replace(/أن\s+لا\s+يعبد\s+الله/g, "أَنْ لَا يَعْبُدَ اللَّهَ");
   s = s.replace(/يعبد\s+الله/g, "يَعْبُدُ اللَّهَ");
   s = s.replace(/تعبد\s+الله/g, "تَعْبُدُ اللَّهَ");
   s = s.replace(/نعبد\s+الله/g, "نَعْبُدُ اللَّهَ");
@@ -261,6 +303,7 @@ export function prepareFishTtsText(text) {
   s = s.replace(/لَا\s+ضَرَرَ\s+وَلَا\s+ضِرَارَ/g, 'لَا ضَرَرَ  وَلَا ضِرَارَ');
   // DO NOT insert mid-word tatweel — v265 tried it for «clarity» and Whisper proved
   // بُضْـع/صَدَقَـة/رياء/ذُكِـرَت → mangled (بضعي/صديقاتون/رياق/لكرة).
+  s = applySystematicCaseEndings(s);
   return fixAllahIrabInText(s);
 }
 

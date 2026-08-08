@@ -91,8 +91,7 @@ chunk = chunk.replace(
       return \`\${pre}\${allahFormForContext(before)}\`;
     }`,
   `    (match, pre, _marks, offset, full) => {
-      const allahPart = match.slice(pre.length);
-      if (allahPart === ALLAH_NOM || allahPart === ALLAH_ACC || allahPart === ALLAH_GEN) return match;
+      // Always re-pick case from context — stale اللَّهُ after إضافة/جر mangled Fish.
       const before = full.slice(Math.max(0, offset - 24), offset + pre.length);
       return \`\${pre}\${allahFormForContext(before)}\`;
     }`

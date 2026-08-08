@@ -1693,7 +1693,7 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v51';
+const TTS_CACHE_VER = 'v52';
 /**
  * Lesson Fish TTS only — mild loudness (NOT v267 3.6× / heavy EQ).
  * Never applied to Quran Hudhaify.
@@ -2463,6 +2463,7 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/أَنْ\s+لَا\s+يُعْبَد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ لَا يُعْبَدَ اللَّهُ");
   s = s.replace(/أَنْ\s+لَا\s+يَعْبُد[ُِ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ لَا يَعْبُدَ اللَّهَ");
   s = s.replace(/ان\s+لا\s+يعبد\s+الله/g, "أَنْ لَا يَعْبُدَ اللَّهَ");
+  s = s.replace(/أن\s+لا\s+يعبد\s+الله/g, "أَنْ لَا يَعْبُدَ اللَّهَ");
   // أن / بِأَن المصدرية before imperfect — NEVER أنّ (Fish reads أنَّ يعلّم as garbage).
   // Keep أنّ before ism stems that start with ي/ت/ن (نزولها / توحيد / يوم…) —
   // older “any يتن(+haraka)” rewrites falsely mangled بِأَنَّ نزولها → بِأَنْ نزولها.
