@@ -1,0 +1,154 @@
+{
+  "source": "hakim_v297 residual",
+  "items": [
+    {
+      "bare": "سبعون ألفا مع كل ألف سبعون ألفا",
+      "spoken": "سَبْعُونَ أَلْفًا مَعَ كُلِّ أَلْفٍ سَبْعُونَ أَلْفًا",
+      "fishOld": "سَبْعُونَ أَلْفًا مَعَ كُلِّ أَلْفٍ سَبْعُونَ أَلْفًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a0_dcdd2714-5e35-4b4c-811d-feaab1306cfd"
+      ]
+    },
+    {
+      "bare": "الروم",
+      "spoken": "الرُّومُ",
+      "fishOld": "الرُّومُ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a1_94c4e444-476e-50ec-1160-472655b5cfed",
+        "a3_23579d1b-dc8a-f633-5ba3-cb439e3a3d74"
+      ]
+    },
+    {
+      "bare": "الرزق",
+      "spoken": "الرِّزْقُ",
+      "fishOld": "الرِّزْقُ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a3_39d543ed-8c5d-a3ba-9480-c85261e939ca",
+        "a2_3e9ff1c7-e3c9-1d21-7b0f-e811e0c501e0",
+        "a3_6239765b-3c79-0f72-7df7-6d8632ee6443"
+      ]
+    },
+    {
+      "bare": "الصداع",
+      "spoken": "الصُّدَاعِ",
+      "fishOld": "أَعْنِي الصُّدَاعَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a2_a3add015-2a87-d1fe-89c2-9ad5be364cb9"
+      ]
+    },
+    {
+      "bare": "بنيه",
+      "spoken": "بَنِيهِ",
+      "fishOld": "بَنِيهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a0_64a9e304-8824-26b7-87f4-0446e6d27f2e"
+      ]
+    },
+    {
+      "bare": "بصره",
+      "spoken": "بَصَرَهُ",
+      "fishOld": "أَعْنِي بَصَرَهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a3_4bd70525-216d-9c50-492c-ad0e11e6123c"
+      ]
+    },
+    {
+      "bare": "النار",
+      "spoken": "النَّارِ",
+      "fishOld": "النَّارِ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a0_9264aaba-431f-cca5-457d-ca5e404cc733",
+        "a3_e8ff6321-abd3-0fdc-0ab3-9bd383411a79"
+      ]
+    },
+    {
+      "bare": "بالرقية",
+      "spoken": "بِالرُّقْيَةِ",
+      "fishOld": "بِالرُّقْيَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a3_933e4b70-e0aa-c29c-a3e1-07a1c99a22dc"
+      ]
+    },
+    {
+      "bare": "لا شيء",
+      "spoken": "لَا شَيْءَ",
+      "fishOld": "لَا شَيْءَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a2_ce9e78b4-9639-1443-460c-2a525fef7661"
+      ]
+    },
+    {
+      "bare": "التطوع",
+      "spoken": "التَّطَوُّعِ",
+      "fishOld": "هُوَ التَّطَوُّعُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a3_e6cca78e-0f71-6b6d-dcec-080c56648ab1"
+      ]
+    },
+    {
+      "bare": "بئرا",
+      "spoken": "بِئْرًا",
+      "fishOld": "بِئْرًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "ids": [
+        "a3_d608ce45-fe60-a99f-7383-4a963d20451b"
+      ]
+    },
+    {
+      "bare": "مئة وعشرين يوما",
+      "spoken": "مِئَةً وَعِشْرِينَ يَوْمًا",
+      "fishOld": "مِئَةً وَعِشْرِينَ يَوْمًا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "ids": [
+        "a3_e62798c1-f97f-4ca7-926e-f3ab931b6b80"
+      ]
+    }
+  ],
+  "n": 12
+}

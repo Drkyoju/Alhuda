@@ -1,0 +1,6328 @@
+{
+  "source": "expanded fail+weak from 3 hakim v297 reports",
+  "n": 524,
+  "fail_unique": 12,
+  "weak_included": 512,
+  "items": [
+    {
+      "bare": "سبعون الفا مع كل الف سبعون الفا",
+      "spoken": "سَبْعُونَ أَلْفًا مَعَ كُلِّ أَلْفٍ سَبْعُونَ أَلْفًا",
+      "fishOld": "سَبْعُونَ أَلْفًا مَعَ كُلِّ أَلْفٍ سَبْعُونَ أَلْفًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.6,
+      "kind": "fail",
+      "stt_sample": "7.5 مع كل ألف 7.5"
+    },
+    {
+      "bare": "النار",
+      "spoken": "النَّارِ",
+      "fishOld": "النَّارِ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.2,
+      "kind": "fail",
+      "stt_sample": "إنسان going to the same place"
+    },
+    {
+      "bare": "لا شيء",
+      "spoken": "لَا شَيْءَ",
+      "fishOld": "لَا شَيْءَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.6,
+      "kind": "fail",
+      "stt_sample": "لشيئة"
+    },
+    {
+      "bare": "الروم",
+      "spoken": "الرُّومُ",
+      "fishOld": "الرُّومُ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.6,
+      "kind": "fail",
+      "stt_sample": "روم"
+    },
+    {
+      "bare": "التطوع",
+      "spoken": "التَّطَوُّعِ",
+      "fishOld": "هُوَ التَّطَوُّعُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.444,
+      "kind": "fail",
+      "stt_sample": "�束ته تدت Pentagon"
+    },
+    {
+      "bare": "الرزق",
+      "spoken": "الرِّزْقُ",
+      "fishOld": "الرِّزْقُ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.6,
+      "kind": "fail",
+      "stt_sample": "م كاده"
+    },
+    {
+      "bare": "بنيه",
+      "spoken": "بَنِيهِ",
+      "fishOld": "بَنِيهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.5,
+      "kind": "fail",
+      "stt_sample": "دني"
+    },
+    {
+      "bare": "بالرقيه",
+      "spoken": "بِالرُّقْيَةِ",
+      "fishOld": "بِالرُّقْيَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.571,
+      "kind": "fail",
+      "stt_sample": "دروقيا"
+    },
+    {
+      "bare": "بصره",
+      "spoken": "بَصَرَهُ",
+      "fishOld": "أَعْنِي بَصَرَهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.375,
+      "kind": "fail",
+      "stt_sample": "كبعا"
+    },
+    {
+      "bare": "بئرا",
+      "spoken": "بِئْرًا",
+      "fishOld": "بِئْرًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.4,
+      "kind": "fail",
+      "stt_sample": "بيقرون"
+    },
+    {
+      "bare": "الصداع",
+      "spoken": "الصُّدَاعِ",
+      "fishOld": "أَعْنِي الصُّدَاعَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.6,
+      "kind": "fail",
+      "stt_sample": "آنسودا"
+    },
+    {
+      "bare": "مئه وعشرين يوما",
+      "spoken": "مِئَةً وَعِشْرِينَ يَوْمًا",
+      "fishOld": "مِئَةً وَعِشْرِينَ يَوْمًا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.308,
+      "kind": "fail",
+      "stt_sample": "100 و 20 يوم"
+    },
+    {
+      "bare": "ما اعظم الذنوب عند الله",
+      "spoken": "مَا أَعْظَمُ الذُّنُوبِ عِنْدَ اللَّهِ",
+      "fishOld": "مَا أَعْظَمُ الذُّنُوبِ عِنْدَ اللَّهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.842,
+      "kind": "weak",
+      "stt_sample": "ما أعضم الدنوب يند الله"
+    },
+    {
+      "bare": "ما هو الطاغوت",
+      "spoken": "مَا هُوَ الطَّاغُوتُ؟",
+      "fishOld": "مَا هُوَ الطَّاغُوتُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.636,
+      "kind": "weak",
+      "stt_sample": "ما هو طغود؟"
+    },
+    {
+      "bare": "من هو راس الطواغيت",
+      "spoken": "مَنْ هُوَ رَأْسُ الطَّوَاغِيتِ؟",
+      "fishOld": "مَنْ هُوَ رَأْسُ الطَّوَاغِيتِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "من هو رأس الطوى فيد"
+    },
+    {
+      "bare": "ما الحكم في قوله ومن الناس من يتخذ من دون الله اندادا يحبونهم كحب الله",
+      "spoken": "مَا الحُكْمُ فِي قَوْلِهِ: (وَمِنَ النَّاسِ مَنْ يَتَّخِذُ مِنْ دُونِ اللَّهِ أَنْدَادًا يُحِبُّونَهُمْ كَحُبِّ اللَّهِ)؟",
+      "fishOld": "مَا الحُكْمُ فِي قَوْلِهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "ملحكم في قوله"
+    },
+    {
+      "bare": "ما الفرق بين النذر لله والنذر لغير الله",
+      "spoken": "مَا الفَرْقُ بَيْنَ النَّذْرِ لِلَّهِ وَالنَّذْرِ لِغَيْرِ اللَّهِ؟",
+      "fishOld": "مَا الفَرْقُ بَيْنَ النَّذْرِ لِلَّهِ وَالنَّذْرِ لِغَيْرِ اللَّهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.813,
+      "kind": "weak",
+      "stt_sample": "ملفرق بين الندر لله وندر لغير الله"
+    },
+    {
+      "bare": "لماذا اعتبر التطير شركا",
+      "spoken": "لِمَاذَا اعْتُبِرَ التَّطَيُّرُ شِرْكًا؟",
+      "fishOld": "لِمَاذَا اعْتُبِرَ التَّطَيُّرُ شِرْكًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "لماذا اعتبر الططيور وشركن؟"
+    },
+    {
+      "bare": "ما الفرق بين الرياء والسمعه",
+      "spoken": "مَا الْفَرْقُ بَيْنَ الرِّيَاءِ وَالسُّمْعَةِ؟",
+      "fishOld": "مَا الْفَرْقُ بَيْنَ الرِّيَاءِ وَالسُّمْعَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.783,
+      "kind": "weak",
+      "stt_sample": "ملفارك بين الرئي والسما"
+    },
+    {
+      "bare": "لماذا سمي الشرك ظلما في القران",
+      "spoken": "لِمَاذَا سُمِّيَ الشِّرْكُ ظُلْمًا فِي الْقُرْآنِ؟",
+      "fishOld": "لِمَاذَا سُمِّيَ الشِّرْكُ ظُلْمًا فِي الْقُرْآنِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "لماذا سمي الشرق دول من في القرآن؟"
+    },
+    {
+      "bare": "قول توكلت علي الله وعليك شرك اصغر",
+      "spoken": "قَوْلُ: تَوَكَّلْتُ عَلَى اللَّهِ وَعَلَيْكَ شِرْكٌ أَصْغَرُ.",
+      "fishOld": "قَوْلُ تَوَكَّلْتُ عَلَى اللَّهِ وَعَلَيْكَ شِرْكٌ أَصْغَرُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.839,
+      "kind": "weak",
+      "stt_sample": "قولوا توقلت على الله وعليك شركوا أصغر"
+    },
+    {
+      "bare": "الشرك سمي ظلما لانه",
+      "spoken": "الشِّرْكِ سمّي ظلماً لِأَنَّهُ:",
+      "fishOld": "الشِّرْكِ سمّي ظلماً لِأَنَّهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.813,
+      "kind": "weak",
+      "stt_sample": "أششر كسم يضلم لأنه"
+    },
+    {
+      "bare": "المراد ب الطاغوت المشتق من الطغيان هو",
+      "spoken": "الْمُرَادُ بِ «الطَّاغُوتِ» الْمُشْتَقِّ مِنَ الطُّغْيَانِ هُوَ:",
+      "fishOld": "الْمَقْصُودُ بِالطَّاغُوتِ الْمُشْتَقِّ مِنَ الطُّغْيَانِ هُوَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.771,
+      "kind": "weak",
+      "stt_sample": "المقصوض بالطاروت المستقيم من الطريع نهوة"
+    },
+    {
+      "bare": "الشرك الاصغر",
+      "spoken": "الشِّرْكِ الْأَصْغَرُ:",
+      "fishOld": "الشِّرْكِ  الْأَصْغَرْْ",
+      "count": 4,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "الشرق الاسغر"
+    },
+    {
+      "bare": "سبب النهي عن سب الريح انه",
+      "spoken": "سَبَبُ النَّهْيِ عَنْ سبّ الرِّيحُ أَنَّهُ:",
+      "fishOld": "سَبَبُ النَّهْيِ عَنْ سبّ الرِّيحُ أَنَّهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "سبب النه عن سبريه أنه"
+    },
+    {
+      "bare": "التميمه شيء يعلق علي الاولاد ل",
+      "spoken": "التَّمِيمَةُ شَيْءٌ يُعلّق عَلَى الْأَوْلَادِ ل:",
+      "fishOld": "التَّمِيمَةُ شَيْءٌ يُعلّق عَلَى الْأَوْلَادِ ل",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "التميمة الشيء يعلق على الأولاد لديه"
+    },
+    {
+      "bare": "رخص من الرقي ما خلا من",
+      "spoken": "رُخّص مَنْ الرُّقَى مَا خَلَا مَنْ:",
+      "fishOld": "رُخّص مَنْ الرُّقَى مَا خَلَا مَنْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.765,
+      "kind": "weak",
+      "stt_sample": "رخص منر اما خلمن"
+    },
+    {
+      "bare": "اللهم لا تجعل قبري وثنا يعبد دعاء يحذر من",
+      "spoken": "«اللَّهُمَّ لَا تَجْعَلْ قَبْرِي وَثَنًا يُعْبَدُ» دُعَاءٌ يُحَذِّرُ مِنْ:",
+      "fishOld": "اللَّهُمَّ لَا تَجْعَلْ قَبْرِي وَثَنًا يُعْبَدُ دُعَاءٌ يُحَذِّرُ مِنْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.767,
+      "kind": "weak",
+      "stt_sample": "اللهم لا تجعل قبر وثنى يعبدوا دعاءوا يحذروا من اللهم"
+    },
+    {
+      "bare": "يكني الرجل باكبر",
+      "spoken": "يُكَنَّى الرَّجُلُ بِأَكْبَرِ:",
+      "fishOld": "يُكَنَّى الرَّجُلُ بِأَكْبَرِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.786,
+      "kind": "weak",
+      "stt_sample": "يمكن رجل بأكبر"
+    },
+    {
+      "bare": "في حديث ذات انواط كان المشركون يعكفون عند سدره و",
+      "spoken": "فِي حَدِيثٍ \"ذَاتَ أَنْوَاطٍ\": كَانَ الْمُشْرِكُونَ يَعْكُفُونَ عِنْدَ سِدْرَةٍ و:",
+      "fishOld": "فِي حَدِيثٍ ذَاتِ  أَنْوَاطْ كَانَ الْمُشْرِكُونَ يَعْكُفُونَ عِنْدَ سِدْرَةٍ و",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.722,
+      "kind": "weak",
+      "stt_sample": "في حديث ذات أنواطي كان المشركون يعكفون عند سدرة ولوان ديما قل متلم"
+    },
+    {
+      "bare": "الاستغاثه معناها",
+      "spoken": "الِاسْتِغَاثَةَ مَعْنَاهَا:",
+      "fishOld": "الِاسْتِغَاثَةَ مَعْنَاهَا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.733,
+      "kind": "weak",
+      "stt_sample": "الاجترات تمعناها"
+    },
+    {
+      "bare": "الطيره هي التشاؤم ب",
+      "spoken": "الطِّيَرَةُ هِيَ التَّشَاؤُمُ ب:",
+      "fishOld": "الطِّيَرَةُ هِيَ التَّشَاؤُمُ ب",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.765,
+      "kind": "weak",
+      "stt_sample": "الطيرة تحية تشاء مبي"
+    },
+    {
+      "bare": "الهامه التي نفاها الحديث تشاؤمهم ب",
+      "spoken": "الْهَامَّةُ الَّتِي نَفَاهَا الْحَدِيثِ: تَشَاؤُمُهُمْ ب:",
+      "fishOld": "الْهَامَّةُ الَّتِي نَفَاهَا الْحَدِيثِ تَشَاؤُمُهُمْ ب",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الحمة التي نفاح الحديث تشاءوا مهم بي"
+    },
+    {
+      "bare": "سب الدهر يقع عند",
+      "spoken": "سَبُّ الدَّهْرِ يَقَعُ عِنْدَ:",
+      "fishOld": "سَبُّ الدَّهْرِ يَقَعُ عِنْدَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "سب ده ريقع وإند"
+    },
+    {
+      "bare": "خطا",
+      "spoken": "خَطَأٌ",
+      "fishOld": "هَذَا خَطَأٌ",
+      "count": 60,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "هذا خطعون"
+    },
+    {
+      "bare": "الملائكه فقط",
+      "spoken": "الْمَلَائِكَةُ فَقَطْ",
+      "fishOld": "الْمَلَائِكَةُ  فَقَطْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.692,
+      "kind": "weak",
+      "stt_sample": "الملاعي كدو فقط"
+    },
+    {
+      "bare": "الشياطين فقط",
+      "spoken": "الشَّيَاطِينُ فَقَطْ",
+      "fishOld": "الشَّيَاطِينُ فَقَطْ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.769,
+      "kind": "weak",
+      "stt_sample": "الشياطين وفقات"
+    },
+    {
+      "bare": "الايمان بالملائكه",
+      "spoken": "الْإِيمَانُ بِالْمَلَائِكَةِ",
+      "fishOld": "الْإِيمَانِ بِالْمَلَائِكَةِ",
+      "count": 2,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.813,
+      "kind": "weak",
+      "stt_sample": "اليمان بالملاققة"
+    },
+    {
+      "bare": "الصيام فقط",
+      "spoken": "الصِّيَامُ فَقَطْ",
+      "fishOld": "الصِّيَامُ فَقَطْ",
+      "count": 4,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "أصياء مفقات"
+    },
+    {
+      "bare": "الشرك بالله",
+      "spoken": "الشِّرْكُ بِاللَّهِ",
+      "fishOld": "الشِّرْكُ بِاللَّهِ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "أشركوا بالله"
+    },
+    {
+      "bare": "قتل النفس",
+      "spoken": "قَتْلُ النَّفْسِ",
+      "fishOld": "قَتْلُ  النَّفْسِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "قطلو النفس"
+    },
+    {
+      "bare": "السرقه",
+      "spoken": "السَّرِقَةُ",
+      "fishOld": "أَعْنِي السَّرِقَةَ",
+      "count": 2,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "آن السرقة"
+    },
+    {
+      "bare": "الصلاه",
+      "spoken": "الصَّلَاةُ",
+      "fishOld": "الصَّلَاةِ",
+      "count": 9,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "أسلات"
+    },
+    {
+      "bare": "لا حي الا الله",
+      "spoken": "لَا حَيَّ إِلَّا اللَّهَ",
+      "fishOld": "لَا حَيَّ إِلَّا اللَّهَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "لا حيئ الله"
+    },
+    {
+      "bare": "النطق بها فقط",
+      "spoken": "النُّطْقُ بِهَا فَقَطْ",
+      "fishOld": "النُّطْقُ بِهَا فَقَطْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.692,
+      "kind": "weak",
+      "stt_sample": "أن نوت قبيها فقط"
+    },
+    {
+      "bare": "الشيطان فقط",
+      "spoken": "الشَّيْطَانُ فَقَطْ",
+      "fishOld": "الشَّيْطَانُ فَقَطْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "الشيطان وفقات"
+    },
+    {
+      "bare": "الكهان فقط",
+      "spoken": "الْكُهَّانُ فَقَطْ",
+      "fishOld": "الْكُهَّانُ فَقَطْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "الكهان وفقات"
+    },
+    {
+      "bare": "شرك اكبر",
+      "spoken": "شِرْكٌ أَكْبَرُ",
+      "fishOld": "شِرْكٌ أَكْبَرُ",
+      "count": 13,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "شرقون أكبر"
+    },
+    {
+      "bare": "ابو جهل",
+      "spoken": "أَبُو جَهْلٍ",
+      "fishOld": "أَبُو جَهْلٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "ابجهل"
+    },
+    {
+      "bare": "مكروه",
+      "spoken": "مَكْرُوهٌ",
+      "fishOld": "مَكْرُوهٌ",
+      "count": 19,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "مكروحن"
+    },
+    {
+      "bare": "مباح",
+      "spoken": "مُبَاحٌ",
+      "fishOld": "مُبَاحٌ",
+      "count": 15,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "مباحن"
+    },
+    {
+      "bare": "واجب",
+      "spoken": "وَاجِبٌ",
+      "fishOld": "وَاجِبٌ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "واجبون"
+    },
+    {
+      "bare": "شرك",
+      "spoken": "شِرْكٌ",
+      "fishOld": "شِرْكٌ",
+      "count": 6,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "شرقا"
+    },
+    {
+      "bare": "حرام",
+      "spoken": "حَرَامٌ",
+      "fishOld": "حَرَامٌ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "حرامل"
+    },
+    {
+      "bare": "مستحب",
+      "spoken": "مُسْتَحَبٌّ",
+      "fishOld": "مُسْتَحَبٌّ",
+      "count": 10,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "مستحف"
+    },
+    {
+      "bare": "جائز للضروره",
+      "spoken": "جَائِزٌ لِلضَّرُورَةِ",
+      "fishOld": "جَائِزٌ لِلضَّرُورَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "جاء يزن لدرورة"
+    },
+    {
+      "bare": "الدعاء سنه فقط",
+      "spoken": "الدُّعَاءُ سُنَّةٌ فَقَطْ",
+      "fishOld": "الدُّعَاءُ سُنَّةٌ فَقَطْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أدعاء وشنة فقط"
+    },
+    {
+      "bare": "كفر",
+      "spoken": "كُفْرٌ",
+      "fishOld": "كُفْرٌ",
+      "count": 5,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "كفرن"
+    },
+    {
+      "bare": "ترك الصلاه",
+      "spoken": "تَرْكُ الصَّلَاةِ",
+      "fishOld": "تَرْكُ الصَّلَاةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "تركوا صلاتي"
+    },
+    {
+      "bare": "شرك اصغر",
+      "spoken": "شِرْكٌ أَصْغَرُ",
+      "fishOld": "شِرْكٌ أَصْغَرُ",
+      "count": 7,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "شرقوا عصغر"
+    },
+    {
+      "bare": "القتل",
+      "spoken": "القَتْلُ",
+      "fishOld": "الْقَتْلُ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "القطلو"
+    },
+    {
+      "bare": "الوضوء",
+      "spoken": "الوُضُوءُ",
+      "fishOld": "هُوَ الْوُضُوءُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "حوال وضو"
+    },
+    {
+      "bare": "لان الاشجار تضر",
+      "spoken": "لِأَنَّ الأَشْجَارَ تَضُرُّ",
+      "fishOld": "لِأَنَّ الأَشْجَارَ تَضُرُّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.813,
+      "kind": "weak",
+      "stt_sample": "لأن الأشجارة تضروا"
+    },
+    {
+      "bare": "يجوز بشرط",
+      "spoken": "يَجُوزُ بِشَرْطٍ",
+      "fishOld": "يَجُوزُ بِشَرْطٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "يجوز بشارطين"
+    },
+    {
+      "bare": "ذبحوا لله",
+      "spoken": "ذَبَحُوا لِلَّهِ",
+      "fishOld": "ذَبَحُوا لِلَّهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "دبح لله"
+    },
+    {
+      "bare": "لانه يسبب الشك",
+      "spoken": "لِأَنَّهُ يُسَبِّبُ الشَّكَّ",
+      "fishOld": "لِأَنَّهُ يُسَبِّبُ الشَّكَّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "لأنه يُسَبِ بُشَّك"
+    },
+    {
+      "bare": "لانه مضيعه للوقت",
+      "spoken": "لِأَنَّهُ مُضَيَّعَةٌ لِلْوَقْتِ",
+      "fishOld": "لِأَنَّهُ مُضَيَّعَةٌ لِلْوَقْتِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.813,
+      "kind": "weak",
+      "stt_sample": "لأنهم مضيعات للوقت"
+    },
+    {
+      "bare": "السمعه اشد",
+      "spoken": "السُّمْعَةُ أَشَدُّ",
+      "fishOld": "السُّمْعَةُ أَشَدُّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "السمعات وأشده"
+    },
+    {
+      "bare": "الرياء خاص بالصلاه",
+      "spoken": "الرِّيَاءُ خَاصٌّ بِالصَّلَاةِ",
+      "fishOld": "الرِّيَاءُ خَاصٌّ بِالصَّلَاةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.824,
+      "kind": "weak",
+      "stt_sample": "أريا أخاصون بالصلاة"
+    },
+    {
+      "bare": "الاصغر اشد",
+      "spoken": "الْأَصْغَرُ أَشَدُّ",
+      "fishOld": "الْأَصْغَرُ أَشَدُّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "الأصغر وأشده"
+    },
+    {
+      "bare": "لانه كذب",
+      "spoken": "لِأَنَّهُ كَذِبٌ",
+      "fishOld": "لِأَنَّهُ كَذِبٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "لأنه كدبون"
+    },
+    {
+      "bare": "كثره الصلاه",
+      "spoken": "كَثْرَةُ الصَّلَاةِ",
+      "fishOld": "كَثْرَةُ  الصَّلَاةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "كثرة أصالات"
+    },
+    {
+      "bare": "جائز اذا كان للتسليه",
+      "spoken": "جَائِزٌ إِذَا كَانَ لِلتَّسْلِيَةِ",
+      "fishOld": "جَائِزٌ إِذَا كَانَ لِلتَّسْلِيَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.722,
+      "kind": "weak",
+      "stt_sample": "جاء إذن إذا كان لتسليع"
+    },
+    {
+      "bare": "سنه",
+      "spoken": "سُنَّةٌ",
+      "fishOld": "سُنَّةٌ",
+      "count": 8,
+      "books": [
+        "nawawi",
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.286,
+      "kind": "weak",
+      "stt_sample": "سون حطون"
+    },
+    {
+      "bare": "هدم الاصنام",
+      "spoken": "هَدْمُ الْأَصْنَامِ",
+      "fishOld": "هَدْمُ الْأَصْنَامِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "حد مل أصنام"
+    },
+    {
+      "bare": "هما نفس الشيء",
+      "spoken": "هُمَا نَفْسُ الشَّيْءِ",
+      "fishOld": "هُمَا نَفْسُ الشَّيْءِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "همانف سوشي"
+    },
+    {
+      "bare": "الامن الكامل لمن حقق التوحيد والهدايه لمن لم يلبسه بالشرك",
+      "spoken": "الْأَمْنُ الْكَامِلُ لِمَنْ حَقَّقَ التَّوْحِيدَ، وَالْهِدَايَةُ لِمَنْ لَمْ يَلْبِسْهُ بِالشِّرْكِ",
+      "fishOld": "الْأَمْنُ الْكَامِلُ لِمَنْ حَقَّقَ التَّوْحِيدَ وَالْهِدَايَةُ لِمَنْ لَمْ يَلْبِسْهُ بِالشِّرْكِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.813,
+      "kind": "weak",
+      "stt_sample": "الأمن الكامل لمن حق قطة و الهداية لمن لم يلبسه بشرك"
+    },
+    {
+      "bare": "مئه الف",
+      "spoken": "مِئَةُ أَلْفٍ",
+      "fishOld": "هِيَ مِئَةُ أَلْفٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "هي مئة علفن"
+    },
+    {
+      "bare": "خمسون الفا",
+      "spoken": "خَمْسُونَ أَلْفًا",
+      "fishOld": "خَمْسُونَ أَلْفًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "خمسون علفم"
+    },
+    {
+      "bare": "الرياء",
+      "spoken": "الرِّيَاءُ",
+      "fishOld": "أَعْنِي الرِّيَاءَ فِي الْعَمَلِ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.824,
+      "kind": "weak",
+      "stt_sample": "اعني الرئة في العمل"
+    },
+    {
+      "bare": "حرام ولا تقبل صلاته يوما فان صدقهم كفر",
+      "spoken": "حَرَامٌ وَلَا تُقْبَلُ صَلَاتُهُ 40 يَوْمًا، فَإِنْ صَدَّقَهُمْ كَفَرَ",
+      "fishOld": "حَرَامٌ وَلَا تُقْبَلُ صَلَاتُهُ 40 يَوْمًا فَإِنْ صَدَّقَهُمْ كَفَرَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.838,
+      "kind": "weak",
+      "stt_sample": "حرام ولا تقبل صلاته 40 يوماً فإن صدقهم كفر"
+    },
+    {
+      "bare": "شفاعه الملائكه",
+      "spoken": "شَفَاعَةُ المَلَائِكَةِ",
+      "fishOld": "شَفَاعَةُ المَلَائِكَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "شفاعة الملاقك"
+    },
+    {
+      "bare": "ان لا يعذبهم",
+      "spoken": "أَنْ لَا يُعَذِّبَهُمْ",
+      "fishOld": "أَنْ لَا يُعَذِّبَهُمْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "لا يعدي بهم"
+    },
+    {
+      "bare": "شرك لفظي والصواب ما شاء الله ثم شئت",
+      "spoken": "شِرْكٌ لفظي، وَالصَّوَابُ: مَا شَاءَ اللَّهُ ثُمَّ شِئْتَ",
+      "fishOld": "شِرْكٌ لفظي وَالصَّوَابُ مَا شَاءَ اللَّهُ ثُمَّ شِئْتَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.821,
+      "kind": "weak",
+      "stt_sample": "شركن لفضي وصواب مشاء الله تمشئت"
+    },
+    {
+      "bare": "الصوم",
+      "spoken": "الصَّوْمِ",
+      "fishOld": "أَعْنِي صَوْمَ رَمَضَانَ",
+      "count": 4,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "يعني سوم رمضان"
+    },
+    {
+      "bare": "توحيد الطاعه",
+      "spoken": "تَوْحِيدُ الطَّاعَةِ",
+      "fishOld": "تَوْحِيدُ الطَّاعَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.636,
+      "kind": "weak",
+      "stt_sample": "توحيد طاق"
+    },
+    {
+      "bare": "الالوهيه",
+      "spoken": "الْأُلُوهِيَّةِ",
+      "fishOld": "الْأُلُوهِيَّةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "الأولوحية"
+    },
+    {
+      "bare": "الربوبيه",
+      "spoken": "الرُّبُوبِيَّةِ",
+      "fishOld": "الرُّبُوبِيَّةِ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "ربوبي"
+    },
+    {
+      "bare": "العباده",
+      "spoken": "الْعِبَادَةِ",
+      "fishOld": "الْعِبَادَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "الى إبادة"
+    },
+    {
+      "bare": "الشرك الاكبر",
+      "spoken": "الشِّرْكِ الْأَكْبَرُ",
+      "fishOld": "الشِّرْكِ الْأَكْبَرُ",
+      "count": 4,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "عشير كلاكبر"
+    },
+    {
+      "bare": "الشرك",
+      "spoken": "الشِّرْكِ",
+      "fishOld": "أَعْنِي الشِّرْكَ",
+      "count": 8,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "عن الشرك"
+    },
+    {
+      "bare": "الكذب",
+      "spoken": "الْكَذِبُ",
+      "fishOld": "الْكَذِبُ",
+      "count": 4,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "الكدبو"
+    },
+    {
+      "bare": "الخلق للزينه",
+      "spoken": "الْخَلْقِ لِلزِّينَةِ",
+      "fishOld": "الْخَلْقِ لِلزِّينَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "الخلق لزينا"
+    },
+    {
+      "bare": "انما الاعمال بالنيات",
+      "spoken": "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
+      "fishOld": "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.722,
+      "kind": "weak",
+      "stt_sample": "إنم الأعمال وبنية"
+    },
+    {
+      "bare": "الدين النصيحه",
+      "spoken": "الدِّينِ النَّصِيحَةُ",
+      "fishOld": "الدِّينِ النَّصِيحَةُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "الدينة نسيحة"
+    },
+    {
+      "bare": "كثره المال",
+      "spoken": "كَثْرَةُ الْمَالِ",
+      "fishOld": "أَعْنِي كَثْرَةَ الْمَالِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "عن كثرة المال"
+    },
+    {
+      "bare": "الجاه",
+      "spoken": "الْجَاهُ",
+      "fishOld": "الْجَاهُ",
+      "count": 3,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الجاهو"
+    },
+    {
+      "bare": "ذكر مطلق",
+      "spoken": "ذِكْرٌ مُطْلَقٌ",
+      "fishOld": "هُوَ ذِكْرٌ مُطْلَقٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "هو ذكر المطلق"
+    },
+    {
+      "bare": "دعاء",
+      "spoken": "دُعَاءُ",
+      "fishOld": "أَعْنِي الدُّعَاءَ لِلَّهِ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "عن الدعاء لله"
+    },
+    {
+      "bare": "تسبيح",
+      "spoken": "تَسْبِيحٌ",
+      "fishOld": "تَسْبِيحٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "تسبيحون"
+    },
+    {
+      "bare": "حقق التوحيد",
+      "spoken": "حَقَّقَ التَّوْحِيدَ",
+      "fishOld": "حَقَّقَ التَّوْحِيدَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "حققة توحيد"
+    },
+    {
+      "bare": "طلب الجاه",
+      "spoken": "طَلَبَ الْجَاهَ",
+      "fishOld": "طَلَبَ الْجَاهَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "طنب الجهة"
+    },
+    {
+      "bare": "سافر",
+      "spoken": "سَافَرَ",
+      "fishOld": "قَدْ سَافَرَ",
+      "count": 2,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "قد سفر"
+    },
+    {
+      "bare": "الصوم فقط",
+      "spoken": "الصَّوْمِ فَقَطْ",
+      "fishOld": "الصَّوْمِ فَقَطْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "أسومي فقط"
+    },
+    {
+      "bare": "قله مال",
+      "spoken": "قِلَّةُ مَالٍ",
+      "fishOld": "قِلَّةُ مَالٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "قلت مالن"
+    },
+    {
+      "bare": "ضعف",
+      "spoken": "ضَعْفٌ",
+      "fishOld": "ضَعْفٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.333,
+      "kind": "weak",
+      "stt_sample": "دف"
+    },
+    {
+      "bare": "جهل",
+      "spoken": "جَهْلٌ",
+      "fishOld": "جَهْلٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.6,
+      "kind": "weak",
+      "stt_sample": "جهلون"
+    },
+    {
+      "bare": "من اهل النار",
+      "spoken": "مِنْ أَهْلِ النَّارِ",
+      "fishOld": "مِنْ أَهْلِ النَّارِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "من أهل نار"
+    },
+    {
+      "bare": "الفقر",
+      "spoken": "الْفَقْرَ",
+      "fishOld": "الْفَقْرَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "الفكرة"
+    },
+    {
+      "bare": "عباده الاصنام",
+      "spoken": "عِبَادَةٌ الْأَصْنَامِ",
+      "fishOld": "عِبَادَةٌ الْأَصْنَامِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.769,
+      "kind": "weak",
+      "stt_sample": "عيبادة لأرسنام"
+    },
+    {
+      "bare": "المرض",
+      "spoken": "الْمَرَضَ",
+      "fishOld": "الْمَرَضَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "المرق"
+    },
+    {
+      "bare": "الجوع",
+      "spoken": "الْجُوعَ",
+      "fishOld": "هُوَ الْجُوعُ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "حوالجور"
+    },
+    {
+      "bare": "نادر جدا",
+      "spoken": "نَادِرٌ جِدًّا",
+      "fishOld": "نَادِرٌ جِدًّا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "نادر انجدن"
+    },
+    {
+      "bare": "لا يقع",
+      "spoken": "لَا يَقَعُ",
+      "fishOld": "لَا يَقَعُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "لا يقعو"
+    },
+    {
+      "bare": "الاصنام فقط",
+      "spoken": "الْأَصْنَامِ فَقَطْ",
+      "fishOld": "الْأَصْنَامِ فَقَطْ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "الأسنامي فقر"
+    },
+    {
+      "bare": "جسر فوق النار",
+      "spoken": "جِسْرٌ فَوْقَ النَّارِ",
+      "fishOld": "جِسْرٌ فَوْقَ النَّارِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "جسرون فوق النر"
+    },
+    {
+      "bare": "يلبسوا الثياب",
+      "spoken": "يَلْبَسُوا الثِّيَابَ",
+      "fishOld": "يَلْبَسُوا الثِّيَابَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "يلبس الثياب"
+    },
+    {
+      "bare": "يخفوا",
+      "spoken": "يُخْفُوا",
+      "fishOld": "أَنْ يُخْفُوا الْحَقَّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "أن يغفو الحب"
+    },
+    {
+      "bare": "يتركوا",
+      "spoken": "يَتْرُكُوا",
+      "fishOld": "يَتْرُكُوا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "يترقوا"
+    },
+    {
+      "bare": "الكبر",
+      "spoken": "الْكِبْرُ",
+      "fishOld": "الْكِبْرُ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "لكي برو"
+    },
+    {
+      "bare": "الصابر",
+      "spoken": "الصَّابِرُ",
+      "fishOld": "الصَّابِرُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الصابع"
+    },
+    {
+      "bare": "لا يصومون",
+      "spoken": "لَا يَصُومُونَ",
+      "fishOld": "لَا يَصُومُونَ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "لا يسمون"
+    },
+    {
+      "bare": "لا يزكون",
+      "spoken": "لَا يُزَكُّونَ",
+      "fishOld": "لَا يُزَكُّونَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "لا يزاقون"
+    },
+    {
+      "bare": "ابو هريره",
+      "spoken": "أَبُو هُرَيْرَةَ",
+      "fishOld": "هُوَ أَبُو  هُرَيْرَةَ",
+      "count": 7,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.636,
+      "kind": "weak",
+      "stt_sample": "هو ابو حرائرة"
+    },
+    {
+      "bare": "عكاشه بن محصن",
+      "spoken": "عُكَّاشَةُ بْنُ مِحْصَنٍ",
+      "fishOld": "عُكَّاشَةُ بْنُ مِحْصَنٍ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "أو كاشة بن محسن"
+    },
+    {
+      "bare": "يخلد في النار",
+      "spoken": "يخلّد فِي النَّارِ",
+      "fishOld": "يخلّد فِي النَّارِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "يوخل دو فناري"
+    },
+    {
+      "bare": "الشجر",
+      "spoken": "الشَّجَرُ",
+      "fishOld": "أَعْنِي الشَّجَرَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "آن الشجر"
+    },
+    {
+      "bare": "ان الرياء مباح",
+      "spoken": "أَنَّ الرِّيَاءُ مُبَاحٌ",
+      "fishOld": "أَنَّ الرِّيَاءُ مُبَاحٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أن رياه مباحاً"
+    },
+    {
+      "bare": "الصمت",
+      "spoken": "الصَّمْتُ",
+      "fishOld": "الصَّمْتُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أصمتوا"
+    },
+    {
+      "bare": "اليمن",
+      "spoken": "الْيَمَنِ",
+      "fishOld": "هُوَ الْيَمَنْ",
+      "count": 2,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.333,
+      "kind": "weak",
+      "stt_sample": "وإسبب من هذا هو الإلمن"
+    },
+    {
+      "bare": "مصر",
+      "spoken": "مِصْرَ",
+      "fishOld": "مِصْرَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "نصرا"
+    },
+    {
+      "bare": "العراق",
+      "spoken": "الْعِرَاقِ",
+      "fishOld": "الْعِرَاقِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "العراف"
+    },
+    {
+      "bare": "الطعام",
+      "spoken": "الطَّعَامِ",
+      "fishOld": "الطَّعَامِ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أطعام"
+    },
+    {
+      "bare": "الزينه",
+      "spoken": "الزِّينَةُ",
+      "fishOld": "الزِّينَةُ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أزينا"
+    },
+    {
+      "bare": "اتقاء العين",
+      "spoken": "اتِّقَاءِ الْعَيْنِ",
+      "fishOld": "اتِّقَاءِ الْعَيْنِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "التقائل عين"
+    },
+    {
+      "bare": "اشرك",
+      "spoken": "أَشْرَكَ",
+      "fishOld": "أَشْرَكَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "أشراك"
+    },
+    {
+      "bare": "ظلم",
+      "spoken": "ظَلَمَ",
+      "fishOld": "الظُّلْمُ كَبِيرَةٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "أدول مكبيرا"
+    },
+    {
+      "bare": "الدعاء",
+      "spoken": "الدُّعَاءِ",
+      "fishOld": "أَعْنِي الدُّعَاءَ لِلَّهِ",
+      "count": 6,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "عن الدعاء لله"
+    },
+    {
+      "bare": "وهنا",
+      "spoken": "وهناً",
+      "fishOld": "وهناً",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "وحنا"
+    },
+    {
+      "bare": "نفاق",
+      "spoken": "نِفَاقٌ",
+      "fishOld": "أَعْنِي النِّفَاقَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "أعني نفاق"
+    },
+    {
+      "bare": "قوه",
+      "spoken": "قُوَّةً",
+      "fishOld": "قُوَّةً",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "كوةً"
+    },
+    {
+      "bare": "صحه",
+      "spoken": "صِحَّةِ",
+      "fishOld": "صِحَّةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "صحتي"
+    },
+    {
+      "bare": "الي الناس",
+      "spoken": "إِلَى النَّاسِ",
+      "fishOld": "إِلَى النَّاسِ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "إلا نس"
+    },
+    {
+      "bare": "الظل",
+      "spoken": "الظِّلِّ",
+      "fishOld": "أَعْنِي الظِّلَّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "أعني بال"
+    },
+    {
+      "bare": "الثمر",
+      "spoken": "الثَّمَرِ",
+      "fishOld": "الثَّمَرِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "أثمار"
+    },
+    {
+      "bare": "الطائف",
+      "spoken": "الطَّائِفِ",
+      "fishOld": "هُوَ الطَّائِفُ",
+      "count": 2,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "حوة طائف"
+    },
+    {
+      "bare": "مكه",
+      "spoken": "مَكَّةَ",
+      "fishOld": "مَكَّةُ",
+      "count": 2,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "مكى"
+    },
+    {
+      "bare": "ادع لنا ربك",
+      "spoken": "ادْعُ لَنَا رَبَّكَ",
+      "fishOld": "ادْعُ لَنَا رَبَّكَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "ادعو لنا ربكا"
+    },
+    {
+      "bare": "الفرس",
+      "spoken": "الْفُرْسُ",
+      "fishOld": "الْفُرْسُ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الفرسو"
+    },
+    {
+      "bare": "اليهود",
+      "spoken": "الْيَهُودُ",
+      "fishOld": "الْيَهُودُ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الى حدو"
+    },
+    {
+      "bare": "السفر",
+      "spoken": "السَّفَرِ",
+      "fishOld": "السَّفَرِ",
+      "count": 3,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "أسفر"
+    },
+    {
+      "bare": "الزواج",
+      "spoken": "الزَّوَاجِ",
+      "fishOld": "هُوَ الزَّوَاجُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "خوة زواجه"
+    },
+    {
+      "bare": "من حج",
+      "spoken": "مَنْ حجّ",
+      "fishOld": "مَنْ حجّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "من حجة"
+    },
+    {
+      "bare": "من تصدق",
+      "spoken": "مَنْ تَصَدَّقَ",
+      "fishOld": "مَنْ تَصَدَّقَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "من تصوط دقى"
+    },
+    {
+      "bare": "نجا في الدنيا",
+      "spoken": "نَجَا فِي الدُّنْيَا",
+      "fishOld": "نَجَا فِي الدُّنْيَا",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "نجا فدنيا"
+    },
+    {
+      "bare": "صغيره",
+      "spoken": "صَغِيرَةٌ",
+      "fishOld": "إِنَّهَا صَغِيرَةٌ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "إنها صغيرة تن"
+    },
+    {
+      "bare": "البر",
+      "spoken": "الْبِرُّ",
+      "fishOld": "الْبِرُّ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "البرو"
+    },
+    {
+      "bare": "تنظيفها",
+      "spoken": "تَنْظِيفِهَا",
+      "fishOld": "أَعْنِي تَنْظِيفَهَا",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "تعني تنبي فهر"
+    },
+    {
+      "bare": "هدم القبر",
+      "spoken": "هَدْمُ الْقَبْرِ",
+      "fishOld": "هَدْمُ الْقَبْرِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "حد ملقبر"
+    },
+    {
+      "bare": "مساجد",
+      "spoken": "مَسَاجِدَ",
+      "fishOld": "مَسَاجِدَ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "مسجد"
+    },
+    {
+      "bare": "بيوتا",
+      "spoken": "بيوتاً",
+      "fishOld": "بيوتاً",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "بيوتن"
+    },
+    {
+      "bare": "اسواقا",
+      "spoken": "أَسْوَاقًا",
+      "fishOld": "أَسْوَاقًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أسواقن"
+    },
+    {
+      "bare": "حدائق",
+      "spoken": "حَدَائِقَ",
+      "fishOld": "حَدَائِقَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "حداق"
+    },
+    {
+      "bare": "الضيوف",
+      "spoken": "الضُّيُوفِ",
+      "fishOld": "الضُّيُوفِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أدويوف"
+    },
+    {
+      "bare": "زيارته مره",
+      "spoken": "زِيَارَتِهِ مَرَّةً",
+      "fishOld": "زِيَارَتِهِ مَرَّةً",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "زيارة حي مرة"
+    },
+    {
+      "bare": "ذكره",
+      "spoken": "ذِكْرِهِ",
+      "fishOld": "ذِكْرِهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "وكره"
+    },
+    {
+      "bare": "النساء",
+      "spoken": "النِّسَاءُ",
+      "fishOld": "النِّسَاءُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "و نسأل"
+    },
+    {
+      "bare": "فليرض",
+      "spoken": "فليَرْضَ",
+      "fishOld": "فليَرْضَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "فاليرضة"
+    },
+    {
+      "bare": "فليسكت",
+      "spoken": "فَلْيَسْكُتْ",
+      "fishOld": "فَلْيَسْكُتْ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "فليس جد"
+    },
+    {
+      "bare": "فليغضب",
+      "spoken": "فَلْيَغْضَبْ",
+      "fishOld": "أَعْنِي فَلْيَغْضَبْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "اعني فليرض"
+    },
+    {
+      "bare": "ما شاء الله ثم شئت",
+      "spoken": "مَا شَاءَ اللَّهُ ثُمَّ شِئْتَ",
+      "fishOld": "مَا شَاءَ اللَّهُ ثُمَّ شِئْتَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.733,
+      "kind": "weak",
+      "stt_sample": "ومعشاء الله تمشيط"
+    },
+    {
+      "bare": "المنع",
+      "spoken": "الْمَنْعَ",
+      "fishOld": "الْمَنْعَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "المناع"
+    },
+    {
+      "bare": "النفس",
+      "spoken": "النَّفْسِ",
+      "fishOld": "إِنَّهَا هِيَ النَّفْسُ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "إنها هي نفس"
+    },
+    {
+      "bare": "تزيد الربح",
+      "spoken": "تَزِيدُ الرِّبْحَ",
+      "fishOld": "تَزِيدُ الرِّبْحَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "تزيد الربها"
+    },
+    {
+      "bare": "ربح",
+      "spoken": "رَبِحَ",
+      "fishOld": "رَبِحَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.6,
+      "kind": "weak",
+      "stt_sample": "ربيحة"
+    },
+    {
+      "bare": "صدق",
+      "spoken": "صَدَّقَ",
+      "fishOld": "صَدَّقَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "صدقه"
+    },
+    {
+      "bare": "السنن",
+      "spoken": "السُّنَنِ",
+      "fishOld": "هِيَ السُّنَنُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "هيا سنا نو"
+    },
+    {
+      "bare": "نصيب من الملك",
+      "spoken": "نَصِيبٍ مِنَ الْمُلْكِ",
+      "fishOld": "نَصِيبٍ مِنَ الْمُلْكِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "نسيب من الملكي"
+    },
+    {
+      "bare": "صلاه",
+      "spoken": "صَلَاةٌ",
+      "fishOld": "أَعْنِي صَلَاةً",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "آني صلاتن"
+    },
+    {
+      "bare": "اذن له الرب",
+      "spoken": "أذِن لَهُ الربّ",
+      "fishOld": "أذِن لَهُ الربّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أدين له رب"
+    },
+    {
+      "bare": "عبدها",
+      "spoken": "عَبَدَهَا",
+      "fishOld": "عَبَدَهَا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "عبادها"
+    },
+    {
+      "bare": "للملائكه",
+      "spoken": "لِلْمَلَائِكَةِ",
+      "fishOld": "لِلْمَلَائِكَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "للملاعقة"
+    },
+    {
+      "bare": "رضا الناس",
+      "spoken": "رِضَا النَّاسِ",
+      "fishOld": "رِضَا النَّاسِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "ريض النس"
+    },
+    {
+      "bare": "النسب",
+      "spoken": "النَّسَبِ",
+      "fishOld": "أَعْنِي النَّسَبَ الشَّرِيفَ",
+      "count": 4,
+      "books": [
+        "nawawi",
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.733,
+      "kind": "weak",
+      "stt_sample": "آن النصب الشريف"
+    },
+    {
+      "bare": "غشيه وخوف",
+      "spoken": "غَشْيَةٌ وَخَوْفٌ",
+      "fishOld": "غَشْيَةٌ وَخَوْفٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "رشيت نوة خوف"
+    },
+    {
+      "bare": "فرح",
+      "spoken": "فَرَحٌ",
+      "fishOld": "فَرَحٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "فرحل"
+    },
+    {
+      "bare": "المكان فقط",
+      "spoken": "الْمَكَانِ فَقَطْ",
+      "fishOld": "الْمَكَانِ فَقَطْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "المكاني فقر"
+    },
+    {
+      "bare": "النهار",
+      "spoken": "النَّهَارَ",
+      "fishOld": "النَّهَارَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "في النهار"
+    },
+    {
+      "bare": "القمر",
+      "spoken": "الْقَمَرِ",
+      "fishOld": "الْقَمَرِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "القماري"
+    },
+    {
+      "bare": "الشمس",
+      "spoken": "الشَّمْسَ",
+      "fishOld": "أَعْنِي الشَّمْسَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "هاني شمس"
+    },
+    {
+      "bare": "النجوم",
+      "spoken": "النُّجُومَ",
+      "fishOld": "النُّجُومَ",
+      "count": 4,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "نجوم"
+    },
+    {
+      "bare": "الليل فقط",
+      "spoken": "اللَّيْلُ فَقَطْ",
+      "fishOld": "اللَّيْلُ فَقَطْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.636,
+      "kind": "weak",
+      "stt_sample": "الليلوا فقاب"
+    },
+    {
+      "bare": "الفصل",
+      "spoken": "الْفَصْلُ",
+      "fishOld": "الْفَصْلُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "الفرسل"
+    },
+    {
+      "bare": "يخطئ",
+      "spoken": "يُخْطِئُ",
+      "fishOld": "أَنْ يُخْطِئَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "أن يخطيأ"
+    },
+    {
+      "bare": "الخلق",
+      "spoken": "الْخَلْقِ",
+      "fishOld": "الْخَلْقِ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الخلقي"
+    },
+    {
+      "bare": "اخوته",
+      "spoken": "إِخْوَتِهِ",
+      "fishOld": "إِخْوَتِهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أخواتي"
+    },
+    {
+      "bare": "اصحابه",
+      "spoken": "أَصْحَابِهِ",
+      "fishOld": "أَصْحَابِهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أصحابي"
+    },
+    {
+      "bare": "غزوه تبوك",
+      "spoken": "غَزْوَةِ تَبُوكَ",
+      "fishOld": "غَزْوَةِ تَبُوكَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "رزوة تتبوكة"
+    },
+    {
+      "bare": "اموالا",
+      "spoken": "أَمْوَالًا",
+      "fishOld": "أَمْوَالًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أموالن"
+    },
+    {
+      "bare": "عمر",
+      "spoken": "عُمَرُ",
+      "fishOld": "عُمَرُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "عومارو"
+    },
+    {
+      "bare": "علي",
+      "spoken": "عَلِيُّ",
+      "fishOld": "عَلِيُّ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "عليك"
+    },
+    {
+      "bare": "سعد",
+      "spoken": "سَعْدٌ",
+      "fishOld": "سَعْدٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.333,
+      "kind": "weak",
+      "stt_sample": "شاد"
+    },
+    {
+      "bare": "جادين",
+      "spoken": "جادّين",
+      "fishOld": "جادّين",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "جدين"
+    },
+    {
+      "bare": "مازحين بحق",
+      "spoken": "مَازِحِينَ بِحَقٍّ",
+      "fishOld": "مَازِحِينَ بِحَقٍّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "ما زهينا بحق"
+    },
+    {
+      "bare": "صلاتكم",
+      "spoken": "صَلَاتِكُمْ",
+      "fishOld": "صَلَاتِكُمْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "سلاتكم"
+    },
+    {
+      "bare": "هجرتكم",
+      "spoken": "هِجْرَتِكُمْ",
+      "fishOld": "هِجْرَتِكُمْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "هجرة كم"
+    },
+    {
+      "bare": "سب الله",
+      "spoken": "سَبَّ اللَّهَ",
+      "fishOld": "سَبَّ اللَّهَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "سبلا"
+    },
+    {
+      "bare": "قرب ذبابا لصنم",
+      "spoken": "قَرَّبَ ذُبَابًا لِصَنَمٍ",
+      "fishOld": "قَرَّبَ  ذُبَابًا  لِلصَّنَمِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.769,
+      "kind": "weak",
+      "stt_sample": "قربة تباباً لسنم"
+    },
+    {
+      "bare": "قرب ذبابا",
+      "spoken": "قَرَّبَ ذُبَابًا",
+      "fishOld": "قَرَّبَ ذُبَابًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "قربة دوباً"
+    },
+    {
+      "bare": "ابي ان يقرب شيئا للصنم",
+      "spoken": "أَبَى أَنْ يقرّب شيئاً لِلصَّنَمِ",
+      "fishOld": "أَبَى أَنْ يقرّب شيئاً لِلصَّنَمِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.842,
+      "kind": "weak",
+      "stt_sample": "أباء أن يقرب شيئاً لصانم"
+    },
+    {
+      "bare": "سجد له",
+      "spoken": "سَجَدَ لَهُ",
+      "fishOld": "سَجَدَ لَهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "سجد لهو"
+    },
+    {
+      "bare": "انحر",
+      "spoken": "انْحَرْ",
+      "fishOld": "أَعْنِي انْحَرْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "عني نحر"
+    },
+    {
+      "bare": "ادع",
+      "spoken": "ادعُ",
+      "fishOld": "ادعُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "ادو"
+    },
+    {
+      "bare": "يتيما",
+      "spoken": "يتيماً",
+      "fishOld": "أَعْنِي طِفْلًا يَتِيمًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.769,
+      "kind": "weak",
+      "stt_sample": "يعني تفلا يتمن"
+    },
+    {
+      "bare": "فتنه فلا تكفر",
+      "spoken": "فِتْنَةٌ فَلَا تَكْفُرْ",
+      "fishOld": "فِتْنَةٌ فَلَا تَكْفُرْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.692,
+      "kind": "weak",
+      "stt_sample": "فتنة ونفلع تقفر"
+    },
+    {
+      "bare": "رحمه",
+      "spoken": "رَحْمَةِ",
+      "fishOld": "رَحْمَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "رحمةي"
+    },
+    {
+      "bare": "هدايه",
+      "spoken": "هِدَايَةٌ",
+      "fishOld": "هِدَايَةٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "هيدايا"
+    },
+    {
+      "bare": "ابراهيم",
+      "spoken": "إِبْرَاهِيمُ",
+      "fishOld": "إِبْرَاهِيمُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "إبرهم"
+    },
+    {
+      "bare": "بالدعاء",
+      "spoken": "بِالدُّعَاءِ",
+      "fishOld": "أَعْنِي بِالدُّعَاءِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "انا بناء الدعب"
+    },
+    {
+      "bare": "ذبح الطير",
+      "spoken": "ذَبْحُ الطَّيْرِ",
+      "fishOld": "ذَبْحُ الطَّيْرِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "ذب حطير"
+    },
+    {
+      "bare": "التوكل",
+      "spoken": "التَّوَكُّلِ",
+      "fishOld": "التَّوَكُّلِ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أتواقل"
+    },
+    {
+      "bare": "الصبر",
+      "spoken": "الصَّبْرِ",
+      "fishOld": "أَعْنِي الصَّبْرَ",
+      "count": 3,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أنا صبر"
+    },
+    {
+      "bare": "السحاب",
+      "spoken": "السَّحَابِ",
+      "fishOld": "السَّحَابِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "السحب"
+    },
+    {
+      "bare": "كافر",
+      "spoken": "كَافِرٌ",
+      "fishOld": "إِنَّهُ كَافِرٌ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "إنه كافرون"
+    },
+    {
+      "bare": "عاص",
+      "spoken": "عاصٍ",
+      "fishOld": "عاصٍ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.25,
+      "kind": "weak",
+      "stt_sample": "ك~!!"
+    },
+    {
+      "bare": "شاكر",
+      "spoken": "شَاكِرٌ",
+      "fishOld": "شَاكِرٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.571,
+      "kind": "weak",
+      "stt_sample": "شاكي رون"
+    },
+    {
+      "bare": "مؤمن بالله كافر بالكوكب",
+      "spoken": "مُؤْمِنٌ بِاللَّهِ كَافِرٌ بِالْكَوْكَبِ",
+      "fishOld": "مُؤْمِنٌ بِاللَّهِ كَافِرٌ بِالْكَوْكَبِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "مؤمنون بالله كافرون بالكوكب"
+    },
+    {
+      "bare": "لسانه",
+      "spoken": "لِسَانِهِ",
+      "fishOld": "لِسَانِهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "لساني"
+    },
+    {
+      "bare": "التقوي",
+      "spoken": "التَّقْوَى",
+      "fishOld": "التَّقْوَى",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "اتتقوى"
+    },
+    {
+      "bare": "النفاق",
+      "spoken": "النِّفَاقِ",
+      "fishOld": "أَعْنِي النِّفَاقَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "أعني نفاق"
+    },
+    {
+      "bare": "الفسوق",
+      "spoken": "الْفُسُوقِ",
+      "fishOld": "هُوَ الْفُسُوقُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "حوال فسوك"
+    },
+    {
+      "bare": "معاذ",
+      "spoken": "مُعَاذٌ",
+      "fishOld": "أَعْنِي مُعَاذَ بْنَ جَبَلٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.769,
+      "kind": "weak",
+      "stt_sample": "أنا معادبنا جبل"
+    },
+    {
+      "bare": "يرخص فيها",
+      "spoken": "يُرَخِّصُ فِيهَا",
+      "fishOld": "يُرَخِّصُ فِيهَا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "يرخ يسوفيها"
+    },
+    {
+      "bare": "ينهي عنها",
+      "spoken": "يَنْهَى عَنْهَا",
+      "fishOld": "يَنْهَى عَنْهَا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "ينهعاها"
+    },
+    {
+      "bare": "يصنعها",
+      "spoken": "يَصْنَعُهَا",
+      "fishOld": "يَصْنَعُهَا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "يسنعها"
+    },
+    {
+      "bare": "الحج",
+      "spoken": "الْحَجِّ",
+      "fishOld": "الْحَجِّ",
+      "count": 8,
+      "books": [
+        "nawawi",
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "الحجي"
+    },
+    {
+      "bare": "مخلوقه",
+      "spoken": "مَخْلُوقَةٌ",
+      "fishOld": "مَخْلُوقَةٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "مخلوقت"
+    },
+    {
+      "bare": "جميله",
+      "spoken": "جَمِيلَةٌ",
+      "fishOld": "جَمِيلَةٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "جميلة تن"
+    },
+    {
+      "bare": "شجرته",
+      "spoken": "شَجَرَتِهِ",
+      "fishOld": "شَجَرَتِهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "شجرةي"
+    },
+    {
+      "bare": "بيته",
+      "spoken": "بَيْتِهِ",
+      "fishOld": "بَيْتِهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "بيتهي"
+    },
+    {
+      "bare": "خمس صلوات",
+      "spoken": "خَمْسَ صَلَوَاتٍ",
+      "fishOld": "خَمْسَ صَلَوَاتٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "خمس صلاواتين"
+    },
+    {
+      "bare": "تستجاب بعد سنه",
+      "spoken": "تُسْتَجَابُ بَعْدَ سَنَةٍ",
+      "fishOld": "تُسْتَجَابُ بَعْدَ سَنَةٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.786,
+      "kind": "weak",
+      "stt_sample": "تستجاب بعد سنتين"
+    },
+    {
+      "bare": "بصيره",
+      "spoken": "بَصِيرَةٍ",
+      "fishOld": "هِيَ بَصِيرَةٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.6,
+      "kind": "weak",
+      "stt_sample": "حيى بصيرة تن"
+    },
+    {
+      "bare": "تردد",
+      "spoken": "تَرَدُّدٍ",
+      "fishOld": "هُوَ تَرَدُّدٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "حوة ردود"
+    },
+    {
+      "bare": "اكراه",
+      "spoken": "إِكْرَاهٍ",
+      "fishOld": "الْإِكْرَاهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "الإكرى"
+    },
+    {
+      "bare": "ليتركه",
+      "spoken": "لِيَتْرُكْهُ",
+      "fishOld": "لِيَتْرُكْهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "ليترق"
+    },
+    {
+      "bare": "فليصدق",
+      "spoken": "فَلْيَصْدُقْ",
+      "fishOld": "فَلْيَصْدُقْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "فليس دوق"
+    },
+    {
+      "bare": "فليبر",
+      "spoken": "فَلْيَبَرَّ",
+      "fishOld": "فَلْيَبَرَّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "فليابرة"
+    },
+    {
+      "bare": "فليتق",
+      "spoken": "فَلْيَتَّقِ",
+      "fishOld": "فَلْيَتَّقِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "فليتقي"
+    },
+    {
+      "bare": "يحلف",
+      "spoken": "يَحْلِفَ",
+      "fishOld": "يَحْلِفَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "يحلفه"
+    },
+    {
+      "bare": "يشهد",
+      "spoken": "يَشْهَدَ",
+      "fishOld": "أَعْنِي أَنْ يَشْهَدَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "هاني أن يشهده"
+    },
+    {
+      "bare": "اصنامكم",
+      "spoken": "أَصْنَامِكُمْ",
+      "fishOld": "أَصْنَامِكُمْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "أسناميكم"
+    },
+    {
+      "bare": "يجهر",
+      "spoken": "يَجْهَرَ",
+      "fishOld": "يَجْهَرَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "يجهرها"
+    },
+    {
+      "bare": "الصادقين",
+      "spoken": "الصَّادِقِينَ",
+      "fishOld": "الصَّادِقِينَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "أصدقين"
+    },
+    {
+      "bare": "كفر كفرا اكبر",
+      "spoken": "كُفْرٌ كفراً أَكْبَرُ",
+      "fishOld": "كُفْرٌ كفراً أَكْبَرُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "كفرن كفرن أكبر"
+    },
+    {
+      "bare": "اشرك شركا اكبر",
+      "spoken": "أَشْرَكَ شركاً أَكْبَرُ",
+      "fishOld": "أَشْرَكَ شركاً أَكْبَرُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "عشراك شركة أكبر"
+    },
+    {
+      "bare": "المدبر",
+      "spoken": "الْمُدَبِّرُ",
+      "fishOld": "الْمُدَبِّرُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "المدقب برو"
+    },
+    {
+      "bare": "الفلك",
+      "spoken": "الْفَلَكُ",
+      "fishOld": "الْفَلَكُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "الفالكو"
+    },
+    {
+      "bare": "انا مدبر الزمان ومصرفه",
+      "spoken": "أَنَا مدبّر الزَّمَانِ ومصرّفه",
+      "fishOld": "أَنَا مدبّر الزَّمَانِ ومصرّفه",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "أنا مداب روز زمان ومصارفوه"
+    },
+    {
+      "bare": "مخلوق",
+      "spoken": "مَخْلُوقٌ",
+      "fishOld": "مَخْلُوقٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "مخلوقل"
+    },
+    {
+      "bare": "زمن",
+      "spoken": "زَمَنٌ",
+      "fishOld": "زَمَنٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.4,
+      "kind": "weak",
+      "stt_sample": "سمنون"
+    },
+    {
+      "bare": "اعبدوا الله",
+      "spoken": "اعْبُدُوا اللَّهَ",
+      "fishOld": "قُلْ اعْبُدُوا اللَّهَ وَحْدَهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "كل أعبوا دل الله واحدة"
+    },
+    {
+      "bare": "الانبياء",
+      "spoken": "الْأَنْبِيَاءِ",
+      "fishOld": "الْأَنْبِيَاءِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "الأمبية"
+    },
+    {
+      "bare": "الملائكه",
+      "spoken": "الْمَلَائِكَةُ",
+      "fishOld": "الْمَلَائِكَةُ",
+      "count": 2,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "الملاققة"
+    },
+    {
+      "bare": "طلب الغوث وكشف الشده",
+      "spoken": "طَلَبُ الْغَوْثِ وَكَشْفِ الشِّدَّةِ",
+      "fishOld": "طَلَبُ الْغَوْثِ وَكَشْفِ الشِّدَّةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.824,
+      "kind": "weak",
+      "stt_sample": "طلب الغوثي وكش في شدد"
+    },
+    {
+      "bare": "طلب الشفاعه",
+      "spoken": "طَلَبٌ الشَّفَاعَةُ",
+      "fishOld": "طَلَبٌ الشَّفَاعَةُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "طلبنا الشفاعة"
+    },
+    {
+      "bare": "رزقا",
+      "spoken": "رزقاً",
+      "fishOld": "أَعْنِي رِزْقًا حَلَالًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "اعني رسق حلالاً"
+    },
+    {
+      "bare": "مكروهه",
+      "spoken": "مَكْرُوهَةٌ",
+      "fishOld": "إِنَّهَا مَكْرُوهَةٌ",
+      "count": 2,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "إنها مقروح"
+    },
+    {
+      "bare": "ذبحوا لهم",
+      "spoken": "ذَبَحُوا لَهُمْ",
+      "fishOld": "ذَبَحُوا لَهُمْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "ذبح لهم"
+    },
+    {
+      "bare": "وليا",
+      "spoken": "ولياً",
+      "fishOld": "ولياً",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "ولين"
+    },
+    {
+      "bare": "اماما",
+      "spoken": "إماماً",
+      "fishOld": "إماماً",
+      "count": 3,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "المامن"
+    },
+    {
+      "bare": "المجوس",
+      "spoken": "الْمَجُوسِ",
+      "fishOld": "الْمَجُوسِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "المجوز"
+    },
+    {
+      "bare": "الصابئه",
+      "spoken": "الصَّابِئَةِ",
+      "fishOld": "أَعْنِي الصَّابِئَةَ",
+      "count": 3,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.636,
+      "kind": "weak",
+      "stt_sample": "اعني صبئة"
+    },
+    {
+      "bare": "الشرك ولو بشيء يسير",
+      "spoken": "الشِّرْكِ وَلَوْ بِشَيْءٍ يَسِيرٍ",
+      "fishOld": "الشِّرْكِ وَلَوْ بِشَيْءٍ يَسِيرٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.789,
+      "kind": "weak",
+      "stt_sample": "أشيرك ولاو بشيء نياسير"
+    },
+    {
+      "bare": "صنمهم",
+      "spoken": "صَنَمِهِمْ",
+      "fishOld": "صَنَمِهِمْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "سنميهم"
+    },
+    {
+      "bare": "نارهم",
+      "spoken": "نَارِهِمْ",
+      "fishOld": "نَارِهِمْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "نرى هم"
+    },
+    {
+      "bare": "الظلم",
+      "spoken": "الظُّلْمِ",
+      "fishOld": "الظُّلْمُ كَبِيرَةٌ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "أدول مكبيرا"
+    },
+    {
+      "bare": "سواه",
+      "spoken": "سِوَاهُ",
+      "fishOld": "مَا سِوَاهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "مسيواه"
+    },
+    {
+      "bare": "جماعه",
+      "spoken": "جَمَاعَةً",
+      "fishOld": "أَعْنِي صَلَاةَ الْجَمَاعَةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "أعني صلوت الجماع"
+    },
+    {
+      "bare": "دينا",
+      "spoken": "ديناً",
+      "fishOld": "ديناً",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "دينن"
+    },
+    {
+      "bare": "الذكر",
+      "spoken": "الذِّكْرُ",
+      "fishOld": "هُوَ الذِّكْرُ",
+      "count": 2,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.429,
+      "kind": "weak",
+      "stt_sample": "ودكر"
+    },
+    {
+      "bare": "الحمي",
+      "spoken": "الْحُمَّى",
+      "fishOld": "الْحُمَّى",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "الحمة"
+    },
+    {
+      "bare": "الراس",
+      "spoken": "الرَّأْسِ",
+      "fishOld": "أَعْنِي الرَّأْسَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أعني رس"
+    },
+    {
+      "bare": "البطن",
+      "spoken": "الْبَطْنِ",
+      "fishOld": "الْبَطْنِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "البطني"
+    },
+    {
+      "bare": "كافرون",
+      "spoken": "كَافِرُونَ",
+      "fishOld": "كَافِرُونَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "كفرون"
+    },
+    {
+      "bare": "ظالمون",
+      "spoken": "ظَالِمُونَ",
+      "fishOld": "ظَالِمُونَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "باليمون"
+    },
+    {
+      "bare": "غافلون",
+      "spoken": "غَافِلُونَ",
+      "fishOld": "غَافِلُونَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "رافلون"
+    },
+    {
+      "bare": "جابر",
+      "spoken": "جَابِرٌ",
+      "fishOld": "أَعْنِي جَابِرًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "عن جبرا"
+    },
+    {
+      "bare": "الصرع",
+      "spoken": "الصَّرْعِ",
+      "fishOld": "أَعْنِي الصَّرَعَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "اعني صرا"
+    },
+    {
+      "bare": "اجيب دعاؤه",
+      "spoken": "أُجِيبَ دُعَاؤُهُ",
+      "fishOld": "أُجِيبَ دُعَاؤُهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "وجيب الدعاء"
+    },
+    {
+      "bare": "شفي",
+      "spoken": "شُفِيَ",
+      "fishOld": "شُفِيَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.6,
+      "kind": "weak",
+      "stt_sample": "شوفيا"
+    },
+    {
+      "bare": "عدل رقبه عتق رقبه",
+      "spoken": "عِدل رَقَبَةٍ (عِتْقِ رَقَبَةٍ)",
+      "fishOld": "عِدل رَقَبَةٍ عِتْقِ رَقَبَةٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "عيد الراقبة عيتق رقبة"
+    },
+    {
+      "bare": "صيام شهر",
+      "spoken": "صِيَامِ شَهْرٍ",
+      "fishOld": "صِيَامِ شَهْرٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "سيامي شهر"
+    },
+    {
+      "bare": "قطعه",
+      "spoken": "قَطْعِهِ",
+      "fishOld": "أَعْنِي قَطْعَهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "آني قطاه"
+    },
+    {
+      "bare": "المعوذات",
+      "spoken": "الْمُعَوِّذَاتِ",
+      "fishOld": "الْمُعَوِّذَاتِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "المعويدات"
+    },
+    {
+      "bare": "ثبت الكهان",
+      "spoken": "ثَبَتَ الْكُهَّانُ",
+      "fishOld": "قَدْ ثَبَتَ الْكُهَّانُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "خد فبت الكوحان"
+    },
+    {
+      "bare": "الشيطان",
+      "spoken": "الشَّيْطَانِ",
+      "fishOld": "الشَّيْطَانِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "أشيطون"
+    },
+    {
+      "bare": "التمائم",
+      "spoken": "التَّمَائِمِ",
+      "fishOld": "أَعْنِي التَّمَائِمْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "طعن التمائم"
+    },
+    {
+      "bare": "عراف",
+      "spoken": "عرّاف",
+      "fishOld": "عرّاف",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "أراف"
+    },
+    {
+      "bare": "كاهن",
+      "spoken": "كَاهِنٌ",
+      "fishOld": "كَاهِنٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "كهن"
+    },
+    {
+      "bare": "طبيب",
+      "spoken": "طَبِيبٌ",
+      "fishOld": "طَبِيبٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "طبيبون"
+    },
+    {
+      "bare": "وثنا",
+      "spoken": "وثناً",
+      "fishOld": "وثناً",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "وثنان"
+    },
+    {
+      "bare": "الهه",
+      "spoken": "آلِهَةً",
+      "fishOld": "هِيَ آلِهَةٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "هي آلحة"
+    },
+    {
+      "bare": "العكوف",
+      "spoken": "الْعُكُوفِ",
+      "fishOld": "الْعُكُوفِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الركوف"
+    },
+    {
+      "bare": "الفال",
+      "spoken": "الْفَأْلُ",
+      "fishOld": "الْفَأْلُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "الفعل"
+    },
+    {
+      "bare": "الطيره",
+      "spoken": "الطِّيَرَةُ",
+      "fishOld": "أَعْنِي الطِّيَرَةَ وَالتَّشَاؤُمَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.842,
+      "kind": "weak",
+      "stt_sample": "أعني القيارة والتشاءم"
+    },
+    {
+      "bare": "الرقيه",
+      "spoken": "الرُّقْيَةِ",
+      "fishOld": "هِيَ الرُّقْيَةُ",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "هي روكيا"
+    },
+    {
+      "bare": "الرؤيا",
+      "spoken": "الرُّؤْيَا",
+      "fishOld": "الرُّؤْيَا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الرويا"
+    },
+    {
+      "bare": "العدد",
+      "spoken": "الْعَدَدُ",
+      "fishOld": "الْعَدَدُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "العدده"
+    },
+    {
+      "bare": "كهانه",
+      "spoken": "كِهَانَةَ",
+      "fishOld": "كِهَانَةَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "كهانا"
+    },
+    {
+      "bare": "غول",
+      "spoken": "غُولَ",
+      "fishOld": "غُولَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "رولة"
+    },
+    {
+      "bare": "النسر",
+      "spoken": "النَّسْرِ",
+      "fishOld": "النَّسْرِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "النسري"
+    },
+    {
+      "bare": "فليس بطيره مذمومه",
+      "spoken": "فَلَيْسَ بِطِيَرَةٍ مَذْمُومَةٍ",
+      "fishOld": "فَلَيْسَ بِطِيَرَةٍ مَذْمُومَةٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.824,
+      "kind": "weak",
+      "stt_sample": "فلاي سبيطيرة مدمومة"
+    },
+    {
+      "bare": "يبطل عمله",
+      "spoken": "يَبْطُلُ عَمَلُهُ",
+      "fishOld": "يَبْطُلُ عَمَلُهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "يطلوا عمله"
+    },
+    {
+      "bare": "البدع",
+      "spoken": "الْبِدَعَ",
+      "fishOld": "الْبِدَعَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "البداع"
+    },
+    {
+      "bare": "لجلب الرزق",
+      "spoken": "لِجَلْبِ الرِّزْقِ",
+      "fishOld": "لِجَلْبِ الرِّزْقِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "لجل بريزق"
+    },
+    {
+      "bare": "رخص فيه احمد واسحاق",
+      "spoken": "رخّص فِيهِ أَحْمَدُ وَإِسْحَاقُ",
+      "fishOld": "رخّص فِيهِ أَحْمَدُ وَإِسْحَاقُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.813,
+      "kind": "weak",
+      "stt_sample": "رخص فيه أحمد وعيسها"
+    },
+    {
+      "bare": "نجا فقط",
+      "spoken": "نَجَا فَقَطْ",
+      "fishOld": "نَجَا فَقَطْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "نجا فقل"
+    },
+    {
+      "bare": "عذب",
+      "spoken": "عُذّب",
+      "fishOld": "عُذّب",
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.2,
+      "kind": "weak",
+      "stt_sample": "برضهم"
+    },
+    {
+      "bare": "سب الدهر",
+      "spoken": "سَبَّ الدَّهْرَ",
+      "fishOld": "سَبَّ الدَّهْرَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "سبدهر"
+    },
+    {
+      "bare": "الملك",
+      "spoken": "الْمُلْكِ",
+      "fishOld": "الْمُلْكِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الملكي"
+    },
+    {
+      "bare": "اوثانا",
+      "spoken": "أَوْثَانًا",
+      "fishOld": "أَوْثَانًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أو تانا"
+    },
+    {
+      "bare": "البدعه",
+      "spoken": "الْبِدْعَةِ",
+      "fishOld": "الْبِدْعَةِ",
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "البدع"
+    },
+    {
+      "bare": "اربعه",
+      "spoken": "أَرْبَعَةٍ",
+      "fishOld": "أَرْبَعَةٌ",
+      "count": 2,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "أربع"
+    },
+    {
+      "bare": "مساجدها",
+      "spoken": "مَسَاجِدُهَا",
+      "fishOld": "مَسَاجِدُهَا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "مسجي ده"
+    },
+    {
+      "bare": "الواو",
+      "spoken": "الْوَاوِ",
+      "fishOld": "هِيَ الْوَاوُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "حي الوو"
+    },
+    {
+      "bare": "الضيف",
+      "spoken": "الضَّيْفُ",
+      "fishOld": "أَعْنِي الضَّيْفَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "عن الضيف"
+    },
+    {
+      "bare": "ثم",
+      "spoken": "ثُمَّ",
+      "fishOld": "ثُمَّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.143,
+      "kind": "weak",
+      "stt_sample": "من المبแลن"
+    },
+    {
+      "bare": "الفاء",
+      "spoken": "الْفَاءِ",
+      "fishOld": "أَعْنِي حَرْفَ الْفَاءِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "عني حرف الفائق"
+    },
+    {
+      "bare": "او",
+      "spoken": "أَوْ",
+      "fishOld": "أَوْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "الو"
+    },
+    {
+      "bare": "النفي",
+      "spoken": "النَّفْيَ",
+      "fishOld": "النَّفْيَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "ونفيا"
+    },
+    {
+      "bare": "الاستثناء",
+      "spoken": "الِاسْتِثْنَاءَ",
+      "fishOld": "الِاسْتِثْنَاءَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "أليش تثناء"
+    },
+    {
+      "bare": "ندعوهم",
+      "spoken": "نَدْعُوهُمْ",
+      "fishOld": "نَدْعُوهُمْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "ندعهم"
+    },
+    {
+      "bare": "معصيه الله",
+      "spoken": "مَعْصِيَةٌ اللَّهِ",
+      "fishOld": "مَعْصِيَةٌ اللَّهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "معسية وم الله"
+    },
+    {
+      "bare": "شان دنيوي",
+      "spoken": "شَأْنٍ دُنْيَوِيٍّ",
+      "fishOld": "شَأْنٍ دُنْيَوِيٍّ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "شأن دنياويا"
+    },
+    {
+      "bare": "صفات النقص",
+      "spoken": "صِفَاتِ النَّقْصِ",
+      "fishOld": "صِفَاتِ النَّقْصِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "سفات النقصي"
+    },
+    {
+      "bare": "النسيان",
+      "spoken": "النِّسْيَانِ",
+      "fishOld": "هُوَ النِّسْيَانُ",
+      "count": 2,
+      "books": [
+        "nawawi",
+        "tawheed"
+      ],
+      "min_ov": 0.556,
+      "kind": "weak",
+      "stt_sample": "ونسياً"
+    },
+    {
+      "bare": "الفرح",
+      "spoken": "الْفَرَحِ",
+      "fishOld": "الْفَرَحِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "الفريحي"
+    },
+    {
+      "bare": "للاوثان",
+      "spoken": "لِلْأَوْثَانِ",
+      "fishOld": "لِلْأَوْثَانِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "يل أوثاني"
+    },
+    {
+      "bare": "ذباب",
+      "spoken": "ذُباب",
+      "fishOld": "أَعْنِي ذُبَابًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "آني دوباباً"
+    },
+    {
+      "bare": "يسجد له",
+      "spoken": "يَسْجُدَ لَهُ",
+      "fishOld": "أَنْ يَسْجُدَ لَهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "أن yes جودة له"
+    },
+    {
+      "bare": "يقرب له شيئا",
+      "spoken": "يُقَرِّبَ لَهُ شَيْئًا",
+      "fishOld": "يُقَرِّبَ لَهُ شَيْئًا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "يقرب له شيء"
+    },
+    {
+      "bare": "يطوف به",
+      "spoken": "يَطُوفَ بِهِ",
+      "fishOld": "يَطُوفَ بِهِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "يطول فبي"
+    },
+    {
+      "bare": "نجا",
+      "spoken": "نَجَا",
+      "fishOld": "نَجَا",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "نجر"
+    },
+    {
+      "bare": "عفي عنه",
+      "spoken": "عُفِيَ عَنْهُ",
+      "fishOld": "قَدْ عُفِيَ عَنْهُ وَغُفِرَ لَهُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.813,
+      "kind": "weak",
+      "stt_sample": "قد أفيا عنه وغفرة له"
+    },
+    {
+      "bare": "قريب",
+      "spoken": "قَرِيبٌ",
+      "fishOld": "قَرِيبٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "قريبون"
+    },
+    {
+      "bare": "راض",
+      "spoken": "راضٍ",
+      "fishOld": "راضٍ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "رادن"
+    },
+    {
+      "bare": "شفيع",
+      "spoken": "شَفِيعٌ",
+      "fishOld": "شَفِيعٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "شفيعون"
+    },
+    {
+      "bare": "الفضه",
+      "spoken": "الْفِضَّةِ",
+      "fishOld": "الْفِضَّةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "الفضح"
+    },
+    {
+      "bare": "الخيوط",
+      "spoken": "الْخُيُوطِ",
+      "fishOld": "الْخُيُوطِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الخيوت"
+    },
+    {
+      "bare": "الودع",
+      "spoken": "الْوَدَعِ",
+      "fishOld": "هُوَ الْوَدَعُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "حوال ودعو"
+    },
+    {
+      "bare": "علقت",
+      "spoken": "عُلّقت",
+      "fishOld": "أَعْنِي قَدْ عُلِّقَتْ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أعني قد عليقات"
+    },
+    {
+      "bare": "فكت",
+      "spoken": "فُكّت",
+      "fishOld": "فُكّت",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "فوقت"
+    },
+    {
+      "bare": "التعب",
+      "spoken": "التَّعَبَ",
+      "fishOld": "التَّعَبَ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "اتعب"
+    },
+    {
+      "bare": "الكراهه",
+      "spoken": "الْكَرَاهَةُ",
+      "fishOld": "الْكَرَاهَةُ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "الكراح"
+    },
+    {
+      "bare": "مبتدع",
+      "spoken": "مُبْتَدِعٌ",
+      "fishOld": "مُبْتَدِعٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "مبتدعون"
+    },
+    {
+      "bare": "جاهل",
+      "spoken": "جَاهِلٌ",
+      "fishOld": "جَاهِلٌ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "جاهلون"
+    },
+    {
+      "bare": "الزروع",
+      "spoken": "الزُّرُوعِ",
+      "fishOld": "الزُّرُوعِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أزرور"
+    },
+    {
+      "bare": "تقديم الزكاه",
+      "spoken": "تَقْدِيمُ الزَّكَاةِ",
+      "fishOld": "تَقْدِيمُ الزَّكَاةِ",
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "تقدي مجزكة"
+    },
+    {
+      "bare": "اين ولد المؤلف",
+      "spoken": "أَيْنَ وُلِدَ الْمُؤَلِّفُ؟",
+      "fishOld": "أَيْنَ وُلِدَ الْمُؤَلِّفُ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.769,
+      "kind": "weak",
+      "stt_sample": "أينا ولا المؤلم"
+    },
+    {
+      "bare": "متي توفي المؤلف",
+      "spoken": "مَتَى تُوُفِّيَ الْمُؤَلِّفُ؟",
+      "fishOld": "مَتَى تُوُفِّيَ الْمُؤَلِّفُ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.786,
+      "kind": "weak",
+      "stt_sample": "ماتة وفيا المؤلف"
+    },
+    {
+      "bare": "بماذا تعرف ربك",
+      "spoken": "بِمَاذَا تَعْرِفُ رَبَّكَ؟",
+      "fishOld": "بِمَاذَا تَعْرِفُ رَبَّكَ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.769,
+      "kind": "weak",
+      "stt_sample": "بما ده تعرف ربكة"
+    },
+    {
+      "bare": "دليل النذر لله",
+      "spoken": "دَلِيلُ النَّذْرِ لِلَّهِ:",
+      "fishOld": "دَلِيلُ النَّذْرِ لِلَّهِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "دليلٌ ندريل للا"
+    },
+    {
+      "bare": "اعظم ما نهي الله عنه هو",
+      "spoken": "أَعْظَمُ مَا نَهَى اللَّهُ عَنْهُ هُوَ:",
+      "fishOld": "أَعْظَمُ مَا نَهَى اللَّهُ عَنْهُ هُوَ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أعضم منه الله عنه هو"
+    },
+    {
+      "bare": "كم انواع الشرك",
+      "spoken": "كَمْ أَنْوَاعُ الشِّرْكِ؟",
+      "fishOld": "كَمْ أَنْوَاعُ الشِّرْكِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "كمانواع شرك"
+    },
+    {
+      "bare": "ما المراد بالبضع",
+      "spoken": "مَا الْمُرَادُ بِالْبِضْعِ؟",
+      "fishOld": "مَا مَعْنَى الْبِضْعِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "ممان البضع"
+    },
+    {
+      "bare": "صبر العبد ثلاثه انواع علي الطاعه وعن المعصيه و",
+      "spoken": "صَبْرُ الْعَبْدِ ثَلَاثَةُ أَنْوَاعٍ: عَلَى الطَّاعَةِ، وَعَنْ الْمَعْصِيَةُ، و:",
+      "fishOld": "صَبْرُ الْعَبْدِ ثَلَاثَةُ أَنْوَاعٍ عَلَى الطَّاعَةِ وَعَنْ الْمَعْصِيَةِ و",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.809,
+      "kind": "weak",
+      "stt_sample": "صبر العبد ثلاثة أنواعن على الطاعة وعن المعصية وعن الحلقة"
+    },
+    {
+      "bare": "معني الا الله",
+      "spoken": "مَعْنَى \"إِلَّا اللَّهُ\":",
+      "fishOld": "مَعْنَى إِلَّا اللَّهَ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "مانا إلا الله"
+    },
+    {
+      "bare": "البخاري",
+      "spoken": "الْبُخَارِيُّ",
+      "fishOld": "الْبُخَارِيُّ",
+      "count": 2,
+      "books": [
+        "nawawi",
+        "usool"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "البحري"
+    },
+    {
+      "bare": "بالسؤال فقط",
+      "spoken": "بِالسُّؤَالِ فَقَطْ",
+      "fishOld": "بِالسُّؤَالِ  فَقَطْ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "بس تأل فقط"
+    },
+    {
+      "bare": "البشر فقط",
+      "spoken": "الْبَشَرُ فَقَطْ",
+      "fishOld": "الْبَشَرُ  فَقَطْ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "البشر فقاب"
+    },
+    {
+      "bare": "كل ما سوي الله",
+      "spoken": "كُلُّ مَا سِوَى اللَّهِ",
+      "fishOld": "كُلُّ مَا  سِوَى  اللَّهِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "كلمة سواء الله"
+    },
+    {
+      "bare": "السماء فقط",
+      "spoken": "السَّمَاءُ فَقَطْ",
+      "fishOld": "السَّمَاءُ فَقَطْ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "السما وفقل"
+    },
+    {
+      "bare": "الذكر فقط",
+      "spoken": "الذِّكْرُ فَقَطْ",
+      "fishOld": "الذِّكْرُ فَقَطْ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "أذيك رفقات"
+    },
+    {
+      "bare": "دعاء فردي ودعاء جماعي",
+      "spoken": "دُعَاءٌ فَرْدِيٌّ وَدُعَاءٌ جَمَاعِيٌّ",
+      "fishOld": "دُعَاءٌ فَرْدِيٌّ وَدُعَاءٌ جَمَاعِيٌّ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "دعا فردين ودعا جمائي"
+    },
+    {
+      "bare": "الخوف والرجاء والتوكل",
+      "spoken": "الْخَوْفُ وَالرَّجَاءُ وَالتَّوَكُّلُ",
+      "fishOld": "الْخَوْفُ وَالرَّجَاءُ وَالتَّوَكُّلُ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.737,
+      "kind": "weak",
+      "stt_sample": "الخوف ورجاء وتوقل"
+    },
+    {
+      "bare": "واقيموا الصلاه",
+      "spoken": "وَأَقِيمُوا الصَّلَاةَ",
+      "fishOld": "وَأَقِيمُوا  الصَّلَاةَ",
+      "count": 2,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.769,
+      "kind": "weak",
+      "stt_sample": "وقيم الصلاة"
+    },
+    {
+      "bare": "واتوا الزكاه",
+      "spoken": "وَآتُوا الزَّكَاةَ",
+      "fishOld": "وَآتُوا  الزَّكَاةَ",
+      "count": 3,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.636,
+      "kind": "weak",
+      "stt_sample": "وأطو أزكا"
+    },
+    {
+      "bare": "اطيعوا الله واطيعوا الرسول",
+      "spoken": "أَطِيعُوا اللَّهَ وَأَطِيعُوا الرَّسُولَ",
+      "fishOld": "أَطِيعُوا اللَّهَ وَأَطِيعُوا الرَّسُولَ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.826,
+      "kind": "weak",
+      "stt_sample": "اطيع الله واطيع الرسول"
+    },
+    {
+      "bare": "الحج فقط",
+      "spoken": "الحَجُّ فَقَطْ",
+      "fishOld": "الحَجُّ فَقَطْ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "الحد جفقت"
+    },
+    {
+      "bare": "فقط بالشر",
+      "spoken": "فَقَطْ بِالشَّرِّ",
+      "fishOld": "أَعْنِي فَقَطْ بِالشَّرِّ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أعني فقط بشر"
+    },
+    {
+      "bare": "الصيام كثيرا",
+      "spoken": "الصِّيَامُ كَثِيرًا",
+      "fishOld": "الصِّيَامُ  كَثِيرًا",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "أسويا مكتيرا"
+    },
+    {
+      "bare": "الصدقه كثيرا",
+      "spoken": "الصَّدَقَةُ كَثِيرًا",
+      "fishOld": "الصَّدَقَةُ كَثِيرًا",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "أصدقى تكثيراً"
+    },
+    {
+      "bare": "عيسي بن مريم",
+      "spoken": "عِيسَى بْنُ مَرْيَمَ",
+      "fishOld": "هُوَ عِيسَى بْنُ مَرْيَمَ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "هو عيسة بنو مريم"
+    },
+    {
+      "bare": "موسي بن عمران",
+      "spoken": "مُوسَى بْنُ عِمْرَانَ",
+      "fishOld": "هُوَ مُوسَى بْنُ عِمْرَانَ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "هو موسدن عمران"
+    },
+    {
+      "bare": "ثلاث سنين",
+      "spoken": "ثَلَاثَ سِنِينَ",
+      "fishOld": "ثَلَاثَ  سِنِينَ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "فلاثة سنين"
+    },
+    {
+      "bare": "بالصلاه",
+      "spoken": "بِالصَّلَاةِ",
+      "fishOld": "أَعْنِي بِالصَّلَاةِ الْمَفْرُوضَةِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.842,
+      "kind": "weak",
+      "stt_sample": "عني بصلاة المفروضة"
+    },
+    {
+      "bare": "السفر للسياحه",
+      "spoken": "السَّفَرُ لِلسِّيَاحَةِ",
+      "fishOld": "السَّفَرُ لِلسِّيَاحَةِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "السفر والسياحة"
+    },
+    {
+      "bare": "الخروج للنزهه",
+      "spoken": "الْخُرُوجُ لِلنُّزْهَةِ",
+      "fishOld": "الْخُرُوجُ لِلنُّزْهَةِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الخروج لنوزة"
+    },
+    {
+      "bare": "واحد",
+      "spoken": "وَاحِدٌ",
+      "fishOld": "وَاحِدٌ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "واحدا"
+    },
+    {
+      "bare": "القصد والتوجه",
+      "spoken": "الْقَصْدُ، وَالتَّوَجُّهُ.",
+      "fishOld": "أَعْنِي الْقَصْدَ وَالتَّوَجُّهَ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.813,
+      "kind": "weak",
+      "stt_sample": "عن القصد و تواجهه"
+    },
+    {
+      "bare": "سته",
+      "spoken": "سِتَّةٌ",
+      "fishOld": "سِتَّةٌ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "ستطن"
+    },
+    {
+      "bare": "خمسه",
+      "spoken": "خَمْسَةٌ",
+      "fishOld": "خَمْسَةٌ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.571,
+      "kind": "weak",
+      "stt_sample": "خمسة تون"
+    },
+    {
+      "bare": "سبعه",
+      "spoken": "سَبْعَةُ",
+      "fishOld": "هِيَ سَبْعَةٌ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "هيا سبا"
+    },
+    {
+      "bare": "في الجماعه",
+      "spoken": "فِي الْجَمَاعَةِ",
+      "fishOld": "فِي الْجَمَاعَةِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "في الجمع"
+    },
+    {
+      "bare": "ليلا",
+      "spoken": "ليلاً",
+      "fishOld": "فِي اللَّيْلِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "في ليل"
+    },
+    {
+      "bare": "سرا",
+      "spoken": "سراً",
+      "fishOld": "سراً",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "سرن"
+    },
+    {
+      "bare": "الاخلاص",
+      "spoken": "الْإِخْلَاصُ",
+      "fishOld": "هُوَ الْإِخْلَاصُ",
+      "count": 2,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "حوال إخلاس"
+    },
+    {
+      "bare": "سته اصناف",
+      "spoken": "سِتَّةٌ أَصْنَافٍ",
+      "fishOld": "سِتَّةٌ أَصْنَافٍ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "ستة ونصنافن"
+    },
+    {
+      "bare": "ثمانيه اصناف",
+      "spoken": "ثَمَانِيَةُ أَصْنَافٍ",
+      "fishOld": "ثَمَانِيَةُ أَصْنَافٍ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "فمنية to أسنافن"
+    },
+    {
+      "bare": "ثلاثه اصناف",
+      "spoken": "ثَلَاثَةٍ أَصْنَافٍ",
+      "fishOld": "ثَلَاثَةٍ أَصْنَافٍ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "فلاثة الانصنف"
+    },
+    {
+      "bare": "اليهوديه",
+      "spoken": "الْيَهُودِيَّةُ",
+      "fishOld": "هِيَ الْيَهُودِيَّةُ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "حيالي حدية"
+    },
+    {
+      "bare": "ماله",
+      "spoken": "مَالُهُ",
+      "fishOld": "هُوَ مَالُهُ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "حواملو"
+    },
+    {
+      "bare": "اسمه ونسبه وما بعث به",
+      "spoken": "اسْمِهِ وَنَسَبِهِ وَمَا بُعِثَ بِهِ",
+      "fishOld": "أَعْنِي اسْمَهُ وَنَسَبَهُ وَمَا بُعِثَ بِهِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.783,
+      "kind": "weak",
+      "stt_sample": "أعني إسمه ونسبها وما بأي تبي"
+    },
+    {
+      "bare": "قبيلته فقط",
+      "spoken": "قَبِيلَتِهِ فَقَطْ",
+      "fishOld": "قَبِيلَتِهِ فَقَطْ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "قبيلة تحيح فقل"
+    },
+    {
+      "bare": "علم اللغه",
+      "spoken": "عِلْمُ اللُّغَةِ",
+      "fishOld": "عِلْمُ اللُّغَةِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "حال ملوقة"
+    },
+    {
+      "bare": "علم التاريخ",
+      "spoken": "عِلْمُ التَّارِيخِ",
+      "fishOld": "عِلْمُ التَّارِيخِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "المتاريخ"
+    },
+    {
+      "bare": "بلا علم",
+      "spoken": "بِلَا عِلْمٍ",
+      "fishOld": "بِلَا عِلْمٍ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "بلا علمين"
+    },
+    {
+      "bare": "بالقوه",
+      "spoken": "بِالْقُوَّةِ",
+      "fishOld": "أَعْنِي بِالْقُوَّةِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "تانيب الكوة"
+    },
+    {
+      "bare": "الشهادتان",
+      "spoken": "الشَّهَادَتَانِ",
+      "fishOld": "هِيَ الشَّهَادَتَانِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "هي الشهدة تن"
+    },
+    {
+      "bare": "الزكاه",
+      "spoken": "الزَّكَاةِ",
+      "fishOld": "هِيَ الزَّكَاةُ الْمَفْرُوضَةُ",
+      "count": 3,
+      "books": [
+        "nawawi",
+        "usool"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "يزاكات المفروضة"
+    },
+    {
+      "bare": "علي السفر",
+      "spoken": "عَلَى السَّفَرِ",
+      "fishOld": "عَلَى السَّفَرِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "على سفر"
+    },
+    {
+      "bare": "ذكره فقط",
+      "spoken": "ذِكْرَهُ فَقَطْ",
+      "fishOld": "ذِكْرَهُ  فَقَطْ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "وكراه فقط"
+    },
+    {
+      "bare": "القوه",
+      "spoken": "الْقُوَّةِ",
+      "fishOld": "هِيَ الْقُوَّةُ",
+      "count": 3,
+      "books": [
+        "nawawi",
+        "usool"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "حيال قوة"
+    },
+    {
+      "bare": "التاريخ",
+      "spoken": "التَّارِيخِ",
+      "fishOld": "أَعْنِي التَّارِيخَ",
+      "count": 2,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "عن التاريخ"
+    },
+    {
+      "bare": "الجهاد",
+      "spoken": "الْجِهَادُ",
+      "fishOld": "الْجِهَادُ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الجهد"
+    },
+    {
+      "bare": "نفي الملائكه",
+      "spoken": "نَفْيَ الْمَلَائِكَةُ",
+      "fishOld": "نَفْيُ  الْمَلَائِكَةِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "نفو الملاقى"
+    },
+    {
+      "bare": "اثبات الكتب",
+      "spoken": "إِثْبَاتُ الْكُتُبِ",
+      "fishOld": "إِثْبَاتُ الْكُتُبِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "اسبات القتوب"
+    },
+    {
+      "bare": "المدثر",
+      "spoken": "الْمُدَّثِّرِ",
+      "fishOld": "الْمُدَّثِّرِ",
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "المدتر"
+    },
+    {
+      "bare": "لا يحل دم امرئ مسلم الا باحدي ثلاث",
+      "spoken": "لَا يَحِلُّ دَمُ امْرِئٍ مُسْلِمٍ إِلَّا بِإِحْدَى ثَلَاثٍ:",
+      "fishOld": "لَا يَحِلُّ دَمُ  امْرِئٍ  مُسْلِمٍ إِلَّا بِإِحْدَى ثَلَاثٍ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.839,
+      "kind": "weak",
+      "stt_sample": "لا يحلو دم أمر إن مسلم إن اللى بأحد ثلاث"
+    },
+    {
+      "bare": "البر هو",
+      "spoken": "الْبِرُّ هُوَ...",
+      "fishOld": "مَا هُوَ الْبِرُّ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "ناهو البرو"
+    },
+    {
+      "bare": "لا ضرر ولا ضرار",
+      "spoken": "لَا ضَرَرَ وَلَا ضِرَارَ.",
+      "fishOld": "لَا  ضَرَرْ  وَلَا  ضِرَارْ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "لادرر ولادرر"
+    },
+    {
+      "bare": "من فوائد الحديث الاستقامه الحث علي حسن الخلق",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (21- الاستقامة): الْحَثُّ عَلَى حُسْنُ الْخَلْقِ؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 21 الاستقامة الْحَثُّ عَلَى حُسْنُ الْخَلْقِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "من فواائد الحديث واحد عشرين الاستقامة الحذو على حسن الخلق"
+    },
+    {
+      "bare": "من فوائد الحديث اللسان الحث علي تنفيس الكرب عن المؤمن",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (29- اللِّسَانُ): الْحَثُّ عَلَى تَنْفِيسِ الْكَرْبِ عَنِ الْمُؤْمِنِ؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 29 اللِّسَانُ الْحَثُّ عَلَى تَنْفِيسِ الْكَرْبِ عَنِ الْمُؤْمِنِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.827,
+      "kind": "weak",
+      "stt_sample": "من فواقد الحديث تسعو 20 اللي سانوا الحدث على تنفيس الكرب عن المؤمن"
+    },
+    {
+      "bare": "من فوائد الحديث الحياء الحث علي معونه الرجل اخاه",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (20- الْحَيَاءُ): الْحَثُّ عَلَى مَعُونَةِ الرَّجُلِ أَخَاهُ؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 20 الْحَيَاءُ الْحَثُّ عَلَى مَعُونَةِ الرَّجُلِ أَخَاهُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.804,
+      "kind": "weak",
+      "stt_sample": "من فواقد الحديث عشرين الحياة الحذة على معونة الرجل أخاة"
+    },
+    {
+      "bare": "من فوائد الحديث اللسان ان الجزاء من جنس العمل",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (29- اللِّسَانُ): أَنَّ الجزاء مَنْ جنس الْعَمَلِ؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 29 اللِّسَانُ أَنَّ الجزاء مَنْ جنس الْعَمَلِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.787,
+      "kind": "weak",
+      "stt_sample": "من فواائد الحديث تسع عشرين الليسان أن الجزاء من جنس العمل"
+    },
+    {
+      "bare": "من فوائد الحديث الجهاد احترام دماء المسلم",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (8- الْجِهَادُ): احترام دماء الْمُسْلِمُ؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 8 الْجِهَادُ احترام دماء الْمُسْلِمُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.829,
+      "kind": "weak",
+      "stt_sample": "من فواعيد الحديث ثمانية الجهاد حترام دماء المسلم"
+    },
+    {
+      "bare": "من فوائد الحديث الاخلاق ينبغي علي من جهل امرا ان يسال عنه اهل العلم",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (15- الْأَخْلَاقِ): يَنْبَغِي عَلَى مَنْ جَهْلٌ أمرًا أَنْ يُسْأَلُ عَنْهُ أَهْلِ الْعِلْمُ؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 15 الْأَخْلَاقِ يَنْبَغِي عَلَى مَنْ جَهْلٌ أمرًا أَنْ يُسْأَلُ عَنْهُ أَهْلِ الْعِلْمُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.825,
+      "kind": "weak",
+      "stt_sample": "من فواائد الحديث خمسطاعشر الأخلاق يمضغي على منجهل أمراً أن يسأل عنه أهل العلم"
+    },
+    {
+      "bare": "من فوائد الحديث التوكل تنافس الصحابه في عمل الخيرات",
+      "spoken": "من فَوَائِدِ الْحَدِيثِ (19- التوكل): تَنَافُسَ الصَّحَابَةِ فِي عَمَلٌ الخيرات؟",
+      "fishOld": "من فَوَائِدِ الْحَدِيثِ 19 التَّوَكُّلُ تَنَافُسَ الصَّحَابَةِ فِي عَمَلٌ الْخَيْرَاتِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.808,
+      "kind": "weak",
+      "stt_sample": "من فوائد الحديثة السعة عشر التوقل تنافس الصحابة في عمل الخيرات"
+    },
+    {
+      "bare": "من فوائد الحديث جبريل الحلال بين كل يعرفه",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (2- جِبْرِيلَ): الْحَلَالُ بَيِّنٌ كُلٌّ يَعْرِفُهُ؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 2 جِبْرِيلَ الْحَلَالُ بَيِّنٌ كُلٌّ يَعْرِفُهُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "من فواقد الحديث الثنان جبري للحلال بين كل يعرفه"
+    },
+    {
+      "bare": "من فوائد الحديث الحياء الحرص علي الكلام الطيب",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (20- الْحَيَاءُ): الحرص عَلَى الْكَلَامِ الطيب؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 20 الْحَيَاءُ الْحِرْصُ عَلَى الْكَلَامِ الطيب",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.837,
+      "kind": "weak",
+      "stt_sample": "من فواقد الحديث عشرين الحياة الحرص على الكلام الطيب"
+    },
+    {
+      "bare": "من فوائد الحديث الزهد ان معاداه اولياء الله من كبائر الذنوب",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (31- الزُّهْدُ): أَنَّ مُعَادَاةَ أَوْلِيَاءِ اللَّهِ مِنْ كَبَائِرِ الذُّنُوبِ؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 31 الزُّهْدُ أَنَّ مُعَادَاةَ أَوْلِيَاءِ اللَّهِ مِنْ كَبَائِرِ الذُّنُوبِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.825,
+      "kind": "weak",
+      "stt_sample": "من فواقد الحديث ثلاثيان الزهده أن معادات أولياء الله من كبائر الدنوب"
+    },
+    {
+      "bare": "من فوائد الحديث القضاء التزهيد في الدنيا وان يتخذها الانسان دار اقامه",
+      "spoken": "مِنْ فَوَائِدِ الْحَدِيثِ (33- الْقَضَاءِ): التزهيد فِي الدُّنْيَا وَأَنْ يتخذها الْإِنْسَانِ دَارَ إِقَامَةٍ؟",
+      "fishOld": "مِنْ فَوَائِدِ الْحَدِيثِ 33 الْقَضَاءِ التَّزْهِيدُ فِي الدُّنْيَا وَأَنْ يَتَّخِذُهَا الْإِنْسَانِ دَارَ إِقَامَةٍ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.767,
+      "kind": "weak",
+      "stt_sample": "من فواعيد الحديث 3 ثلاثلون القضاء التزهد في الدنيا وانية التخدها الإنسان دارة إقامة"
+    },
+    {
+      "bare": "الاحسان في حديث جبريل ان تعبد الله",
+      "spoken": "الْإِحْسَانُ فِي حَدِيثٍ جِبْرِيلَ أَنْ تَعْبُدَ اللَّهَ:",
+      "fishOld": "الْإِحْسَانُ فِي حَدِيثٍ جِبْرِيلَ أَنْ تَعْبُدَ  اللَّهَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.848,
+      "kind": "weak",
+      "stt_sample": "الأحسان في حديث جبري لأن تعبود الله تودت"
+    },
+    {
+      "bare": "اتق الله حيثما كنت وصيه تجمع",
+      "spoken": "\"اتَّقِ اللَّهُ حَيْثُمَا كُنْتَ\" وَصِيَّةٌ تَجْمَعُ:",
+      "fishOld": "اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ وَصِيَّةٌ تَجْمَعُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.808,
+      "kind": "weak",
+      "stt_sample": "الطقل لاها حيث ما كنت وسية تجمعه"
+    },
+    {
+      "bare": "الزكاه شرعا",
+      "spoken": "\"الزَّكَاةُ\" شَرْعًا:",
+      "fishOld": "الزَّكَاةُ شَرْعًا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "أزكات شرعا"
+    },
+    {
+      "bare": "معني الخطا في حديث رفع الحرج",
+      "spoken": "مَعْنَى \"الْخَطَأَ\" فِي حَدِيثٍ رُفِعَ الْحَرَجِ:",
+      "fishOld": "مَعْنَى الْخَطَأَ فِي حَدِيثٍ رُفِعَ الْحَرَجِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.821,
+      "kind": "weak",
+      "stt_sample": "معنى الخطأ في حديث روفي على الحراج"
+    },
+    {
+      "bare": "ان تؤمن بالله",
+      "spoken": "أَنْ تُؤْمِنَ بِاللَّهِ...",
+      "fishOld": "أَنْ تُؤْمِنَ بِاللَّهِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "ان تؤمن بلا"
+    },
+    {
+      "bare": "الصلاه والزكاه فقط",
+      "spoken": "الصَّلَاةُ وَالزَّكَاةُ فَقَطْ",
+      "fishOld": "الصَّلَاةُ وَالزَّكَاةُ فَقَطْ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.765,
+      "kind": "weak",
+      "stt_sample": "الصلاة وزاكات وفقات"
+    },
+    {
+      "bare": "ان تلد الامه ربتها",
+      "spoken": "أَنْ تَلِدَ الْأَمَةُ رَبَّتَهَا",
+      "fishOld": "أَنْ تَلِدَ  الْأَمَةُ  رَبَّتَهَا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.824,
+      "kind": "weak",
+      "stt_sample": "أن تلدى الامتو ربتها"
+    },
+    {
+      "bare": "اربعين يوما فقط",
+      "spoken": "أَرْبَعِينَ يَوْمًا فَقَطْ",
+      "fishOld": "أَرْبَعِينَ يَوْمًا فَقَطْ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "40 يوم فقب"
+    },
+    {
+      "bare": "جائز",
+      "spoken": "جَائِزٌ",
+      "fishOld": "إِنَّهُ حُكْمٌ جَائِزٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "إنه حكم جاء إزل"
+    },
+    {
+      "bare": "كالغيث انبت الزرع",
+      "spoken": "كَالْغَيْثِ أَنْبَتَ الزَّرْعَ",
+      "fishOld": "كَالْغَيْثِ أَنْبَتَ الزَّرْعَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "كل غيف أنبة الزرا"
+    },
+    {
+      "bare": "كالطير يبحث عن رزق",
+      "spoken": "كَالطَّيْرِ يَبْحَثُ عَنْ رِزْقٍ",
+      "fishOld": "كَالطَّيْرِ يَبْحَثُ عَنْ رِزْقٍ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "قطير يبحث عن رزق"
+    },
+    {
+      "bare": "للنفس فقط",
+      "spoken": "لِلنَّفْسِ فَقَطْ",
+      "fishOld": "لِلنَّفْسِ فَقَطْ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "لنفسي فقر"
+    },
+    {
+      "bare": "يدفعوا الجزيه",
+      "spoken": "يَدْفَعُوا الْجِزْيَةَ",
+      "fishOld": "يَدْفَعُوا الْجِزْيَةَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "يتفع الجزيّة"
+    },
+    {
+      "bare": "يهاجروا",
+      "spoken": "يُهَاجِرُوا",
+      "fishOld": "أَنْ يُهَاجِرُوا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.222,
+      "kind": "weak",
+      "stt_sample": "حجرب"
+    },
+    {
+      "bare": "لانه لم يبك",
+      "spoken": "لِأَنَّهُ لَمْ يَبْكِ",
+      "fishOld": "لِأَنَّهُ لَمْ يَبْكِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "لأنه لاميابكي"
+    },
+    {
+      "bare": "ما يشاء",
+      "spoken": "مَا يَشَاءُ",
+      "fishOld": "مَا  يَشَاءُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "نا، يشعو"
+    },
+    {
+      "bare": "الصدق فقط",
+      "spoken": "الصِّدْقَ فَقَطْ",
+      "fishOld": "الصِّدْقَ فَقَطْ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "أصدقفا قد"
+    },
+    {
+      "bare": "الصراخ",
+      "spoken": "الصُّرَاخِ",
+      "fishOld": "أَعْنِي الصُّرَاخَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "قاني صراخ"
+    },
+    {
+      "bare": "الحسنه تمحها",
+      "spoken": "الْحَسَنَةَ تَمْحُهَا",
+      "fishOld": "الْحَسَنَةَ تَمْحُهَا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الحشنة تمحوها"
+    },
+    {
+      "bare": "صم",
+      "spoken": "صُمْ",
+      "fishOld": "صُمْ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.333,
+      "kind": "weak",
+      "stt_sample": "أص��矛د"
+    },
+    {
+      "bare": "تزيد الرزق",
+      "spoken": "تَزِيدُ الرِّزْقَ",
+      "fishOld": "أَنْ تَزِيدَ الرِّزْقَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.417,
+      "kind": "weak",
+      "stt_sample": "ونمع بعد العرب"
+    },
+    {
+      "bare": "الكلمه الطيبه صدقه",
+      "spoken": "الْكَلِمَةُ الطَّيِّبَةُ صَدَقَةٌ",
+      "fishOld": "الْكَلِمَةُ  الطَّيِّبَةُ  صَدَقَةٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.824,
+      "kind": "weak",
+      "stt_sample": "الكلمة الطيبة سداقى"
+    },
+    {
+      "bare": "اللعب",
+      "spoken": "اللَّعِبُ",
+      "fishOld": "اللَّعِبُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "تلاعب"
+    },
+    {
+      "bare": "حسن الخلق",
+      "spoken": "حُسْنُ الْخُلُقِ",
+      "fishOld": "حُسْنُ الْخُلُقِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "حسن خلوقي"
+    },
+    {
+      "bare": "فان البدع ضلاله",
+      "spoken": "فَإِنَّ الْبِدَعَ ضَلَالَةٌ",
+      "fishOld": "فَإِنَّ الْبِدَعَ ضَلَالَةٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "فإن البداع بلالة تن"
+    },
+    {
+      "bare": "فلا تطيعوا احدا",
+      "spoken": "فَلَا تُطِيعُوا أَحَدًا",
+      "fishOld": "فَلَا تُطِيعُوا أَحَدًا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.846,
+      "kind": "weak",
+      "stt_sample": "فلا تطيع أحدا"
+    },
+    {
+      "bare": "وكل محدثه بدعه",
+      "spoken": "وَكُلُّ مُحْدَثَةٍ بِدْعَةٌ",
+      "fishOld": "وَكُلُّ مُحْدَثَةٍ بِدْعَةٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "وكل محدثة بدأ"
+    },
+    {
+      "bare": "تضيعوها",
+      "spoken": "تُضَيِّعُوهَا",
+      "fishOld": "أَنْ لَا تُضَيِّعُوهَا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "التي ضيعها"
+    },
+    {
+      "bare": "تغيروها",
+      "spoken": "تُغَيِّرُوهَا",
+      "fishOld": "تُغَيِّرُوهَا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.571,
+      "kind": "weak",
+      "stt_sample": "دعي روحة"
+    },
+    {
+      "bare": "تسالوا عنها",
+      "spoken": "تَسْأَلُوا عَنْهَا",
+      "fishOld": "تَسْأَلُوا عَنْهَا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "تسأل عنها"
+    },
+    {
+      "bare": "يكرهك الناس",
+      "spoken": "يَكْرَهُكَ النَّاسُ",
+      "fishOld": "يَكْرَهُكَ النَّاسُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.6,
+      "kind": "weak",
+      "stt_sample": "وقرحوك النس"
+    },
+    {
+      "bare": "يحسدك الناس",
+      "spoken": "يَحْسُدُكَ النَّاسُ",
+      "fishOld": "يَحْسُدُكَ النَّاسُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "يحسو ده قناس"
+    },
+    {
+      "bare": "القاضي",
+      "spoken": "الْقَاضِي",
+      "fishOld": "أَعْنِي الْقَاضِيَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "عن القادية"
+    },
+    {
+      "bare": "الشهود",
+      "spoken": "الشُّهُودِ",
+      "fishOld": "الشُّهُودِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أشهود"
+    },
+    {
+      "bare": "المدعي عليه",
+      "spoken": "الْمُدَّعَى عَلَيْهِ",
+      "fishOld": "الْمُدَّعَى عَلَيْهِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "المدع علي"
+    },
+    {
+      "bare": "كتبت سيئه",
+      "spoken": "كُتِبَتْ سَيِّئَةً",
+      "fishOld": "كُتِبَتْ سَيِّئَةً",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "كتبة سعيliclaimed"
+    },
+    {
+      "bare": "تصدق به",
+      "spoken": "تَصَدَّقَ بِهِ",
+      "fishOld": "تَصَدَّقَ بِهِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "فصاد دقبي"
+    },
+    {
+      "bare": "حجه",
+      "spoken": "حَجَّهُ",
+      "fishOld": "حَجَّهُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "حجو"
+    },
+    {
+      "bare": "النافله",
+      "spoken": "النَّافِلَةُ",
+      "fishOld": "هِيَ النَّافِلَةُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "هيا نفلا"
+    },
+    {
+      "bare": "بالسيف",
+      "spoken": "بِالسَّيْفِ",
+      "fishOld": "أَعْنِي بِالسَّيْفِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "أعني بسيف"
+    },
+    {
+      "bare": "بالصمت",
+      "spoken": "بِالصَّمْتِ",
+      "fishOld": "أَعْنِي بِالصَّمْتِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "أعني بسمت"
+    },
+    {
+      "bare": "اعطاه مالا",
+      "spoken": "أَعْطَاهُ مَالًا",
+      "fishOld": "أَعْطَاهُ مَالًا",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "عطاه مالن"
+    },
+    {
+      "bare": "يصلي ويصوم",
+      "spoken": "يُصَلِّي وَيَصُومُ",
+      "fishOld": "أَنْ يُصَلِّيَ وَيَصُومَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "والنحن أن يُصليها و يؤسوم"
+    },
+    {
+      "bare": "ما لا يريبك",
+      "spoken": "مَا لَا يَرِيبُكَ",
+      "fishOld": "مَا لَا يَرِيبُكَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "ملعي ريبوك"
+    },
+    {
+      "bare": "تاجر",
+      "spoken": "تاجر",
+      "fishOld": "هُوَ تَاجِرٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "هو تجرون"
+    },
+    {
+      "bare": "ملك",
+      "spoken": "مَلَكٌ",
+      "fishOld": "مَلَكٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.333,
+      "kind": "weak",
+      "stt_sample": "ملاقون"
+    },
+    {
+      "bare": "مقيم دائم",
+      "spoken": "مُقِيمٌ دائم",
+      "fishOld": "مُقِيمٌ دائم",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "مقيمون دائم"
+    },
+    {
+      "bare": "ينصرك",
+      "spoken": "يَنْصُرْكَ",
+      "fishOld": "أَعْنِي أَنْ يَنْصُرَكَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.727,
+      "kind": "weak",
+      "stt_sample": "آني and ينصورك"
+    },
+    {
+      "bare": "يرزقك",
+      "spoken": "يَرْزُقْكَ",
+      "fishOld": "أَنْ يَرْزُقَكَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.25,
+      "kind": "weak",
+      "stt_sample": "و نع الخلة"
+    },
+    {
+      "bare": "نعم حرص الصحابه علي وصايا الرسول",
+      "spoken": "نَعَمْ، حِرْصَ الصَّحَابَةِ عَلَى وَصَايَا الرَّسُولِ",
+      "fishOld": "نَعَمْ حِرْصَ الصَّحَابَةِ عَلَى وَصَايَا الرَّسُولِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.815,
+      "kind": "weak",
+      "stt_sample": "نعم حرص الصحابة على وسائر رسول"
+    },
+    {
+      "bare": "نعم الحث علي حسن الخلق",
+      "spoken": "نَعَمْ، الْحَثُّ عَلَى حُسْنُ الْخَلْقِ",
+      "fishOld": "نَعَمْ الْحَثُّ عَلَى حُسْنُ الْخَلْقِ",
+      "count": 2,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "لأم الحث على حشن الخلق"
+    },
+    {
+      "bare": "عشره ايام",
+      "spoken": "عَشَرَةَ أَيَّامٍ",
+      "fishOld": "عَشَرَةَ أَيَّامٍ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "عشر تأيها من"
+    },
+    {
+      "bare": "شهرين",
+      "spoken": "شَهْرَيْنِ",
+      "fishOld": "شَهْرَيْنِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "شهر ايني"
+    },
+    {
+      "bare": "الحاكم فقط",
+      "spoken": "الْحَاكِمِ فَقَطْ",
+      "fishOld": "الْحَاكِمِ فَقَطْ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.818,
+      "kind": "weak",
+      "stt_sample": "الحاكم يفقاط"
+    },
+    {
+      "bare": "النفس فقط",
+      "spoken": "النَّفْسِ فَقَطْ",
+      "fishOld": "النَّفْسِ فَقَطْ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "نفسي فقل"
+    },
+    {
+      "bare": "الزهد",
+      "spoken": "الزُّهْدُ",
+      "fishOld": "هُوَ الزُّهْدُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.571,
+      "kind": "weak",
+      "stt_sample": "هو زوحد"
+    },
+    {
+      "bare": "الطهاره",
+      "spoken": "الطَّهَارَةِ",
+      "fishOld": "هِيَ الطَّهَارَةُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "حياتة هارة"
+    },
+    {
+      "bare": "كف الاذي",
+      "spoken": "كفّ الْأَذَى",
+      "fishOld": "كفّ الْأَذَى",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "كفل أدا"
+    },
+    {
+      "bare": "اللسان",
+      "spoken": "اللِّسَانُ",
+      "fishOld": "هُوَ اللِّسَانُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.625,
+      "kind": "weak",
+      "stt_sample": "حوالي سن"
+    },
+    {
+      "bare": "الصادق المصدوق",
+      "spoken": "الصَّادِقُ الْمَصْدُوقُ",
+      "fishOld": "الصَّادِقُ الْمَصْدُوقُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.769,
+      "kind": "weak",
+      "stt_sample": "السادة المصدور"
+    },
+    {
+      "bare": "الناصح",
+      "spoken": "النَّاصِحُ",
+      "fishOld": "النَّاصِحُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.429,
+      "kind": "weak",
+      "stt_sample": "السامير"
+    },
+    {
+      "bare": "البشير",
+      "spoken": "الْبَشِيرُ",
+      "fishOld": "الْبَشِيرُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "البشر"
+    },
+    {
+      "bare": "نبوي قولي",
+      "spoken": "نَبَوِيٌّ قَوْلِيٌّ",
+      "fishOld": "نَبَوِيٌّ قَوْلِيٌّ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "نبوي ينقولي ين"
+    },
+    {
+      "bare": "نبوي فعلي",
+      "spoken": "نَبَوِيٌّ فِعْلِيٌّ",
+      "fishOld": "نَبَوِيٌّ فِعْلِيٌّ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "نبوي ينفعلي ين"
+    },
+    {
+      "bare": "التشديد",
+      "spoken": "التَّشْدِيدِ",
+      "fishOld": "التَّشْدِيدِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "اتشدي"
+    },
+    {
+      "bare": "الالزام",
+      "spoken": "الْإِلْزَامِ",
+      "fishOld": "هُوَ الْإِلْزَامُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "حوال إزام"
+    },
+    {
+      "bare": "خارج الدين",
+      "spoken": "خَارِجَ الدِّينِ",
+      "fishOld": "خَارِجَ الدِّينِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "خارج دين"
+    },
+    {
+      "bare": "فتح مكه",
+      "spoken": "فَتْحِ مَكَّةَ",
+      "fishOld": "فَتْحِ مَكَّةَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "فتحي مكا"
+    },
+    {
+      "bare": "الاولي",
+      "spoken": "الْأُولَى",
+      "fishOld": "الْأُولَى",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "الأولة"
+    },
+    {
+      "bare": "العاشره",
+      "spoken": "الْعَاشِرَةِ",
+      "fishOld": "الْعَاشِرَةِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.714,
+      "kind": "weak",
+      "stt_sample": "العشر"
+    },
+    {
+      "bare": "انس",
+      "spoken": "أَنَسٌ",
+      "fishOld": "أَنَسٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.6,
+      "kind": "weak",
+      "stt_sample": "أنا سن"
+    },
+    {
+      "bare": "النطق باللسان",
+      "spoken": "النُّطْقُ بِاللِّسَانِ",
+      "fishOld": "النُّطْقُ بِاللِّسَانِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "أنتق باللسان"
+    },
+    {
+      "bare": "نام",
+      "spoken": "نَامَ",
+      "fishOld": "نَامَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "نامة"
+    },
+    {
+      "bare": "انه شيخ",
+      "spoken": "أَنَّهُ شَيْخٌ",
+      "fishOld": "أَنَّهُ شَيْخٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "أنه شيخون"
+    },
+    {
+      "bare": "المملوكه",
+      "spoken": "الْمَمْلُوكَةُ",
+      "fishOld": "هِيَ الْمَمْلُوكَةُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.7,
+      "kind": "weak",
+      "stt_sample": "حيلم ملوقة"
+    },
+    {
+      "bare": "الرعاه",
+      "spoken": "الرُّعَاةُ",
+      "fishOld": "هُمْ الرُّعَاةُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "هم الرؤات"
+    },
+    {
+      "bare": "هديه",
+      "spoken": "هَدِيَّةٌ",
+      "fishOld": "هِيَ هَدِيَّةٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "هي حدية"
+    },
+    {
+      "bare": "صدقه تطوع",
+      "spoken": "صَدَقَةٍ تَطَوُّعٍ",
+      "fishOld": "صَدَقَةُ  تَطَوُّعٍ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "صدقة تطوعين"
+    },
+    {
+      "bare": "قرض",
+      "spoken": "قَرْضٌ",
+      "fishOld": "قَرْضٌ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.4,
+      "kind": "weak",
+      "stt_sample": "قردون"
+    },
+    {
+      "bare": "ترك الكلام",
+      "spoken": "تَرْكُ الْكَلَامِ",
+      "fishOld": "تَرْكُ الْكَلَامِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.667,
+      "kind": "weak",
+      "stt_sample": "ترقل كلم"
+    },
+    {
+      "bare": "الامساك ليلا",
+      "spoken": "الْإِمْسَاكُ ليلاً",
+      "fishOld": "الْإِمْسَاكُ ليلاً",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.545,
+      "kind": "weak",
+      "stt_sample": "الامساق while the Prophet will learn."
+    },
+    {
+      "bare": "ترك النوم",
+      "spoken": "تَرْكُ النَّوْمِ",
+      "fishOld": "أَعْنِي تَرْكَ النَّوْمِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "عن ترك النوم"
+    },
+    {
+      "bare": "السعي فقط",
+      "spoken": "السَّعْيُ فَقَطْ",
+      "fishOld": "السَّعْيُ فَقَطْ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "السعيوا فقط"
+    },
+    {
+      "bare": "سالمته",
+      "spoken": "سَالَمْتُهُ",
+      "fishOld": "سَالَمْتُهُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.833,
+      "kind": "weak",
+      "stt_sample": "سلامتو"
+    },
+    {
+      "bare": "النوافل",
+      "spoken": "النَّوَافِلُ",
+      "fishOld": "النَّوَافِلُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.75,
+      "kind": "weak",
+      "stt_sample": "و نوافلوا"
+    },
+    {
+      "bare": "تعمد الذنب",
+      "spoken": "تَعَمُّدُ الذَّنْبِ",
+      "fishOld": "تَعَمُّدُ  الذَّنْبِ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.6,
+      "kind": "weak",
+      "stt_sample": "كامده الثنب"
+    },
+    {
+      "bare": "الاكراه",
+      "spoken": "الْإِكْرَاهُ",
+      "fishOld": "الْإِكْرَاهُ",
+      "count": 2,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.571,
+      "kind": "weak",
+      "stt_sample": "الإقراء"
+    },
+    {
+      "bare": "السفر والمرض والنوم",
+      "spoken": "السَّفَرُ وَالْمَرَضُ وَالنَّوْمُ",
+      "fishOld": "السَّفَرُ وَالْمَرَضُ وَالنَّوْمُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.824,
+      "kind": "weak",
+      "stt_sample": "السفر والمرد ونوم"
+    },
+    {
+      "bare": "صيامه",
+      "spoken": "صِيَامُهُ",
+      "fishOld": "أَعْنِي صِيَامَهُ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.778,
+      "kind": "weak",
+      "stt_sample": "عني سيامه"
+    },
+    {
+      "bare": "حلالا",
+      "spoken": "حلالاً",
+      "fishOld": "حلالاً",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.8,
+      "kind": "weak",
+      "stt_sample": "حلالم"
+    },
+    {
+      "bare": "قلبك",
+      "spoken": "قَلْبِكَ",
+      "fishOld": "قَلْبِكَ",
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "min_ov": 0.5,
+      "kind": "weak",
+      "stt_sample": "خلبيكة"
+    }
+  ]
+}

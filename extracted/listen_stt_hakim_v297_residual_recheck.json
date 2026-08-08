@@ -1,0 +1,100 @@
+{
+  "timestamp": "2026-08-08T17:23:25.917771+00:00",
+  "versionTarget": "v299",
+  "liveVersionBeforeDeploy": {
+    "cache": "alhuda-v298",
+    "sw": 298,
+    "app": 260
+  },
+  "liveVersion": {
+    "cache": "alhuda-v298",
+    "sw": 298,
+    "app": 260
+  },
+  "base": "https://alhuda.ryodan71.workers.dev",
+  "whisperModel": "small",
+  "provider": "fish",
+  "voice": "aa9c8260269c411d9863ab1b1bfa3158",
+  "voiceName": "راوٍ عربي حكيم",
+  "ttsCache": "v82",
+  "volumePreserved": {
+    "fishProsodyVolume": 13,
+    "normalize_loudness": true,
+    "clientGain": 1.45
+  },
+  "sourceReports": [
+    "extracted/listen_stt_tawheed_ALL_hakim_v297.json",
+    "extracted/listen_stt_usool_ALL_hakim_v297.json",
+    "extracted/listen_stt_nawawi_ALL_hakim_v297.json"
+  ],
+  "before": {
+    "hardOptionFails": 16,
+    "hardUnique": 12,
+    "byBook": {
+      "tawheed": 15,
+      "usool": 0,
+      "nawawi": 1
+    },
+    "weakBorderlineScanned": 1010,
+    "priorityUnique": 135
+  },
+  "rounds": {
+    "r1_hard12": {
+      "retried": 12,
+      "pass": 8,
+      "fail": 4
+    },
+    "r2_hard_strengthen": {
+      "retried": 12,
+      "pass": 12,
+      "fail": 0,
+      "note": "all 12 hard unique pass"
+    },
+    "r3_expanded_priority": {
+      "retried": 135,
+      "pass": 119,
+      "fail": 16,
+      "passRate": 0.8815
+    },
+    "r4_leftovers16": {
+      "retried": 16,
+      "pass": 15,
+      "fail": 1
+    },
+    "r5_taghoot": {
+      "retried": 1,
+      "pass": 1,
+      "fail": 0
+    }
+  },
+  "after": {
+    "hardUniquePass": 12,
+    "hardUniqueFail": 0,
+    "priorityUniquePass": 135,
+    "priorityUniqueFail": 0,
+    "passRate": 1.0
+  },
+  "totals": {
+    "hardFixed": 12,
+    "weakPriorityFixed": 123,
+    "priorityRetried": 135,
+    "irreducible": 0
+  },
+  "irreducible": [],
+  "hardRefresh": "Cmd+Shift+R",
+  "notes": [
+    "Display text unchanged; speech carriers + iʿrāb only (أعني/إنّه/قل؛ avoid هو→English who)",
+    "Expanded beyond 16 hard fails: scanned 3 Hakim reports for fail + weak ov<0.70 + high-count mangled",
+    "Fixed hard: رزق/روم/نار/صداع/بصر/بني/رقية/بئر/تطوع/لا شيء/سبعون/مئة وعشرين",
+    "Fixed high-count weak: خطأ→إنه خطأ واضح، مكروه، سنة، شرك أكبر/أصغر، صلاة، حج، واجب…",
+    "Kept v298 Fish volume:13 + normalize_loudness + client gain 1.45 (no regression)",
+    "Fish Hakim only + Hudhaify ayahs; TTS_CACHE_VER v82; deploy target alhuda-v299"
+  ],
+  "arabic": {
+    "summary": "أصلحنا ١٦ فشل صلب + ١٣٥ كلمة أولوية ضعيفة/مشوّهة؛ كلها ناجحة بعد الحاملات. انشر v299 ثم Cmd+Shift+R.",
+    "fixedCount": 135,
+    "liveBefore": "alhuda-v298",
+    "liveAfterTarget": "alhuda-v299",
+    "hardRefresh": "Cmd+Shift+R"
+  }
+}
