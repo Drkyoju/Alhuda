@@ -7,9 +7,9 @@
     "app": 252
   },
   "liveVersion": {
-    "cache": "alhuda-v290",
-    "sw": 290,
-    "app": 252
+    "cache": "alhuda-v291",
+    "sw": 291,
+    "app": 253
   },
   "base": "https://alhuda.ryodan71.workers.dev",
   "whisperModel": "small",
@@ -1294,5 +1294,12 @@
       ],
       "round": "r2"
     }
-  ]
+  ],
+  "liveVersionAfterDeploy": {
+    "cache": "alhuda-v291",
+    "sw": 291,
+    "app": 253
+  },
+  "deployed": true,
+  "deployCommit": "577ad38"
 }
