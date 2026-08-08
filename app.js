@@ -1694,7 +1694,7 @@ function toggleSound() {
 const TTS_AZURE_HAMED = 'ar-SA-HamedNeural';
 let TTS_VOICE = TTS_AZURE_HAMED;
 /** Bump when SSML/voice/prep changes so IndexedDB never replays old clips. */
-const TTS_CACHE_VER = 'v72';
+const TTS_CACHE_VER = 'v73';
 /**
  * Lesson Azure only — light gain, no Fish EQ chain.
  * Never applied to Quran Hudhaify.

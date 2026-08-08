@@ -1,0 +1,1298 @@
+{
+  "timestamp": "2026-08-08T13:50:41.020Z",
+  "versionTarget": "v291",
+  "liveVersionBeforeDeploy": {
+    "cache": "alhuda-v290",
+    "sw": 290,
+    "app": 252
+  },
+  "liveVersion": {
+    "cache": "alhuda-v290",
+    "sw": 290,
+    "app": 252
+  },
+  "base": "https://alhuda.ryodan71.workers.dev",
+  "whisperModel": "small",
+  "provider": "azure",
+  "voice": "ar-SA-HamedNeural",
+  "ttsCache": "v73",
+  "sourceReports": [
+    "extracted/listen_stt_tawheed_ALL_hamed_v290.json",
+    "extracted/listen_stt_usool_ALL_hamed_v290.json",
+    "extracted/listen_stt_nawawi_ALL_hamed_v290.json"
+  ],
+  "before": {
+    "clipsFail": 123,
+    "uniqueBare": 75,
+    "byBook": {
+      "tawheedOptions": 111,
+      "usoolOptions": 12,
+      "nawawiOptions": 0
+    }
+  },
+  "rounds": {
+    "r1_carriers": {
+      "retried": 75,
+      "pass": 50,
+      "fail": 25
+    },
+    "r2_strengthen": {
+      "retried": 25,
+      "pass": 25,
+      "fail": 0,
+      "fixed": [
+        "الزنا",
+        "الصيام",
+        "الربا",
+        "الرياء",
+        "دعاء",
+        "يخفوا",
+        "الطاعة",
+        "حراسا",
+        "عبادة",
+        "النوم",
+        "الزمان",
+        "اركع",
+        "يتيما",
+        "بسحر مثله",
+        "معاذ",
+        "صنما",
+        "ليصمت",
+        "اعبدوا الله",
+        "شفاعة",
+        "حياة",
+        "جماعة",
+        "الذبح",
+        "عفي عنه",
+        "العظم",
+        "النحو"
+      ]
+    }
+  },
+  "after": {
+    "uniqueBare": 75,
+    "pass": 75,
+    "fail": 0,
+    "passRate": 1
+  },
+  "totals": {
+    "uniqueBare": 75,
+    "pass": 75,
+    "fail": 0,
+    "passRate": 1
+  },
+  "irreducible": [],
+  "hardRefresh": "Cmd+Shift+R",
+  "notes": [
+    "Display unchanged; Azure Hamed SHORT_SPEECH_CARRIERS (أعني/إنّه/قل؛ avoid هو→who)",
+    "normalizeForAzure applies carriers on worker; TTS_CACHE_VER v72→v73; cache alhuda-v291",
+    "Nawawi already 0 fails at v290"
+  ],
+  "all": [
+    {
+      "bare": "الزنا",
+      "spoken": "الزِّنَا",
+      "before": "الزِّنَا",
+      "after": "أَعْنِي فِعْلَ الزِّنَا الْمُحَرَّمَ",
+      "fish": "أَعْنِي فِعْلَ الزِّنَا الْمُحَرَّمَ",
+      "before_stt": "دسوتا",
+      "transcript": "أعني فعل أزن المحرم",
+      "pass": true,
+      "overlap": 0.833,
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "الصيام",
+      "spoken": "الصِّيَامُ",
+      "before": "الصِّيَامُ",
+      "after": "أَعْنِي صِيَامَ رَمَضَانَ",
+      "fish": "أَعْنِي صِيَامَ رَمَضَانَ",
+      "before_stt": "بس ين",
+      "transcript": "يعني سيام رمضان",
+      "pass": true,
+      "overlap": 0.846,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "بدعة",
+      "spoken": "بِدْعَةٌ",
+      "before": "بِدْعَةٌ",
+      "after": "إِنَّهَا بِدْعَةٌ مُحْدَثَةٌ",
+      "fish": "إِنَّهَا بِدْعَةٌ مُحْدَثَةٌ",
+      "before_stt": "بدا",
+      "transcript": "إنها بدعة محدثة",
+      "pass": true,
+      "overlap": 1,
+      "count": 4,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "جائز",
+      "spoken": "جَائِزٌ",
+      "before": "جَائِزٌ",
+      "after": "إِنَّهُ حُكْمٌ جَائِزٌ",
+      "fish": "إِنَّهُ حُكْمٌ جَائِزٌ",
+      "before_stt": "جيز",
+      "transcript": "إنه حكم جائز",
+      "pass": true,
+      "overlap": 1,
+      "count": 10,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الربا",
+      "spoken": "الرِّبَا",
+      "before": "الرِّبَا",
+      "after": "أَعْنِي الرِّبَا الْمُحَرَّمَ",
+      "fish": "أَعْنِي الرِّبَا الْمُحَرَّمَ",
+      "before_stt": "切ترار",
+      "transcript": "أعني الريب المحرم",
+      "pass": true,
+      "overlap": 0.933,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "حفظها",
+      "spoken": "حِفْظُهَا",
+      "before": "حِفْظُهَا",
+      "after": "أَعْنِي حِفْظَهَا جَيِّدًا",
+      "fish": "أَعْنِي حِفْظَهَا جَيِّدًا",
+      "before_stt": "حيث ذوها",
+      "transcript": "أنا حفظها جيدا",
+      "pass": true,
+      "overlap": 0.846,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الرياء",
+      "spoken": "الرِّيَاءُ",
+      "before": "الرِّيَاءُ",
+      "after": "أَعْنِي الرِّيَاءَ فِي الْعَمَلِ",
+      "fish": "أَعْنِي الرِّيَاءَ فِي الْعَمَلِ",
+      "before_stt": "оль être minimizing",
+      "transcript": "أعني الرياء في العمل",
+      "pass": true,
+      "overlap": 1,
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "الصوم",
+      "spoken": "الصَّوْمِ",
+      "before": "الصَّوْمِ",
+      "after": "أَعْنِي صَوْمَ رَمَضَانَ",
+      "fish": "أَعْنِي صَوْمَ رَمَضَانَ",
+      "before_stt": "بسون",
+      "transcript": "يعني صوم رمضان",
+      "pass": true,
+      "overlap": 0.917,
+      "count": 4,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الشرك",
+      "spoken": "الشِّرْكِ",
+      "before": "الشِّرْكِ",
+      "after": "أَعْنِي الشِّرْكَ",
+      "fish": "أَعْنِي الشِّرْكَ",
+      "before_stt": "تشرك",
+      "transcript": "عن الشرك",
+      "pass": true,
+      "overlap": 0.778,
+      "count": 8,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "دعاء",
+      "spoken": "دُعَاءُ",
+      "before": "دُعَاءُ",
+      "after": "أَعْنِي الدُّعَاءَ لِلَّهِ",
+      "fish": "أَعْنِي الدُّعَاءَ لِلَّهِ",
+      "before_stt": "دن",
+      "transcript": "أعني الدعاء لله",
+      "pass": true,
+      "overlap": 1,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "يخفوا",
+      "spoken": "يُخْفُوا",
+      "before": "يُخْفُوا",
+      "after": "أَنْ يُخْفُوا الْحَقَّ",
+      "fish": "أَنْ يُخْفُوا الْحَقَّ",
+      "before_stt": "الآر المعرب",
+      "transcript": "أن يخف الحق",
+      "pass": true,
+      "overlap": 0.818,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "الشجر",
+      "spoken": "الشَّجَرُ",
+      "before": "الشَّجَرُ",
+      "after": "أَعْنِي الشَّجَرَ",
+      "fish": "أَعْنِي الشَّجَرَ",
+      "before_stt": "تشجر",
+      "transcript": "أعني الشجر",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الشام",
+      "spoken": "الشَّامِ",
+      "before": "الشَّامِ",
+      "after": "أَعْنِي بِلَادَ الشَّامِ",
+      "fish": "أَعْنِي بِلَادَ الشَّامِ",
+      "before_stt": "بشن",
+      "transcript": "أعني بلاد أشام",
+      "pass": true,
+      "overlap": 0.846,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "التبرك",
+      "spoken": "التَّبَرُّكِ",
+      "before": "التَّبَرُّكِ",
+      "after": "أَعْنِي التَّبَرُّكَ",
+      "fish": "أَعْنِي التَّبَرُّكَ",
+      "before_stt": "قتب رق",
+      "transcript": "يعني التبروك",
+      "pass": true,
+      "overlap": 0.818,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الظل",
+      "spoken": "الظِّلِّ",
+      "before": "الظِّلِّ",
+      "after": "أَعْنِي الظِّلَّ",
+      "fish": "أَعْنِي الظِّلَّ",
+      "before_stt": "بظل",
+      "transcript": "يعني الثل",
+      "pass": true,
+      "overlap": 0.75,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "من صام",
+      "spoken": "مَنْ صَامَ",
+      "before": "مَنْ صَامَ",
+      "after": "مَنْ صَامَ رَمَضَانَ",
+      "fish": "مَنْ صَامَ رَمَضَانَ",
+      "before_stt": "منصن",
+      "transcript": "من صام رمضان",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "عوقب",
+      "spoken": "عُوقِبَ",
+      "before": "عُوقِبَ",
+      "after": "أَعْنِي قَدْ عُوقِبَ",
+      "fish": "أَعْنِي قَدْ عُوقِبَ",
+      "before_stt": "الحاءнить",
+      "transcript": "يعني قد عوقد",
+      "pass": true,
+      "overlap": 0.8,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الطاعة",
+      "spoken": "الطَّاعَةِ",
+      "before": "الطَّاعَةِ",
+      "after": "أَعْنِي طَاعَةَ اللَّهِ",
+      "fish": "أَعْنِي طَاعَةَ اللَّهِ",
+      "before_stt": "أطع",
+      "transcript": "أعمي طاعة الله",
+      "pass": true,
+      "overlap": 0.917,
+      "count": 4,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "حراسا",
+      "spoken": "حُرّاساً",
+      "before": "حُرّاساً",
+      "after": "أَعْنِي حُرَّاسًا عَلَى الْبَابِ",
+      "fish": "أَعْنِي حُرَّاسًا عَلَى الْبَابِ",
+      "before_stt": "حرسن",
+      "transcript": "أعني حرصا على الناس",
+      "pass": true,
+      "overlap": 0.824,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "أنبياء",
+      "spoken": "أَنْبِيَاءَ",
+      "before": "أَنْبِيَاءَ",
+      "after": "أَعْنِي الْأَنْبِيَاءَ عَلَيْهِمُ السَّلَامُ",
+      "fish": "أَعْنِي الْأَنْبِيَاءَ عَلَيْهِمُ السَّلَامُ",
+      "before_stt": "دور الأéral",
+      "transcript": "أعني الأنبياء عليهم السلام",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "عبادة",
+      "spoken": "عِبَادَةٌ",
+      "before": "عِبَادَةٌ",
+      "after": "أَعْنِي عِبَادَةَ اللَّهِ",
+      "fish": "أَعْنِي عِبَادَةَ اللَّهِ",
+      "before_stt": "آي دائ",
+      "transcript": "أعني عبادة الله",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "النسب",
+      "spoken": "النَّسَبِ",
+      "before": "النَّسَبِ",
+      "after": "أَعْنِي النَّسَبَ الشَّرِيفَ",
+      "fish": "أَعْنِي النَّسَبَ الشَّرِيفَ",
+      "before_stt": "نست",
+      "transcript": "أعني النسبة الشريف",
+      "pass": true,
+      "overlap": 0.938,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "النوم",
+      "spoken": "النَّوْمُ",
+      "before": "النَّوْمُ",
+      "after": "أَعْنِي النَّوْمَ فِي اللَّيْلِ",
+      "fish": "أَعْنِي النَّوْمَ فِي اللَّيْلِ",
+      "before_stt": "،،، عليه وتوطني Bardzo",
+      "transcript": "أعني النوم في الليل",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "الزمان",
+      "spoken": "الزَّمَانْ",
+      "before": "الزَّمَانْ",
+      "after": "أَعْنِي الزَّمَانَ وَالْوَقْتَ",
+      "fish": "أَعْنِي الزَّمَانَ وَالْوَقْتَ",
+      "before_stt": "رزمieza",
+      "transcript": "أعني الزمان والوقت",
+      "pass": true,
+      "overlap": 1,
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "ضعفها",
+      "spoken": "ضَعْفِهَا",
+      "before": "ضَعْفِهَا",
+      "after": "أَعْنِي ضَعْفَهَا",
+      "fish": "أَعْنِي ضَعْفَهَا",
+      "before_stt": "بافيها",
+      "transcript": "أعني ضافها",
+      "pass": true,
+      "overlap": 0.889,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الشمس",
+      "spoken": "الشَّمْسَ",
+      "before": "الشَّمْسَ",
+      "after": "أَعْنِي الشَّمْسَ",
+      "fish": "أَعْنِي الشَّمْسَ",
+      "before_stt": "بشمس",
+      "transcript": "آني الشمس",
+      "pass": true,
+      "overlap": 0.778,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "يخطئ",
+      "spoken": "يُخْطِئُ",
+      "before": "يُخْطِئُ",
+      "after": "أَنْ يُخْطِئَ",
+      "fish": "أَنْ يُخْطِئَ",
+      "before_stt": "بيو غتد",
+      "transcript": "أن يخطب",
+      "pass": true,
+      "overlap": 0.833,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "اركع",
+      "spoken": "ارْكَعْ",
+      "before": "ارْكَعْ",
+      "after": "قُلْ ارْكَعْ فِي الصَّلَاةِ",
+      "fish": "قُلْ ارْكَعْ فِي الصَّلَاةِ",
+      "before_stt": "إرقى",
+      "transcript": "قل إركع في الصلاة",
+      "pass": true,
+      "overlap": 0.929,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "يتيما",
+      "spoken": "يتيماً",
+      "before": "يتيماً",
+      "after": "أَعْنِي طِفْلًا يَتِيمًا",
+      "fish": "أَعْنِي طِفْلًا يَتِيمًا",
+      "before_stt": "",
+      "transcript": "يعني طفلاً يتيماً",
+      "pass": true,
+      "overlap": 0.923,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "موسى",
+      "spoken": "مُوسَى",
+      "before": "مُوسَى",
+      "after": "أَعْنِي مُوسَى عَلَيْهِ السَّلَامُ",
+      "fish": "أَعْنِي مُوسَى عَلَيْهِ السَّلَامُ",
+      "before_stt": "مصة",
+      "transcript": "أنا موسى عليه السلام",
+      "pass": true,
+      "overlap": 0.889,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "عيسى",
+      "spoken": "عِيسَى",
+      "before": "عِيسَى",
+      "after": "أَعْنِي عِيسَى عَلَيْهِ السَّلَامُ",
+      "fish": "أَعْنِي عِيسَى عَلَيْهِ السَّلَامُ",
+      "before_stt": "ويس",
+      "transcript": "أعني عيس عليه السلام",
+      "pass": true,
+      "overlap": 0.944,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الطب",
+      "spoken": "الطِّبِّ",
+      "before": "الطِّبِّ",
+      "after": "أَعْنِي عِلْمَ الطِّبِّ",
+      "fish": "أَعْنِي عِلْمَ الطِّبِّ",
+      "before_stt": "إطاد",
+      "transcript": "أعني علم الطب",
+      "pass": true,
+      "overlap": 1,
+      "count": 4,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "بسحر مثله",
+      "spoken": "بِسِحْرٍ مِثْلِهِ",
+      "before": "بِسِحْرٍ مِثْلِهِ",
+      "after": "أَعْنِي بِسِحْرٍ مِثْلِ سِحْرِهِ",
+      "fish": "أَعْنِي بِسِحْرٍ مِثْلِ سِحْرِهِ",
+      "before_stt": "بس حر النفلي",
+      "transcript": "أعني بصحر مثل الصحر",
+      "pass": true,
+      "overlap": 0.75,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "الصبر",
+      "spoken": "الصَّبْرِ",
+      "before": "الصَّبْرِ",
+      "after": "أَعْنِي الصَّبْرَ",
+      "fish": "أَعْنِي الصَّبْرَ",
+      "before_stt": "بس صدر",
+      "transcript": "أعني الصبر",
+      "pass": true,
+      "overlap": 1,
+      "count": 3,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الريح",
+      "spoken": "الرِّيحُ",
+      "before": "الرِّيحُ",
+      "after": "أَعْنِي الرِّيحَ",
+      "fish": "أَعْنِي الرِّيحَ",
+      "before_stt": "подумح",
+      "transcript": "أعني الريح",
+      "pass": true,
+      "overlap": 1,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "كافر",
+      "spoken": "كَافِرٌ",
+      "before": "كَافِرٌ",
+      "after": "إِنَّهُ كَافِرٌ",
+      "fish": "إِنَّهُ كَافِرٌ",
+      "before_stt": "كثير",
+      "transcript": "إنه كافر",
+      "pass": true,
+      "overlap": 1,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "مطيع",
+      "spoken": "مُطِيعٌ",
+      "before": "مُطِيعٌ",
+      "after": "إِنَّهُ مُطِيعٌ",
+      "fish": "إِنَّهُ مُطِيعٌ",
+      "before_stt": "موتي sola",
+      "transcript": "إنه مطيا",
+      "pass": true,
+      "overlap": 0.857,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "مشرك",
+      "spoken": "مُشْرِكٌ",
+      "before": "مُشْرِكٌ",
+      "after": "إِنَّهُ مُشْرِكٌ",
+      "fish": "إِنَّهُ مُشْرِكٌ",
+      "before_stt": "مسريكم",
+      "transcript": "إنه مُشركُد",
+      "pass": true,
+      "overlap": 0.875,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "عمله",
+      "spoken": "عَمَلُهُ",
+      "before": "عَمَلُهُ",
+      "after": "أَعْنِي عَمَلَهُ",
+      "fish": "أَعْنِي عَمَلَهُ",
+      "before_stt": "بار ملو",
+      "transcript": "أعني عمله",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "النفاق",
+      "spoken": "النِّفَاقِ",
+      "before": "النِّفَاقِ",
+      "after": "أَعْنِي النِّفَاقَ",
+      "fish": "أَعْنِي النِّفَاقَ",
+      "before_stt": "ومثار",
+      "transcript": "أعني النفاق",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "معاذ",
+      "spoken": "مُعَاذٌ",
+      "before": "مُعَاذٌ",
+      "after": "أَعْنِي مُعَاذَ بْنَ جَبَلٍ",
+      "fish": "أَعْنِي مُعَاذَ بْنَ جَبَلٍ",
+      "before_stt": "موعزم",
+      "transcript": "أعني معاذبنا جبل",
+      "pass": true,
+      "overlap": 0.929,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "صنما",
+      "spoken": "صَنَمًا",
+      "before": "صَنَمًا",
+      "after": "أَعْنِي صَنَمًا مِنَ الْأَصْنَامِ",
+      "fish": "أَعْنِي صَنَمًا مِنَ الْأَصْنَامِ",
+      "before_stt": "سنمن",
+      "transcript": "أعني صنما من الأصنام",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "قبره",
+      "spoken": "قَبْرِهِ",
+      "before": "قَبْرِهِ",
+      "after": "أَعْنِي قَبْرَهُ",
+      "fish": "أَعْنِي قَبْرَهُ",
+      "before_stt": "قبل",
+      "transcript": "آني قبره",
+      "pass": true,
+      "overlap": 0.75,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "ليصمت",
+      "spoken": "لِيَصْمُتْ",
+      "before": "لِيَصْمُتْ",
+      "after": "أَوْ لِيَصْمُتْ عَنِ الْكَلَامِ",
+      "fish": "أَوْ لِيَصْمُتْ عَنِ الْكَلَامِ",
+      "before_stt": "ليس نط",
+      "transcript": "أو ليصمط عن الكلام",
+      "pass": true,
+      "overlap": 0.933,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "يرضى",
+      "spoken": "يَرْضَى",
+      "before": "يَرْضَى",
+      "after": "أَعْنِي أَنْ يَرْضَى",
+      "fish": "أَعْنِي أَنْ يَرْضَى",
+      "before_stt": "يرد",
+      "transcript": "يعني أن يرض",
+      "pass": true,
+      "overlap": 0.8,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "يصمت",
+      "spoken": "يَصْمُتَ",
+      "before": "يَصْمُتَ",
+      "after": "أَعْنِي أَنْ يَصْمُتَ وَيَسْكُتَ",
+      "fish": "أَعْنِي أَنْ يَصْمُتَ وَيَسْكُتَ",
+      "before_stt": "يسموط",
+      "transcript": "أعني أن يسمط ويسكلت",
+      "pass": true,
+      "overlap": 0.813,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "آبائكم",
+      "spoken": "آبَائِكُمْ",
+      "before": "آبَائِكُمْ",
+      "after": "أَعْنِي آبَاءَكُمْ",
+      "fish": "أَعْنِي آبَاءَكُمْ",
+      "before_stt": "أدى إكوم",
+      "transcript": "أعني آباءكم",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "يصدق",
+      "spoken": "يصدُق",
+      "before": "يصدُق",
+      "after": "أَعْنِي أَنْ يَصْدُقَ فِي الْقَوْلِ",
+      "fish": "أَعْنِي أَنْ يَصْدُقَ فِي الْقَوْلِ",
+      "before_stt": "أياش to you",
+      "transcript": "أعني أن يصدق في القول",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الرب",
+      "spoken": "الرَّبِّ",
+      "before": "الرَّبِّ",
+      "after": "أَعْنِي الرَّبَّ سُبْحَانَهُ",
+      "fish": "أَعْنِي الرَّبَّ سُبْحَانَهُ",
+      "before_stt": "برمد",
+      "transcript": "أعني الرب سبحانه",
+      "pass": true,
+      "overlap": 1,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "اعبدوا الله",
+      "spoken": "اعْبُدُوا اللَّهَ",
+      "before": "اعْبُدُوا اللَّهَ",
+      "after": "قُلْ اعْبُدُوا اللَّهَ وَحْدَهُ",
+      "fish": "قُلْ اعْبُدُوا اللَّهَ وَحْدَهُ",
+      "before_stt": "قرب دل the",
+      "transcript": "قل أعبد الله وحده",
+      "pass": true,
+      "overlap": 0.813,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "طلب الرزق",
+      "spoken": "طَلَبُ الرِّزْقِ",
+      "before": "طَلَبُ الرِّزْقِ",
+      "after": "أَعْنِي طَلَبَ الرِّزْقِ",
+      "fish": "أَعْنِي طَلَبَ الرِّزْقِ",
+      "before_stt": "وغو مي�",
+      "transcript": "أعني طلب الرزق",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "رزقا",
+      "spoken": "رزقاً",
+      "before": "رزقاً",
+      "after": "أَعْنِي رِزْقًا حَلَالًا",
+      "fish": "أَعْنِي رِزْقًا حَلَالًا",
+      "before_stt": "برسقا",
+      "transcript": "أعني رسق حلالاً",
+      "pass": true,
+      "overlap": 0.846,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "شفاعة",
+      "spoken": "شَفَاعَةً",
+      "before": "شَفَاعَةً",
+      "after": "أَعْنِي الشَّفَاعَةَ يَوْمَ الْقِيَامَةِ",
+      "fish": "أَعْنِي الشَّفَاعَةَ يَوْمَ الْقِيَامَةِ",
+      "before_stt": "شفا",
+      "transcript": "أعني الشفاعة يوم القيامة",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "حياة",
+      "spoken": "حَيَاةً",
+      "before": "حَيَاةً",
+      "after": "أَعْنِي الْحَيَاةَ الدُّنْيَا",
+      "fish": "أَعْنِي الْحَيَاةَ الدُّنْيَا",
+      "before_stt": "حياتم",
+      "transcript": "أعني الحياة الدنيا",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "الصابئة",
+      "spoken": "الصَّابِئَةِ",
+      "before": "الصَّابِئَةِ",
+      "after": "أَعْنِي الصَّابِئَةَ",
+      "fish": "أَعْنِي الصَّابِئَةَ",
+      "before_stt": "encourومše",
+      "transcript": "أعني الصابع",
+      "pass": true,
+      "overlap": 0.818,
+      "count": 3,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الظلم",
+      "spoken": "الظُّلْمِ",
+      "before": "الظُّلْمِ",
+      "after": "أَعْنِي الظُّلْمَ",
+      "fish": "أَعْنِي الظُّلْمَ",
+      "before_stt": "Senin�에 ه Fill Up",
+      "transcript": "أاني الظلم",
+      "pass": true,
+      "overlap": 0.889,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "جماعة",
+      "spoken": "جَمَاعَةً",
+      "before": "جَمَاعَةً",
+      "after": "أَعْنِي صَلَاةَ الْجَمَاعَةِ",
+      "fish": "أَعْنِي صَلَاةَ الْجَمَاعَةِ",
+      "before_stt": "جمع",
+      "transcript": "يعني صلت الجماعة",
+      "pass": true,
+      "overlap": 0.8,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "الرأس",
+      "spoken": "الرَّأْسِ",
+      "before": "الرَّأْسِ",
+      "after": "أَعْنِي الرَّأْسَ",
+      "fish": "أَعْنِي الرَّأْسَ",
+      "before_stt": "or drop",
+      "transcript": "آني الرأس",
+      "pass": true,
+      "overlap": 0.778,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "ابن مسعود",
+      "spoken": "ابْنْ مَسْعُودٍ",
+      "before": "ابْنْ مَسْعُودٍ",
+      "after": "أَعْنِي ابْنَ مَسْعُودٍ رَضِيَ اللَّهُ عَنْهُ",
+      "fish": "أَعْنِي ابْنَ مَسْعُودٍ رَضِيَ اللَّهُ عَنْهُ",
+      "before_stt": "نصعون",
+      "transcript": "أعني دن مسعود رضي الله عن",
+      "pass": true,
+      "overlap": 0.864,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "التمائم",
+      "spoken": "التَّمَائِمِ",
+      "before": "التَّمَائِمِ",
+      "after": "أَعْنِي التَّمَائِمَ",
+      "fish": "أَعْنِي التَّمَائِمَ",
+      "before_stt": "alom Allahfilled with etiquette compartilbet",
+      "transcript": "آن التمائن",
+      "pass": true,
+      "overlap": 0.636,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الذبح",
+      "spoken": "الذَّبْحِ",
+      "before": "الذَّبْحِ",
+      "after": "أَعْنِي الذَّبْحَ لِلَّهِ",
+      "fish": "أَعْنِي الذَّبْحَ لِلَّهِ",
+      "before_stt": "أزب",
+      "transcript": "أعني الزبح لله",
+      "pass": true,
+      "overlap": 0.917,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "عيدا",
+      "spoken": "عيداً",
+      "before": "عيداً",
+      "after": "أَعْنِي عِيدًا",
+      "fish": "أَعْنِي عِيدًا",
+      "before_stt": "بايدا",
+      "transcript": "آني عيداً",
+      "pass": true,
+      "overlap": 0.75,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الطيرة",
+      "spoken": "الطِّيَرَةُ",
+      "before": "الطِّيَرَةُ",
+      "after": "أَعْنِي الطِّيَرَةَ وَالتَّشَاؤُمَ",
+      "fish": "أَعْنِي الطِّيَرَةَ وَالتَّشَاؤُمَ",
+      "before_stt": "كختvisي",
+      "transcript": "أعني الطيارة والتشاء",
+      "pass": true,
+      "overlap": 0.889,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "ثلاثة",
+      "spoken": "ثَلَاثَةٍ",
+      "before": "ثَلَاثَةٍ",
+      "after": "أَعْنِي ثَلَاثَةً",
+      "fish": "أَعْنِي ثَلَاثَةً",
+      "before_stt": "فلسة",
+      "transcript": "أعمي ثلاثة",
+      "pass": true,
+      "overlap": 0.889,
+      "count": 2,
+      "books": [
+        "tawheed",
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الفاء",
+      "spoken": "الْفَاءِ",
+      "before": "الْفَاءِ",
+      "after": "أَعْنِي حَرْفَ الْفَاءِ",
+      "fish": "أَعْنِي حَرْفَ الْفَاءِ",
+      "before_stt": "الثق",
+      "transcript": "أعني حرف ألفاء",
+      "pass": true,
+      "overlap": 0.917,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "ذباب",
+      "spoken": "ذُباب",
+      "before": "ذُباب",
+      "after": "أَعْنِي ذُبَابًا",
+      "fish": "أَعْنِي ذُبَابًا",
+      "before_stt": "بаем",
+      "transcript": "أعني ذبباً",
+      "pass": true,
+      "overlap": 0.889,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "عفي عنه",
+      "spoken": "عُفِيَ عَنْهُ",
+      "before": "عُفِيَ عَنْهُ",
+      "after": "قَدْ عُفِيَ عَنْهُ وَغُفِرَ لَهُ",
+      "fish": "قَدْ عُفِيَ عَنْهُ وَغُفِرَ لَهُ",
+      "before_stt": "أوفياً",
+      "transcript": "قد عفية عنه وغفر له",
+      "pass": true,
+      "overlap": 0.933,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "بريء",
+      "spoken": "بَرِيءٌ",
+      "before": "بَرِيءٌ",
+      "after": "إِنَّهُ بَرِيءٌ",
+      "fish": "إِنَّهُ بَرِيءٌ",
+      "before_stt": "بريوت",
+      "transcript": "إنه بريق",
+      "pass": true,
+      "overlap": 0.857,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الصداع",
+      "spoken": "الصُّدَاعِ",
+      "before": "الصُّدَاعِ",
+      "after": "أَعْنِي الصُّدَاعَ",
+      "fish": "أَعْنِي الصُّدَاعَ",
+      "before_stt": "أسودة",
+      "transcript": "عن الصداة",
+      "pass": true,
+      "overlap": 0.7,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "العظم",
+      "spoken": "الْعَظْمِ",
+      "before": "الْعَظْمِ",
+      "after": "أَعْنِي عَظْمَ الْجَسَدِ",
+      "fish": "أَعْنِي عَظْمَ الْجَسَدِ",
+      "before_stt": "لالا видео",
+      "transcript": "أعني عظم الجسد",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "بالصلاة",
+      "spoken": "بِالصَّلَاةِ",
+      "before": "بِالصَّلَاةِ",
+      "after": "أَعْنِي بِالصَّلَاةِ الْمَفْرُوضَةِ",
+      "fish": "أَعْنِي بِالصَّلَاةِ الْمَفْرُوضَةِ",
+      "before_stt": "بس سلط",
+      "transcript": "أعني بالصلاة المفروضة",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "بالصيام",
+      "spoken": "بِالصِّيَامِ",
+      "before": "بِالصِّيَامِ",
+      "after": "أَعْنِي بِصِيَامِ رَمَضَانَ",
+      "fish": "أَعْنِي بِصِيَامِ رَمَضَانَ",
+      "before_stt": "بس ين",
+      "transcript": "يعني بسيام رمضان",
+      "pass": true,
+      "overlap": 0.857,
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "بالزكاة",
+      "spoken": "بِالزَّكَاةِ",
+      "before": "بِالزَّكَاةِ",
+      "after": "أَعْنِي بِالزَّكَاةِ الْمَفْرُوضَةِ",
+      "fish": "أَعْنِي بِالزَّكَاةِ الْمَفْرُوضَةِ",
+      "before_stt": "بزكت",
+      "transcript": "أعني بالزكات المفروضة",
+      "pass": true,
+      "overlap": 0.947,
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "اسمه ونسبه وما بعث به",
+      "spoken": "اسْمِهِ وَنَسَبِهِ وَمَا بُعِثَ بِهِ",
+      "before": "اسْمِهِ وَنَسَبِهِ وَمَا بُعِثَ بِهِ",
+      "after": "أَعْنِي اسْمَهُ وَنَسَبَهُ وَمَا بُعِثَ بِهِ",
+      "fish": "أَعْنِي اسْمَهُ وَنَسَبَهُ وَمَا بُعِثَ بِهِ",
+      "before_stt": "اصميه ونسيبه وما بواي فربي",
+      "transcript": "أعني اسمه ونسبه وما أبو عثبي",
+      "pass": true,
+      "overlap": 0.87,
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "النحو",
+      "spoken": "النَّحْوِ",
+      "before": "النَّحْوِ",
+      "after": "أَعْنِي عِلْمَ النَّحْوِ الْعَرَبِيِّ",
+      "fish": "أَعْنِي عِلْمَ النَّحْوِ الْعَرَبِيِّ",
+      "before_stt": "أنا خود",
+      "transcript": "آني علم النحول الاربي",
+      "pass": true,
+      "overlap": 0.833,
+      "count": 2,
+      "books": [
+        "usool"
+      ],
+      "round": "r2"
+    }
+  ]
+}

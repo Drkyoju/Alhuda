@@ -1,5 +1,7 @@
 /** Azure Cognitive Services Speech — Neural TTS (Free F0: 0.5M chars/month). */
 
+import { applyShortSpeechCarriers } from './short-speech-carriers.js';
+
 /**
  * HamedNeural: Microsoft’s Arabic pronunciation/diacritic improvements
  * land best on this voice for MSA educational text.
@@ -227,7 +229,9 @@ function numberToArabicWords(n) {
 }
 
 function normalizeForAzure(text) {
-  let s = String(text || '')
+  // Whole-utterance carriers first (short MC options) — display stays bare in UI.
+  let s = applyShortSpeechCarriers(String(text || '').trim());
+  s = s
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, ' ')
     .replace(/ﷺ/g, ` صَلَّى ${ALLAH} عَلَيْهِ وَسَلَّمَ `)
     .replace(/ﷻ/g, ' جَلَّ جَلَالُهُ ')
