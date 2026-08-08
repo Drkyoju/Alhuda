@@ -1689,20 +1689,20 @@ function toggleSound() {
   if (soundOn) playSound('correct');
 }
 
-/* ── Voice reading (Yousef baked MP3s; no browser/Edge fallback for lesson TTS) ── */
-/** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
-let TTS_VOICE = 'fish-live';
-/** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v60';
+/* ── Voice reading (Azure Hamed MSA; Quran stays Hudhaify) ── */
+/** حامد — Azure Neural Saudi MSA (clearest fusHa for lesson tashkeel). */
+const TTS_AZURE_HAMED = 'ar-SA-HamedNeural';
+let TTS_VOICE = TTS_AZURE_HAMED;
+/** Bump when switching voice/provider so IndexedDB never replays old Fish/EL clips. */
+const TTS_CACHE_VER = 'v71';
 /**
- * Lesson Fish TTS only — moderate clarity (NOT v267 3.6× / heavy EQ / vol 18).
+ * Lesson Azure only — light gain, no Fish EQ chain.
  * Never applied to Quran Hudhaify.
  */
-const TTS_PLAYBACK_GAIN = 1.65;
-/** Fish prosody for question prose — slight bump (was 1.05); keep natural, not chipmunk. */
-const TTS_FISH_SPEED_QUESTION = 1.08;
-/** Fish prosody for answer options — same modest pace as questions. */
-const TTS_FISH_SPEED_ANSWER = 1.08;
+const TTS_PLAYBACK_GAIN = 1.1;
+/** Legacy speed tags kept for cache-key stability (Worker ignores speed for Azure). */
+const TTS_FISH_SPEED_QUESTION = 1;
+const TTS_FISH_SPEED_ANSWER = 1;
 let ttsAudioGraph = null; // { source, nodes[] }
 /** createMediaElementSource may only bind once per element — reuse across replays. */
 const ttsMediaSources = new WeakMap(); // HTMLMediaElement -> MediaElementAudioSourceNode
@@ -1717,18 +1717,19 @@ function backgroundTtsSignal() {
   return ttsBackgroundWarmAbort.signal;
 }
 
-function isFishVoiceIdClient(id) {
-  return /^[a-f0-9]{32}$/i.test(String(id || '').trim());
+function isAzureVoiceIdClient(id) {
+  return /^ar-[A-Z]{2}-[A-Za-z0-9]+Neural$/i.test(String(id || '').trim());
 }
 
-/** Ensure /api/tts-status applied FISH_VOICE_ID before first speak (avoids fish-live 400). */
+/** Ensure /api/tts-status applied Azure voice before first speak. */
 function ensureTtsVoiceReady() {
-  if (isFishVoiceIdClient(TTS_VOICE)) return Promise.resolve(TTS_VOICE);
+  if (isAzureVoiceIdClient(TTS_VOICE)) return Promise.resolve(TTS_VOICE);
   if (!ttsStatusReadyPromise) {
     ttsStatusReadyPromise = (async () => {
       try {
         await refreshTtsProviderBadge();
-      } catch { /* server still has FISH_VOICE_ID */ }
+      } catch { /* keep Hamed default */ }
+      if (!isAzureVoiceIdClient(TTS_VOICE)) TTS_VOICE = TTS_AZURE_HAMED;
       return TTS_VOICE;
     })();
   }
@@ -1745,7 +1746,7 @@ if (typeof window !== 'undefined' && window.__alhudaBakedTtsOnly == null) {
   window.__alhudaBakedTtsOnly = false;
 }
 if (typeof window !== 'undefined' && window.__alhudaSkipBakedTts == null) {
-  // Default ON — live Fish custom voice; status endpoint can refine.
+  // Default ON — live Azure Hamed; status endpoint can refine.
   window.__alhudaSkipBakedTts = true;
 }
 const ttsPreloadedAudio = new Map(); // key -> HTMLAudioElement (decoded ahead of play)
@@ -1912,7 +1913,7 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
       /* fall through */
     }
   }
-  // Live Fish path: do not block first-byte on a slow IDB open — race a short IDB window.
+  // Live Azure path: do not block first-byte on a slow IDB open — race a short IDB window.
   // Offline: wait fully for IDB (only source).
   const idbLookup = (async () => {
     const cached = await getTtsBlobFromIdb(key);
@@ -1968,13 +1969,9 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
         const timer = setTimeout(() => ctrl.abort(), 20000);
         let res;
         try {
-          // Only send a real Fish reference id — omit otherwise so Worker uses FISH_VOICE_ID.
+          // Prefer Azure Neural id — omit placeholders so Worker uses ar-SA-HamedNeural.
           const ttsBody = { text };
-          if (isFishVoiceIdClient(lookupVoice)) ttsBody.voice = lookupVoice;
-          const sp = Number(fishSpeed);
-          if (Number.isFinite(sp) && Math.abs(sp - TTS_FISH_SPEED_QUESTION) > 0.001) {
-            ttsBody.speed = sp;
-          }
+          if (isAzureVoiceIdClient(lookupVoice)) ttsBody.voice = lookupVoice;
           res = await fetch('/api/tts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2005,8 +2002,8 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
         if (!isMp3) throw new Error('tts not mp3');
         const provider = (res.headers.get('X-TTS-Provider') || '').toLowerCase();
         rememberTtsObjectUrl(key, URL.createObjectURL(blob));
-        // Persist Fish clips too — faster replay across questions in the same session.
-        if (provider === 'baked' || provider === 'elevenlabs' || provider === 'fish') {
+        // Persist Azure clips — faster replay across questions in the same session.
+        if (provider === 'baked' || provider === 'azure' || provider === 'elevenlabs' || provider === 'fish') {
           void putTtsBlobInIdb(key, blob);
         }
         recordAzureTtsUsage(text.length, res.headers.get('X-TTS-Provider'));
@@ -2373,11 +2370,13 @@ function applyTtsStatusConfig(data) {
   }
   if (typeof data.skipBakedTts === 'boolean') {
     window.__alhudaSkipBakedTts = data.skipBakedTts;
-  } else if (data.provider === 'fish' && !data.bakedTtsOnly) {
+  } else if ((data.provider === 'azure' || data.provider === 'elevenlabs' || data.provider === 'fish') && !data.bakedTtsOnly) {
     window.__alhudaSkipBakedTts = true;
   }
-  if (data.voice && data.provider === 'fish' && data.voice !== '(set FISH_VOICE_ID)') {
-    TTS_VOICE = String(data.voice);
+  if (data.provider === 'azure') {
+    const v = String(data.voice || data.voiceId || '').trim();
+    if (isAzureVoiceIdClient(v)) TTS_VOICE = v;
+    else TTS_VOICE = TTS_AZURE_HAMED;
   }
 }
 
@@ -2402,14 +2401,20 @@ async function refreshTtsProviderBadge() {
     const errStats = getTtsErrorStats();
     const serverFails = data.errors?.tts ? Object.values(data.errors.tts).reduce((a, b) => a + (Number(b) || 0), 0) : 0;
     badge.hidden = false;
-    const providerLabel = data.provider === 'fish'
-      ? `TTS: Fish ${data.fishModel || 's2-pro'}`.trim()
-      : 'TTS: —';
+    const providerLabel = data.provider === 'azure'
+      ? `TTS: Azure · حامد`.trim()
+      : data.provider === 'elevenlabs'
+        ? `TTS: ElevenLabs ${data.elevenLabsModel || 'multilingual_v2'}`.trim()
+        : data.provider === 'fish'
+          ? `TTS: Fish ${data.fishModel || 's2-pro'}`.trim()
+          : 'TTS: —';
     badge.textContent = providerLabel +
-      (data.voice && data.voice !== '(set FISH_VOICE_ID)' ? ` · ${String(data.voice).slice(0, 8)}` : '') +
+      (data.voice && !/set AZURE|set ELEVENLABS|set FISH/i.test(String(data.voice))
+        ? ` · ${String(data.voice).slice(0, 18)}`
+        : '') +
       ` · fails ${ttsSessionFailCount}/${errStats.fails}` +
       (serverFails ? ` · srv ${serverFails}` : '');
-    badge.classList.toggle('is-azure', false);
+    badge.classList.toggle('is-azure', data.provider === 'azure');
     badge.classList.toggle('is-warn', ttsSessionFailCount > 0 || errStats.fails >= 3);
     badge.setAttribute('aria-hidden', 'false');
     if (data.keyRotationHint) {
@@ -3601,12 +3606,11 @@ const QURAN_RECITER_BITRATE = 64;
 /** Faster than natural pace so تلاوة finishes sooner without sounding rushed. */
 const QURAN_PLAYBACK_RATE = 1.28;
 /**
- * Client playbackRate on answer clips — mild only (cap ~1.12; never old 1.38).
- * Main answer pace comes from Fish prosody (TTS_FISH_SPEED_ANSWER ≈ 1.08).
+ * Client playbackRate — mild only so ElevenLabs Yusuf stays clear (not muffled EQ).
  */
-const TTS_ANSWER_PLAYBACK_RATE = 1.12;
-/** Question clips — slight client boost on top of Fish 1.08; natural, not distorted. */
-const TTS_DEFAULT_PLAYBACK_RATE = 1.12;
+const TTS_ANSWER_PLAYBACK_RATE = 1.08;
+/** Question clips — slight client pace; natural, not distorted. */
+const TTS_DEFAULT_PLAYBACK_RATE = 1.08;
 /** Intentional silence between answer options (ms). Keep tiny for back-to-back. */
 const TTS_ANSWER_GAP_MS = 40;
 const QURAN_BLOB_CACHE_MAX = 32;
@@ -4394,9 +4398,8 @@ function disconnectTtsAudioGraph() {
 }
 
 /**
- * Moderate lesson Fish clarity via Web Audio.
- * Chain: subtle HP → mild presence → gain ~1.65 → soft limiter.
- * Avoids v267 extremes (3.6× / heavy EQ). Quran Hudhaify must NOT call this.
+ * Light lesson loudness via Web Audio (ElevenLabs path).
+ * Gain only — no Fish HP/presence EQ. Quran Hudhaify must NOT call this.
  */
 function routeTtsThroughMildBoost(audioEl) {
   if (!audioEl) return;
@@ -4411,44 +4414,20 @@ function routeTtsThroughMildBoost(audioEl) {
     }
     const nodes = [];
     try {
-      // Gentle rumble cut — unmuffles without thin/harsh tone.
-      const highpass = audioCtx.createBiquadFilter();
-      highpass.type = 'highpass';
-      highpass.frequency.value = 110;
-      highpass.Q.value = 0.7;
-      nodes.push(highpass);
-      // Subtle presence shelf — +2 dB around speech intelligibility band.
-      const presence = audioCtx.createBiquadFilter();
-      presence.type = 'peaking';
-      presence.frequency.value = 3200;
-      presence.Q.value = 0.85;
-      presence.gain.value = 2;
-      nodes.push(presence);
       const gain = audioCtx.createGain();
       gain.gain.value = TTS_PLAYBACK_GAIN;
       nodes.push(gain);
-      // Soft limiter after gain — catches peaks without crushing.
-      const limiter = audioCtx.createDynamicsCompressor();
-      limiter.threshold.value = -8;
-      limiter.knee.value = 10;
-      limiter.ratio.value = 4;
-      limiter.attack.value = 0.003;
-      limiter.release.value = 0.18;
-      nodes.push(limiter);
-      source.connect(highpass);
-      highpass.connect(presence);
-      presence.connect(gain);
-      gain.connect(limiter);
-      limiter.connect(audioCtx.destination);
+      source.connect(gain);
+      gain.connect(audioCtx.destination);
       ttsAudioGraph = { source, nodes };
     } catch (chainErr) {
       // MediaElementSource hijacks element output — must still reach speakers.
       try { source.connect(audioCtx.destination); } catch { /* ignore */ }
       ttsAudioGraph = { source, nodes: [] };
-      console.warn('tts mild boost fallback:', chainErr);
+      console.warn('tts gain fallback:', chainErr);
     }
   } catch (e) {
-    console.warn('tts mild boost unavailable:', e);
+    console.warn('tts audio graph unavailable:', e);
   }
 }
 
@@ -4486,7 +4465,7 @@ async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE, onS
   if (!ttsAudio) return;
   try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
   try { ttsAudio.muted = false; ttsAudio.volume = 1; } catch { /* ignore */ }
-  // Lesson Fish only (this helper). Quran path never enters here.
+  // Lesson Azure only (this helper). Quran path never enters here.
   routeTtsThroughMildBoost(ttsAudio);
   if (btn) btn.classList.add('speaking');
   try {
@@ -4515,7 +4494,7 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_D
   onStarted,
 } = {}) {
   const key = ttsCacheKey(text, voice, fishSpeed);
-  // Live Fish mode: never play old baked narrator URLs.
+  // Live Azure mode: never play old baked narrator URLs.
   if (window.__alhudaSkipBakedTts !== true && typeof bakedTtsAssetPath === 'function') {
     try {
       const bakedUrl = await bakedTtsAssetPath(text, voice);
@@ -4738,8 +4717,8 @@ function speakQuestion() {
     try {
       // Never block on maps or kick join — speakTtsSegment joins in-flight / memory.
       void ensureSpeechMapsLoaded();
-      // Only wait briefly if FISH_VOICE_ID not yet applied (avoids fish-live 400).
-      if (!isFishVoiceIdClient(TTS_VOICE)) {
+      // Brief wait only if Azure voice id not yet confirmed from /api/tts-status.
+      if (!isAzureVoiceIdClient(TTS_VOICE)) {
         await Promise.race([
           ensureTtsVoiceReady(),
           new Promise((r) => setTimeout(r, 40)),

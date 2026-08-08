@@ -11,6 +11,6 @@ jobs:
     steps:
       - name: Baked TTS disabled
         run: |
-          echo "Baked TTS is disabled. Lesson speech uses live Fish (FISH_VOICE_ID + s2-pro)."
+          echo "Baked TTS is disabled. Lesson speech uses live Azure (ar-SA-HamedNeural)."
           echo "Quran ayahs use Hudhaify CDN — not tts-baked."
           exit 0

@@ -217,9 +217,20 @@ function normalizeForAzure(text) {
   return normalizeAllahForTts(s);
 }
 
+export { normalizeForAzure };
+
+export function resolveAzureArabicVoice(requested, env) {
+  const fromReq = String(requested || '').trim();
+  if (/^ar-[A-Z]{2}-[A-Za-z0-9]+Neural$/i.test(fromReq)) return fromReq;
+  const fromEnv = String(env?.AZURE_SPEECH_VOICE || '').trim();
+  if (/^ar-[A-Z]{2}-[A-Za-z0-9]+Neural$/i.test(fromEnv)) return fromEnv;
+  return DEFAULT_AZURE_ARABIC_VOICE;
+}
+
 function buildSsml(text, voice) {
   const lang = String(voice).startsWith('ar-EG') ? 'ar-EG' : 'ar-SA';
-  const rate = '-8%';
+  // Mild slowdown for educational MSA clarity without dragging quiz pace.
+  const rate = '-5%';
   const body = textToSsmlBody(normalizeForAzure(text));
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +
@@ -237,7 +248,7 @@ export async function synthesizeAzureArabicSpeech(text, voiceShortName, env) {
   if (!key || !region) {
     throw new Error('Azure Speech not configured (missing AZURE_SPEECH_KEY / AZURE_SPEECH_REGION)');
   }
-  const voice = (voiceShortName || DEFAULT_AZURE_ARABIC_VOICE).trim() || DEFAULT_AZURE_ARABIC_VOICE;
+  const voice = resolveAzureArabicVoice(voiceShortName, env);
   const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
 
   async function post(ssml, format = OUTPUT_FORMAT) {

@@ -5,8 +5,12 @@ main = "worker.js"
 
 [vars]
 BAKED_TTS_ONLY = "0"
-# Skip old baked narrator MP3s — always synthesize with live Fish (your voice + s2-pro).
+# Skip old baked narrator MP3s — always synthesize with live Azure Hamed.
 SKIP_BAKED_TTS = "1"
+AZURE_SPEECH_VOICE = "ar-SA-HamedNeural"
+# Kept for optional bake/rollback scripts only (lesson path = Azure).
+ELEVENLABS_VOICE_ID = "ZCXYdzd5Evtsll2EdoCi"
+ELEVENLABS_MODEL_ID = "eleven_multilingual_v2"
 FISH_TTS_MODEL = "s2.1-pro"
 
 [assets]

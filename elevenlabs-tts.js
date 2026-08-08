@@ -26,12 +26,32 @@ export function elevenLabsConfigured(env) {
   return !!String(env?.ELEVENLABS_API_KEY || '').trim();
 }
 
+/** ElevenLabs voice ids are mixed alphanumeric (~20 chars). Fish refs are 32-hex. */
+export function isElevenLabsVoiceId(id) {
+  const s = String(id || '').trim();
+  if (!s || s.length < 16 || s.length > 40) return false;
+  if (/^[a-f0-9]{32}$/i.test(s)) return false;
+  return /^[a-zA-Z0-9_-]+$/.test(s);
+}
+
+export function resolveElevenLabsVoiceId(requested, env) {
+  const fromReq = String(requested || '').trim();
+  if (isElevenLabsVoiceId(fromReq)) return fromReq;
+  const fromEnv = String(env?.ELEVENLABS_VOICE_ID || '').trim();
+  if (isElevenLabsVoiceId(fromEnv)) return fromEnv;
+  return DEFAULT_ELEVENLABS_VOICE_ID;
+}
+
+export function resolveElevenLabsModelId(env) {
+  return String(env?.ELEVENLABS_MODEL_ID || DEFAULT_ELEVENLABS_MODEL_ID).trim() || DEFAULT_ELEVENLABS_MODEL_ID;
+}
+
 export async function synthesizeElevenLabsArabicSpeech(text, voiceId, env) {
   const apiKey = String(env?.ELEVENLABS_API_KEY || '').trim();
   if (!apiKey) throw new Error('ElevenLabs not configured (missing ELEVENLABS_API_KEY)');
 
-  const selectedVoice = String(voiceId || env?.ELEVENLABS_VOICE_ID || DEFAULT_ELEVENLABS_VOICE_ID).trim() || DEFAULT_ELEVENLABS_VOICE_ID;
-  const modelId = String(env?.ELEVENLABS_MODEL_ID || DEFAULT_ELEVENLABS_MODEL_ID).trim() || DEFAULT_ELEVENLABS_MODEL_ID;
+  const selectedVoice = resolveElevenLabsVoiceId(voiceId, env);
+  const modelId = resolveElevenLabsModelId(env);
   // optimize_streaming_latency=3 → faster first audio byte; 64kbps → smaller/faster download.
   const endpoint = `${ELEVENLABS_TTS_ENDPOINT}/${encodeURIComponent(selectedVoice)}/stream?output_format=mp3_44100_64&optimize_streaming_latency=3`;
   const payload = {

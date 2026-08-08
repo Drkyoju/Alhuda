@@ -18,9 +18,13 @@ test.describe('Live Worker APIs', () => {
     expect(res.ok()).toBeTruthy();
     const json = await res.json();
     expect(json.ok).toBeTruthy();
-    expect(['fish', 'none']).toContain(json.provider);
+    expect(['azure', 'none']).toContain(json.provider);
     expect(json.quranReciter || 'hudhaify').toBe('hudhaify');
     expect(json.skipBakedTts).toBeTruthy();
+    if (json.provider === 'azure') {
+      expect(json.azureConfigured).toBeTruthy();
+      expect(String(json.voice || '')).toMatch(/ar-SA-HamedNeural|Neural/i);
+    }
     if (json.errors) {
       expect(json.errors.tts).toBeTruthy();
       expect(json.errors.quran).toBeTruthy();
@@ -33,8 +37,8 @@ test.describe('Live Worker APIs', () => {
     });
     if (!res.ok()) {
       const body = await res.text();
-      // Fish API credit is billed separately from the website plan — don't block deploys.
-      if (/402|Insufficient API credit|missing voice|FISH_VOICE_ID/i.test(body)) {
+      // Azure quota / missing key — don't block deploys hard; surface warning.
+      if (/402|429|quota|AZURE_SPEECH|not configured/i.test(body)) {
         test.info().annotations.push({ type: 'warning', description: body.slice(0, 240) });
         expect(true).toBeTruthy();
         return;
@@ -42,7 +46,9 @@ test.describe('Live Worker APIs', () => {
       expect(res.ok(), body.slice(0, 240)).toBeTruthy();
     }
     expect(res.headers()['content-type'] || '').toMatch(/audio\/mpeg/);
-    expect(res.headers()['x-tts-provider']).toBe('fish');
+    expect(res.headers()['x-tts-provider']).toBe('azure');
+    const voiceHdr = res.headers()['x-tts-voice'] || '';
+    if (voiceHdr) expect(voiceHdr).toMatch(/HamedNeural|Neural/i);
     const audio = await res.body();
     expect(audio.length).toBeGreaterThan(1000);
   });

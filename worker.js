@@ -1,12 +1,16 @@
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
 import {
-  fishAudioConfigured,
-  resolveFishModel,
-  resolveFishVoiceId,
-  prepareFishTtsText,
-  synthesizeFishArabicSpeech,
-} from './fish-audio-tts.js';
+  azureSpeechConfigured,
+  DEFAULT_AZURE_ARABIC_VOICE,
+  normalizeForAzure,
+  resolveAzureArabicVoice,
+  synthesizeAzureArabicSpeech,
+} from './azure-tts.js';
+
+import { elevenLabsConfigured } from './elevenlabs-tts.js';
+import { fishAudioConfigured } from './fish-audio-tts.js';
+import { googleTtsConfigured } from './google-tts.js';
 
 /** Lightweight in-isolate error counters (reset when isolate recycles). */
 const apiErrorCounters = {
@@ -59,22 +63,24 @@ function verseKeyToGlobalAyahNumW(surah, ayah) {
 async function handleTtsStatus(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
-  const fish = fishAudioConfigured(env);
-  const fishVoice = resolveFishVoiceId(null, env);
-  const fishModel = resolveFishModel(env);
+  const azure = azureSpeechConfigured(env);
+  const voice = resolveAzureArabicVoice(null, env);
   return new Response(JSON.stringify({
     ok: true,
     bakedTtsOnly: false,
     skipBakedTts: true,
-    fishConfigured: fish,
-    fishModel: fish ? fishModel : null,
-    fishVoiceConfigured: !!(fish && fishVoice),
-    elevenLabsConfigured: false,
-    googleConfigured: false,
-    azureConfigured: false,
-    provider: fish ? 'fish' : 'none',
+    fishConfigured: fishAudioConfigured(env),
+    fishModel: null,
+    fishVoiceConfigured: false,
+    elevenLabsConfigured: elevenLabsConfigured(env),
+    googleConfigured: googleTtsConfigured(env),
+    azureConfigured: azure,
+    provider: azure ? 'azure' : 'none',
     quranReciter: 'hudhaify',
-    voice: fishVoice || '(set FISH_VOICE_ID)',
+    voice: azure ? voice : '(set AZURE_SPEECH_KEY)',
+    voiceName: 'حامد',
+    voiceId: DEFAULT_AZURE_ARABIC_VOICE,
+    azureRegion: azure ? String(env?.AZURE_SPEECH_REGION || '').trim() || null : null,
     errors: apiErrorCounters,
   }), { status: 200, headers: { ...cors, ...JSON_HEADERS } });
 }
@@ -265,8 +271,8 @@ async function handleTts(request, env) {
       headers: { ...cors, ...JSON_HEADERS },
     });
   }
-  // Punctuation stripped server-side — Fish reads words/harakat only.
-  const text = prepareFishTtsText(textRaw);
+  // Azure Hamed — clearest MSA for educational/religious Arabic with tashkeel.
+  const text = normalizeForAzure(textRaw);
   if (!text) {
     return new Response(JSON.stringify({ ok: false, error: 'Empty after punctuation strip' }), {
       status: 400,
@@ -280,32 +286,30 @@ async function handleTts(request, env) {
     });
   }
 
-  if (!fishAudioConfigured(env)) {
-    return new Response(JSON.stringify({ ok: false, error: 'Fish Audio not configured' }), {
+  if (!azureSpeechConfigured(env)) {
+    return new Response(JSON.stringify({
+      ok: false,
+      error: 'Azure Speech not configured (set AZURE_SPEECH_KEY + AZURE_SPEECH_REGION)',
+    }), {
       status: 503,
       headers: { ...cors, ...JSON_HEADERS },
     });
   }
 
   try {
-    const fishVoice = resolveFishVoiceId(body?.voice, env);
-    const reqSpeed = Number(body?.speed);
-    const fishOpts =
-      Number.isFinite(reqSpeed) && reqSpeed >= 0.5 && reqSpeed <= 2
-        ? { speed: reqSpeed }
-        : {};
-    const stream = await synthesizeFishArabicSpeech(text, fishVoice, env, fishOpts);
+    const voice = resolveAzureArabicVoice(body?.voice, env);
+    // Pass original textRaw — synthesizeAzureArabicSpeech normalizes again via SSML.
+    const stream = await synthesizeAzureArabicSpeech(textRaw, voice, env);
     return new Response(stream, {
       status: 200,
       headers: {
         ...cors,
         'Content-Type': 'audio/mpeg',
         'Cache-Control': 'public, max-age=604800',
-        'X-TTS-Provider': 'fish',
-        'X-TTS-Model': resolveFishModel(env),
+        'X-TTS-Provider': 'azure',
+        'X-TTS-Voice': voice,
         'X-TTS-Quality': 'hq',
         'X-TTS-Chars': String(text.length),
-        ...(fishOpts.speed != null ? { 'X-TTS-Speed': String(fishOpts.speed) } : {}),
       },
     });
   } catch (err) {

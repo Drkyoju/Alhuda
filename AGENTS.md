@@ -8,9 +8,9 @@ Vanilla JS Arabic RTL quiz PWA + Cloudflare Worker + Supabase.
 ## Tech stack
 - Frontend: plain HTML/CSS/JS (no framework, no bundler). ES2020+.
 - Data: Supabase (`@supabase/supabase-js@2` from CDN).
-- Edge: `worker.js` (live Fish TTS, Quran Hudhaify proxy, feedback, student-creds).
+- Edge: `worker.js` (live Azure TTS, Quran Hudhaify proxy, feedback, student-creds).
 - PWA: `manifest.json` + `service-worker.js` — keep `version.js` `cache`/`sw`/`app` in sync with SW `CACHE` and `index.html` `?v=` (use `npm run bump:version`).
-- TTS: **live Fish only** (`FISH_VOICE_ID` + `FISH_TTS_MODEL=s2-pro`). Quran ayahs = Hudhaify. No baked MP3s in repo.
+- TTS: **live Azure only** (`ar-SA-HamedNeural` — clearest MSA for lesson tashkeel). Quran ayahs = Hudhaify. No baked MP3s in repo.
 
 ## Layout
 - `index.html`, `styles.css`, `kids-ui.css`, `app.js`, `auth.js`, `platform.js`, `enhancements.js`
@@ -26,7 +26,7 @@ Vanilla JS Arabic RTL quiz PWA + Cloudflare Worker + Supabase.
 `app.js` → `LOGIN_LOCKED`. `false` = full bank + login enabled. Demo (8 Q/book) always available.
 
 ### TTS
-Lesson speech goes through `/api/tts` → Fish (`reference_id` = `FISH_VOICE_ID`). Punctuation stripped. Do not reintroduce Azure/Edge/ElevenLabs/baked fallbacks unless explicitly requested.
+Lesson speech goes through `/api/tts` → Azure Neural (`ar-SA-HamedNeural`). Secrets: `AZURE_SPEECH_KEY` + `AZURE_SPEECH_REGION`. Quran = Hudhaify only. Do not reintroduce Fish/ElevenLabs/baked as primary unless explicitly requested.
 ### Auth
 - Prefer anonymous Supabase.
 - Legacy name-hash via Worker `/api/student-creds` + secret `AUTH_NAME_PEPPER`.

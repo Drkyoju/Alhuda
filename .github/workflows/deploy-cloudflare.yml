@@ -44,13 +44,19 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
           secrets: |
+            AZURE_SPEECH_KEY
+            AZURE_SPEECH_REGION
+            AUTH_NAME_PEPPER
+            ELEVENLABS_API_KEY
             FISH_API_KEY
             FISH_VOICE_ID
-            AUTH_NAME_PEPPER
         env:
+          AZURE_SPEECH_KEY: ${{ secrets.AZURE_SPEECH_KEY }}
+          AZURE_SPEECH_REGION: ${{ secrets.AZURE_SPEECH_REGION }}
+          AUTH_NAME_PEPPER: ${{ secrets.AUTH_NAME_PEPPER }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           FISH_API_KEY: ${{ secrets.FISH_API_KEY }}
           FISH_VOICE_ID: ${{ secrets.FISH_VOICE_ID }}
-          AUTH_NAME_PEPPER: ${{ secrets.AUTH_NAME_PEPPER }}
 
       - name: Live API smoke (TTS + Quran)
         run: npm run test:api
