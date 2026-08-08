@@ -1,0 +1,320 @@
+{
+  "n": 35,
+  "rows": [
+    {
+      "id": "q_birr",
+      "intended": "الْبِرُّ هُوَ",
+      "label": "البر هو",
+      "fish": "مَا الْبِرُّ هُوَ",
+      "ttsOk": true,
+      "size": 27584,
+      "status": 200
+    },
+    {
+      "id": "q_zakah",
+      "intended": "الزَّكَاةِ شَرْعًا",
+      "label": "الزكاة شرعا",
+      "fish": "الزَّكَاةُ  شَرْعًا",
+      "ttsOk": true,
+      "size": 30092,
+      "status": 200
+    },
+    {
+      "id": "opt_sahih",
+      "intended": "صَحِيحٌ",
+      "label": "صحيح",
+      "fish": "هَذَا صَحِيحٌ",
+      "ttsOk": true,
+      "size": 28838,
+      "status": 200
+    },
+    {
+      "id": "opt_jaiz",
+      "intended": "جَائِزٌ",
+      "label": "جائز",
+      "fish": "هَذَا جَائِزٌ",
+      "ttsOk": true,
+      "size": 30719,
+      "status": 200
+    },
+    {
+      "id": "opt_anwat",
+      "intended": "أَنْوَاطْ",
+      "label": "أنواط",
+      "fish": "ذَاتُ أَنْوَاطْ",
+      "ttsOk": true,
+      "size": 40123,
+      "status": 200
+    },
+    {
+      "id": "opt_thalatha",
+      "intended": "ثَلَاثَةٍ",
+      "label": "ثلاثة",
+      "fish": "هِيَ ثَلَاثَةٌ",
+      "ttsOk": true,
+      "size": 24449,
+      "status": 200
+    },
+    {
+      "id": "opt_nawm",
+      "intended": "النَّوْمُ",
+      "label": "النوم",
+      "fish": "هُوَ النَّوْمُ",
+      "ttsOk": true,
+      "size": 25703,
+      "status": 200
+    },
+    {
+      "id": "opt_dua",
+      "intended": "الدُّعَاءِ",
+      "label": "الدعاء",
+      "fish": "هُوَ الدُّعَاءُ",
+      "ttsOk": true,
+      "size": 21315,
+      "status": 200
+    },
+    {
+      "id": "opt_yuhajiru",
+      "intended": "يُهَاجِرُوا",
+      "label": "يهاجروا",
+      "fish": "أَنْ يُهَاجِرُوا",
+      "ttsOk": true,
+      "size": 28838,
+      "status": 200
+    },
+    {
+      "id": "opt_bida",
+      "intended": "بِدْعَةٌ",
+      "label": "بدعة",
+      "fish": "هِيَ بِدْعَةٌ",
+      "ttsOk": true,
+      "size": 24449,
+      "status": 200
+    },
+    {
+      "id": "opt_tibb",
+      "intended": "الطِّبُّ",
+      "label": "الطب",
+      "fish": "هُوَ الطِّبُّ",
+      "ttsOk": true,
+      "size": 21315,
+      "status": 200
+    },
+    {
+      "id": "opt_sawm",
+      "intended": "الصَّوْمُ",
+      "label": "الصوم",
+      "fish": "هُوَ الصَّوْمُ",
+      "ttsOk": true,
+      "size": 22568,
+      "status": 200
+    },
+    {
+      "id": "opt_zina",
+      "intended": "الزِّنَا",
+      "label": "الزنا",
+      "fish": "هُوَ الزِّنَا",
+      "ttsOk": true,
+      "size": 24449,
+      "status": 200
+    },
+    {
+      "id": "opt_riya",
+      "intended": "الرِّيَاءُ",
+      "label": "الرياء",
+      "fish": "هُوَ الرِّيَاءُ",
+      "ttsOk": true,
+      "size": 26957,
+      "status": 200
+    },
+    {
+      "id": "opt_saghira",
+      "intended": "صَغِيرَةٌ",
+      "label": "صغيرة",
+      "fish": "هِيَ صَغِيرَةٌ",
+      "ttsOk": true,
+      "size": 30719,
+      "status": 200
+    },
+    {
+      "id": "opt_ruqya",
+      "intended": "الرُّقْيَةُ",
+      "label": "الرقية",
+      "fish": "هِيَ الرُّقْيَةُ",
+      "ttsOk": true,
+      "size": 24449,
+      "status": 200
+    },
+    {
+      "id": "opt_wudu",
+      "intended": "الْوُضُوءُ",
+      "label": "الوضوء",
+      "fish": "هُوَ الْوُضُوءُ",
+      "ttsOk": true,
+      "size": 25703,
+      "status": 200
+    },
+    {
+      "id": "opt_nisyan",
+      "intended": "النِّسْيَانُ",
+      "label": "النسيان",
+      "fish": "هُوَ النِّسْيَانُ",
+      "ttsOk": true,
+      "size": 25703,
+      "status": 200
+    },
+    {
+      "id": "opt_ikhlas",
+      "intended": "الْإِخْلَاصُ",
+      "label": "الإخلاص",
+      "fish": "هُوَ الْإِخْلَاصُ",
+      "ttsOk": true,
+      "size": 30092,
+      "status": 200
+    },
+    {
+      "id": "opt_kafir",
+      "intended": "كَافِرٌ",
+      "label": "كافر",
+      "fish": "هُوَ كَافِرٌ",
+      "ttsOk": true,
+      "size": 24449,
+      "status": 200
+    },
+    {
+      "id": "opt_riba",
+      "intended": "الرِّبَا",
+      "label": "الربا",
+      "fish": "هُوَ الرِّبَا",
+      "ttsOk": true,
+      "size": 24449,
+      "status": 200
+    },
+    {
+      "id": "opt_sadaqa",
+      "intended": "صَدَقَةٌ",
+      "label": "صدقة",
+      "fish": "هِيَ صَدَقَةٌ",
+      "ttsOk": true,
+      "size": 25703,
+      "status": 200
+    },
+    {
+      "id": "opt_juu",
+      "intended": "الْجُوعُ",
+      "label": "الجوع",
+      "fish": "هُوَ الْجُوعُ",
+      "ttsOk": true,
+      "size": 25703,
+      "status": 200
+    },
+    {
+      "id": "opt_nafs",
+      "intended": "النَّفْسُ",
+      "label": "النفس",
+      "fish": "هِيَ النَّفْسُ",
+      "ttsOk": true,
+      "size": 22568,
+      "status": 200
+    },
+    {
+      "id": "opt_zulm",
+      "intended": "الظُّلْمُ",
+      "label": "الظلم",
+      "fish": "هُوَ الظُّلْمُ",
+      "ttsOk": true,
+      "size": 31972,
+      "status": 200
+    },
+    {
+      "id": "opt_rabb",
+      "intended": "الرَّبُّ",
+      "label": "الرب",
+      "fish": "هُوَ الرَّبُّ",
+      "ttsOk": true,
+      "size": 17553,
+      "status": 200
+    },
+    {
+      "id": "opt_zaman",
+      "intended": "الزَّمَانُ",
+      "label": "الزمان",
+      "fish": "هُوَ الزَّمَانُ",
+      "ttsOk": true,
+      "size": 27584,
+      "status": 200
+    },
+    {
+      "id": "opt_abu",
+      "intended": "أَبُو هُرَيْرَةَ",
+      "label": "أبو هريرة",
+      "fish": "هُوَ أَبُو هُرَيْرَةَ",
+      "ttsOk": true,
+      "size": 42004,
+      "status": 200
+    },
+    {
+      "id": "opt_salah_faqat",
+      "intended": "الصَّلَاةُ فَقَطْ",
+      "label": "الصلاة فقط",
+      "fish": "الصَّلَاةُ  فَقَطْ",
+      "ttsOk": true,
+      "size": 42004,
+      "status": 200
+    },
+    {
+      "id": "opt_atu",
+      "intended": "وَآتُوا الزَّكَاةَ",
+      "label": "وآتوا الزكاة",
+      "fish": "وَآتُوا  الزَّكَاةَ",
+      "ttsOk": true,
+      "size": 33853,
+      "status": 200
+    },
+    {
+      "id": "opt_bisalah",
+      "intended": "بِالصَّلَاةِ",
+      "label": "بالصلاة",
+      "fish": "أَعْنِي بِالصَّلَاةِ",
+      "ttsOk": true,
+      "size": 31972,
+      "status": 200
+    },
+    {
+      "id": "opt_bizakah",
+      "intended": "بِالزَّكَاةِ",
+      "label": "بالزكاة",
+      "fish": "أَعْنِي بِالزَّكَاةِ",
+      "ttsOk": true,
+      "size": 31972,
+      "status": 200
+    },
+    {
+      "id": "opt_asma",
+      "intended": "أَسْمَاءٌ",
+      "label": "أسماء",
+      "fish": "هِيَ أَسْمَاءٌ",
+      "ttsOk": true,
+      "size": 28838,
+      "status": 200
+    },
+    {
+      "id": "opt_ikrah",
+      "intended": "إِكْرَاهٌ",
+      "label": "إكراه",
+      "fish": "إِكْرَاهٌ",
+      "ttsOk": true,
+      "size": 24449,
+      "status": 200
+    },
+    {
+      "id": "opt_khata",
+      "intended": "خَطَأٌ",
+      "label": "خطأ",
+      "fish": "هَذَا خَطَأٌ",
+      "ttsOk": true,
+      "size": 27584,
+      "status": 200
+    }
+  ]
+}

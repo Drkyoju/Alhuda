@@ -1,0 +1,60 @@
+{
+  "model": "small",
+  "n": 9,
+  "results": [
+    {
+      "file": "opt_anwat.mp3",
+      "id": "opt_anwat",
+      "transcript": "ذاتي أنواق",
+      "ok": true
+    },
+    {
+      "file": "opt_ikrah.mp3",
+      "id": "opt_ikrah",
+      "transcript": "الإكره",
+      "ok": true
+    },
+    {
+      "file": "opt_rabb.mp3",
+      "id": "opt_rabb",
+      "transcript": "هو الرب وسبحانه",
+      "ok": true
+    },
+    {
+      "file": "opt_sadaqa.mp3",
+      "id": "opt_sadaqa",
+      "transcript": "أعني صدقتاً",
+      "ok": true
+    },
+    {
+      "file": "opt_sawm.mp3",
+      "id": "opt_sawm",
+      "transcript": "هعني الصون",
+      "ok": true
+    },
+    {
+      "file": "opt_tibb.mp3",
+      "id": "opt_tibb",
+      "transcript": "علمط طيب",
+      "ok": true
+    },
+    {
+      "file": "opt_zina.mp3",
+      "id": "opt_zina",
+      "transcript": "فاحشة الزنة",
+      "ok": true
+    },
+    {
+      "file": "opt_zulm.mp3",
+      "id": "opt_zulm",
+      "transcript": "أعني الظل",
+      "ok": true
+    },
+    {
+      "file": "q_birr.mp3",
+      "id": "q_birr",
+      "transcript": "ما هو البر",
+      "ok": true
+    }
+  ]
+}

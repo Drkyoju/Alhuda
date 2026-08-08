@@ -1,0 +1,445 @@
+{
+  "timestamp": "2026-08-08T09:50:13.759Z",
+  "sample": 35,
+  "pass": 29,
+  "fail": 6,
+  "passRate": 0.829,
+  "fails": [
+    {
+      "id": "opt_tibb",
+      "label": "الطب",
+      "intended": "الطِّبُّ",
+      "fish": "هُوَ الطِّبُّ",
+      "pass": false,
+      "ov": 0.5,
+      "miss": [
+        "الطب"
+      ],
+      "transcript": "هوط"
+    },
+    {
+      "id": "opt_sawm",
+      "label": "الصوم",
+      "intended": "الصَّوْمُ",
+      "fish": "هُوَ الصَّوْمُ",
+      "pass": false,
+      "ov": 0.4,
+      "miss": [
+        "الصوم"
+      ],
+      "transcript": ".. ،علي� التي سرب."
+    },
+    {
+      "id": "opt_zina",
+      "label": "الزنا",
+      "intended": "الزِّنَا",
+      "fish": "هُوَ الزِّنَا",
+      "pass": false,
+      "ov": 0.571,
+      "miss": [
+        "الزنا"
+      ],
+      "transcript": "هو زينة"
+    },
+    {
+      "id": "opt_sadaqa",
+      "label": "صدقة",
+      "intended": "صَدَقَةٌ",
+      "fish": "هِيَ صَدَقَةٌ",
+      "pass": false,
+      "ov": 0.333,
+      "miss": [
+        "صدقه"
+      ],
+      "transcript": "هيا سجاكاك"
+    },
+    {
+      "id": "opt_zulm",
+      "label": "الظلم",
+      "intended": "الظُّلْمُ",
+      "fish": "هُوَ الظُّلْمُ",
+      "pass": false,
+      "ov": 0.6,
+      "miss": [
+        "الظلم"
+      ],
+      "transcript": "حواز وليمو"
+    },
+    {
+      "id": "opt_rabb",
+      "label": "الرب",
+      "intended": "الرَّبُّ",
+      "fish": "هُوَ الرَّبُّ",
+      "pass": false,
+      "ov": 0.5,
+      "miss": [
+        "الرب"
+      ],
+      "transcript": "حورة"
+    }
+  ],
+  "all": [
+    {
+      "id": "q_birr",
+      "label": "البر هو",
+      "intended": "الْبِرُّ هُوَ",
+      "fish": "مَا الْبِرُّ هُوَ",
+      "pass": true,
+      "ov": 0.875,
+      "miss": [],
+      "transcript": "ملد الروهوان"
+    },
+    {
+      "id": "q_zakah",
+      "label": "الزكاة شرعا",
+      "intended": "الزَّكَاةِ شَرْعًا",
+      "fish": "الزَّكَاةُ  شَرْعًا",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "الزكاة شرعاً"
+    },
+    {
+      "id": "opt_sahih",
+      "label": "صحيح",
+      "intended": "صَحِيحٌ",
+      "fish": "هَذَا صَحِيحٌ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هذا صحيح"
+    },
+    {
+      "id": "opt_jaiz",
+      "label": "جائز",
+      "intended": "جَائِزٌ",
+      "fish": "هَذَا جَائِزٌ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هادا جائز"
+    },
+    {
+      "id": "opt_anwat",
+      "label": "أنواط",
+      "intended": "أَنْوَاطْ",
+      "fish": "ذَاتُ أَنْوَاطْ",
+      "pass": true,
+      "ov": 0.875,
+      "miss": [],
+      "transcript": "ذاتي أنواق"
+    },
+    {
+      "id": "opt_thalatha",
+      "label": "ثلاثة",
+      "intended": "ثَلَاثَةٍ",
+      "fish": "هِيَ ثَلَاثَةٌ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هي ثلاثة"
+    },
+    {
+      "id": "opt_nawm",
+      "label": "النوم",
+      "intended": "النَّوْمُ",
+      "fish": "هُوَ النَّوْمُ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هو النوم"
+    },
+    {
+      "id": "opt_dua",
+      "label": "الدعاء",
+      "intended": "الدُّعَاءِ",
+      "fish": "هُوَ الدُّعَاءُ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هو الدعاء"
+    },
+    {
+      "id": "opt_yuhajiru",
+      "label": "يهاجروا",
+      "intended": "يُهَاجِرُوا",
+      "fish": "أَنْ يُهَاجِرُوا",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "أن يهاجروا"
+    },
+    {
+      "id": "opt_bida",
+      "label": "بدعة",
+      "intended": "بِدْعَةٌ",
+      "fish": "هِيَ بِدْعَةٌ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هي بدعت"
+    },
+    {
+      "id": "opt_tibb",
+      "label": "الطب",
+      "intended": "الطِّبُّ",
+      "fish": "هُوَ الطِّبُّ",
+      "pass": false,
+      "ov": 0.5,
+      "miss": [
+        "الطب"
+      ],
+      "transcript": "هوط"
+    },
+    {
+      "id": "opt_sawm",
+      "label": "الصوم",
+      "intended": "الصَّوْمُ",
+      "fish": "هُوَ الصَّوْمُ",
+      "pass": false,
+      "ov": 0.4,
+      "miss": [
+        "الصوم"
+      ],
+      "transcript": ".. ،علي� التي سرب."
+    },
+    {
+      "id": "opt_zina",
+      "label": "الزنا",
+      "intended": "الزِّنَا",
+      "fish": "هُوَ الزِّنَا",
+      "pass": false,
+      "ov": 0.571,
+      "miss": [
+        "الزنا"
+      ],
+      "transcript": "هو زينة"
+    },
+    {
+      "id": "opt_riya",
+      "label": "الرياء",
+      "intended": "الرِّيَاءُ",
+      "fish": "هُوَ الرِّيَاءُ",
+      "pass": true,
+      "ov": 0.875,
+      "miss": [],
+      "transcript": "هو الرياع"
+    },
+    {
+      "id": "opt_saghira",
+      "label": "صغيرة",
+      "intended": "صَغِيرَةٌ",
+      "fish": "هِيَ صَغِيرَةٌ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هي صغيرا كن"
+    },
+    {
+      "id": "opt_ruqya",
+      "label": "الرقية",
+      "intended": "الرُّقْيَةُ",
+      "fish": "هِيَ الرُّقْيَةُ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هي الرقية"
+    },
+    {
+      "id": "opt_wudu",
+      "label": "الوضوء",
+      "intended": "الْوُضُوءُ",
+      "fish": "هُوَ الْوُضُوءُ",
+      "pass": true,
+      "ov": 0.875,
+      "miss": [],
+      "transcript": "هو الوضوع"
+    },
+    {
+      "id": "opt_nisyan",
+      "label": "النسيان",
+      "intended": "النِّسْيَانُ",
+      "fish": "هُوَ النِّسْيَانُ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هو النسيان"
+    },
+    {
+      "id": "opt_ikhlas",
+      "label": "الإخلاص",
+      "intended": "الْإِخْلَاصُ",
+      "fish": "هُوَ الْإِخْلَاصُ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هو الإخلاص"
+    },
+    {
+      "id": "opt_kafir",
+      "label": "كافر",
+      "intended": "كَافِرٌ",
+      "fish": "هُوَ كَافِرٌ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هو كافير"
+    },
+    {
+      "id": "opt_riba",
+      "label": "الربا",
+      "intended": "الرِّبَا",
+      "fish": "هُوَ الرِّبَا",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هو الربا"
+    },
+    {
+      "id": "opt_sadaqa",
+      "label": "صدقة",
+      "intended": "صَدَقَةٌ",
+      "fish": "هِيَ صَدَقَةٌ",
+      "pass": false,
+      "ov": 0.333,
+      "miss": [
+        "صدقه"
+      ],
+      "transcript": "هيا سجاكاك"
+    },
+    {
+      "id": "opt_juu",
+      "label": "الجوع",
+      "intended": "الْجُوعُ",
+      "fish": "هُوَ الْجُوعُ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هو الجوع"
+    },
+    {
+      "id": "opt_nafs",
+      "label": "النفس",
+      "intended": "النَّفْسُ",
+      "fish": "هِيَ النَّفْسُ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هي النفس"
+    },
+    {
+      "id": "opt_zulm",
+      "label": "الظلم",
+      "intended": "الظُّلْمُ",
+      "fish": "هُوَ الظُّلْمُ",
+      "pass": false,
+      "ov": 0.6,
+      "miss": [
+        "الظلم"
+      ],
+      "transcript": "حواز وليمو"
+    },
+    {
+      "id": "opt_rabb",
+      "label": "الرب",
+      "intended": "الرَّبُّ",
+      "fish": "هُوَ الرَّبُّ",
+      "pass": false,
+      "ov": 0.5,
+      "miss": [
+        "الرب"
+      ],
+      "transcript": "حورة"
+    },
+    {
+      "id": "opt_zaman",
+      "label": "الزمان",
+      "intended": "الزَّمَانُ",
+      "fish": "هُوَ الزَّمَانُ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هو الزمان"
+    },
+    {
+      "id": "opt_abu",
+      "label": "أبو هريرة",
+      "intended": "أَبُو هُرَيْرَةَ",
+      "fish": "هُوَ أَبُو هُرَيْرَةَ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هو أبو هوريرا"
+    },
+    {
+      "id": "opt_salah_faqat",
+      "label": "الصلاة فقط",
+      "intended": "الصَّلَاةُ فَقَطْ",
+      "fish": "الصَّلَاةُ  فَقَطْ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "الصلاة فقط"
+    },
+    {
+      "id": "opt_atu",
+      "label": "وآتوا الزكاة",
+      "intended": "وَآتُوا الزَّكَاةَ",
+      "fish": "وَآتُوا  الزَّكَاةَ",
+      "pass": true,
+      "ov": 0.909,
+      "miss": [],
+      "transcript": "واتوا الزكات"
+    },
+    {
+      "id": "opt_bisalah",
+      "label": "بالصلاة",
+      "intended": "بِالصَّلَاةِ",
+      "fish": "أَعْنِي بِالصَّلَاةِ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "أعني بالصلاة"
+    },
+    {
+      "id": "opt_bizakah",
+      "label": "بالزكاة",
+      "intended": "بِالزَّكَاةِ",
+      "fish": "أَعْنِي بِالزَّكَاةِ",
+      "pass": true,
+      "ov": 0.909,
+      "miss": [],
+      "transcript": "أعني بالزكاء"
+    },
+    {
+      "id": "opt_asma",
+      "label": "أسماء",
+      "intended": "أَسْمَاءٌ",
+      "fish": "هِيَ أَسْمَاءٌ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هيا أسماء"
+    },
+    {
+      "id": "opt_ikrah",
+      "label": "إكراه",
+      "intended": "إِكْرَاهٌ",
+      "fish": "إِكْرَاهٌ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "اكراه"
+    },
+    {
+      "id": "opt_khata",
+      "label": "خطأ",
+      "intended": "خَطَأٌ",
+      "fish": "هَذَا خَطَأٌ",
+      "pass": true,
+      "ov": 1,
+      "miss": [],
+      "transcript": "هذا خطأ"
+    }
+  ]
+}

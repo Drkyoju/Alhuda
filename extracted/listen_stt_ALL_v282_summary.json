@@ -1,0 +1,217 @@
+{
+  "timestamp": "2026-08-08T09:51:42.992Z",
+  "versionTarget": "v283",
+  "sourceReports": [
+    "extracted/listen_stt_tawheed_ALL_v282.json",
+    "extracted/listen_stt_usool_ALL_v282.json",
+    "extracted/listen_stt_nawawi_ALL_v282.json"
+  ],
+  "v282Totals": {
+    "tawheed": {
+      "qFail": 0,
+      "optFail": 131,
+      "likelyAddressed": 66,
+      "total": 131
+    },
+    "usool": {
+      "qFail": 0,
+      "optFail": 71,
+      "likelyAddressed": 29,
+      "total": 71
+    },
+    "nawawi": {
+      "qFail": 2,
+      "optFail": 102,
+      "likelyAddressed": 57,
+      "total": 104
+    },
+    "totalFail": 306,
+    "fishVoiceMostly": true,
+    "note": "Questions were nearly perfect (593/595). Work is mostly short options."
+  },
+  "prepFixes": {
+    "nawawiQuestions": [
+      "البر هو → ما هو البر (verified STT)",
+      "الزكاة شرعاً → الزكاةُ شرعاً nominative (verified STT)"
+    ],
+    "carriers": "هو/هذا/هي/أعني/صوم رمضان/فاحشة الزنا/الطب النبوي… for high-freq short MC/TF; UI display unchanged",
+    "ttsCache": "v54→v55",
+    "appVersion": "244→245",
+    "swCache": "alhuda-v282→alhuda-v283"
+  },
+  "sampleRecheck": {
+    "firstPass": {
+      "n": 35,
+      "pass": 29,
+      "fail": 6,
+      "passRate": 0.829
+    },
+    "residualStrengthened": {
+      "q_birr": "ما هو البر",
+      "sawm": "صوم رمضان",
+      "zina": "فاحشة الزنة",
+      "sadaqa": "أعني صدقتاً",
+      "rabb": "هو الرب وسبحانه",
+      "tibbStillHard": "التبن بويه — fish_voice_limitation",
+      "anwatStillHard": "ذاتي أنواق — fish_voice_limitation"
+    }
+  },
+  "estimate": {
+    "failsCoveredByCarrierSet": 152,
+    "totalFails": 306,
+    "residualUniqueShorts": 154,
+    "residualNote": "Many unique 1–2 word options remain fish_voice_limitation; أنواط/طب especially stubborn"
+  },
+  "residualExamples": [
+    {
+      "book": "tawheed",
+      "id": "a1_cabe3338-0c2a-4919-8fda-3ff1f5683271",
+      "b": "الملائكة فقط",
+      "stt": "الملاعق يكاتف قطر"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_8f0b87fc-a2fc-4a90-9dbd-7b333fc1f919",
+      "b": "حفظها",
+      "stt": "حيف enjoying"
+    },
+    {
+      "book": "tawheed",
+      "id": "a1_a0843318-ca13-4eb8-8738-14b57dcb6919",
+      "b": "يصلون كثيرا",
+      "stt": "يوسى اللونة كثيرا"
+    },
+    {
+      "book": "tawheed",
+      "id": "a2_dcdd2714-5e35-4b4c-811d-feaab1306cfd",
+      "b": "مئة ألف",
+      "stt": "100 عالفن"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_de6475f4-5d82-4bb1-a4c6-2708898479dd",
+      "b": "ابدأ بالجزية",
+      "stt": "بدي عال العهزية"
+    },
+    {
+      "book": "tawheed",
+      "id": "a0_79060455-082e-4ede-9964-2c3c684bd269",
+      "b": "عبادته وحده",
+      "stt": ".هيبان يaksوره وحده ترون"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_ec30c523-46b4-dc9c-1f73-c43fac4f8848",
+      "b": "تعليمه",
+      "stt": "كلم علامة"
+    },
+    {
+      "book": "tawheed",
+      "id": "a1_e7ee3a7e-f954-7c5b-2abd-dece5ca3ac4a",
+      "b": "ذكر مطلق",
+      "stt": "ذكرون مطلاقون"
+    },
+    {
+      "book": "tawheed",
+      "id": "a2_adc7a568-4e61-f5de-b5c8-6066befcd2af",
+      "b": "نافق",
+      "stt": "نأسة שלי"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_fb5c41b3-eba0-54a2-c53c-8c0133d1b17e",
+      "b": "الزواج",
+      "stt": "ازالي سب يهج an"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_f9b205c9-d036-dcce-37a6-92d32684064b",
+      "b": "عوقب",
+      "stt": "إنها refreshing"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_e6cca78e-0f71-6b6d-dcec-080c56648ab1",
+      "b": "التطوع",
+      "stt": "كطوء"
+    },
+    {
+      "book": "tawheed",
+      "id": "a2_464f92f2-8cfd-6a09-0fea-fc7562da176d",
+      "b": "تنظيفها",
+      "stt": "كم ذيفها"
+    },
+    {
+      "book": "tawheed",
+      "id": "a1_9f381fa9-d7ec-ae89-331a-713f12e7e4a1",
+      "b": "الأثاث",
+      "stt": "الأساسي"
+    },
+    {
+      "book": "tawheed",
+      "id": "a1_ae30c919-3a52-7ab5-a806-74e087ee5d8a",
+      "b": "الرجال",
+      "stt": "برجان"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_53c4fad7-c99a-31c3-8200-b25822879097",
+      "b": "فليغضب",
+      "stt": "فاليه觀 verlام"
+    },
+    {
+      "book": "tawheed",
+      "id": "a2_832b2f83-6d67-f7b2-0149-d7d865a8172b",
+      "b": "تجلب الزبائن",
+      "stt": "كجريبو ازباء"
+    },
+    {
+      "book": "tawheed",
+      "id": "a1_bbf392cb-a947-1661-ccbd-d9890511efa0",
+      "b": "السنن",
+      "stt": "أشتنن"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_d753dca5-cc6a-7ded-d4da-9b283ce8289e",
+      "b": "تنظيفها",
+      "stt": "كم ذيفها"
+    },
+    {
+      "book": "tawheed",
+      "id": "a1_b878ea91-91ae-ff0b-7415-a26a2c629b0d",
+      "b": "عبادة",
+      "stt": "ويبَا انَرْكَ"
+    },
+    {
+      "book": "tawheed",
+      "id": "a1_5d35540a-f040-ca4c-2a2e-d039b63dbd7a",
+      "b": "طلبها",
+      "stt": "quierع الزبلές"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_5ad52d9e-878d-9cff-5c86-676aa7551f7f",
+      "b": "الغفلة",
+      "stt": "انا رفلك"
+    },
+    {
+      "book": "tawheed",
+      "id": "a3_cf01dde6-f233-bcb0-c1ef-9dfc31188179",
+      "b": "غفلة",
+      "stt": "رفلتن"
+    },
+    {
+      "book": "tawheed",
+      "id": "a1_39d543ed-8c5d-a3ba-9480-c85261e939ca",
+      "b": "الأمر",
+      "stt": "قل أم"
+    },
+    {
+      "book": "tawheed",
+      "id": "a1_e7bdf5fb-5aca-ead8-d265-89ed6e5a9b3a",
+      "b": "غزوة بدر",
+      "stt": "رزول<|fr|>"
+    }
+  ]
+}

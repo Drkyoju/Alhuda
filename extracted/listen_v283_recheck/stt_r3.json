@@ -1,0 +1,24 @@
+{
+  "model": "small",
+  "n": 3,
+  "results": [
+    {
+      "file": "opt_sawm.mp3",
+      "id": "opt_sawm",
+      "transcript": "صوم رمضان",
+      "ok": true
+    },
+    {
+      "file": "opt_tibb.mp3",
+      "id": "opt_tibb",
+      "transcript": "التبن بويه",
+      "ok": true
+    },
+    {
+      "file": "opt_zulm.mp3",
+      "id": "opt_zulm",
+      "transcript": "أظلموا كبيرة",
+      "ok": true
+    }
+  ]
+}

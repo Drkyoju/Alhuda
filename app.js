@@ -1693,7 +1693,7 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v54';
+const TTS_CACHE_VER = 'v55';
 /**
  * Lesson Fish TTS only — mild loudness (NOT v267 3.6× / heavy EQ).
  * Never applied to Quran Hudhaify.
@@ -3353,8 +3353,8 @@ function buildQuestionOptionSpeechList(q) {
     });
   } else if (q?.type === 'tf') {
     // Must match on-screen buttons «صح ✓» / «خطأ ✗» (harakat OK for TTS).
-    // صَحّ alone often heard as «صحن» on Fish clone — speak كامل (UI still «صح»)
-    items.push('صَحِيحٌ');
+    // صَحِيحٌ alone → «سحيح» on Fish clone — pad like خطأ (UI still «صح»)
+    items.push('هَذَا صَحِيحٌ');
     // خَطَأٌ alone often → «شطأ»; pad slightly (UI still «خطأ»)
     items.push('هَذَا خَطَأٌ');
   }
