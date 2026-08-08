@@ -1693,13 +1693,13 @@ function toggleSound() {
 /** Locked Fish lesson voice — resolved from /api/tts-status (FISH_VOICE_ID / حكيم). */
 const TTS_FISH_HAKIM = 'aa9c8260269c411d9863ab1b1bfa3158';
 let TTS_VOICE = TTS_FISH_HAKIM;
-/** Bump: permanent Fish حكيم-only lock — kill any residual non-hakim clips. */
-const TTS_CACHE_VER = 'v80';
+/** Bump: Fish Hakim mild loudness — kill quiet/muffled cached clips. */
+const TTS_CACHE_VER = 'v81';
 /**
- * Lesson Fish TTS only — moderate clarity (HP + presence + gain).
+ * Lesson Fish TTS only — mild gain + soft limiter (no HP/presence EQ).
  * Never applied to Quran Hudhaify.
  */
-const TTS_PLAYBACK_GAIN = 1.65;
+const TTS_PLAYBACK_GAIN = 1.45;
 /** Fish prosody for questions — snappy start, still natural (matches worker default). */
 const TTS_FISH_SPEED_QUESTION = 1.08;
 /** Fish prosody for answers/options/TF — slight bump so options feel brisk. */
@@ -4409,8 +4409,8 @@ function disconnectTtsAudioGraph() {
 }
 
 /**
- * Light lesson loudness via Web Audio (Fish only).
- * Gentle HP + presence + gain. Quran Hudhaify must NOT call this.
+ * Mild lesson Fish loudness via Web Audio (gain ~1.45 + soft limiter).
+ * No highpass/presence EQ — those made v267 sound سيء. Quran Hudhaify must NOT call this.
  */
 function routeTtsThroughMildBoost(audioEl) {
   if (!audioEl) return;
@@ -4425,20 +4425,10 @@ function routeTtsThroughMildBoost(audioEl) {
     }
     const nodes = [];
     try {
-      const highpass = audioCtx.createBiquadFilter();
-      highpass.type = 'highpass';
-      highpass.frequency.value = 110;
-      highpass.Q.value = 0.7;
-      nodes.push(highpass);
-      const presence = audioCtx.createBiquadFilter();
-      presence.type = 'peaking';
-      presence.frequency.value = 3200;
-      presence.Q.value = 0.85;
-      presence.gain.value = 2;
-      nodes.push(presence);
       const gain = audioCtx.createGain();
       gain.gain.value = TTS_PLAYBACK_GAIN;
       nodes.push(gain);
+      // Soft limiter after gain — catches peaks without crushing.
       const limiter = audioCtx.createDynamicsCompressor();
       limiter.threshold.value = -8;
       limiter.knee.value = 10;
@@ -4446,9 +4436,7 @@ function routeTtsThroughMildBoost(audioEl) {
       limiter.attack.value = 0.003;
       limiter.release.value = 0.18;
       nodes.push(limiter);
-      source.connect(highpass);
-      highpass.connect(presence);
-      presence.connect(gain);
+      source.connect(gain);
       gain.connect(limiter);
       limiter.connect(audioCtx.destination);
       ttsAudioGraph = { source, nodes };
