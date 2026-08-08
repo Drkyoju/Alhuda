@@ -1693,12 +1693,12 @@ function toggleSound() {
 /** Fish Audio live voice — resolved from /api/tts-status (FISH_VOICE_ID). */
 let TTS_VOICE = 'fish-live';
 /** Bump when switching voice/provider so IndexedDB never replays old narrator clips. */
-const TTS_CACHE_VER = 'v59';
+const TTS_CACHE_VER = 'v60';
 /**
- * Lesson Fish TTS only — mild loudness (NOT v267 3.6× / heavy EQ).
+ * Lesson Fish TTS only — moderate clarity (NOT v267 3.6× / heavy EQ / vol 18).
  * Never applied to Quran Hudhaify.
  */
-const TTS_PLAYBACK_GAIN = 1.3;
+const TTS_PLAYBACK_GAIN = 1.65;
 /** Fish prosody for question prose — slight bump (was 1.05); keep natural, not chipmunk. */
 const TTS_FISH_SPEED_QUESTION = 1.08;
 /** Fish prosody for answer options — same modest pace as questions. */
@@ -4394,8 +4394,9 @@ function disconnectTtsAudioGraph() {
 }
 
 /**
- * Mild lesson Fish loudness via Web Audio (gain ~1.3 + soft compressor).
- * No highpass/presence EQ — those made v267 sound سيء. Quran Hudhaify must NOT call this.
+ * Moderate lesson Fish clarity via Web Audio.
+ * Chain: subtle HP → mild presence → gain ~1.65 → soft limiter.
+ * Avoids v267 extremes (3.6× / heavy EQ). Quran Hudhaify must NOT call this.
  */
 function routeTtsThroughMildBoost(audioEl) {
   if (!audioEl) return;
@@ -4410,19 +4411,35 @@ function routeTtsThroughMildBoost(audioEl) {
     }
     const nodes = [];
     try {
-      const compressor = audioCtx.createDynamicsCompressor();
-      compressor.threshold.value = -18;
-      compressor.knee.value = 12;
-      compressor.ratio.value = 2.5;
-      compressor.attack.value = 0.008;
-      compressor.release.value = 0.22;
-      nodes.push(compressor);
+      // Gentle rumble cut — unmuffles without thin/harsh tone.
+      const highpass = audioCtx.createBiquadFilter();
+      highpass.type = 'highpass';
+      highpass.frequency.value = 110;
+      highpass.Q.value = 0.7;
+      nodes.push(highpass);
+      // Subtle presence shelf — +2 dB around speech intelligibility band.
+      const presence = audioCtx.createBiquadFilter();
+      presence.type = 'peaking';
+      presence.frequency.value = 3200;
+      presence.Q.value = 0.85;
+      presence.gain.value = 2;
+      nodes.push(presence);
       const gain = audioCtx.createGain();
       gain.gain.value = TTS_PLAYBACK_GAIN;
       nodes.push(gain);
-      source.connect(compressor);
-      compressor.connect(gain);
-      gain.connect(audioCtx.destination);
+      // Soft limiter after gain — catches peaks without crushing.
+      const limiter = audioCtx.createDynamicsCompressor();
+      limiter.threshold.value = -8;
+      limiter.knee.value = 10;
+      limiter.ratio.value = 4;
+      limiter.attack.value = 0.003;
+      limiter.release.value = 0.18;
+      nodes.push(limiter);
+      source.connect(highpass);
+      highpass.connect(presence);
+      presence.connect(gain);
+      gain.connect(limiter);
+      limiter.connect(audioCtx.destination);
       ttsAudioGraph = { source, nodes };
     } catch (chainErr) {
       // MediaElementSource hijacks element output — must still reach speakers.

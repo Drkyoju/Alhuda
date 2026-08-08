@@ -30,7 +30,8 @@ export const FISH_QUALITY_DEFAULTS = Object.freeze({
   prosody: {
     // v279+ question/default pace — slightly quicker, still natural (was 1.05).
     speed: 1.08,
-    volume: 9,
+    // Clearer without muffling — keep well below v267 volume 18.
+    volume: 11,
     normalize_loudness: true,
   },
 });
