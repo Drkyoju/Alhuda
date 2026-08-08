@@ -21,9 +21,12 @@ test.describe('Live Worker APIs', () => {
     expect(['azure', 'none']).toContain(json.provider);
     expect(json.quranReciter || 'hudhaify').toBe('hudhaify');
     expect(json.skipBakedTts).toBeTruthy();
+    expect(json.fishConfigured).toBeFalsy();
+    expect(json.elevenLabsConfigured).toBeFalsy();
     if (json.provider === 'azure') {
       expect(json.azureConfigured).toBeTruthy();
-      expect(String(json.voice || '')).toMatch(/ar-SA-HamedNeural|Neural/i);
+      expect(String(json.voice || '')).toBe('ar-SA-HamedNeural');
+      expect(json.voiceLocked).toBeTruthy();
     }
     if (json.errors) {
       expect(json.errors.tts).toBeTruthy();

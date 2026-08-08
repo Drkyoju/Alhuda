@@ -6,10 +6,13 @@
  * @see https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/azure-ai-voices-in-arabic-improved-pronunciation/4360306
  */
 export const DEFAULT_AZURE_ARABIC_VOICE = 'ar-SA-HamedNeural';
+/** Peer female Saudi MSA — not clearly better than Hamed for fusHa lessons; kept for reference only. */
 export const FALLBACK_AZURE_ARABIC_VOICE = 'ar-SA-ZariyahNeural';
 
-/** Near-fullband MP3 — clearer consonants for Arabic. */
+/** Near-fullband MP3 — clearer consonants for Arabic (Azure max common mono). */
 const OUTPUT_FORMAT = 'audio-48khz-192kbitrate-mono-mp3';
+/** Soft fallback if region rejects 48k/192. */
+const OUTPUT_FORMAT_FALLBACK = 'audio-24khz-160kbitrate-mono-mp3';
 
 function escapeXml(text) {
   return String(text || '')
@@ -153,8 +156,32 @@ const AZURE_PRON_LEXICON = [
   ['إبليس', 'إِبْلِيسَ'],
   ['الرقى', 'الرُّقَى'],
   ['التمائم', 'التَّمَائِمِ'],
+  ['بالعبادة', 'بِالْعِبَادَةِ'],
+  ['هو', 'هُوَ'],
+  ['هي', 'هِيَ'],
   ['الطيرة', 'الطِّيَرَةُ'],
   ['تعالى', 'تَعَالَى'],
+  ['صحيح', 'صَحِيحٌ'],
+  ['خطأ', 'خَطَأٌ'],
+  ['الإجابة', 'الْإِجَابَةُ'],
+  ['الصحيحة', 'الصَّحِيحَةُ'],
+  ['الحديث', 'الْحَدِيثُ'],
+  ['النبي', 'النَّبِيُّ'],
+  ['صلى', 'صَلَّى'],
+  ['وسلم', 'وَسَلَّمَ'],
+  ['رضي', 'رَضِيَ'],
+  ['عنه', 'عَنْهُ'],
+  ['عنها', 'عَنْهَا'],
+  ['عنهما', 'عَنْهُمَا'],
+  ['التميمة', 'التَّمِيمَةَ'],
+  ['تميمة', 'تَمِيمَةً'],
+  ['التولة', 'التِّوَلَةَ'],
+  ['تولة', 'تِوَلَةً'],
+  ['الذبح', 'الذَّبْحُ'],
+  ['النذر', 'النَّذْرُ'],
+  ['الحلف', 'الْحَلِفُ'],
+  ['البدعة', 'الْبِدْعَةُ'],
+  ['بدعة', 'بِدْعَةٌ'],
 ];
 
 function stripHarakatLocal(s) {
@@ -219,24 +246,25 @@ function normalizeForAzure(text) {
 
 export { normalizeForAzure };
 
-export function resolveAzureArabicVoice(requested, env) {
-  const fromReq = String(requested || '').trim();
-  if (/^ar-[A-Z]{2}-[A-Za-z0-9]+Neural$/i.test(fromReq)) return fromReq;
-  const fromEnv = String(env?.AZURE_SPEECH_VOICE || '').trim();
-  if (/^ar-[A-Z]{2}-[A-Za-z0-9]+Neural$/i.test(fromEnv)) return fromEnv;
+/**
+ * Lesson TTS is locked to Hamed — request/env voice switches are ignored.
+ * Zariyah is a peer female voice, not a clearly better fusHa reader.
+ */
+export function resolveAzureArabicVoice(_requested, _env) {
   return DEFAULT_AZURE_ARABIC_VOICE;
 }
 
 function buildSsml(text, voice) {
-  const lang = String(voice).startsWith('ar-EG') ? 'ar-EG' : 'ar-SA';
-  // Mild slowdown for educational MSA clarity without dragging quiz pace.
-  const rate = '-5%';
+  const lang = 'ar-SA';
+  // Clearer educational MSA: slight slowdown + mild volume (SSML only — no client EQ).
+  const rate = '-8%';
+  const volume = '+10%';
   const body = textToSsmlBody(normalizeForAzure(text));
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +
     `<voice name="${escapeXml(voice)}">` +
     `<lang xml:lang="${lang}">` +
-    `<prosody rate="${rate}">${body}</prosody>` +
+    `<prosody rate="${rate}" volume="${volume}">${body}</prosody>` +
     `</lang>` +
     `</voice></speak>`
   );
@@ -266,7 +294,7 @@ export async function synthesizeAzureArabicSpeech(text, voiceShortName, env) {
 
   let res = await post(buildSsml(text, voice));
   if (!res.ok && res.status === 400) {
-    res = await post(buildSsml(text, voice), 'audio-24khz-160kbitrate-mono-mp3');
+    res = await post(buildSsml(text, voice), OUTPUT_FORMAT_FALLBACK);
   }
   if (!res.ok) {
     const detail = await res.text().catch(() => '');

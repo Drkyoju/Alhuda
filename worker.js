@@ -8,9 +8,8 @@ import {
   synthesizeAzureArabicSpeech,
 } from './azure-tts.js';
 
-import { elevenLabsConfigured } from './elevenlabs-tts.js';
-import { fishAudioConfigured } from './fish-audio-tts.js';
-import { googleTtsConfigured } from './google-tts.js';
+// Fish / ElevenLabs / Google modules remain on disk for bake/rollback scripts only.
+// Lesson /api/tts path is Azure Hamed exclusively — do not re-import them here.
 
 /** Lightweight in-isolate error counters (reset when isolate recycles). */
 const apiErrorCounters = {
@@ -69,13 +68,15 @@ async function handleTtsStatus(request, env) {
     ok: true,
     bakedTtsOnly: false,
     skipBakedTts: true,
-    fishConfigured: fishAudioConfigured(env),
+    // Dead providers — never active on lesson path (secrets may still exist in CF).
+    fishConfigured: false,
     fishModel: null,
     fishVoiceConfigured: false,
-    elevenLabsConfigured: elevenLabsConfigured(env),
-    googleConfigured: googleTtsConfigured(env),
+    elevenLabsConfigured: false,
+    googleConfigured: false,
     azureConfigured: azure,
     provider: azure ? 'azure' : 'none',
+    voiceLocked: true,
     quranReciter: 'hudhaify',
     voice: azure ? voice : '(set AZURE_SPEECH_KEY)',
     voiceName: 'حامد',

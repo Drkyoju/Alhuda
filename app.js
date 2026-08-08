@@ -1689,17 +1689,17 @@ function toggleSound() {
   if (soundOn) playSound('correct');
 }
 
-/* ── Voice reading (Azure Hamed MSA; Quran stays Hudhaify) ── */
-/** حامد — Azure Neural Saudi MSA (clearest fusHa for lesson tashkeel). */
+/* ── Voice reading (Azure Hamed MSA only; Quran stays Hudhaify) ── */
+/** حامد — locked lesson voice (Saudi MSA Neural). No Fish/EL/other voices. */
 const TTS_AZURE_HAMED = 'ar-SA-HamedNeural';
 let TTS_VOICE = TTS_AZURE_HAMED;
-/** Bump when switching voice/provider so IndexedDB never replays old Fish/EL clips. */
-const TTS_CACHE_VER = 'v71';
+/** Bump when SSML/voice/prep changes so IndexedDB never replays old clips. */
+const TTS_CACHE_VER = 'v72';
 /**
  * Lesson Azure only — light gain, no Fish EQ chain.
  * Never applied to Quran Hudhaify.
  */
-const TTS_PLAYBACK_GAIN = 1.1;
+const TTS_PLAYBACK_GAIN = 1.12;
 /** Legacy speed tags kept for cache-key stability (Worker ignores speed for Azure). */
 const TTS_FISH_SPEED_QUESTION = 1;
 const TTS_FISH_SPEED_ANSWER = 1;
@@ -1721,15 +1721,16 @@ function isAzureVoiceIdClient(id) {
   return /^ar-[A-Z]{2}-[A-Za-z0-9]+Neural$/i.test(String(id || '').trim());
 }
 
-/** Ensure /api/tts-status applied Azure voice before first speak. */
+/** Ensure /api/tts-status applied; lesson voice stays locked to Hamed. */
 function ensureTtsVoiceReady() {
+  TTS_VOICE = TTS_AZURE_HAMED;
   if (isAzureVoiceIdClient(TTS_VOICE)) return Promise.resolve(TTS_VOICE);
   if (!ttsStatusReadyPromise) {
     ttsStatusReadyPromise = (async () => {
       try {
         await refreshTtsProviderBadge();
       } catch { /* keep Hamed default */ }
-      if (!isAzureVoiceIdClient(TTS_VOICE)) TTS_VOICE = TTS_AZURE_HAMED;
+      TTS_VOICE = TTS_AZURE_HAMED;
       return TTS_VOICE;
     })();
   }
@@ -1969,9 +1970,8 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
         const timer = setTimeout(() => ctrl.abort(), 20000);
         let res;
         try {
-          // Prefer Azure Neural id — omit placeholders so Worker uses ar-SA-HamedNeural.
-          const ttsBody = { text };
-          if (isAzureVoiceIdClient(lookupVoice)) ttsBody.voice = lookupVoice;
+          // Always Hamed — Worker also locks; client never sends Fish/EL ids.
+          const ttsBody = { text, voice: TTS_AZURE_HAMED };
           res = await fetch('/api/tts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2003,7 +2003,7 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
         const provider = (res.headers.get('X-TTS-Provider') || '').toLowerCase();
         rememberTtsObjectUrl(key, URL.createObjectURL(blob));
         // Persist Azure clips — faster replay across questions in the same session.
-        if (provider === 'baked' || provider === 'azure' || provider === 'elevenlabs' || provider === 'fish') {
+        if (provider === 'azure' || provider === 'baked') {
           void putTtsBlobInIdb(key, blob);
         }
         recordAzureTtsUsage(text.length, res.headers.get('X-TTS-Provider'));
@@ -2086,9 +2086,22 @@ function fixLessonHadithPronunciation(text) {
   return s;
 }
 
+/** True when any Arabic token still lacks harakat (needs lexicon / word-map fill). */
+function hasBareArabicWords(text) {
+  const re = /[\u0621-\u064A\u0671\u064B-\u065F\u0670]+/g;
+  let m;
+  while ((m = re.exec(String(text || '')))) {
+    const tok = m[0];
+    if (/[\u064B-\u065F\u0670]/.test(tok)) continue;
+    const letters = tok.replace(/[^\u0621-\u064A\u0671]/g, '');
+    if (letters.length >= 2) return true;
+  }
+  return false;
+}
+
 /** Single TTS text pipeline — prefetch and playback MUST share this or cache misses.
- *  Policy: full harakat on normal lesson text; hadith kept as curated; ayahs never
- *  go through here (Hudhaify only via buildSpeechPlan). */
+ *  Policy: full harakat + iʿrāb on normal lesson text; hadith kept as curated; ayahs never
+ *  go through here (Hudhaify only via buildSpeechPlan). Spoken bare stems ≡ display. */
 function prepareTtsPayload(text) {
   const cleaned = normalizeQuotedLessonStemForSpeech(
     String(text || '')
@@ -2099,19 +2112,21 @@ function prepareTtsPayload(text) {
   if (!cleaned) return '';
   // Hadith: speak curated wording — drop any embedded ayah markers, keep ﷺ expansion.
   if (isHadithPassage(cleaned)) {
-    const hadith = fixLessonHadithPronunciation(
+    let hadith = fixLessonHadithPronunciation(
       prepareArabicForSpeech(removeQuranicVersesForSpeech(cleaned))
     );
+    // Still fill any remaining bare stems (maps/lexicon) without rewriting curated marks.
+    hadith = applyPronunciationLexicon(applyWordDiacritics(hadith));
     return sanitizeTtsText(
       typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(hadith) : hadith
     );
   }
-  // Speech-map / already-tashkeeled text: keep mark order for baked TTS keys.
-  // Still fill any remaining bare words from the word map + Fish-tuned lexicon.
-  let forTts = hasWellFormedTashkeel(cleaned)
-    ? applyPronunciationLexicon(applyWordDiacritics(cleaned))
-    : applyPronunciationLexicon(applyWordDiacritics(applyManualSpeechDiacritics(cleaned)));
-  // Never send Quran ayah wording to Fish — Hudhaify recites ayahs separately.
+  // Full tashkeel path: phrase/manual when bare or incomplete; always fill leftover bare words.
+  let forTts = (hasWellFormedTashkeel(cleaned) && !hasBareArabicWords(cleaned))
+    ? cleaned
+    : applyManualSpeechDiacritics(cleaned);
+  forTts = applyPronunciationLexicon(applyWordDiacritics(forTts));
+  // Never send Quran ayah wording to lesson TTS — Hudhaify recites ayahs separately.
   forTts = removeQuranicVersesForSpeech(forTts);
   forTts = fixLessonHadithPronunciation(forTts);
   forTts = typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(forTts) : forTts;
@@ -2370,14 +2385,11 @@ function applyTtsStatusConfig(data) {
   }
   if (typeof data.skipBakedTts === 'boolean') {
     window.__alhudaSkipBakedTts = data.skipBakedTts;
-  } else if ((data.provider === 'azure' || data.provider === 'elevenlabs' || data.provider === 'fish') && !data.bakedTtsOnly) {
+  } else if (data.provider === 'azure' && !data.bakedTtsOnly) {
     window.__alhudaSkipBakedTts = true;
   }
-  if (data.provider === 'azure') {
-    const v = String(data.voice || data.voiceId || '').trim();
-    if (isAzureVoiceIdClient(v)) TTS_VOICE = v;
-    else TTS_VOICE = TTS_AZURE_HAMED;
-  }
+  // Lesson voice locked to Hamed — ignore any other Neural id from status/env.
+  TTS_VOICE = TTS_AZURE_HAMED;
 }
 
 async function refreshTtsProviderBadge() {
@@ -2402,15 +2414,11 @@ async function refreshTtsProviderBadge() {
     const serverFails = data.errors?.tts ? Object.values(data.errors.tts).reduce((a, b) => a + (Number(b) || 0), 0) : 0;
     badge.hidden = false;
     const providerLabel = data.provider === 'azure'
-      ? `TTS: Azure · حامد`.trim()
-      : data.provider === 'elevenlabs'
-        ? `TTS: ElevenLabs ${data.elevenLabsModel || 'multilingual_v2'}`.trim()
-        : data.provider === 'fish'
-          ? `TTS: Fish ${data.fishModel || 's2-pro'}`.trim()
-          : 'TTS: —';
+      ? 'TTS: Azure · حامد'
+      : 'TTS: —';
     badge.textContent = providerLabel +
-      (data.voice && !/set AZURE|set ELEVENLABS|set FISH/i.test(String(data.voice))
-        ? ` · ${String(data.voice).slice(0, 18)}`
+      (data.voice && !/set AZURE/i.test(String(data.voice))
+        ? ` · ${String(data.voice).slice(0, 22)}`
         : '') +
       ` · fails ${ttsSessionFailCount}/${errStats.fails}` +
       (serverFails ? ` · srv ${serverFails}` : '');
@@ -3075,14 +3083,16 @@ function stripForSpeech(text) {
   if (!cleaned) return '';
   // Hadith stays as-is (after dropping any embedded Quran markers).
   if (isHadithPassage(cleaned)) {
-    const hadith = prepareArabicForSpeech(removeQuranicVersesForSpeech(cleaned));
+    let hadith = prepareArabicForSpeech(removeQuranicVersesForSpeech(cleaned));
+    hadith = applyPronunciationLexicon(applyWordDiacritics(hadith));
     return sanitizeTtsText(
       typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(hadith) : hadith
     );
   }
-  let forTts = hasWellFormedTashkeel(cleaned)
+  let forTts = (hasWellFormedTashkeel(cleaned) && !hasBareArabicWords(cleaned))
     ? cleaned
-    : applyWordDiacritics(applyManualSpeechDiacritics(cleaned));
+    : applyManualSpeechDiacritics(cleaned);
+  forTts = applyPronunciationLexicon(applyWordDiacritics(forTts));
   forTts = removeQuranicVersesForSpeech(forTts);
   forTts = prepareArabicForSpeech(forTts);
   forTts = typeof fixAllahIrabInText === 'function' ? fixAllahIrabInText(forTts) : forTts;
@@ -3109,8 +3119,8 @@ function stripKnownAyahSnippetsForSpeech(text) {
 }
 
 /**
- * Fish prose for the on-screen question — shared by kick / warm / speak so cache keys match.
- * Strips ﴿﴾ and known ayah snippets when Hudhaify will recite (never Fish-speak ayah body).
+ * Lesson prose for the on-screen question — shared by kick / warm / speak so cache keys match.
+ * Strips ﴿﴾ and known ayah snippets when Hudhaify will recite (never Hamed-speak ayah body).
  */
 function prepareQuestionFishProse(q, questionText) {
   const src = String(questionText || q?.q || '');
@@ -3357,10 +3367,8 @@ function buildQuestionOptionSpeechList(q) {
       if (t) items.push(t);
     });
   } else if (q?.type === 'tf') {
-    // Must match on-screen buttons «صح ✓» / «خطأ ✗» (harakat OK for TTS).
-    // صَحِيحٌ alone → «سحيح» on Fish clone — pad like خطأ (UI still «صح»)
+    // Must match on-screen buttons «صح ✓» / «خطأ ✗» (full tashkeel for Hamed).
     items.push('هَذَا صَحِيحٌ');
-    // خَطَأٌ alone often → «شطأ»; pad slightly (UI still «خطأ»)
     items.push('هَذَا خَطَأٌ');
   }
   return items;
@@ -3606,11 +3614,11 @@ const QURAN_RECITER_BITRATE = 64;
 /** Faster than natural pace so تلاوة finishes sooner without sounding rushed. */
 const QURAN_PLAYBACK_RATE = 1.28;
 /**
- * Client playbackRate — mild only so ElevenLabs Yusuf stays clear (not muffled EQ).
+ * Client playbackRate — keep 1.0; Azure SSML rate/volume control clarity (no Fish EQ).
  */
-const TTS_ANSWER_PLAYBACK_RATE = 1.08;
-/** Question clips — slight client pace; natural, not distorted. */
-const TTS_DEFAULT_PLAYBACK_RATE = 1.08;
+const TTS_ANSWER_PLAYBACK_RATE = 1.0;
+/** Question clips — natural pace; SSML already slows slightly for clarity. */
+const TTS_DEFAULT_PLAYBACK_RATE = 1.0;
 /** Intentional silence between answer options (ms). Keep tiny for back-to-back. */
 const TTS_ANSWER_GAP_MS = 40;
 const QURAN_BLOB_CACHE_MAX = 32;
@@ -4715,15 +4723,9 @@ function speakQuestion() {
   unlockTtsAudio();
   void (async () => {
     try {
-      // Never block on maps or kick join — speakTtsSegment joins in-flight / memory.
       void ensureSpeechMapsLoaded();
-      // Brief wait only if Azure voice id not yet confirmed from /api/tts-status.
-      if (!isAzureVoiceIdClient(TTS_VOICE)) {
-        await Promise.race([
-          ensureTtsVoiceReady(),
-          new Promise((r) => setTimeout(r, 40)),
-        ]);
-      }
+      TTS_VOICE = TTS_AZURE_HAMED;
+      void ensureTtsVoiceReady();
       if (token !== hybridSpeechToken || !voiceOn || state.idx !== askIdx) return;
       if (state.questions[state.idx]?.id !== askId) return;
 
