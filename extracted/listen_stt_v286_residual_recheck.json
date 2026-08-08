@@ -1,0 +1,661 @@
+{
+  "timestamp": "2026-08-08T11:26:52.978Z",
+  "versionTarget": "v287",
+  "liveVersionBeforeDeploy": {
+    "cache": "alhuda-v286",
+    "sw": 286,
+    "app": 248
+  },
+  "liveVersion": {
+    "cache": "alhuda-v287",
+    "sw": 287,
+    "app": 249
+  },
+  "base": "https://alhuda.ryodan71.workers.dev",
+  "whisperModel": "small",
+  "ttsCache": "v59",
+  "sourceReports": [
+    "extracted/listen_stt_tawheed_ALL_v286.json",
+    "extracted/listen_stt_usool_ALL_v286.json",
+    "extracted/listen_stt_nawawi_ALL_v286.json"
+  ],
+  "before": {
+    "clipsFail": 57,
+    "uniqueBare": 42,
+    "byBook": {
+      "tawheedOptions": 29,
+      "usoolOptions": 8,
+      "nawawiOptions": 19,
+      "nawawiQuestions": 1
+    }
+  },
+  "rounds": {
+    "r1_carriers": {
+      "retried": 42,
+      "pass": 38,
+      "fail": 4
+    },
+    "r2_strengthen": {
+      "retried": 4,
+      "pass": 2,
+      "fail": 2,
+      "fixed": [
+        "النفس",
+        "الغد"
+      ]
+    },
+    "r3_strengthen": {
+      "retried": 2,
+      "pass": 2,
+      "fail": 0,
+      "fixed": [
+        "الزكاة",
+        "تدخل الجنة"
+      ]
+    }
+  },
+  "after": {
+    "uniqueBare": 42,
+    "pass": 42,
+    "fail": 0,
+    "passRate": 1
+  },
+  "totals": {
+    "uniqueBare": 42,
+    "pass": 42,
+    "fail": 0,
+    "passRate": 1
+  },
+  "irreducible": [],
+  "hardRefresh": "Cmd+Shift+R",
+  "notes": [
+    "Display text unchanged; speech carriers only (أعني/إنّه/إنّها/قل؛ avoid هو→English who)",
+    "الزكاة → هي الزكاة المفروضة؛ تدخل الجنة → تدخل العبد الجنة",
+    "Fixed عبد+ال construct regex so الْعَبْدَ الْجَنَّةَ keeps accusative",
+    "TTS_CACHE_VER v58→v59; cache alhuda-v287"
+  ],
+  "all": [
+    {
+      "bare": "الزمان",
+      "spoken": "الزَّمَانِ",
+      "fish_v286": "هُوَ الزَّمَانُ",
+      "fish": "أَعْنِي الزَّمَانَ",
+      "transcript": "أعني الزمان",
+      "pass": true,
+      "overlap": 1,
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الرجل",
+      "spoken": "الرَّجُلُ",
+      "fish_v286": "هُوَ الرَّجُلُ",
+      "fish": "أَعْنِي الرَّجُلَ",
+      "transcript": "أعاني الرجل",
+      "pass": true,
+      "overlap": 0.9,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "يشهد",
+      "spoken": "يَشْهَدَ",
+      "fish_v286": "أَنْ يَشْهَدَ",
+      "fish": "أَعْنِي أَنْ يَشْهَدَ",
+      "transcript": "أعني أن يشحد",
+      "pass": true,
+      "overlap": 0.9,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الضيف",
+      "spoken": "الضَّيْفُ",
+      "fish_v286": "هُوَ الضَّيْفُ",
+      "fish": "أَعْنِي الضَّيْفَ",
+      "transcript": "أعني الضيفة",
+      "pass": true,
+      "overlap": 0.9,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "قطعت",
+      "spoken": "قُطعت",
+      "fish_v286": "قَدْ قُطِعَتْ",
+      "fish": "أَعْنِي قَدْ قُطِعَتْ",
+      "transcript": "أعني قد أطيعت",
+      "pass": true,
+      "overlap": 0.818,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "علقت",
+      "spoken": "عُلّقت",
+      "fish_v286": "عُلّقت",
+      "fish": "أَعْنِي قَدْ عُلِّقَتْ",
+      "transcript": "يعني قد حلقت",
+      "pass": true,
+      "overlap": 0.8,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "يكثر",
+      "spoken": "يُكْثِرَ",
+      "fish_v286": "أَنْ يُكْثِرَ",
+      "fish": "أَعْنِي أَنْ يُكْثِرَ",
+      "transcript": "أعني أن يكثر",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "مسجدا",
+      "spoken": "مسجداً",
+      "fish_v286": "مسجداً",
+      "fish": "أَعْنِي مَسْجِدًا",
+      "transcript": "أعني مسجداً",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "يصدق",
+      "spoken": "يصدُق",
+      "fish_v286": "أَنْ يَصْدُقَ",
+      "fish": "أَعْنِي أَنْ يَصْدُقَ",
+      "transcript": "أعني أن يصدق",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "بدعة",
+      "spoken": "بِدْعَةٌ",
+      "fish_v286": "هِيَ بِدْعَةٌ",
+      "fish": "إِنَّهَا بِدْعَةٌ",
+      "transcript": "إنها بدعتاً",
+      "pass": true,
+      "overlap": 0.778,
+      "count": 3,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "أنبياء",
+      "spoken": "أَنْبِيَاءَ",
+      "fish_v286": "أَنْبِيَاءَ",
+      "fish": "أَعْنِي الْأَنْبِيَاءَ",
+      "transcript": "أعني الأنبياء",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "موقوف",
+      "spoken": "مَوْقُوفٌ",
+      "fish_v286": "هُوَ مَوْقُوفٌ",
+      "fish": "إِنَّهُ مَوْقُوفٌ",
+      "transcript": "إنه موقوف",
+      "pass": true,
+      "overlap": 1,
+      "count": 2,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "صلاة",
+      "spoken": "صَلَاةٌ",
+      "fish_v286": "صَلَاةٌ",
+      "fish": "أَعْنِي صَلَاةً",
+      "transcript": "أعني صناتن",
+      "pass": true,
+      "overlap": 0.667,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "نافق",
+      "spoken": "نَافَقَ",
+      "fish_v286": "قَدْ نَافَقَ",
+      "fish": "أَعْنِي قَدْ نَافَقَ",
+      "transcript": "أعني قد نافقا",
+      "pass": true,
+      "overlap": 0.9090909090909091,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "صنما",
+      "spoken": "صَنَمًا",
+      "fish_v286": "اتَّخَذَ صَنَمًا",
+      "fish": "أَعْنِي صَنَمًا",
+      "transcript": "أعني صنم",
+      "pass": true,
+      "overlap": 0.875,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "يسجد له",
+      "spoken": "يَسْجُدَ لَهُ",
+      "fish_v286": "يَسْجُدَ لَهُ",
+      "fish": "أَنْ يَسْجُدَ لَهُ",
+      "transcript": "أن يسجد لحو",
+      "pass": true,
+      "overlap": 0.778,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "كثرة المال",
+      "spoken": "كَثْرَةُ الْمَالِ",
+      "fish_v286": "كَثْرَةُ الْمَالِ",
+      "fish": "أَعْنِي كَثْرَةَ الْمَالِ",
+      "transcript": "يعني كثرة المال",
+      "pass": true,
+      "overlap": 0.9230769230769231,
+      "count": 2,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الصلاة فقط",
+      "spoken": "الصَّلَاةُ فَقَطْ",
+      "fish_v286": "الصَّلَاةُ  فَقَطْ",
+      "fish": "أَعْنِي الصَّلَاةَ فَقَطْ",
+      "transcript": "أعني السلاكة فقط",
+      "pass": true,
+      "overlap": 0.857,
+      "count": 4,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "النفس",
+      "spoken": "النَّفْسِ",
+      "fish_v286": "هِيَ النَّفْسُ",
+      "fish": "إِنَّهَا هِيَ النَّفْسُ",
+      "transcript": "إنها هي النفسه",
+      "pass": true,
+      "overlap": 0.9166666666666666,
+      "count": 2,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "جابر",
+      "spoken": "جَابِرٌ",
+      "fish_v286": "جَابِرٌ",
+      "fish": "أَعْنِي جَابِرًا",
+      "transcript": "أعني جابرا",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "يتيما",
+      "spoken": "يتيماً",
+      "fish_v286": "يتيماً",
+      "fish": "أَعْنِي يَتِيمًا",
+      "transcript": "أعني يا تيمن",
+      "pass": true,
+      "overlap": 0.9,
+      "count": 1,
+      "books": [
+        "tawheed"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "النسب",
+      "spoken": "النَّسَبِ",
+      "fish_v286": "النَّسَبِ",
+      "fish": "أَعْنِي النَّسَبَ",
+      "transcript": "اعني النسب",
+      "pass": true,
+      "overlap": 0.8888888888888888,
+      "count": 3,
+      "books": [
+        "tawheed",
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "وأقيموا الصلاة",
+      "spoken": "وَأَقِيمُوا الصَّلَاةَ",
+      "fish_v286": "وَأَقِيمُوا الصَّلَاةَ",
+      "fish": "وَأَقِيمُوا  الصَّلَاةَ",
+      "transcript": "وأقيم الصلاة",
+      "pass": true,
+      "overlap": 0.846,
+      "count": 2,
+      "books": [
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "فقط بالشر",
+      "spoken": "فَقَطْ بِالشَّرِّ",
+      "fish_v286": "فَقَطْ  بِالشَّرِّ",
+      "fish": "أَعْنِي فَقَطْ بِالشَّرِّ",
+      "transcript": "فقط بالشري",
+      "pass": true,
+      "overlap": 0.75,
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "القصد والتوجه",
+      "spoken": "الْقَصْدُ، وَالتَّوَجُّهُ.",
+      "fish_v286": "الْقَصْدُ وَالتَّوَجُّهُ",
+      "fish": "أَعْنِي الْقَصْدَ وَالتَّوَجُّهَ",
+      "transcript": "اعنى القصد والتوجهة",
+      "pass": true,
+      "overlap": 0.824,
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الزكاة",
+      "spoken": "الزَّكَاةِ",
+      "fish": "هِيَ الزَّكَاةُ الْمَفْرُوضَةُ",
+      "transcript": "هي الزكات المفوضة",
+      "pass": true,
+      "overlap": 0.875,
+      "round": "r3"
+    },
+    {
+      "bare": "زيارته",
+      "spoken": "زِيَارَتَهُ",
+      "fish_v286": "زِيَارَتَهُ",
+      "fish": "أَعْنِي زِيَارَتَهُ",
+      "transcript": "أعني زيارة عو",
+      "pass": true,
+      "overlap": 0.727,
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "فريضة",
+      "spoken": "فَرِيضَةٌ",
+      "fish_v286": "فَرِيضَةٌ",
+      "fish": "إِنَّهَا فَرِيضَةٌ",
+      "transcript": "إنها فريضة",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "usool"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "رفع عن أمتي الخطأ والنسيان وما استكرهوا عليه يدل على",
+      "spoken": "\"رُفع عَنْ أُمَّتِي الْخَطَأَ وَالنِّسْيَانَ وَمَا استُكرهوا عَلَيْهِ\" يَدُلُّ عَلَى:",
+      "fish_v286": "رُفع عَنْ أُمَّتِي الْخَطَأَ وَالنِّسْيَانَ وَمَا استُكرهوا عَلَيْهِ يَدُلُّ عَلَى",
+      "fish": "رُفِعَ عَنْ أُمَّتِي الْخَطَأُ وَالنِّسْيَانُ وَمَا اسْتُكْرِهُوا عَلَيْهِ يَدُلُّ عَلَى",
+      "transcript": "رفع أمتي الحطة والنسيان وما استكره عليه يدل على",
+      "pass": true,
+      "overlap": 0.86,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "مسلم",
+      "spoken": "مُسْلِمٌ",
+      "fish_v286": "هُوَ مُسْلِمٌ",
+      "fish": "إِنَّهُ مُسْلِمٌ",
+      "transcript": "إنه مسلم",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "استقم",
+      "spoken": "اسْتَقِمْ",
+      "fish_v286": "أَعْنِي اسْتَقِمْ",
+      "fish": "قُلْ اسْتَقِمْ",
+      "transcript": "قل استقم",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "تصدق",
+      "spoken": "تَصَدَّقْ",
+      "fish_v286": "تَصَدَّقْ",
+      "fish": "أَعْنِي تَصَدَّقْ",
+      "transcript": "أعني تصدق",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "تدخل الجنة",
+      "spoken": "تُدْخِلُ الْجَنَّةَ",
+      "fish": "تُدْخِلُ الْعَبْدَ الْجَنَّةَ",
+      "transcript": "تدخلوا العبد الجنة",
+      "pass": true,
+      "overlap": 0.875,
+      "round": "r3"
+    },
+    {
+      "bare": "تضيعوها",
+      "spoken": "تُضَيِّعُوهَا",
+      "fish_v286": "تُضَيِّعُوهَا",
+      "fish": "أَنْ لَا تُضَيِّعُوهَا",
+      "transcript": "أن لا تويلعوها",
+      "pass": true,
+      "overlap": 0.833,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "القاضي",
+      "spoken": "الْقَاضِي",
+      "fish_v286": "الْقَاضِي",
+      "fish": "أَعْنِي الْقَاضِيَ",
+      "transcript": "أعني أنقافي",
+      "pass": true,
+      "overlap": 0.7,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "الغد",
+      "spoken": "الْغَدَ",
+      "fish_v286": "الْغَدَ",
+      "fish": "أَعْنِي يَوْمَ الْغَدِ",
+      "transcript": "أعني يوم لغت",
+      "pass": true,
+      "overlap": 0.818,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r2"
+    },
+    {
+      "bare": "يصلي ويصوم",
+      "spoken": "يُصَلِّي وَيَصُومُ",
+      "fish_v286": "يُصَلِّي وَيَصُومُ",
+      "fish": "أَنْ يُصَلِّيَ وَيَصُومَ",
+      "transcript": "أن يسلع و يصوم",
+      "pass": true,
+      "overlap": 0.818,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "القلب",
+      "spoken": "الْقَلْبِ",
+      "fish_v286": "الْقَلْبِ",
+      "fish": "أَعْنِي الْقَلْبَ",
+      "transcript": "أعني القلب",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "مكروهة",
+      "spoken": "مَكْرُوهَةٌ",
+      "fish_v286": "مَكْرُوهَةٌ",
+      "fish": "إِنَّهَا مَكْرُوهَةٌ",
+      "transcript": "إنها مكروهة",
+      "pass": true,
+      "overlap": 1,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "البنت",
+      "spoken": "الْبِنْتُ",
+      "fish_v286": "الْبِنْتُ",
+      "fish": "أَعْنِي الْبِنْتَ",
+      "transcript": "عان البنت",
+      "pass": true,
+      "overlap": 0.778,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "هدية",
+      "spoken": "هَدِيَّةٌ",
+      "fish_v286": "هَدِيَّةٌ",
+      "fish": "هِيَ هَدِيَّةٌ",
+      "transcript": "هي هديت",
+      "pass": true,
+      "overlap": 0.8333333333333334,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    },
+    {
+      "bare": "صيامه",
+      "spoken": "صِيَامُهُ",
+      "fish_v286": "صِيَامُهُ",
+      "fish": "أَعْنِي صِيَامَهُ",
+      "transcript": "أعني سيامه",
+      "pass": true,
+      "overlap": 0.8888888888888888,
+      "count": 1,
+      "books": [
+        "nawawi"
+      ],
+      "round": "r1"
+    }
+  ]
+}
