@@ -6,45 +6,59 @@
         http://www.w3.org/TR/2007/CR-pronunciation-lexicon-20071212/pls.xsd"
       alphabet="ipa"
       xml:lang="ar-SA">
-  <!-- Force HamedNeural to say Allāh correctly (geminated lām + long ā). -->
+  <!-- Force HamedNeural to say Allāh correctly (geminated lām + long ā).
+       Include bare + NFC shadda forms so either orthography matches. -->
   <lexeme>
     <grapheme>الله</grapheme>
+    <grapheme>اللَّه</grapheme>
+    <grapheme>اللَّهُ</grapheme>
+    <grapheme>اللَّهَ</grapheme>
+    <grapheme>اللَّهِ</grapheme>
     <phoneme>ʔalˈlaːh</phoneme>
   </lexeme>
   <lexeme>
     <grapheme>اللهم</grapheme>
+    <grapheme>اللَّهُمَّ</grapheme>
     <phoneme>ʔalˈlaːhum.ma</phoneme>
   </lexeme>
   <lexeme>
     <grapheme>لله</grapheme>
+    <grapheme>لِلَّهِ</grapheme>
     <phoneme>lilˈlaːh</phoneme>
   </lexeme>
   <lexeme>
     <grapheme>ولله</grapheme>
+    <grapheme>وَلِلَّهِ</grapheme>
     <phoneme>wa.lilˈlaːh</phoneme>
   </lexeme>
   <lexeme>
     <grapheme>فلله</grapheme>
+    <grapheme>فَلِلَّهِ</grapheme>
     <phoneme>fa.lilˈlaːh</phoneme>
   </lexeme>
   <lexeme>
     <grapheme>بالله</grapheme>
+    <grapheme>بِاللَّهِ</grapheme>
     <phoneme>bilˈlaːh</phoneme>
   </lexeme>
   <lexeme>
     <grapheme>والله</grapheme>
+    <grapheme>وَاللَّهِ</grapheme>
     <phoneme>walˈlaːh</phoneme>
   </lexeme>
   <lexeme>
     <grapheme>فالله</grapheme>
+    <grapheme>فَاللَّهِ</grapheme>
     <phoneme>falˈlaːh</phoneme>
   </lexeme>
   <lexeme>
     <grapheme>تالله</grapheme>
+    <grapheme>تَاللَّهِ</grapheme>
     <phoneme>talˈlaːh</phoneme>
   </lexeme>
   <lexeme>
     <grapheme>كالله</grapheme>
+    <grapheme>كَاللَّهِ</grapheme>
     <phoneme>kalˈlaːh</phoneme>
   </lexeme>
 </lexicon>

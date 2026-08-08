@@ -1,6 +1,19 @@
 /** Azure Cognitive Services Speech — Neural TTS (Free F0: 0.5M chars/month). */
 
 import { applyShortSpeechCarriers } from './short-speech-carriers.js';
+import {
+  fixAllahIrabInText,
+  ALLAH_NOM,
+  ALLAHUMMA as IRAB_ALLAHUMMA,
+  LILLAH as IRAB_LILLAH,
+  BILLAH as IRAB_BILLAH,
+  WALLAH as IRAB_WALLAH,
+  FALLAH as IRAB_FALLAH,
+  TALLAH as IRAB_TALLAH,
+  KALLAH as IRAB_KALLAH,
+  WALILLAH as IRAB_WALILLAH,
+  FALILLAH as IRAB_FALILLAH,
+} from './allah-irab.js';
 
 /**
  * HamedNeural: Microsoft’s Arabic pronunciation/diacritic improvements
@@ -16,6 +29,10 @@ const OUTPUT_FORMAT = 'audio-48khz-192kbitrate-mono-mp3';
 /** Soft fallback if region rejects 48k/192. */
 const OUTPUT_FORMAT_FALLBACK = 'audio-24khz-160kbitrate-mono-mp3';
 
+/** Public base for Azure to fetch our PLS lexicon (must be absolute HTTPS). */
+const DEFAULT_PUBLIC_BASE = 'https://alhuda.ryodan71.workers.dev';
+const ALLAH_LEXICON_PATH = '/lexicons/ar-sa-allah.xml';
+
 function escapeXml(text) {
   return String(text || '')
     .replace(/&/g, '&amp;')
@@ -25,81 +42,64 @@ function escapeXml(text) {
     .replace(/'/g, '&apos;');
 }
 
-/**
- * Allah-family for Azure: BARE Arabic orthography only.
- * Heavy tashkeel (اللَّهُ / لِلّٰه) + per-token SSML breaks made Hamed say «اللاه»
- * and chop the sentence. Keep natural flow; never fake «اللاه» spellings.
- * Sync with app.js normalizeAllahForTts.
- */
-const ALLAH = 'الله';
-const ALLAHUMMA = 'اللهم';
-const LILLAH = 'لله';
-const BILLAH = 'بالله';
-const WALLAH = 'والله';
-const FALLAH = 'فالله';
-const TALLAH = 'تالله';
-const KALLAH = 'كالله';
-const WALILLAH = 'ولله'; // ≠ والله
-const FALILLAH = 'فلله';
+function stripHarakatLocal(s) {
+  return String(s || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '');
+}
 
 /**
- * Spoken SSML body — plain Hamed text only.
- * Do NOT inject Quran <audio> clips: that made answers sound like a second voice
- * whenever الله/لله/بالله appeared. Hamed still misreads الله; same-voice is preferred.
+ * Allah-family for Azure Hamed.
+ * NEVER send bare الله without shadda — Hamed then says «اللاه» / mangled short forms.
+ * Use NFC shadda-THEN-vowel forms from allah-irab (same as Fish-era fix).
+ * Force IPA via <phoneme> + hosted PLS so bank-wide الله/بالله/والله/لله/تالله stay correct.
  */
-function textToSsmlBody(text) {
+const ALLAH = ALLAH_NOM;
+const ALLAHUMMA = IRAB_ALLAHUMMA;
+const LILLAH = IRAB_LILLAH;
+const BILLAH = IRAB_BILLAH;
+const WALLAH = IRAB_WALLAH;
+const FALLAH = IRAB_FALLAH;
+const TALLAH = IRAB_TALLAH;
+const KALLAH = IRAB_KALLAH;
+const WALILLAH = IRAB_WALILLAH;
+const FALILLAH = IRAB_FALILLAH;
+
+/** Bare grapheme → IPA (Microsoft ar-SA phoneme set / PLS). */
+const ALLAH_IPA_BY_BARE = {
+  اللهم: 'ʔalˈlaːhum.ma',
+  بالله: 'bilˈlaːh',
+  والله: 'walˈlaːh',
+  فالله: 'falˈlaːh',
+  تالله: 'talˈlaːh',
+  كالله: 'kalˈlaːh',
+  ولله: 'wa.lilˈlaːh',
+  فلله: 'fa.lilˈlaːh',
+  لله: 'lilˈlaːh',
+  الله: 'ʔalˈlaːh',
+};
+
+/**
+ * Spoken SSML body — wrap الله-family tokens in <phoneme> (same Hamed voice).
+ * Do NOT inject Quran <audio> clips (second-voice problem).
+ */
+function textToSsmlBody(text, { usePhoneme = true } = {}) {
   const clean = String(text || '')
     .replace(/[.؟!…,:：;؛،()\[\]{}«»"'“”‘’*_#<>=+~^`\/\\|–—•·-]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  return escapeXml(clean);
+  if (!usePhoneme) return escapeXml(clean);
+
+  return clean.replace(/[\u0621-\u0671\u064B-\u065F\u0670\uFDF2]+/g, (tok) => {
+    const bare = stripHarakatLocal(tok);
+    const ph = ALLAH_IPA_BY_BARE[bare];
+    if (!ph) return escapeXml(tok);
+    return `<phoneme alphabet="ipa" ph="${escapeXml(ph)}">${escapeXml(tok)}</phoneme>`;
+  });
 }
 
-/**
- * Collapse every الله-family token to bare orthography (no harakat / dagger / ligature).
- * Must stay in sync with app.js normalizeAllahForTts.
- */
-function normalizeAllahForTts(text) {
-  const H = '[\u064B-\u065F\u0670]*';
+/** Scrub only fake «اللاه» spellings → NFC iʿrāb forms (whole token). */
+function scrubFakeAllahSpellings(text) {
   let s = String(text || '');
-
-  // ligature → bare
   s = s.replace(/\uFDF2/g, ALLAH);
-
-  // اللهم first
-  s = s.replace(new RegExp(`[اأإآٱ]${H}ل${H}ل${H}ه${H}م${H}`, 'g'), ALLAHUMMA);
-
-  // ب|و|ف|ك|ت + الله — alef REQUIRED (otherwise ولله becomes والله).
-  s = s.replace(new RegExp(`([بوفكت])${H}[اأإآٱ]${H}ل${H}ل${H}ه(${H})`, 'g'), (_, p) => {
-    if (p === 'ب') return BILLAH;
-    if (p === 'و') return WALLAH;
-    if (p === 'ف') return FALLAH;
-    if (p === 'ت') return TALLAH;
-    return KALLAH;
-  });
-
-  // ولله / فلله (no alef)
-  s = s.replace(
-    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])([وف])${H}ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre, p) => `${pre}${p === 'و' ? WALILLAH : FALILLAH}`
-  );
-
-  // لله
-  s = s.replace(
-    new RegExp(`(^|[^\\u0621-\\u064A\\u0671])ل${H}ل${H}ه(${H})(?![\\u0621-\\u064A])`, 'g'),
-    (_, pre) => `${pre}${LILLAH}`
-  );
-
-  // bare الله — only at token start (do not re-write inside بالله / والله)
-  s = s.replace(
-    new RegExp(
-      `(^|[^\\u0621-\\u064A\\u0671\\u064B-\\u065F\\u0670])[اأإآٱ]${H}ل${H}ل${H}ه(${H})(?!(?:[\\u064B-\\u065F\\u0670]*[\\u0621-\\u064A]))`,
-      'g'
-    ),
-    (_, pre) => `${pre}${ALLAH}`
-  );
-
-  // Scrub legacy whole-token hacks only — never touch للاهتداء.
   const scrubHack = (hack, repl) => {
     s = s.replace(
       new RegExp(`(^|[^\\u0621-\\u064A\\u0671])${hack}(?=[^\\u0621-\\u064A\\u0671]|$)`, 'g'),
@@ -113,22 +113,14 @@ function normalizeAllahForTts(text) {
   scrubHack('فاللاه', FALLAH);
   scrubHack('تاللاه', TALLAH);
   scrubHack('كاللاه', KALLAH);
-
   return s;
 }
 
-/** Extra pronunciation anchors (bare → spoken). Allah family stays bare. */
+/**
+ * Extra pronunciation anchors (bare → spoken).
+ * Allah family is handled by fixAllahIrabInText — do NOT strip them to bare here.
+ */
 const AZURE_PRON_LEXICON = [
-  ['الله', ALLAH],
-  ['اللهم', ALLAHUMMA],
-  ['لله', LILLAH],
-  ['ولله', WALILLAH],
-  ['فلله', FALILLAH],
-  ['بالله', BILLAH],
-  ['والله', WALLAH],
-  ['فالله', FALLAH],
-  ['تالله', TALLAH],
-  ['كالله', KALLAH],
   ['اللاه', ALLAH],
   ['للاه', LILLAH],
   ['باللاه', BILLAH],
@@ -186,13 +178,11 @@ const AZURE_PRON_LEXICON = [
   ['بدعة', 'بِدْعَةٌ'],
 ];
 
-function stripHarakatLocal(s) {
-  return String(s || '').replace(/[\u064B-\u065F\u0670\u0640]/g, '');
-}
-
 function applyAzurePronLexicon(text) {
   return String(text || '').replace(/[\u0621-\u0671\u064B-\u065F\u0670\uFDF2]+/g, (tok) => {
     const bare = stripHarakatLocal(tok);
+    // Never let a generic lexicon entry collapse الله-family NFC forms.
+    if (ALLAH_IPA_BY_BARE[bare]) return tok;
     for (const [from, to] of AZURE_PRON_LEXICON) {
       if (bare === from || tok === from) return to;
     }
@@ -235,9 +225,9 @@ function normalizeForAzure(text) {
     .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, ' ')
     .replace(/ﷺ/g, ` صَلَّى ${ALLAH} عَلَيْهِ وَسَلَّمَ `)
     .replace(/ﷻ/g, ' جَلَّ جَلَالُهُ ')
-    .replace(/رضي الله عنهما/g, ` رَضِيَ ${ALLAH} عَنْهُمَا `)
-    .replace(/رضي الله عنها/g, ` رَضِيَ ${ALLAH} عَنْهَا `)
-    .replace(/رضي الله عنه/g, ` رَضِيَ ${ALLAH} عَنْهُ `)
+    .replace(/رضي الله عنهما/g, ` رَضِيَ الله عَنْهُمَا `)
+    .replace(/رضي الله عنها/g, ` رَضِيَ الله عَنْهَا `)
+    .replace(/رضي الله عنه/g, ` رَضِيَ الله عَنْهُ `)
     .replace(/(\d+)\s*هـ?/g, (_, n) => ` ${numberToArabicWords(n)} هِجْرِيَّةً `)
     .replace(/\bهـ\b/g, ' هِجْرِيَّةً ')
     .replace(/\b(\d{1,4})\b/g, (_, n) => ` ${numberToArabicWords(n)} `)
@@ -245,7 +235,9 @@ function normalizeForAzure(text) {
     .replace(/\s+/g, ' ')
     .trim();
   s = applyAzurePronLexicon(s);
-  return normalizeAllahForTts(s);
+  // Bank-wide case-aware الله + NFC شدة ثم حركة (never bare strip → «اللاه»).
+  s = fixAllahIrabInText(s);
+  return scrubFakeAllahSpellings(s);
 }
 
 export { normalizeForAzure };
@@ -274,16 +266,20 @@ export function resolveAzureSsmlRate(requested) {
   return `${n > 0 ? '+' : ''}${n}%`;
 }
 
-function buildSsml(text, voice, rate = AZURE_SSML_RATE_QUESTION) {
+function buildSsml(text, voice, rate = AZURE_SSML_RATE_QUESTION, { lexiconUri, usePhoneme = true } = {}) {
   const lang = 'ar-SA';
   // Educational MSA: slight speedup + mild volume (SSML only — no client EQ).
-  // Do not touch normalizeForAzure / Allah NFC here — sibling owns iʿrāb.
+  // Rate owned by speed path (v292); Allah/NFC/iʿrāb owned here.
   const rateResolved = resolveAzureSsmlRate(rate);
-  const body = textToSsmlBody(normalizeForAzure(text));
+  const body = textToSsmlBody(normalizeForAzure(text), { usePhoneme });
+  const lexiconTag = lexiconUri
+    ? `<lexicon uri="${escapeXml(lexiconUri)}"/>`
+    : '';
   return (
     `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${lang}">` +
     `<voice name="${escapeXml(voice)}">` +
     `<lang xml:lang="${lang}">` +
+    lexiconTag +
     `<prosody rate="${rateResolved}" volume="${AZURE_SSML_VOLUME}">${body}</prosody>` +
     `</lang>` +
     `</voice></speak>`
@@ -298,6 +294,8 @@ export async function synthesizeAzureArabicSpeech(text, voiceShortName, env, opt
   }
   const voice = resolveAzureArabicVoice(voiceShortName, env);
   const rate = resolveAzureSsmlRate(opts?.rate);
+  const base = String(env?.PUBLIC_BASE_URL || DEFAULT_PUBLIC_BASE).replace(/\/$/, '');
+  const lexiconUri = `${base}${ALLAH_LEXICON_PATH}`;
   const endpoint = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
 
   async function post(ssml, format = OUTPUT_FORMAT) {
@@ -313,9 +311,15 @@ export async function synthesizeAzureArabicSpeech(text, voiceShortName, env, opt
     });
   }
 
-  let res = await post(buildSsml(text, voice, rate));
+  // 1) Phoneme + PLS lexicon (bank-wide الله).
+  let res = await post(buildSsml(text, voice, rate, { lexiconUri, usePhoneme: true }));
   if (!res.ok && res.status === 400) {
-    res = await post(buildSsml(text, voice, rate), OUTPUT_FORMAT_FALLBACK);
+    // 2) Lexicon only (some Neural builds reject IPA <phoneme> for ar-SA).
+    res = await post(buildSsml(text, voice, rate, { lexiconUri, usePhoneme: false }));
+  }
+  if (!res.ok && res.status === 400) {
+    // 3) NFC iʿrāb text only + softer format.
+    res = await post(buildSsml(text, voice, rate, { usePhoneme: false }), OUTPUT_FORMAT_FALLBACK);
   }
   if (!res.ok) {
     const detail = await res.text().catch(() => '');
