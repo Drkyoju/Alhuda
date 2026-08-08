@@ -1689,12 +1689,12 @@ function toggleSound() {
   if (soundOn) playSound('correct');
 }
 
-/* ── Voice reading (Azure Hamed MSA only; Quran stays Hudhaify) ── */
-/** حامد — locked lesson voice (Saudi MSA Neural). No Fish/EL/other voices. */
+/* ── Voice reading (Azure Hamed + Fish-prep الله; Quran stays Hudhaify) ── */
+/** حامد — locked lesson voice (Saudi MSA Neural). Fish Audio engine OFF. */
 const TTS_AZURE_HAMED = 'ar-SA-HamedNeural';
 let TTS_VOICE = TTS_AZURE_HAMED;
-/** Bump when SSML/voice/prep changes so IndexedDB never replays old (slow −8%) clips. */
-const TTS_CACHE_VER = 'v75'; // v75: Hamed Allah NFC+IPA (kill bare-الله «اللاه» clips)
+/** Bump: Fish-prep NFC الله on Hamed — kill bare/IPA/dagger wrong clips. */
+const TTS_CACHE_VER = 'v78';
 /**
  * Lesson Azure only — light gain, no Fish EQ chain.
  * Never applied to Quran Hudhaify.
@@ -1984,8 +1984,8 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
         const timer = setTimeout(() => ctrl.abort(), 20000);
         let res;
         try {
-          // Always Hamed — Worker also locks; client never sends Fish/EL ids.
-          // rate: Azure SSML only (Q +8% / answers +12%). Text/Allah path untouched.
+          // Always Hamed — Worker also locks; Fish prep runs server-side in azure-tts.
+          // rate: Azure SSML only (Q +8% / answers +12%).
           const ttsBody = {
             text,
             voice: TTS_AZURE_HAMED,
@@ -2407,7 +2407,7 @@ function applyTtsStatusConfig(data) {
   } else if (data.provider === 'azure' && !data.bakedTtsOnly) {
     window.__alhudaSkipBakedTts = true;
   }
-  // Lesson voice locked to Hamed — ignore any other Neural id from status/env.
+  // Lesson voice locked to Hamed — ignore Fish/EL ids from status/env.
   TTS_VOICE = TTS_AZURE_HAMED;
 }
 
@@ -4425,7 +4425,7 @@ function disconnectTtsAudioGraph() {
 }
 
 /**
- * Light lesson loudness via Web Audio (ElevenLabs path).
+ * Light lesson loudness via Web Audio.
  * Gain only — no Fish HP/presence EQ. Quran Hudhaify must NOT call this.
  */
 function routeTtsThroughMildBoost(audioEl) {
@@ -4448,7 +4448,6 @@ function routeTtsThroughMildBoost(audioEl) {
       gain.connect(audioCtx.destination);
       ttsAudioGraph = { source, nodes };
     } catch (chainErr) {
-      // MediaElementSource hijacks element output — must still reach speakers.
       try { source.connect(audioCtx.destination); } catch { /* ignore */ }
       ttsAudioGraph = { source, nodes: [] };
       console.warn('tts gain fallback:', chainErr);

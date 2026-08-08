@@ -10,8 +10,8 @@ import {
   synthesizeAzureArabicSpeech,
 } from './azure-tts.js';
 
-// Fish / ElevenLabs / Google modules remain on disk for bake/rollback scripts only.
-// Lesson /api/tts path is Azure Hamed exclusively — do not re-import them here.
+// Lesson /api/tts = Azure Hamed voice + Fish-era prepareFishTtsText (NFC الله).
+// Quran remains Hudhaify. Do not synthesize with Fish Audio engine.
 
 /** Lightweight in-isolate error counters (reset when isolate recycles). */
 const apiErrorCounters = {
@@ -70,7 +70,7 @@ async function handleTtsStatus(request, env) {
     ok: true,
     bakedTtsOnly: false,
     skipBakedTts: true,
-    // Dead providers — never active on lesson path (secrets may still exist in CF).
+    // Fish Audio engine off — Fish prep text is applied inside azure-tts normalizeForAzure.
     fishConfigured: false,
     fishModel: null,
     fishVoiceConfigured: false,
@@ -84,6 +84,7 @@ async function handleTtsStatus(request, env) {
     voiceName: 'حامد',
     voiceId: DEFAULT_AZURE_ARABIC_VOICE,
     azureRegion: azure ? String(env?.AZURE_SPEECH_REGION || '').trim() || null : null,
+    allahPrep: 'fish-nfc-irab',
     errors: apiErrorCounters,
   }), { status: 200, headers: { ...cors, ...JSON_HEADERS } });
 }
@@ -274,7 +275,7 @@ async function handleTts(request, env) {
       headers: { ...cors, ...JSON_HEADERS },
     });
   }
-  // Azure Hamed — clearest MSA for educational/religious Arabic with tashkeel.
+  // Azure Hamed voice + Fish-era NFC/iʿrāb prepare (normalizeForAzure → prepareFishTtsText).
   const text = normalizeForAzure(textRaw);
   if (!text) {
     return new Response(JSON.stringify({ ok: false, error: 'Empty after punctuation strip' }), {
@@ -301,23 +302,22 @@ async function handleTts(request, env) {
 
   try {
     const voice = resolveAzureArabicVoice(body?.voice, env);
-    // Optional SSML rate (+8% Q / +12% answers). Text pipeline unchanged (Allah/carriers).
     const rate = resolveAzureSsmlRate(
       typeof body?.rate === 'string' ? body.rate : AZURE_SSML_RATE_QUESTION
     );
-    // Pass original textRaw — synthesizeAzureArabicSpeech normalizes again via SSML.
     const stream = await synthesizeAzureArabicSpeech(textRaw, voice, env, { rate });
     return new Response(stream, {
       status: 200,
       headers: {
         ...cors,
         'Content-Type': 'audio/mpeg',
-        'Cache-Control': 'public, max-age=604800',
+        'Cache-Control': 'private, no-store',
         'X-TTS-Provider': 'azure',
         'X-TTS-Voice': voice,
         'X-TTS-Quality': 'hq',
         'X-TTS-Rate': rate,
         'X-TTS-Chars': String(text.length),
+        'X-TTS-Allah': 'fish-prep+hamed',
       },
     });
   } catch (err) {
