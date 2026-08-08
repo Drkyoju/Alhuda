@@ -8,6 +8,7 @@ const LIVE = process.env.LIVE_API_BASE
   || (process.env.BASE_URL && /workers\.dev|alhuda/i.test(process.env.BASE_URL) ? process.env.BASE_URL : '')
   || 'https://alhuda.ryodan71.workers.dev';
 
+const HAKIM_VOICE_ID = 'aa9c8260269c411d9863ab1b1bfa3158';
 const runLive = !!LIVE && process.env.SKIP_LIVE_API !== '1';
 
 test.describe('Live Worker APIs', () => {
@@ -18,15 +19,18 @@ test.describe('Live Worker APIs', () => {
     expect(res.ok()).toBeTruthy();
     const json = await res.json();
     expect(json.ok).toBeTruthy();
-    expect(['azure', 'none']).toContain(json.provider);
+    expect(['fish', 'none']).toContain(json.provider);
     expect(json.quranReciter || 'hudhaify').toBe('hudhaify');
     expect(json.skipBakedTts).toBeTruthy();
-    expect(json.fishConfigured).toBeFalsy();
+    expect(json.azureConfigured).toBeFalsy();
     expect(json.elevenLabsConfigured).toBeFalsy();
-    if (json.provider === 'azure') {
-      expect(json.azureConfigured).toBeTruthy();
-      expect(String(json.voice || '')).toBe('ar-SA-HamedNeural');
+    if (json.provider === 'fish') {
+      expect(json.fishConfigured).toBeTruthy();
+      expect(json.fishVoiceConfigured).toBeTruthy();
+      expect(String(json.voice || '')).toBe(HAKIM_VOICE_ID);
+      expect(String(json.voiceId || '')).toBe(HAKIM_VOICE_ID);
       expect(json.voiceLocked).toBeTruthy();
+      expect(String(json.voiceName || '')).toMatch(/حكيم/);
     }
     if (json.errors) {
       expect(json.errors.tts).toBeTruthy();
@@ -40,8 +44,8 @@ test.describe('Live Worker APIs', () => {
     });
     if (!res.ok()) {
       const body = await res.text();
-      // Azure quota / missing key — don't block deploys hard; surface warning.
-      if (/402|429|quota|AZURE_SPEECH|not configured/i.test(body)) {
+      // Fish quota / missing key — don't block deploys hard; surface warning.
+      if (/402|429|quota|Fish Audio|not configured/i.test(body)) {
         test.info().annotations.push({ type: 'warning', description: body.slice(0, 240) });
         expect(true).toBeTruthy();
         return;
@@ -49,9 +53,9 @@ test.describe('Live Worker APIs', () => {
       expect(res.ok(), body.slice(0, 240)).toBeTruthy();
     }
     expect(res.headers()['content-type'] || '').toMatch(/audio\/mpeg/);
-    expect(res.headers()['x-tts-provider']).toBe('azure');
+    expect(res.headers()['x-tts-provider']).toBe('fish');
     const voiceHdr = res.headers()['x-tts-voice'] || '';
-    if (voiceHdr) expect(voiceHdr).toMatch(/HamedNeural|Neural/i);
+    if (voiceHdr) expect(voiceHdr).toBe(HAKIM_VOICE_ID);
     const audio = await res.body();
     expect(audio.length).toBeGreaterThan(1000);
   });

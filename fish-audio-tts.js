@@ -3,10 +3,11 @@
 import { fixAllahIrabInText } from './allah-irab.js';
 
 /**
- * Fallback empty — product voice MUST come from env FISH_VOICE_ID
- * (user's cloned voice: 03ea787e74ac4cf088e90bb7db0a43ed).
+ * Locked lesson voice: «راوٍ عربي حكيم» (sample set 19_fish_hakim_*).
+ * Env FISH_VOICE_ID may override; request body voice is ignored by the Worker.
  */
-export const DEFAULT_FISH_VOICE_ID = '';
+export const DEFAULT_FISH_VOICE_ID = 'aa9c8260269c411d9863ab1b1bfa3158';
+export const FISH_VOICE_NAME_AR = 'راوٍ عربي حكيم';
 /**
  * Best Arabic-quality model on paid Fish plans.
  * Docs: s2.1-pro is recommended for production (better than s2-pro).
@@ -45,14 +46,11 @@ export function isFishReferenceId(voiceId) {
   return /^[a-f0-9]{32}$/i.test(String(voiceId || '').trim());
 }
 
-export function resolveFishVoiceId(voiceId, env = process.env) {
+export function resolveFishVoiceId(_voiceId, env = process.env) {
+  // Lesson voice locked to حكيم — ignore Azure/legacy/client reference ids.
   const fromEnv = String(env?.FISH_VOICE_ID || DEFAULT_FISH_VOICE_ID).trim();
-  const fromArg = String(voiceId || '').trim();
-  // Never pass Azure/legacy labels (ar-SA-HamedNeural, fish-live, …) as reference_id —
-  // Fish returns 400 "Reference not found" and the whole lesson goes silent.
-  if (isFishReferenceId(fromArg)) return fromArg;
   if (isFishReferenceId(fromEnv)) return fromEnv;
-  return fromEnv || '';
+  return DEFAULT_FISH_VOICE_ID;
 }
 
 export function resolveFishModel(env = process.env) {

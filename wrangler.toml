@@ -5,10 +5,11 @@ main = "worker.js"
 
 [vars]
 BAKED_TTS_ONLY = "0"
-# Skip old baked narrator MP3s — always synthesize with live Azure Hamed.
+# Skip old baked narrator MP3s — always synthesize with live Fish «راوٍ عربي حكيم».
 SKIP_BAKED_TTS = "1"
-AZURE_SPEECH_VOICE = "ar-SA-HamedNeural"
-# Legacy bake-script vars only — lesson /api/tts ignores Fish/ElevenLabs.
+FISH_VOICE_ID = "aa9c8260269c411d9863ab1b1bfa3158"
+FISH_TTS_MODEL = "s2.1-pro"
+# Quran stays Hudhaify. Azure Hamed is not the active lesson voice.
 
 [assets]
 directory = "."

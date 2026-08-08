@@ -1,17 +1,16 @@
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' };
 
 import {
-  azureSpeechConfigured,
-  AZURE_SSML_RATE_QUESTION,
-  DEFAULT_AZURE_ARABIC_VOICE,
-  normalizeForAzure,
-  resolveAzureArabicVoice,
-  resolveAzureSsmlRate,
-  synthesizeAzureArabicSpeech,
-} from './azure-tts.js';
+  fishAudioConfigured,
+  resolveFishModel,
+  resolveFishVoiceId,
+  prepareFishTtsText,
+  synthesizeFishArabicSpeech,
+  DEFAULT_FISH_VOICE_ID,
+} from './fish-audio-tts.js';
 
-// Lesson /api/tts = Azure Hamed voice + Fish-era prepareFishTtsText (NFC الله).
-// Quran remains Hudhaify. Do not synthesize with Fish Audio engine.
+// Lesson /api/tts = Fish Audio «راوٍ عربي حكيم» + NFC/iʿrāb prepareFishTtsText.
+// Quran remains Hudhaify. Azure Hamed is not the lesson voice.
 
 /** Lightweight in-isolate error counters (reset when isolate recycles). */
 const apiErrorCounters = {
@@ -64,26 +63,25 @@ function verseKeyToGlobalAyahNumW(surah, ayah) {
 async function handleTtsStatus(request, env) {
   const cors = corsHeaders(request);
   if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
-  const azure = azureSpeechConfigured(env);
-  const voice = resolveAzureArabicVoice(null, env);
+  const fish = fishAudioConfigured(env);
+  const fishVoice = resolveFishVoiceId(null, env);
+  const fishModel = resolveFishModel(env);
   return new Response(JSON.stringify({
     ok: true,
     bakedTtsOnly: false,
     skipBakedTts: true,
-    // Fish Audio engine off — Fish prep text is applied inside azure-tts normalizeForAzure.
-    fishConfigured: false,
-    fishModel: null,
-    fishVoiceConfigured: false,
+    fishConfigured: fish,
+    fishModel: fish ? fishModel : null,
+    fishVoiceConfigured: !!(fish && fishVoice),
     elevenLabsConfigured: false,
     googleConfigured: false,
-    azureConfigured: azure,
-    provider: azure ? 'azure' : 'none',
+    azureConfigured: false,
+    provider: fish ? 'fish' : 'none',
     voiceLocked: true,
     quranReciter: 'hudhaify',
-    voice: azure ? voice : '(set AZURE_SPEECH_KEY)',
-    voiceName: 'حامد',
-    voiceId: DEFAULT_AZURE_ARABIC_VOICE,
-    azureRegion: azure ? String(env?.AZURE_SPEECH_REGION || '').trim() || null : null,
+    voice: fishVoice || '(set FISH_VOICE_ID)',
+    voiceName: 'راوٍ عربي حكيم',
+    voiceId: fishVoice || DEFAULT_FISH_VOICE_ID,
     allahPrep: 'fish-nfc-irab',
     errors: apiErrorCounters,
   }), { status: 200, headers: { ...cors, ...JSON_HEADERS } });
@@ -275,8 +273,8 @@ async function handleTts(request, env) {
       headers: { ...cors, ...JSON_HEADERS },
     });
   }
-  // Azure Hamed voice + Fish-era NFC/iʿrāb prepare (normalizeForAzure → prepareFishTtsText).
-  const text = normalizeForAzure(textRaw);
+  // Punctuation stripped server-side — Fish reads NFC/iʿrāb words only.
+  const text = prepareFishTtsText(textRaw);
   if (!text) {
     return new Response(JSON.stringify({ ok: false, error: 'Empty after punctuation strip' }), {
       status: 400,
@@ -290,34 +288,36 @@ async function handleTts(request, env) {
     });
   }
 
-  if (!azureSpeechConfigured(env)) {
-    return new Response(JSON.stringify({
-      ok: false,
-      error: 'Azure Speech not configured (set AZURE_SPEECH_KEY + AZURE_SPEECH_REGION)',
-    }), {
+  if (!fishAudioConfigured(env)) {
+    return new Response(JSON.stringify({ ok: false, error: 'Fish Audio not configured' }), {
       status: 503,
       headers: { ...cors, ...JSON_HEADERS },
     });
   }
 
   try {
-    const voice = resolveAzureArabicVoice(body?.voice, env);
-    const rate = resolveAzureSsmlRate(
-      typeof body?.rate === 'string' ? body.rate : AZURE_SSML_RATE_QUESTION
-    );
-    const stream = await synthesizeAzureArabicSpeech(textRaw, voice, env, { rate });
+    // Locked lesson voice — ignore Azure/legacy ids from the client.
+    const fishVoice = resolveFishVoiceId(null, env);
+    const reqSpeed = Number(body?.speed);
+    const fishOpts =
+      Number.isFinite(reqSpeed) && reqSpeed >= 0.5 && reqSpeed <= 2
+        ? { speed: reqSpeed }
+        : {};
+    const stream = await synthesizeFishArabicSpeech(textRaw, fishVoice, env, fishOpts);
     return new Response(stream, {
       status: 200,
       headers: {
         ...cors,
         'Content-Type': 'audio/mpeg',
         'Cache-Control': 'private, no-store',
-        'X-TTS-Provider': 'azure',
-        'X-TTS-Voice': voice,
+        'X-TTS-Provider': 'fish',
+        'X-TTS-Model': resolveFishModel(env),
+        'X-TTS-Voice': fishVoice,
+        'X-TTS-Voice-Name': 'raawi-arabi-hakim',
         'X-TTS-Quality': 'hq',
-        'X-TTS-Rate': rate,
         'X-TTS-Chars': String(text.length),
-        'X-TTS-Allah': 'fish-prep+hamed',
+        'X-TTS-Allah': 'fish-nfc-irab',
+        ...(fishOpts.speed != null ? { 'X-TTS-Speed': String(fishOpts.speed) } : {}),
       },
     });
   } catch (err) {
