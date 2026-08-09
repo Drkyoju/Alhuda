@@ -1,5 +1,9 @@
 name: Deploy to Cloudflare Workers
 
+# Kept active until CranL cutover checklist (README_CRANL.md) is 100% green.
+# Do not disable this workflow until the user explicitly confirms CF deletion.
+# Parallel path: .github/workflows/deploy-cranl.yml
+
 on:
   push:
     branches: [main]

@@ -4,7 +4,10 @@ Arabic RTL Islamic-education quiz PWA covering three classical texts
 (كتاب التوحيد, الأصول الثلاثة, الأربعون النووية) for
 [Alhuda wal Hikma](https://www.alhuda-alhikma.sa).
 
-**Live:** https://alhuda.ryodan71.workers.dev
+**Live (CranL):** https://alhuda-zi6bbd.cranl.net/  
+**Cloudflare (until cutover):** https://alhuda.ryodan71.workers.dev  
+
+Cutover checklist: [README_CRANL.md](./README_CRANL.md)
 
 ---
 

@@ -1,0 +1,100 @@
+# Deploy / redeploy Alhuda on CranL (Dockerfile → server.mjs).
+# Cloudflare workflow stays active until cutover checklist is 100% green.
+#
+# Required GitHub secrets (Settings → Secrets → Actions):
+#   CRANL_API_KEY  — from https://app.cranl.com/ → Settings → API Keys (cranl_sk_…)
+#   CRANL_APP_ID   — application UUID (cranl apps list / app detail page)
+#
+# Optional:
+#   CRANL_API_URL  — default https://app.cranl.com
+#   CRANL_LIVE_URL — default https://alhuda-zi6bbd.cranl.net (post-deploy smoke)
+
+name: Deploy to CranL
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run Playwright tests
+        run: npm run test:smoke && npm run test:a11y && npm run test:e2e
+        env:
+          CI: true
+
+  deploy:
+    needs: smoke
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require CranL secrets
+        id: gate
+        env:
+          CRANL_API_KEY: ${{ secrets.CRANL_API_KEY }}
+          CRANL_APP_ID: ${{ secrets.CRANL_APP_ID }}
+        run: |
+          if [ -z "$CRANL_API_KEY" ] || [ -z "$CRANL_APP_ID" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Missing CRANL_API_KEY or CRANL_APP_ID — skipping CranL API deploy. Auto-deploy from CranL↔GitHub may still run; or set secrets and re-run."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger CranL deploy
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          CRANL_API_KEY: ${{ secrets.CRANL_API_KEY }}
+          CRANL_APP_ID: ${{ secrets.CRANL_APP_ID }}
+          CRANL_API_URL: ${{ secrets.CRANL_API_URL }}
+        run: |
+          API_URL="${CRANL_API_URL:-https://app.cranl.com}"
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${CRANL_API_KEY}" \
+            -H "Content-Type: application/json" \
+            "${API_URL%/}/api/applications/${CRANL_APP_ID}/deploy"
+          echo
+          echo "Deploy triggered for app ${CRANL_APP_ID}"
+
+      - name: Wait for CranL rollout
+        if: steps.gate.outputs.skip != 'true'
+        run: sleep 45
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.skip != 'true'
+        with:
+          node-version: "20"
+
+      - name: Install deps for live smoke
+        if: steps.gate.outputs.skip != 'true'
+        run: npm ci
+
+      - name: Install Playwright browsers
+        if: steps.gate.outputs.skip != 'true'
+        run: npx playwright install chromium --with-deps
+
+      - name: Live API smoke (CranL)
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          CI: true
+          CRANL_LIVE_URL: ${{ secrets.CRANL_LIVE_URL }}
+        run: |
+          export LIVE_API_BASE="${CRANL_LIVE_URL:-https://alhuda-zi6bbd.cranl.net}"
+          npm run test:api

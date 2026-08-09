@@ -1,5 +1,6 @@
-# CranL staging image — static SPA + Node API (parallel to Cloudflare Workers).
-# Production remains: GitHub Actions → Wrangler → https://alhuda.ryodan71.workers.dev
+# CranL image — static SPA + Node API (production target after CF cutover).
+# Staging URL: https://alhuda-zi6bbd.cranl.net
+# Cloudflare Workers remains parallel until cutover checklist is green.
 # Docs: https://docs.cranl.com/platform/applications.html#configuring-a-dockerfile
 
 FROM node:20-alpine

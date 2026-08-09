@@ -1,123 +1,114 @@
-# CranL staging (parallel) — Cloudflare live stays primary
+# CranL cutover — جاهزية الإنتاج (Cloudflare ما زال احتياطياً)
 
-<!-- Arabic first, then English. -->
+<!-- العربية أولاً -->
 
-## العربية
+## الحالة الآن
 
-هذا المسار **تجريبي موازٍ** على [CranL](https://docs.cranl.com/) لتجربة التطبيق بدون قطع الإنتاج على Cloudflare Workers.
-
-| البيئة | الرابط | الحالة |
+| البيئة | الرابط | الدور |
 |--------|--------|--------|
-| **الإنتاج (لا تلمسه)** | https://alhuda.ryodan71.workers.dev | GitHub Actions → Wrangler — **الافتراضي** |
-| **تجربة CranL** | `https://<app-name>-<id>.cranl.net` | بعد تسجيل الدخول وربط GitHub |
+| **CranL (المستهدف)** | https://alhuda-zi6bbd.cranl.net/ | جاهز للتحقق — TTS / قرآن / student-creds / Supabase |
+| **Cloudflare (حي حتى القطع)** | https://alhuda.ryodan71.workers.dev | لا تُحذف حتى اكتمال قائمة التحقق أدناه |
 
-`wrangler.toml` و`.github/workflows/deploy-cloudflare.yml` **لم يتغيّرا**. النشر الافتراضي يبقى Cloudflare.
-
-### ماذا أُعدّ؟
-
-| ملف | الدور |
-|-----|--------|
-| `Dockerfile` | بناء Node 20 + تشغيل `server.mjs` على المنفذ `3000` |
-| `server.mjs` | SPA ثابت + `/api/tts` و`/api/tts-status` و`/api/quran-audio` (+ warm / student-creds) |
-| `.dockerignore` | يستبعد `extracted/` و`.venv` والأسرار من صورة Docker |
-| هذا الملف | خطوات الربط والنشر |
-
-### ما الذي يُنقل من `worker.js`؟
-
-يجب أن يعمل على CranL (Node):
-
-- `POST /api/tts` — Fish Audio (سر `FISH_API_KEY`)
-- `GET /api/tts-status`
-- `GET /api/quran-audio` — هذيفي (كاش في الذاكرة بدل `caches.default`)
-- `GET /api/quran-warm`
-- `POST /api/student-creds` — سر `AUTH_NAME_PEPPER`
-- ملفات الواجهة الثابتة + `service-worker.js` + سقوط SPA إلى `index.html`
-
-اختلافات متوقعة عن Workers: لا يوجد كاش حافة Cloudflare للآيات؛ الكاش محلي في العملية.
-
-### خطواتك التالية (حساب CranL مطلوب)
-
-1. سجّل في https://app.cranl.com/
-2. من الشريط الجانبي: **GitHub** → **Connect GitHub** وامنح الوصول للمستودع
-3. **Projects** → مشروع جديد إن لزم
-4. **Applications** → **New Application**:
-   - المستودع + الفرع `main`
-   - **Build Type:** `Dockerfile` (مهم)
-   - **Port:** `3000`
-   - Region حسب تفضيلك
-5. **Environment** → أضف الأسرار (نفس قيم Cloudflare تقريباً):
-
-```
-FISH_API_KEY=...
-AUTH_NAME_PEPPER=...
-PORT=3000
-```
-
-6. بعد نجاح البناء افتح رابط `*.cranl.net` من صفحة التطبيق
-7. تحقق سريع: `/api/tts-status` يجب أن يظهر `"fishConfigured": true` و`"runtime": "cranl-node"`
-
-### CLI (اختياري)
-
-```bash
-curl -fsSL https://cranl.com/install.sh | bash
-cranl login          # يحتاج API key من لوحة CranL → Settings → API Keys
-cranl whoami
-# ثم من لوحة التحكم أو: cranl apps create / cranl apps deploy
-```
-
-**لا توجد بيانات دخول CranL في هذه الجلسة** — توقّفنا عند ملفات جاهزة للنشر. الخطوة التالية: أنت تسجّل الدخول وتربط المستودع.
-
-### تشغيل محلي (Docker)
-
-```bash
-docker build -t alhuda-cranl .
-docker run --rm -p 3000:3000 \
-  -e FISH_API_KEY="$FISH_API_KEY" \
-  -e AUTH_NAME_PEPPER="$AUTH_NAME_PEPPER" \
-  alhuda-cranl
-# ثم: http://localhost:3000  و  http://localhost:3000/api/tts-status
-```
-
-بدون مفاتيح: الواجهة تعمل؛ TTS يعيد 503 حتى تضبط `FISH_API_KEY`.
+**لا تحذف حساب/Worker Cloudflare في هذه المرحلة.** بعد القائمة الخضراء اطلب تأكيداً صريحاً ثم احذف.
 
 ---
 
-## English
+## ما تم إنجازه
 
-This is a **parallel staging path** on [CranL](https://docs.cranl.com/) so you can try the app **without cutting** Cloudflare production.
+1. **تكافؤ API:** `server.mjs` يغطي كل مسارات `worker.js` الحرجة:
+   - `POST /api/tts` (Fish «راوٍ عربي حكيم»)
+   - `GET /api/tts-status` (`runtime: "cranl-node"`)
+   - `GET /api/quran-audio` + `GET /api/quran-warm` (كاش في الذاكرة بدل Cache API لـ CF)
+   - `POST /api/student-creds` (`AUTH_NAME_PEPPER`)
+   - ملفات ثابتة + SPA + `service-worker.js`
+2. **أسرار CranL (مضبوطة مسبقاً في الواجهة، ليست في Git):**
+   - `FISH_API_KEY` · `FISH_VOICE_ID` (حكيم) · `AUTH_NAME_PEPPER`
+3. **Supabase:** العميل يستخدم `SUPABASE_URL` + مفتاح anon داخل `app.js` مباشرةً (RLS). لا حاجة لبروكسي على CranL. مفتاح `service_role` للسكربتات المحلية فقط — لا يُرفع لـ CranL Environment إلا إن احتجت سكربتات سيرفر لاحقاً.
+4. **العميل:** رابط المشاركة يستخدم `location.origin` (يعمل على `*.cranl.net` أو دومين مخصص).
+5. **CI:** أُضيف `.github/workflows/deploy-cranl.yml` (يتطلب أسرار GH). سير عمل Cloudflare **ما زال مفعّلاً** حتى القطع.
+6. **اختبارات:** `npm run test:api:cranl` — تم التحقق محلياً ضد CranL (TTS + قرآن + warm + student-creds).
 
-| Environment | URL | Status |
-|-------------|-----|--------|
-| **Production (untouched)** | https://alhuda.ryodan71.workers.dev | GH Actions → Wrangler — **primary** |
-| **CranL preview** | `https://<app-name>-<id>.cranl.net` | After you log in + connect GitHub |
+### تحقق سريع (نُفّذ ضد CranL)
 
-`wrangler.toml` and the Cloudflare workflow are **unchanged**. Default production deploy stays on Cloudflare.
+| فحص | نتيجة |
+|------|--------|
+| `/api/tts-status` | `fishConfigured: true`, صوت حكيم |
+| `POST /api/tts` | 200 audio/mpeg |
+| `/api/quran-audio?surah=1&ayah=1` | 200 audio/mpeg |
+| `/api/quran-warm` | ok |
+| `POST /api/student-creds` | نفس البريد/كلمة المرور مثل Cloudflare (pepper متطابق) |
+| Supabase REST `questions` | 200 (anon) |
+| `version.js` | `alhuda-v302` |
 
-### Artifacts
+---
 
-- `Dockerfile` — Node 20 Alpine, `CMD node server.mjs`, port **3000**, bind `0.0.0.0`
-- `server.mjs` — Express static SPA + same critical APIs as `worker.js`
-- `.dockerignore` — keeps image small (no `extracted/`, `.venv`, secrets)
+## ربط دومين مخصص بـ CranL
 
-### Port from `worker.js`
+1. افتح التطبيق في https://app.cranl.com/ → **Domains** → **Add Domain**
+2. أدخل الدومين (مثلاً `quiz.example.com` أو الجذر)
+3. عند مزوّد DNS:
+   - **فرعي:** `CNAME` → القيمة `alhuda-zi6bbd.cranl.net`
+   - **جذر:** `A` / `ALIAS` / `ANAME` حسب دعم المزوّد (انظر [Domains & SSL](https://docs.cranl.com/platform/domains-ssl.html))
+4. انتظر تفعيل SSL في تبويب Domains (`active` خلال دقائق عادةً)
+5. افتح الدومين الجديد وجرّب TTS + دخول بالاسم + اختيار كتاب
 
-Must work on CranL: `/api/tts`, `/api/tts-status`, `/api/quran-audio`, `/api/quran-warm`, `/api/student-creds`, static assets + SW + SPA fallback.
+API النسبية (`/api/...`) تعمل تلقائياً على أي أصل. لا حاجة لضبط base URL في العميل.
 
-Secrets (set in CranL **Environment** tab, never commit): `FISH_API_KEY`, `AUTH_NAME_PEPPER`. Optional Fish tuning: `FISH_TTS_SPEED`, `FISH_TTS_VOLUME`, etc. (same as `fish-audio-tts.js`).
+---
 
-### Your next steps (login required)
+## CI / أسرار GitHub لـ CranL
 
-1. Sign up / log in at https://app.cranl.com/
-2. Connect GitHub → select this repo
-3. Create Application with **Build Type = Dockerfile**, **Port = 3000**
-4. Set env secrets → deploy → open `*.cranl.net`
-5. Smoke: `GET /api/tts-status` → `fishConfigured: true`, `runtime: "cranl-node"`
+في المستودع → Settings → Secrets and variables → Actions أضف:
 
-**Blocker:** no CranL CLI credentials in this environment. Files are ready; you log into CranL and connect the repo to get a live preview URL.
+| Secret | القيمة |
+|--------|--------|
+| `CRANL_API_KEY` | من CranL → Settings → API Keys (`cranl_sk_…`) |
+| `CRANL_APP_ID` | UUID التطبيق (`cranl apps list` أو صفحة التطبيق) |
+| اختياري `CRANL_LIVE_URL` | الافتراضي `https://alhuda-zi6bbd.cranl.net` |
 
-### Docs
+بدون هذه الأسرار: الـ workflow يمرّر التحذيرات ويتخطّى استدعاء Deploy API — قد يبقى النشر التلقائي من ربط GitHub داخل CranL يعمل عند الدفع لـ `main`.
 
-- Quickstart: https://docs.cranl.com/getting-started/quickstart.html
-- Dockerfile: https://docs.cranl.com/platform/applications.html#configuring-a-dockerfile
-- Env vars: https://docs.cranl.com/platform/environment-variables.html
-- Domains: https://docs.cranl.com/platform/domains-ssl.html (`*.cranl.net`)
+CLI محلياً:
+
+```bash
+curl -fsSL https://cranl.com/install.sh | bash
+cranl login
+cranl apps list
+cranl apps deploy <CRANL_APP_ID>
+```
+
+---
+
+## متى يُسمح بحذف Cloudflare؟ (قائمة تحقق)
+
+علّم كل بند قبل طلب الحذف النهائي:
+
+- [ ] CranL يخدم الإنتاج (أو الدومين المخصص) لأيام بدون أعطال حرجة
+- [ ] TTS Fish حكيم يعمل من الدومين النهائي
+- [ ] قرآن (هذيفي) عبر `/api/quran-audio`
+- [ ] دخول بالاسم (`student-creds` + Auth Supabase) بنفس الحسابات القديمة
+- [ ] بنك الأسئلة / مزامنة Supabase من أصل CranL
+- [ ] Service Worker يحدّث الكاش على `*.cranl.net` أو الدومين المخصص (hard refresh مرة)
+- [ ] روابط المشاركة تشير للأصل الحالي (ليس `workers.dev`)
+- [ ] `deploy-cranl.yml` يعمل أو النشر من لوحة CranL موثوق
+- [ ] أُوقف أو عُطّل `deploy-cloudflare.yml` بعد التأكيد (لا قبله)
+- [ ] لا تبعيات خارجية ما زالت تشير لـ `alhuda.ryodan71.workers.dev` (بحث في الوثائق/الرسائل/المفضلة)
+- [ ] **تأكيد صريح منك:** «احذف Cloudflare الآن»
+
+بعدها فقط: احذف الـ Worker من لوحة CF وألغِ أسرار `CLOUDFLARE_*` من GitHub إن رغبت.
+
+### فروقات متوقعة (ليست حواجز قطع)
+
+- كاش الآيات: في الذاكرة على Node وليس `caches.default` على الحافة
+- لا يوجد `CF-Connecting-IP` — يعتمد `X-Forwarded-For`
+- Azure/ElevenLabs/Google معطّلة عمداً على المسارين
+
+---
+
+## English (short)
+
+**CranL:** https://alhuda-zi6bbd.cranl.net/ — APIs + Fish + pepper parity verified.  
+**CF:** keep until checklist above is green + explicit OK.  
+**Custom domain:** CranL Domains tab → CNAME to `alhuda-zi6bbd.cranl.net`.  
+**GH secrets for CI:** `CRANL_API_KEY`, `CRANL_APP_ID`.  
+Supabase anon stays in the client; no server proxy required.

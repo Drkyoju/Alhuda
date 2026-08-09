@@ -4995,7 +4995,10 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
 }
 
 async function shareScore() {
-  const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في مكتبة جمعية الهدى والحكمة التعليمية! ⭐\nجرّب/ي أنت أيضاً!\nhttps://alhuda.ryodan71.workers.dev/';
+  const shareOrigin = (typeof location !== 'undefined' && location.origin)
+    ? location.origin
+    : 'https://alhuda-zi6bbd.cranl.net';
+  const text = '🎮 ' + state.userName + ' حصل/ت على ' + state.score + ' نقطة في مكتبة جمعية الهدى والحكمة التعليمية! ⭐\nجرّب/ي أنت أيضاً!\n' + shareOrigin + '/';
   const shareBtn = document.getElementById('share-btn');
   if (navigator.share) {
     try { await navigator.share({ title: 'مكتبة جمعية الهدى والحكمة التعليمية', text }); return; } catch (e) {}

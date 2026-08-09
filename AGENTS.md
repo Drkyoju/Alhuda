@@ -1,20 +1,25 @@
 # AGENTS.md — context for AI coding agents
 
 ## Project type
-Vanilla JS Arabic RTL quiz PWA + Cloudflare Worker + Supabase.
-**Live:** https://alhuda.ryodan71.workers.dev  
-**Deploy:** GitHub Actions → Wrangler on push to `main`.
+Vanilla JS Arabic RTL quiz PWA + CranL (Node/`server.mjs`) + Supabase.
+**Primary (cutover target):** https://alhuda-zi6bbd.cranl.net/  
+**Cloudflare (keep until checklist green):** https://alhuda.ryodan71.workers.dev  
+**Cutover docs:** `README_CRANL.md` — do **not** delete CF until user confirms and checklist is 100% green.
+
+**Deploy:** push `main` → CranL (GitHub integration and/or `deploy-cranl.yml`) + still Cloudflare Wrangler via `deploy-cloudflare.yml`.
 
 ## Tech stack
 - Frontend: plain HTML/CSS/JS (no framework, no bundler). ES2020+.
-- Data: Supabase (`@supabase/supabase-js@2` from CDN).
-- Edge: `worker.js` (live Azure TTS, Quran Hudhaify proxy, feedback, student-creds).
+- Data: Supabase (`@supabase/supabase-js@2` from CDN). Anon key in `app.js`; RLS. No Supabase proxy on the server.
+- Runtime: `server.mjs` (CranL/Docker) mirrors `worker.js` APIs.
 - PWA: `manifest.json` + `service-worker.js` — keep `version.js` `cache`/`sw`/`app` in sync with SW `CACHE` and `index.html` `?v=` (use `npm run bump:version`).
-- TTS: **live Azure only** (`ar-SA-HamedNeural` — clearest MSA for lesson tashkeel). Quran ayahs = Hudhaify. No baked MP3s in repo.
+- TTS: **live Fish Audio only** («راوٍ عربي حكيم» / `FISH_VOICE_ID`). Quran ayahs = Hudhaify. Azure/ElevenLabs/Google lesson paths disabled.
 
 ## Layout
 - `index.html`, `styles.css`, `kids-ui.css`, `app.js`, `auth.js`, `platform.js`, `enhancements.js`
 - `fish-audio-tts.js`, `allah-irab.js`, `speech-diacritics-*.js`
+- `server.mjs` + `Dockerfile` — CranL production path
+- `worker.js` + `wrangler.toml` — Cloudflare parallel until cutover
 - `tts-baked/` — empty on purpose (old narrator clips removed; gitignored `*.mp3`)
 - `tests/` — Playwright smoke / a11y / e2e / api-live / tts-order
 - `scripts/` — optional bake TTS, bump version, citation/diacritics pipelines
@@ -26,11 +31,12 @@ Vanilla JS Arabic RTL quiz PWA + Cloudflare Worker + Supabase.
 `app.js` → `LOGIN_LOCKED`. `false` = full bank + login enabled. Demo (8 Q/book) always available.
 
 ### TTS
-Lesson speech goes through `/api/tts` → Azure Neural (`ar-SA-HamedNeural`). Secrets: `AZURE_SPEECH_KEY` + `AZURE_SPEECH_REGION`. Quran = Hudhaify only. Do not reintroduce Fish/ElevenLabs/baked as primary unless explicitly requested.
+Lesson speech goes through `/api/tts` → Fish (`FISH_API_KEY` + Hakim voice). Quran = Hudhaify only via `/api/quran-audio`.
+
 ### Auth
 - Prefer anonymous Supabase.
-- Legacy name-hash via Worker `/api/student-creds` + secret `AUTH_NAME_PEPPER`.
-- Never put service_role keys in the repo. Anon key in HTML is OK (RLS).
+- Legacy name-hash via `/api/student-creds` + secret `AUTH_NAME_PEPPER` (same pepper on CF and CranL).
+- Never put service_role keys in the repo. Anon key in client is OK (RLS).
 
 ### DB calls
 Use `safeQuery()` in `platform.js`. Escape with `esc` / `escJsString`.

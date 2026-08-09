@@ -18,7 +18,9 @@ const OUTPUT_FORMAT = 'audio-48khz-192kbitrate-mono-mp3';
 const OUTPUT_FORMAT_FALLBACK = 'audio-24khz-160kbitrate-mono-mp3';
 
 /** Public base for Azure to fetch our PLS lexicon (must be absolute HTTPS). */
-const DEFAULT_PUBLIC_BASE = 'https://alhuda.ryodan71.workers.dev';
+const DEFAULT_PUBLIC_BASE =
+  (typeof process !== 'undefined' && process.env?.PUBLIC_APP_URL) ||
+  'https://alhuda-zi6bbd.cranl.net';
 const ALLAH_LEXICON_PATH = '/lexicons/ar-sa-allah.xml';
 
 function escapeXml(text) {

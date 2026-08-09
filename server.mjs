@@ -1,6 +1,7 @@
 /**
- * CranL / Docker staging server — parallel to Cloudflare worker.js.
- * Serves the static SPA + critical API routes. Does NOT replace wrangler deploy.
+ * CranL / Docker production server — parity with Cloudflare worker.js.
+ * Serves the static SPA + critical API routes (Fish TTS, Quran, student-creds).
+ * Cutover: CranL primary when checklist in README_CRANL.md is green; CF kept until then.
  */
 import crypto from 'node:crypto';
 import fs from 'node:fs';

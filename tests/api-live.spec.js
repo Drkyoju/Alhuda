@@ -1,21 +1,22 @@
 /**
- * API smoke tests against the live Cloudflare Worker.
- * Skipped locally unless LIVE_API_BASE is set (or BASE_URL points at workers.dev).
+ * API smoke tests against a live deploy (CranL preferred, Cloudflare still supported).
+ * Default LIVE_API_BASE → CranL staging. Override with LIVE_API_BASE or use npm run test:api:cf.
  */
 const { test, expect } = require('@playwright/test');
 
 const LIVE = process.env.LIVE_API_BASE
-  || (process.env.BASE_URL && /workers\.dev|alhuda/i.test(process.env.BASE_URL) ? process.env.BASE_URL : '')
-  || 'https://alhuda.ryodan71.workers.dev';
+  || (process.env.BASE_URL && /(workers\.dev|cranl\.net|alhuda)/i.test(process.env.BASE_URL) ? process.env.BASE_URL : '')
+  || 'https://alhuda-zi6bbd.cranl.net';
 
 const HAKIM_VOICE_ID = 'aa9c8260269c411d9863ab1b1bfa3158';
 const runLive = !!LIVE && process.env.SKIP_LIVE_API !== '1';
+const base = LIVE.replace(/\/$/, '');
 
-test.describe('Live Worker APIs', () => {
-  test.skip(!runLive, 'Set LIVE_API_BASE or use workers.dev BASE_URL');
+test.describe('Live deploy APIs', () => {
+  test.skip(!runLive, 'Set LIVE_API_BASE (or use cranl.net / workers.dev BASE_URL)');
 
   test('GET /api/tts-status reports provider', async ({ request }) => {
-    const res = await request.get(`${LIVE.replace(/\/$/, '')}/api/tts-status`);
+    const res = await request.get(`${base}/api/tts-status`);
     expect(res.ok()).toBeTruthy();
     const json = await res.json();
     expect(json.ok).toBeTruthy();
@@ -39,7 +40,7 @@ test.describe('Live Worker APIs', () => {
   });
 
   test('POST /api/tts returns audio/mpeg', async ({ request }) => {
-    const res = await request.post(`${LIVE.replace(/\/$/, '')}/api/tts`, {
+    const res = await request.post(`${base}/api/tts`, {
       data: { text: 'السلام عليكم' },
     });
     if (!res.ok()) {
@@ -61,7 +62,7 @@ test.describe('Live Worker APIs', () => {
   });
 
   test('GET /api/quran-audio returns audio for 51:56', async ({ request }) => {
-    const res = await request.get(`${LIVE.replace(/\/$/, '')}/api/quran-audio?surah=51&ayah=56&reciter=hudhaify`);
+    const res = await request.get(`${base}/api/quran-audio?surah=51&ayah=56&reciter=hudhaify`);
     expect(res.ok()).toBeTruthy();
     expect(res.headers()['content-type'] || '').toMatch(/audio\/mpeg/);
     const body = await res.body();
@@ -69,7 +70,7 @@ test.describe('Live Worker APIs', () => {
   });
 
   test('GET /api/quran-warm warms popular verses', async ({ request }) => {
-    const res = await request.get(`${LIVE.replace(/\/$/, '')}/api/quran-warm`);
+    const res = await request.get(`${base}/api/quran-warm`);
     const ctype = res.headers()['content-type'] || '';
     // Older deploys may SPA-fallback HTML for unknown routes.
     if (!res.ok() || !ctype.includes('application/json')) {
@@ -79,5 +80,24 @@ test.describe('Live Worker APIs', () => {
     const json = await res.json();
     expect(json.ok).toBeTruthy();
     expect(json.total).toBeGreaterThan(0);
+  });
+
+  test('POST /api/student-creds derives credentials', async ({ request }) => {
+    const res = await request.post(`${base}/api/student-creds`, {
+      data: { name: 'اختبار' },
+    });
+    if (res.status() === 503) {
+      test.info().annotations.push({
+        type: 'warning',
+        description: 'AUTH_NAME_PEPPER not configured on this deploy',
+      });
+      expect(true).toBeTruthy();
+      return;
+    }
+    expect(res.ok()).toBeTruthy();
+    const json = await res.json();
+    expect(json.ok).toBeTruthy();
+    expect(String(json.email || '')).toMatch(/@alhuda\.students\.internal$/);
+    expect(String(json.password || '').length).toBeGreaterThan(8);
   });
 });
