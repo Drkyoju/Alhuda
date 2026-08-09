@@ -368,7 +368,7 @@ app.use(express.static(ROOT, {
   fallthrough: true,
   setHeaders(res, filePath) {
     const base = path.basename(filePath);
-    if (base === 'service-worker.js' || base === 'version.js') {
+    if (base === 'service-worker.js' || base === 'version.js' || base === 'alhuda-assets.js') {
       // SW + version pointer must never stick on BunnyCDN/edge (query ?v= is not always keyed).
       res.setHeader('Cache-Control', 'no-cache');
       if (base === 'service-worker.js') {
