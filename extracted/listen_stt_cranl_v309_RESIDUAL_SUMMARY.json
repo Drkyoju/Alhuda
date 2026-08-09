@@ -1,15 +1,23 @@
 {
-  "at": "2026-08-09T20:20:00Z",
+  "at": "2026-08-09T20:25:00Z",
   "base": "https://alhuda-zi6bbd.cranl.net",
   "voice": "راوٍ عربي حكيم",
   "version": "v309",
-  "status": "pending_live_whisper",
+  "commit": "4f71fd4",
+  "deploy": "https://github.com/Drkyoju/Alhuda/actions/runs/31333959027",
   "method": "مقطع lemma مثبت Whisper لـ«لا ضرر ولا ضرار» + مقاطع ذباب كما في v308",
   "fixes": [
-    "لا ضرر ولا ضرار → tts-lemma-clips/la_darara.mp3 (Fish مُختار؛ استقرار Whisper محلي 5/5 بلا اللاضر)",
+    "لا ضرر ولا ضرار → tts-lemma-clips/la_darara.mp3 (Fish مُختار؛ استقرار Whisper بلا اللاضر) عبر /api/tts قبل Fish الحي",
     "حاملة/خريطة نطق: فواصل بعد لا/ولا مع الإبقاء على نصب ضررَ وضرارَ؛ العرض على الشاشة بلا تغيير",
     "ذباب clips دون مساس — إعادة تحقق مباشرة بعد النشر"
   ],
+  "live_v309_whisper5": {
+    "لا ضرر ولا ضرار": "5/5 PASS_ضرر (lemma-clip) — بلا اللاضر",
+    "ذباب": "5/5 PASS_ذ (lemma-clip)",
+    "ذبابا": "5/5 PASS_ذ (lemma-clip)",
+    "قرب ذبابا": "5/5 PASS_ذ (lemma-clip)",
+    "قرب ذبابا لصنم": "5/5 PASS_ذ (lemma-clip)"
+  },
   "lemmaClips": {
     "dir": "tts-lemma-clips/",
     "providerHeader": "fish-lemma-clip",
@@ -17,12 +25,18 @@
     "darar": {
       "file": "la_darara.mp3",
       "localStability": "5/5 PASS_ضرر",
+      "liveCranl": "5/5 PASS_ضرر",
       "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
       "spoken": "أَعْنِي قَاعِدَةَ: لَا،  ضَرَرَ  عَلَى أَحَدٍ،  وَلَا،  ضِرَارَ"
     }
   },
+  "honestLimits": [
+    "Fish Hakim الحي قد يدمج لا+ضرر → اللاضر؛ لذلك المقطع المثبت للخيار القصير",
+    "الإعراب المنطوق نصب (ضررَ/ضرارَ)؛ العرض على الشاشة يبقى «لا ضرر ولا ضرار» بلا تشكيل إضافي"
+  ],
   "displayUnchanged": true,
   "irab": "نصب بلا النافية للجنس (ضَرَرَ / ضِرَارَ)",
   "supabase": "لا PATCH — مسار نطق فقط",
-  "cache": "alhuda-v309"
+  "cache": "alhuda-v309",
+  "evidence": "extracted/listen_v309_fragile/score.json"
 }

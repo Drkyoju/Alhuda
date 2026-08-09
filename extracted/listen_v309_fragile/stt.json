@@ -1,0 +1,156 @@
+{
+  "model": "small",
+  "n": 25,
+  "results": [
+    {
+      "file": "darar_r1.mp3",
+      "id": "darar_r1",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r2.mp3",
+      "id": "darar_r2",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r3.mp3",
+      "id": "darar_r3",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r4.mp3",
+      "id": "darar_r4",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r5.mp3",
+      "id": "darar_r5",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "dhubab_r1.mp3",
+      "id": "dhubab_r1",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "dhubab_r2.mp3",
+      "id": "dhubab_r2",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "dhubab_r3.mp3",
+      "id": "dhubab_r3",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "dhubab_r4.mp3",
+      "id": "dhubab_r4",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "dhubab_r5.mp3",
+      "id": "dhubab_r5",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "dhubaban_r1.mp3",
+      "id": "dhubaban_r1",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "dhubaban_r2.mp3",
+      "id": "dhubaban_r2",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "dhubaban_r3.mp3",
+      "id": "dhubaban_r3",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "dhubaban_r4.mp3",
+      "id": "dhubaban_r4",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "dhubaban_r5.mp3",
+      "id": "dhubaban_r5",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "ok": true
+    },
+    {
+      "file": "qarraba_r1.mp3",
+      "id": "qarraba_r1",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "ok": true
+    },
+    {
+      "file": "qarraba_r2.mp3",
+      "id": "qarraba_r2",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "ok": true
+    },
+    {
+      "file": "qarraba_r3.mp3",
+      "id": "qarraba_r3",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "ok": true
+    },
+    {
+      "file": "qarraba_r4.mp3",
+      "id": "qarraba_r4",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "ok": true
+    },
+    {
+      "file": "qarraba_r5.mp3",
+      "id": "qarraba_r5",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "ok": true
+    },
+    {
+      "file": "qarraba_sanam_r1.mp3",
+      "id": "qarraba_sanam_r1",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "ok": true
+    },
+    {
+      "file": "qarraba_sanam_r2.mp3",
+      "id": "qarraba_sanam_r2",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "ok": true
+    },
+    {
+      "file": "qarraba_sanam_r3.mp3",
+      "id": "qarraba_sanam_r3",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "ok": true
+    },
+    {
+      "file": "qarraba_sanam_r4.mp3",
+      "id": "qarraba_sanam_r4",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "ok": true
+    },
+    {
+      "file": "qarraba_sanam_r5.mp3",
+      "id": "qarraba_sanam_r5",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "ok": true
+    }
+  ]
+}

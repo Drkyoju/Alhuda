@@ -1,0 +1,269 @@
+{
+  "at": "2026-08-09T20:23:02.550Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "retries": 5,
+  "byBare": {
+    "لا ضرر ولا ضرار": [
+      "PASS_ضرر",
+      "PASS_ضرر",
+      "PASS_ضرر",
+      "PASS_ضرر",
+      "PASS_ضرر"
+    ],
+    "ذباب": [
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ"
+    ],
+    "ذبابا": [
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ"
+    ],
+    "قرب ذبابا": [
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ"
+    ],
+    "قرب ذبابا لصنم": [
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ",
+      "PASS_ذ"
+    ]
+  },
+  "scored": [
+    {
+      "id": "darar_r1",
+      "bare": "لا ضرر ولا ضرار",
+      "kind": "darar",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%84%D8%A7%20%D8%B6%D8%B1%D8%B1%20%D9%88%D9%84%D8%A7%20%D8%B6%D8%B1%D8%A7%D8%B1",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    },
+    {
+      "id": "darar_r2",
+      "bare": "لا ضرر ولا ضرار",
+      "kind": "darar",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%84%D8%A7%20%D8%B6%D8%B1%D8%B1%20%D9%88%D9%84%D8%A7%20%D8%B6%D8%B1%D8%A7%D8%B1",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    },
+    {
+      "id": "darar_r3",
+      "bare": "لا ضرر ولا ضرار",
+      "kind": "darar",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%84%D8%A7%20%D8%B6%D8%B1%D8%B1%20%D9%88%D9%84%D8%A7%20%D8%B6%D8%B1%D8%A7%D8%B1",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    },
+    {
+      "id": "darar_r4",
+      "bare": "لا ضرر ولا ضرار",
+      "kind": "darar",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%84%D8%A7%20%D8%B6%D8%B1%D8%B1%20%D9%88%D9%84%D8%A7%20%D8%B6%D8%B1%D8%A7%D8%B1",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    },
+    {
+      "id": "darar_r5",
+      "bare": "لا ضرر ولا ضرار",
+      "kind": "darar",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%84%D8%A7%20%D8%B6%D8%B1%D8%B1%20%D9%88%D9%84%D8%A7%20%D8%B6%D8%B1%D8%A7%D8%B1",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    },
+    {
+      "id": "dhubab_r1",
+      "bare": "ذباب",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "dhubab_r2",
+      "bare": "ذباب",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "dhubab_r3",
+      "bare": "ذباب",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "dhubab_r4",
+      "bare": "ذباب",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "dhubab_r5",
+      "bare": "ذباب",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "dhubaban_r1",
+      "bare": "ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "dhubaban_r2",
+      "bare": "ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "dhubaban_r3",
+      "bare": "ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "dhubaban_r4",
+      "bare": "ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "dhubaban_r5",
+      "bare": "ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_r1",
+      "bare": "قرب ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_r2",
+      "bare": "قرب ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_r3",
+      "bare": "قرب ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_r4",
+      "bare": "قرب ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_r5",
+      "bare": "قرب ذبابا",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_sanam_r1",
+      "bare": "قرب ذبابا لصنم",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7%20%D9%84%D8%B5%D9%86%D9%85",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_sanam_r2",
+      "bare": "قرب ذبابا لصنم",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7%20%D9%84%D8%B5%D9%86%D9%85",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_sanam_r3",
+      "bare": "قرب ذبابا لصنم",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7%20%D9%84%D8%B5%D9%86%D9%85",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_sanam_r4",
+      "bare": "قرب ذبابا لصنم",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7%20%D9%84%D8%B5%D9%86%D9%85",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    },
+    {
+      "id": "qarraba_sanam_r5",
+      "bare": "قرب ذبابا لصنم",
+      "kind": "fly",
+      "provider": "fish-lemma-clip",
+      "lemma": "%D9%82%D8%B1%D8%A8%20%D8%B0%D8%A8%D8%A7%D8%A8%D8%A7%20%D9%84%D8%B5%D9%86%D9%85",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "verdict": "PASS_ذ"
+    }
+  ]
+}
