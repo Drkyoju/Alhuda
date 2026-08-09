@@ -395,6 +395,7 @@ app.use(express.static(ROOT, {
       'version.js',
       'alhuda-assets.js',
       'questions-bank.js',
+      'questions-bank-v311.js',
       'questions-bank.json',
       'speech-diacritics-map.js',
       'speech-diacritics-core.js',
