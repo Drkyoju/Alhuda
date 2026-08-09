@@ -81,6 +81,25 @@ import {
 export { bareArabicKey, SHORT_SPEECH_CARRIERS, applyShortSpeechCarriers };
 
 /**
+ * Hijri year abbreviation → spoken «هِجْرِيَّة» (Fish misreads bare «ه» / «هـ»).
+ * Speech-only — UI may keep «1206 ه» / «1115هـ». Idempotent if already «هجرية».
+ * Western + Arabic-Indic digits; optional tatweel on هـ.
+ */
+export const HIJRI_YEAR_SPEECH = 'هِجْرِيَّة';
+
+export function expandHijriYearForSpeech(text) {
+  let s = String(text || '');
+  // 1115 ه / 1206هـ / ١١١٥ه — not «1206 هجرية» (negative lookahead on ج)
+  s = s.replace(
+    /([0-9٠-٩]{2,4})\s*ه\u0640?(?![\u064B-\u065F\u0670]*ج)/g,
+    `$1 ${HIJRI_YEAR_SPEECH}`
+  );
+  // Lone «هـ» (tatweel form) after non-letter — not inside الله
+  s = s.replace(/(^|[^\u0621-\u064A])ه\u0640(?=[^\u0621-\u064A]|$)/g, `$1${HIJRI_YEAR_SPEECH}`);
+  return s;
+}
+
+/**
  * Systematic case endings for Fish: مجرور after حرف جر / ظرف، منصوب after أنْ لا،
  * إنّ/أنّ + الله. Safe ending swaps only — bare letters unchanged.
  */
@@ -127,6 +146,8 @@ export function prepareFishTtsText(text) {
   let s = String(text || '');
   // Ultra-short MC carriers BEFORE digit expand (so «لأنها 3 فصول» matches bare key)
   s = applyShortSpeechCarriers(s.trim());
+  // Years: «1206 ه» / «1115هـ» → speak هجرية (before punctuation strip)
+  s = expandHijriYearForSpeech(s);
   s = s.replace(/\uFDFA/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
   s = s.replace(/\uFDFB/g, ' جَلَّ جَلَالُهُ ');
   s = s.replace(/صلعم/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
