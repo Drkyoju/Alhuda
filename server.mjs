@@ -328,8 +328,12 @@ app.get('/api/quran-warm', async (req, res) => {
   sendJson(res, 200, { ok: true, warmed, hits, total: POPULAR_QURAN_VERSES.length });
 });
 
-app.post('/api/student-creds', async (req, res) => {
+app.all('/api/student-creds', async (req, res) => {
   setCors(res, req);
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') {
+    return sendJson(res, 405, { ok: false, error: 'Method not allowed' });
+  }
   if (!rateLimit(req, 'student-creds', 20, 60000)) return rateLimited(res, req);
 
   const pepper = String(process.env.AUTH_NAME_PEPPER || '').trim();
