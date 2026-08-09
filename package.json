@@ -13,12 +13,17 @@
     "check:baked-tts": "node scripts/check_baked_tts_coverage.mjs",
     "bump:version": "node scripts/bump_version.mjs --all",
     "serve": "python3 -m http.server 8765",
+    "start": "node server.mjs",
+    "start:cranl": "node server.mjs",
     "icons": "node scripts/generate-icons.mjs",
     "bake:tts": "node scripts/bake_tts_audio.mjs --provider fish",
     "bake:tts:fish": "node scripts/bake_tts_audio.mjs --provider fish",
     "bake:tts:edge": "node scripts/bake_tts_audio.mjs --provider edge",
     "bake:tts:sample": "node scripts/bake_tts_audio.mjs --provider fish --limit 10",
     "lighthouse": "npx lighthouse https://alhuda.ryodan71.workers.dev --only-categories=performance,accessibility,best-practices --chrome-flags='--headless' --output=json --output-path=./lighthouse-report.json"
+  },
+  "dependencies": {
+    "express": "^4.22.2"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
