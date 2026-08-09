@@ -96,6 +96,72 @@ const HIJRI_YEAR_WORDS = Object.freeze({
   '1300': 'أَلْفٍ وَثَلَاثِمِائَةٍ',
 });
 
+/** Nawawi forty-hadith ordinals (feedback «فوائد حديث N- …»). */
+const HADITH_NUM_WORDS = Object.freeze({
+  1: 'الْأَوَّلِ',
+  2: 'الثَّانِي',
+  3: 'الثَّالِثِ',
+  4: 'الرَّابِعِ',
+  5: 'الْخَامِسِ',
+  6: 'السَّادِسِ',
+  7: 'السَّابِعِ',
+  8: 'الثَّامِنِ',
+  9: 'التَّاسِعِ',
+  10: 'الْعَاشِرِ',
+  11: 'الْحَادِيَ عَشَرَ',
+  12: 'الثَّانِيَ عَشَرَ',
+  13: 'الثَّالِثَ عَشَرَ',
+  14: 'الرَّابِعَ عَشَرَ',
+  15: 'الْخَامِسَ عَشَرَ',
+  16: 'السَّادِسَ عَشَرَ',
+  17: 'السَّابِعَ عَشَرَ',
+  18: 'الثَّامِنَ عَشَرَ',
+  19: 'التَّاسِعَ عَشَرَ',
+  20: 'الْعِشْرِينَ',
+  21: 'الْحَادِي وَالْعِشْرِينَ',
+  22: 'الثَّانِي وَالْعِشْرِينَ',
+  23: 'الثَّالِث وَالْعِشْرِينَ',
+  24: 'الرَّابِع وَالْعِشْرِينَ',
+  25: 'الْخَامِس وَالْعِشْرِينَ',
+  26: 'السَّادِس وَالْعِشْرِينَ',
+  27: 'السَّابِع وَالْعِشْرِينَ',
+  28: 'الثَّامِن وَالْعِشْرِينَ',
+  29: 'التَّاسِع وَالْعِشْرِينَ',
+  30: 'الثَّلَاثِينَ',
+  31: 'الْحَادِي وَالثَّلَاثِينَ',
+  32: 'الثَّانِي وَالثَّلَاثِينَ',
+  33: 'الثَّالِث وَالثَّلَاثِينَ',
+  34: 'الرَّابِع وَالثَّلَاثِينَ',
+  35: 'الْخَامِس وَالثَّلَاثِينَ',
+  36: 'السَّادِس وَالثَّلَاثِينَ',
+  37: 'السَّابِع وَالثَّلَاثِينَ',
+  38: 'الثَّامِن وَالثَّلَاثِينَ',
+  39: 'التَّاسِع وَالثَّلَاثِينَ',
+  40: 'الْأَرْبَعِينَ',
+});
+
+function expandNawawiFawaidHadith(text) {
+  let s = String(text || '');
+  const toWest = (num) =>
+    Number(String(num).replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d))));
+  const ordOf = (num) => HADITH_NUM_WORDS[toWest(num)] || String(num);
+  // هذه من فوائد حديث (18- التقوى)
+  s = s.replace(
+    /هذ[ههِ]\s+من\s+فوائد\s+حديث\s*\(\s*([0-9٠-٩]{1,2})\s*[-–—]\s*([^)]+)\)/g,
+    (_, num, title) => `هَذِهِ مِنْ فَوَائِدِ الْحَدِيثِ ${ordOf(num)} فِي ${String(title).trim()}`
+  );
+  s = s.replace(
+    /هَذِهِ\s+من\s+فَوَائِدِ\s+حَدِيث[ٌُِ]?\s*\(?\s*([0-9٠-٩]{1,2})\s*[-–—]?\s*([^)\s]+)/g,
+    (_, num, title) => `هَذِهِ مِنْ فَوَائِدِ الْحَدِيثِ ${ordOf(num)} فِي ${String(title).trim()}`
+  );
+  // Prepared leftover: فَوَائِدِ حَدِيثٌ 18 التَّقْوَى
+  s = s.replace(
+    /فَوَائِدِ\s+حَدِيث[ٌُِ]?\s+([0-9٠-٩]{1,2})\s+/g,
+    (_, num) => `فَوَائِدِ الْحَدِيثِ ${ordOf(num)} فِي `
+  );
+  return s;
+}
+
 function padHijriYearUtterance(yearToken) {
   const w = HIJRI_YEAR_WORDS[yearToken];
   return w
@@ -168,6 +234,8 @@ export function prepareFishTtsText(text) {
   s = applyShortSpeechCarriers(s.trim());
   // Years: «1206 ه» / «1115هـ» → speak هجرية (before punctuation strip)
   s = expandHijriYearForSpeech(s);
+  // Nawawi feedback: فوائد حديث (18- التقوى) → ordinal words (Fish mangles bare 18/31/32)
+  s = expandNawawiFawaidHadith(s);
   s = s.replace(/\uFDFA/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
   s = s.replace(/\uFDFB/g, ' جَلَّ جَلَالُهُ ');
   s = s.replace(/صلعم/g, ' صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ ');
@@ -276,7 +344,7 @@ export function prepareFishTtsText(text) {
   s = s.replace(/هَذَا الْحَدِيثِ/g, 'هَذَا الْحَدِيثُ');
   // Sahaba bare → vocalized (gaps added after stripTtsPunctuation)
   s = s.replace(/(^|[^\u0621-\u064A])عقبة\s+بن\s+عامر(?=[^\u0621-\u064A]|$)/g, '$1عُقْبَةُ بْنُ عَامِرٍ');
-  s = s.replace(/(^|[^\u0621-\u064A])ابن\s+مسعود(?=[^\u0621-\u064A]|$)/g, '$1ابْنْ مَسْعُودٍ');
+  s = s.replace(/(^|[^\u0621-\u064A])ابن\s+مسعود(?=[^\u0621-\u064A]|$)/g, '$1ابْنُ مَسْعُودٍ');
   s = s.replace(/(^|[^\u0621-\u064A])أبو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
   s = s.replace(/(^|[^\u0621-\u064A])ابو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
   s = stripTtsPunctuation(s);
@@ -284,8 +352,13 @@ export function prepareFishTtsText(text) {
   s = applyShortSpeechCarriers(s);
   // Micro-gaps AFTER strip (strip collapses whitespace) — clearer sahaba names
   s = s.replace(/عُقْبَةُ بْنُ عَامِرٍ/g, 'عُقْبَةُ  بْنُ  عَامِرٍ');
-  s = s.replace(/ابْن[ُِْ]?\s*مَسْعُودٍ/g, 'ابْنْ  مَسْعُودٍ');
+  // ابن مسعود: مرفوع افتراضياً؛ مجرور بعد حديث/في
+  s = s.replace(/حَدِيث[ٍِ]?\s+ابْن[ُِْ]?\s*مَسْعُودٍ/g, 'حَدِيثِ  ابْنِ  مَسْعُودٍ');
+  s = s.replace(/ابْن[ُِْ]?\s*مَسْعُودٍ/g, 'ابْنُ  مَسْعُودٍ');
   s = s.replace(/أَبُو هُرَيْرَةَ/g, 'أَبُو  هُرَيْرَةَ');
+  // إضافة: مرتبة/ركن الإحسانِ (لا الإحسانُ)
+  s = s.replace(/مَرْتَبَةُ\s+الْإِحْسَانُ/g, 'مَرْتَبَةُ الْإِحْسَانِ');
+  s = s.replace(/رُكْنُ\s+الْإِحْسَانُ/g, 'رُكْنُ الْإِحْسَانِ');
   // After quote-strip: بِ «ثُمَّ» → بِ ثُمَّ (Fish reads «بسما»); glue particle
   // Only standalone particle بِ/ب — never word-final …بِ (بابِ / كتابِ / طَلَبِ).
   // Harakat before ب must not count as a boundary (طَلَبِ = letter+fatha+بِ).
@@ -665,14 +738,16 @@ export function prepareFishTtsText(text) {
   // التمائم alone / in questions — sukun ending + gap after article stem
   s = s.replace(/التَّمَائِم[َُِ]/g, 'التَّمَائِمْ');
   s = s.replace(/التَّمَائِم[َُِ]/g, 'التَّمَائِمْ');
-  // أهل اليمن — sukun + gap (اليمان/اليمد)
-  s = s.replace(/أَهْل[َِ]?\s+الْيَمَن[َُِ]?/g, 'أَهْلَ  الْيَمَنْ');
-  s = s.replace(/اهل\s+اليمن/g, 'أَهْلَ  الْيَمَنْ');
-  // ابن مسعود — pad carrier (damma→ابنو; bare still fails) like خطأ→هذا خطأ
-  s = s.replace(/^ابْنْ?\s*مَسْعُودٍ$/u, 'هُوَ ابْنْ مَسْعُودٍ');
-  s = s.replace(/ابْن[ُِْ]?\s+مَسْعُودٍ/g, 'ابْنْ  مَسْعُودٍ');
-  s = s.replace(/^ابن\s+مسعود$/u, 'هُوَ ابْنْ مَسْعُودٍ');
-  s = s.replace(/ابن\s+مسعود/g, 'ابْنْ  مَسْعُودٍ');
+  // أهل اليمن — مجرور إضافة + فجوة (تجنّب اليمان)
+  s = s.replace(/أَهْل[َِ]?\s+الْيَمَن[َُِْ]?/g, 'أَهْلَ  الْيَمَنِ');
+  s = s.replace(/اهل\s+اليمن/g, 'أَهْلَ  الْيَمَنِ');
+  s = s.replace(/أهل\s+اليمن/g, 'أَهْلَ  الْيَمَنِ');
+  // ابن مسعود — حامل + إعراب فصيح (مرفوع؛ مجرور بعد حديث يُضبط أعلاه)
+  s = s.replace(/^ابْن[ُِْ]?\s*مَسْعُودٍ$/u, 'هُوَ ابْنُ مَسْعُودٍ');
+  s = s.replace(/^ابن\s+مسعود$/u, 'هُوَ ابْنُ مَسْعُودٍ');
+  s = s.replace(/ابن\s+مسعود/g, 'ابْنُ  مَسْعُودٍ');
+  s = s.replace(/حَدِيث[ٍِ]?\s+ابْنُ\s+مَسْعُودٍ/g, 'حَدِيثِ  ابْنِ  مَسْعُودٍ');
+  s = s.replace(/(?<!حَدِيثِ\s{0,2})ابْن[ُِْ]?\s+مَسْعُودٍ/g, 'ابْنُ  مَسْعُودٍ');
   // أنواط short phrase — contextual carrier شجرة (same lesson sense)
   s = s.replace(/^ذَاتِ\s+أَنْوَاطْ\s+كَانَتْ$/u, 'شَجَرَةُ ذَاتِ أَنْوَاطْ كَانَتْ');
   s = s.replace(/^ذَات[َُِ]?\s+أَنْوَاطْ?\s+كَانَتْ$/u, 'شَجَرَةُ ذَاتِ أَنْوَاطْ كَانَتْ');
@@ -696,9 +771,14 @@ export function prepareFishTtsText(text) {
   // أن تعبد الله — residual تعبو/دلله: clear mansub + gap before الله
   s = s.replace(/أَنْ\s+تَعْبُد[َُ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ  اللَّهَ");
   s = s.replace(/ان\s+تعبد\s+الله/g, "أَنْ تَعْبُدَ  اللَّهَ");
-  // لا ضرر ولا ضرار — wider gaps + sukun (ضرر→ذرر)
-  s = s.replace(/لَا\s+ضَرَر[َْ]?\s+وَلَا\s+ضِرَار[َْ]?/g, 'لَا  ضَرَرْ  وَلَا  ضِرَارْ');
-  s = s.replace(/لا\s+ضرر\s+ولا\s+ضرار/g, 'لَا  ضَرَرْ  وَلَا  ضِرَارْ');
+  s = s.replace(/أن\s+تَعْبُدُ/g, "أَنْ تَعْبُدَ");
+  s = s.replace(/أَنْ\s+تَعْبُدُ/g, "أَنْ تَعْبُدَ");
+  // أهل اليمن — strengthen STT (اليمين)
+  s = s.replace(/أَهْلَ\s+الْيَمَنِ/g, 'أَهْلَ  بِلَادِ  الْيَمَنِ');
+  s = s.replace(/^أَهْلَ\s+بِلَادِ\s+الْيَمَنِ$/u, 'أَعْنِي أَهْلَ بِلَادِ الْيَمَنِ');
+  // لا ضرر ولا ضرار — منصوب بلا النافية للجنس + فجوات (ضرر→ذرر / ضرار→ذيرار)
+  s = s.replace(/لَا\s+ضَرَر[َْ]?\s+وَلَا\s+ضِرَار[َْ]?/g, 'لَا  ضَرَرَ  وَلَا  ضِرَارَ');
+  s = s.replace(/لا\s+ضرر\s+ولا\s+ضرار/g, 'لَا  ضَرَرَ  وَلَا  ضِرَارَ');
   // Diacritic-insensitive whole-utterance carriers (covers case variants missed above)
   s = applyShortSpeechCarriers(s);
   // Two-word / phrase clarity — micro-gaps + nominative where needed

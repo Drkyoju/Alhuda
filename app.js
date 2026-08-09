@@ -2085,7 +2085,7 @@ function fixLessonHadithPronunciation(text) {
   // Narrator names (options + frames)
   s = s.replace(/عُقْبَةُ\s+بْنُ\s+عَامِرٍ/g, 'عُقْبَةُ بْنُ عَامِرٍ');
   s = s.replace(/(^|[^\u0621-\u064A])عقبة\s+بن\s+عامر(?=[^\u0621-\u064A]|$)/g, '$1عُقْبَةُ بْنُ عَامِرٍ');
-  s = s.replace(/(^|[^\u0621-\u064A])ابن\s+مسعود(?=[^\u0621-\u064A]|$)/g, '$1ابْنْ مَسْعُودٍ');
+  s = s.replace(/(^|[^\u0621-\u064A])ابن\s+مسعود(?=[^\u0621-\u064A]|$)/g, '$1ابْنُ مَسْعُودٍ');
   s = s.replace(/(^|[^\u0621-\u064A])أبو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
   s = s.replace(/(^|[^\u0621-\u064A])ابو\s+هريرة(?=[^\u0621-\u064A]|$)/g, '$1أَبُو هُرَيْرَةَ');
   return s;
@@ -2558,10 +2558,13 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/الشِّرْكِ\s+الْأَصْغَر[َُِ]?/g, "الشِّرْكِ  الْأَصْغَرْ");
   s = s.replace(/إِنَّ\s+الرُّقَى\s+وَالتَّمَائِمَ\s+وَالتِّوَلَةَ\s+شِرْك[ٌْ]?/g, "إِنَّ الرُّقَى  وَالتَّمَائِمَ  وَالتِّوَلَةَ  شِرْكْ");
   s = s.replace(/إِنَّ\s+الرُّقَى\s+وَالتَّمَائِمَ\s+وَالتِّوَلَةَ\s+شِرْك[ٌْ]?/g, "إِنَّ الرُّقَى  وَالتَّمَائِمَ  وَالتِّوَلَةَ  شِرْكْ");
-  s = s.replace(/أَهْل[َِ]?\s+الْيَمَن[َُِ]?/g, 'أَهْلَ  الْيَمَنْ');
-  s = s.replace(/ابْن[ُِ]?\s+مَسْعُودٍ/g, 'ابْنْ  مَسْعُودٍ');
+  s = s.replace(/أَهْل[َِ]?\s+الْيَمَن[َُِْ]?/g, 'أَهْلَ  الْيَمَنِ');
+  s = s.replace(/حَدِيث[ٍِ]?\s+ابْن[ُِْ]?\s*مَسْعُودٍ/g, 'حَدِيثِ  ابْنِ  مَسْعُودٍ');
+  s = s.replace(/ابْن[ُِْ]?\s+مَسْعُودٍ/g, 'ابْنُ  مَسْعُودٍ');
+  s = s.replace(/مَرْتَبَةُ\s+الْإِحْسَانُ/g, 'مَرْتَبَةُ الْإِحْسَانِ');
+  s = s.replace(/رُكْنُ\s+الْإِحْسَانُ/g, 'رُكْنُ الْإِحْسَانِ');
   s = s.replace(/أَنْ\s+تَعْبُد[َُ]?\s+الل[\u064B-\u065F\u0670]*ه[\u064B-\u065F\u0670]*/g, "أَنْ تَعْبُدَ  اللَّهَ");
-  s = s.replace(/لَا\s+ضَرَر[َْ]?\s+وَلَا\s+ضِرَار[َْ]?/g, 'لَا  ضَرَرْ  وَلَا  ضِرَارْ');
+  s = s.replace(/لَا\s+ضَرَر[َْ]?\s+وَلَا\s+ضِرَار[َْ]?/g, 'لَا  ضَرَرَ  وَلَا  ضِرَارَ');
   s = s.replace(/دَمُ\s+امْرِئٍ\s+مُسْلِمٍ/g, 'دَمُ  امْرِئٍ  مُسْلِمٍ');
   // Soft OCR / wasla alef leftovers from harvest
   s = s.replace(/ثَلَاثَةٍ\s+أَنْوَاع/g, 'ثَلَاثَةُ أَنْوَاعٍ');
@@ -2880,8 +2883,8 @@ const MANUAL_SPEECH_DIACRITICS = [
   ['كل بدعة ضلالة', 'كُلُّ بِدْعَةٍ ضَلَالَةٌ'],
   ['لعن الله من ذبح لغير الله', 'لَعَنَ اللهُ مَنْ ذَبَحَ لِغَيْرِ اللهِ'],
   ['إن الرقى والتمائم والتولة شرك', "إِنَّ الرُّقَى وَالتَّمَائِمَ وَالتِّوَلَةَ شِرْكْ"],
-  ['لا ضرر ولا ضرار', 'لَا  ضَرَرْ  وَلَا  ضِرَارْ'],
-  ['ابن مسعود', 'ابْنْ مَسْعُودٍ'],
+  ['لا ضرر ولا ضرار', 'لَا  ضَرَرَ  وَلَا  ضِرَارَ'],
+  ['ابن مسعود', 'ابْنُ مَسْعُودٍ'],
   ['ذات أنواط', 'ذَاتِ أَنْوَاطْ'],
   ['دعاء الأموات شرك أكبر', 'دُعَاءُ الْأَمْوَاتِ شِرْكٌ أَكْبَرُ'],
   ['النذر عبادة لا تصرف إلا لله', 'النَّذْرُ عِبَادَةٌ لَا تُصْرَفُ إِلَّا لِلَّهِ'],
@@ -3459,12 +3462,19 @@ function buildFeedbackSpeechPlan(q, wrongText) {
   if (isHadithPassage(citeBody) || (citeBody && !quoteIsAyah && !fieldHasEmbeddedAyah(citeBody))) {
     const citeSpeech = diacritizeFieldText(q, citeBody);
     if (citeSpeech) plan.push({ type: 'tts', text: citeSpeech });
-  } else if (verseKey && quoteIsAyah) {
+  } else if (verseKey && (quoteIsAyah || fieldHasEmbeddedAyah(citeBody))) {
+    // Ayah citation (incl. «قوله: (…)» after strip) → Hudhaify only, never bare «قوله».
     plan.push({ type: 'quran', verseKey });
   } else if (citeBody) {
     // Mixed or unresolved — TTS the prose (ayah markers stripped in prepareTtsPayload path).
     const citeSpeech = diacritizeFieldText(q, citeBody);
-    if (citeSpeech) plan.push({ type: 'tts', text: citeSpeech });
+    const bareCite = normalizeArabicForMatch(citeSpeech || '');
+    // Leftover «قوله» after ayah-strip with a resolvable key → recite, don't mangle قوله.
+    if (verseKey && /^(قوله|قولها|قال|قالت)(تعالى)?$/.test(bareCite)) {
+      plan.push({ type: 'quran', verseKey });
+    } else if (citeSpeech) {
+      plan.push({ type: 'tts', text: citeSpeech });
+    }
   } else if (verseKey) {
     plan.push({ type: 'quran', verseKey });
   }
@@ -5300,6 +5310,8 @@ function citationLooksLikeAyah(bookQuote, verseKey) {
   const bare = normalizeArabicForMatch(raw);
   // Short «قال تعالى …» lines are almost always ayah citations.
   if (/^(قال|قوله)\s*تعالى/.test(bare) && bare.length <= 180) return true;
+  // «قوله: (آية…)» / «قوله (آية)» without تعالى — still an ayah lead-in.
+  if (/^قوله\s*/.test(bare) && (/\([^)]{12,}\)/.test(raw) || /«[^»]{12,}»/.test(raw))) return true;
   if (!verseKey) return false;
   const ayahLocal = getLocalAyahSnippet(verseKey);
   if (!ayahLocal) return false;

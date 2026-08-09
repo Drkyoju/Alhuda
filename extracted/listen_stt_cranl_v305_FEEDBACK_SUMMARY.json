@@ -1,0 +1,98 @@
+{
+  "at": "2026-08-09T15:12:31.779898Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "voice": "راوٍ عربي حكيم",
+  "runtime": "cranl-node",
+  "phase": "feedback_exp_quote",
+  "books": {
+    "usool": {
+      "questions": 73,
+      "clips": 185,
+      "tts": 178,
+      "pass": 185,
+      "fail": 0,
+      "hardFail": 0,
+      "uniqueFish": 97
+    },
+    "nawawi": {
+      "questions": 184,
+      "clips": 499,
+      "tts": 498,
+      "pass": 499,
+      "fail": 0,
+      "hardFail": 0,
+      "uniqueFish": 248
+    },
+    "tawheed": {
+      "questions": 338,
+      "clips": 777,
+      "tts": 761,
+      "pass": 777,
+      "fail": 0,
+      "hardFail": 0,
+      "uniqueFish": 363
+    }
+  },
+  "totals": {
+    "clips": 1461,
+    "tts": 1437,
+    "pass": 1461,
+    "fail": 0,
+    "hardFail": 0,
+    "quranSkipped": 0
+  },
+  "priorQOptions": {
+    "note": "v304 q+options already 2835/2835 pass",
+    "clips": 2835
+  },
+  "ocrBankFixes": [
+    {
+      "id": "d3ef73b7-d767-4445-a6d7-c1f92032be45",
+      "from": "«من حلف بغير ل لا فقد كفر أو أ شرك»",
+      "to": "«من حلف بغير الله فقد كفر أو أشرك»"
+    },
+    {
+      "id": "c549c1de-82ac-4d19-9a1c-f02cc6b3da5a",
+      "from": "«وهو دعوة غير هم ع ه كم أنواع الشرك»",
+      "to": "«الشرك الأكبر والشرك الأصغر»"
+    },
+    {
+      "id": "f6687348-8da8-4773-bc22-ca1b1bfecd9d",
+      "from": "«إنما هلك من اك ن قبلكم»",
+      "to": "«إنما هلك من كان قبلكم»"
+    }
+  ],
+  "fixesShipped": [
+    "Feedback listen script (buildFeedbackSpeechPlan → Fish Hakim + Whisper)",
+    "قوله+(آية) → Hudhaify when verseKey known (no bare قوله TTS)",
+    "Nawawi «فوائد حديث N» → ordinal Arabic words",
+    "إعراب: مرتبة/ركن الإحسانِ، أهل اليمنِ، لا ضررَ ولا ضرارَ، ابنُ مسعودٍ",
+    "Carriers: قوله، قرب ذبابا، ابن مسعود",
+    "OCR bank source_quote ×3"
+  ],
+  "supabase": "OCR bank fields fixed locally; SUPABASE_KEY not in env — no remote PATCH (never commit secrets)",
+  "scholarResidual": [
+    {
+      "item": "قرب ذبابا / ذُبَابًا",
+      "note": "Fish/Whisper غالباً دبابا؛ الحامل يوضّح للصنم لكن STT يبقى ضوضائياً"
+    },
+    {
+      "item": "ابن مسعود",
+      "note": "STT أحياناً ابني/مشعود رغم إعراب ابْنُ صحيح"
+    },
+    {
+      "item": "لا ضرر ولا ضرار",
+      "note": "STT يكرّر ضرري؛ النص المنطوق منصوب بلا صحيح"
+    },
+    {
+      "item": "أهل اليمن",
+      "note": "STT→اليمين أحياناً؛ أُضيف بِلَادِ الْيَمَنِ"
+    },
+    {
+      "item": "حالات إضافة ملتبسة (ركن/وجوب + اسم)",
+      "note": "اترك للعالم إن تعارضت قراءات المصحف/الكتب"
+    }
+  ],
+  "coveragePct": 100.0,
+  "note": "Full-bank feedback (correct-path speech plan: labels+answer+cite/exp) via CranL Fish Hakim + Whisper. Combined with v304 q+options = lesson TTS coverage."
+}
