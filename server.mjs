@@ -389,8 +389,22 @@ app.use(express.static(ROOT, {
   fallthrough: true,
   setHeaders(res, filePath) {
     const base = path.basename(filePath);
-    if (base === 'service-worker.js' || base === 'version.js' || base === 'alhuda-assets.js') {
-      // SW + version pointer must never stick on BunnyCDN/edge (query ?v= is not always keyed).
+    // Edge often ignores ?v= in the cache key — never long-cache these mutable lesson files.
+    const noCacheExact = new Set([
+      'service-worker.js',
+      'version.js',
+      'alhuda-assets.js',
+      'questions-bank.js',
+      'questions-bank.json',
+      'speech-diacritics-map.js',
+      'speech-diacritics-core.js',
+      'speech-pronunciation-lexicon.js',
+      'allah-irab.browser.js',
+      'short-speech-carriers.js',
+      'lemma-tts-clips.js',
+      'app.js',
+    ]);
+    if (noCacheExact.has(base)) {
       res.setHeader('Cache-Control', 'no-cache');
       if (base === 'service-worker.js') {
         res.setHeader('Service-Worker-Allowed', '/');
