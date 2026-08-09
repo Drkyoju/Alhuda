@@ -1693,13 +1693,13 @@ function toggleSound() {
 /** Locked Fish lesson voice — resolved from /api/tts-status (FISH_VOICE_ID / حكيم). */
 const TTS_FISH_HAKIM = 'aa9c8260269c411d9863ab1b1bfa3158';
 let TTS_VOICE = TTS_FISH_HAKIM;
-/** Bump: Fish Hakim mild loudness — kill quiet/muffled cached clips. */
-const TTS_CACHE_VER = 'v83';
+/** Bump: Fish Hakim mild clarity (vol 14 + gain 1.6) — kill quieter cached clips. */
+const TTS_CACHE_VER = 'v84';
 /**
  * Lesson Fish TTS only — mild gain + soft limiter (no HP/presence EQ).
  * Never applied to Quran Hudhaify.
  */
-const TTS_PLAYBACK_GAIN = 1.45;
+const TTS_PLAYBACK_GAIN = 1.6;
 /** Fish prosody for questions — snappy start, still natural (matches worker default). */
 const TTS_FISH_SPEED_QUESTION = 1.08;
 /** Fish prosody for answers/options/TF — slight bump so options feel brisk. */
@@ -4409,7 +4409,7 @@ function disconnectTtsAudioGraph() {
 }
 
 /**
- * Mild lesson Fish loudness via Web Audio (gain ~1.45 + soft limiter).
+ * Mild lesson Fish loudness via Web Audio (gain ~1.6 + soft limiter).
  * No highpass/presence EQ — those made v267 sound سيء. Quran Hudhaify must NOT call this.
  */
 function routeTtsThroughMildBoost(audioEl) {
