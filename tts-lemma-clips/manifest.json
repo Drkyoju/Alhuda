@@ -1,0 +1,47 @@
+{
+  "at": "2026-08-09T20:07:51.609Z",
+  "voice": "راوٍ عربي حكيم",
+  "note": "Pre-recorded Fish clips for ذباب lemmas. Live Fish Hakim often → دباب/دبابة; these clips were Whisper-verified PASS_ذ. UI display stays bare ذباب/قرب ذبابا.",
+  "clips": {
+    "ذباب": {
+      "bare": "ذباب",
+      "file": "dhubab.mp3",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "spoken": "الذَّالُ  ثُمَّ الذُّبَابُ  حَشَرَةٌ تَطِيرُ",
+      "source": "ذباب_dhubab",
+      "note": null
+    },
+    "قرب ذبابا": {
+      "bare": "قرب ذبابا",
+      "file": "qarraba_dhubaban.mp3",
+      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
+      "spoken": "الذَّالُ  ثُمَّ الذُّبَابُ  قَرَّبَ حَشَرَةً لِلصَّنَمِ",
+      "source": "قرب_ذبابا_qarraba_r3",
+      "note": null
+    },
+    "ذبابا": {
+      "bare": "ذبابا",
+      "file": "dhubaban.mp3",
+      "transcript": "الذال ثم الذباب حشرة تطير",
+      "spoken": "الذَّالُ  ثُمَّ الذُّبَابَ  حَشَرَةً تَطِيرُ",
+      "source": "ذبابا_r3",
+      "note": null
+    },
+    "قرب ذبابا لصنم": {
+      "bare": "قرب ذبابا لصنم",
+      "file": "qarraba_dhubaban_sanam.mp3",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "spoken": "الذَّالُ  ثُمَّ الذُّبَابُ  قَرَّبَ حَشَرَةً لِلصَّنَمِ",
+      "source": "قرب_ذبابا_لصنم_r2",
+      "note": null
+    },
+    "قرب ذبابا للصنم": {
+      "bare": "قرب ذبابا للصنم",
+      "file": "qarraba_dhubaban_sanam.mp3",
+      "transcript": "الذال تم الذباب قرب حشرة للصنم",
+      "spoken": "الذَّالُ  ثُمَّ الذُّبَابُ  قَرَّبَ حَشَرَةً لِلصَّنَمِ",
+      "source": "قرب_ذبابا_لصنم_r2",
+      "note": "alias_للصنم"
+    }
+  }
+}

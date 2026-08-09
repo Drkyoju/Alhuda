@@ -17,6 +17,7 @@ import {
   synthesizeFishArabicSpeech,
   DEFAULT_FISH_VOICE_ID,
 } from './fish-audio-tts.js';
+import { resolveLemmaTtsClip } from './lemma-tts-clips.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = __dirname;
@@ -228,6 +229,26 @@ app.post('/api/tts', async (req, res) => {
   const text = prepareFishTtsText(textRaw);
   if (!text) return sendJson(res, 400, { ok: false, error: 'Empty after punctuation strip' });
   if (text.length > TTS_MAX_CHARS) return sendJson(res, 400, { ok: false, error: 'Text too long' });
+
+  // Lemma clips first — ذباب etc. where live Fish Hakim mixes ذ/د with دباب/دبّابة.
+  const lemmaClip =
+    resolveLemmaTtsClip(textRaw) || resolveLemmaTtsClip(text) || null;
+  if (lemmaClip) {
+    res.status(200);
+    res.setHeader('Content-Type', 'audio/mpeg');
+    res.setHeader('Cache-Control', 'private, no-store');
+    res.setHeader('X-TTS-Provider', 'fish-lemma-clip');
+    res.setHeader('X-TTS-Model', 'lemma-clip');
+    res.setHeader('X-TTS-Voice', resolveFishVoiceId(null, env));
+    res.setHeader('X-TTS-Voice-Name', 'raawi-arabi-hakim');
+    res.setHeader('X-TTS-Quality', 'hq');
+    res.setHeader('X-TTS-Chars', String(text.length));
+    // ASCII-only header value (HTTP forbids non-Latin1 in header fields)
+    res.setHeader('X-TTS-Lemma', encodeURIComponent(lemmaClip.bare));
+    res.setHeader('X-TTS-Lemma-File', lemmaClip.file);
+    res.setHeader('X-TTS-Allah', 'fish-nfc-irab');
+    return res.send(fs.readFileSync(lemmaClip.absPath));
+  }
 
   if (!fishAudioConfigured(env)) {
     return sendJson(res, 503, { ok: false, error: 'Fish Audio not configured' });

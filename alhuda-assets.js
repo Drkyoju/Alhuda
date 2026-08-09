@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v307 dhubab dhaal-prime) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v308 dhubab lemma clips) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v307",
+  cache: "alhuda-v308",
   styles: 83,
   kidsUi: 15,
   enhancements: 18,
-  app: 268,
+  app: 269,
   platform: 21,
   auth: 16,
-  sw: 307,
+  sw: 308,
 };

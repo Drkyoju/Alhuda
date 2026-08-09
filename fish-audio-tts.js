@@ -720,9 +720,12 @@ export function prepareFishTtsText(text) {
   s = s.replace(/^عِبَادَةٌ$/u, 'هِيَ عِبَادَةٌ');
   // دم امرئ — micro-gaps (prep letters stay correct; helps clone not slur)
   s = s.replace(/دَمُ\s+امْرِئٍ\s+مُسْلِمٍ/g, 'دَمُ  امْرِئٍ  مُسْلِمٍ');
-  // قرب ذبابا — ذال-prime + ثُمَّ الذباب (تجنّب ذبابة≈دبابة؛ تُسَمَّى كان د دائماً)
+  // قرب ذبابا — short keys → lemma clips on server; carriers keep verified spoken form.
+  // Mid-sentence ذباب: منزل+طائرة (no fused ذباب/ذبابة → Fish دباب/دبّابة).
   const DHUBAB_QARRABA = 'الذَّالُ  ثُمَّ الذُّبَابُ  قَرَّبَ حَشَرَةً لِلصَّنَمِ';
   const DHUBAB_SHORT = 'الذَّالُ  ثُمَّ الذُّبَابُ  حَشَرَةٌ تَطِيرُ';
+  const DHUBAB_INLINE = 'حَشَرَةِ الْمَنْزِلِ الطَّائِرَةِ';
+  const DHUBAB_INLINE_ACC = 'حَشَرَةَ الْمَنْزِلِ الطَّائِرَةَ';
   s = s.replace(
     /قَرَّبَ\s+حَشَرَةَ\s+الذُّبَابِ\s+ذُبَابَةً\s+وَاحِدَةً\s+لِلصَّنَمِ/g,
     DHUBAB_QARRABA
@@ -744,19 +747,28 @@ export function prepareFishTtsText(text) {
     DHUBAB_QARRABA
   );
   s = s.replace(
-    /قَرَّبَ\s+ذُبَابًا\s+لِلصَّنَمِ/g,
+    /قَرَّبَ\s+ذُبَابًا\s+لِلصَّنَمِ/g,
     DHUBAB_QARRABA
   );
   s = s.replace(/قَرَّبَ\s+ذُبَابًا\s+لِصَنَمٍ/g, DHUBAB_QARRABA);
   s = s.replace(/قَرَّبَ\s+ذُبَابًا\s+لِصَنَمٍ/g, DHUBAB_QARRABA);
-  s = s.replace(/قرب\s+ذباباً?\s+لصنم/g, DHUBAB_QARRABA);
+  s = s.replace(/قرب\s+ذباباً?\s+لل?صنم/g, DHUBAB_QARRABA);
   s = s.replace(/قَرَّبَ\s+ذُبَابًا\s+وَاحِدًا\s+لِلصَّنَمِ/g, DHUBAB_QARRABA);
-  s = s.replace(/(^|[^\u0621-\u064A])ذُبَابًا(?=[^\u0621-\u064A]|$)/g, `$1${DHUBAB_SHORT}`);
-  s = s.replace(/(^|[^\u0621-\u064A])فِي\s+ذُبَابٍ/g, '$1فِي الذَّالِ ثُمَّ الذُّبَابِ');
-  s = s.replace(/(^|[^\u0621-\u064A])في\s+ذباب/g, '$1فِي الذَّالِ ثُمَّ الذُّبَابِ');
+  // Isolated ذبابا → short carrier (lemma clip); mid-sentence → منزل (no دبّابة)
+  s = s.replace(/^ذُبَابًا$/u, DHUBAB_SHORT);
+  s = s.replace(/(^|[^\u0621-\u064A])ذُبَابًا(?=[^\u0621-\u064A]|$)/g, `$1${DHUBAB_INLINE_ACC}`);
+  s = s.replace(/(^|[^\u0621-\u064A])فِي\s+ذُبَابٍ/g, `$1فِي ${DHUBAB_INLINE}`);
+  s = s.replace(/(^|[^\u0621-\u064A])في\s+ذباب/g, `$1فِي ${DHUBAB_INLINE}`);
+  s = s.replace(/(^|[^\u0621-\u064A])فِي\s+الذَّالِ\s+ثُمَّ\s+الذُّبَابِ/g, `$1فِي ${DHUBAB_INLINE}`);
+  s = s.replace(/(^|[^\u0621-\u064A])قِصَّةِ?\s+الذُّبَابِ/g, `$1قِصَّةِ ${DHUBAB_INLINE}`);
+  s = s.replace(/(^|[^\u0621-\u064A])حديث\s+الذباب/g, `$1حَدِيثِ ${DHUBAB_INLINE}`);
+  s = s.replace(/(^|[^\u0621-\u064A])حَدِيث[ٍِ]?\s+الذُّبَابِ/g, `$1حَدِيثِ ${DHUBAB_INLINE}`);
+  // Remaining bare الذباب not after ثُمَّ: منزل
+  s = s.replace(/(?<!ثُمَّ\s{0,2})(?<!ثم\s{0,2})الذُّبَاب[َُِ](?=[^\u0621-\u064A]|$)/g, DHUBAB_INLINE);
+  s = s.replace(/(?<!ثم\s{0,2})الذباب(?=[^\u0621-\u064A]|$)/g, DHUBAB_INLINE);
   s = s.replace(/^أَعْنِي\s+حَشَرَةً\s+تُسَمَّى\s+الذُّبَابَ$/u, DHUBAB_SHORT);
   s = s.replace(/^أَعْنِي\s+حَشَرَةً\s+تُسَمَّى\s+الذُّبَابَ$/u, DHUBAB_SHORT);
-  s = s.replace(/^أَعْنِي\s+حَشَرَةً\s+تُسَمَّى\s+الذُّبَابَةَ$/u, 'الذَّالُ  ثُمَّ الذُّبَابَ  حَشَرَةً');
+  s = s.replace(/^أَعْنِي\s+حَشَرَةً\s+تُسَمَّى\s+الذُّبَابَةَ$/u, 'الذَّالُ  ثُمَّ الذُّبَابَ  حَشَرَةً تَطِيرُ');
   // الشرك الأصغر — gap + sukun so أصغر≠أصدر
   s = s.replace(/الشِّرْكِ\s+الْأَصْغَر[َُِ]?/g, "الشِّرْكِ  الْأَصْغَرْ");
   s = s.replace(/الشِّرْكِ\s+الْأَصْغَر[َُِ]?/g, "الشِّرْكِ  الْأَصْغَرْ");
