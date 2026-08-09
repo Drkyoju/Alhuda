@@ -32,7 +32,7 @@ Cloudflare Workers removed — do not revive `archive/cloudflare/` deploy unless
 
 ### TTS
 Lesson speech goes through `/api/tts` → Fish (`FISH_API_KEY` + Hakim voice). Quran = Hudhaify only via `/api/quran-audio`.
-**Lemma clips:** `tts-lemma-clips/` — Whisper-verified Fish MP3s for stubborn lemmas (ذباب…). `/api/tts` serves them before live Fish when the bare key matches (`X-TTS-Provider: fish-lemma-clip`).
+**Lemma clips:** `tts-lemma-clips/` — Whisper-verified Fish MP3s for stubborn lemmas (ذباب…، لا ضرر ولا ضرار). `/api/tts` serves them before live Fish when the bare key matches (`X-TTS-Provider: fish-lemma-clip`).
 
 ### Auth
 - Prefer anonymous Supabase.

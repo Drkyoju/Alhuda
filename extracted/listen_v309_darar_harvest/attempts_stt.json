@@ -1,0 +1,78 @@
+{
+  "model": "small",
+  "n": 12,
+  "results": [
+    {
+      "file": "darar_r1.mp3",
+      "id": "darar_r1",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r10.mp3",
+      "id": "darar_r10",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r11.mp3",
+      "id": "darar_r11",
+      "transcript": "يعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r12.mp3",
+      "id": "darar_r12",
+      "transcript": "يعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r2.mp3",
+      "id": "darar_r2",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r3.mp3",
+      "id": "darar_r3",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r4.mp3",
+      "id": "darar_r4",
+      "transcript": "أعني قائدة لا ضرر على أحد ولا ضرر",
+      "ok": true
+    },
+    {
+      "file": "darar_r5.mp3",
+      "id": "darar_r5",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r6.mp3",
+      "id": "darar_r6",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r7.mp3",
+      "id": "darar_r7",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r8.mp3",
+      "id": "darar_r8",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r9.mp3",
+      "id": "darar_r9",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    }
+  ]
+}

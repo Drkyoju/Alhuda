@@ -1,0 +1,36 @@
+{
+  "model": "small",
+  "n": 5,
+  "results": [
+    {
+      "file": "stab_1.mp3",
+      "id": "stab_1",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "stab_2.mp3",
+      "id": "stab_2",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "stab_3.mp3",
+      "id": "stab_3",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "stab_4.mp3",
+      "id": "stab_4",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "stab_5.mp3",
+      "id": "stab_5",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    }
+  ]
+}

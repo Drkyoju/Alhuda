@@ -1,0 +1,28 @@
+{
+  "at": "2026-08-09T20:20:00Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "voice": "راوٍ عربي حكيم",
+  "version": "v309",
+  "status": "pending_live_whisper",
+  "method": "مقطع lemma مثبت Whisper لـ«لا ضرر ولا ضرار» + مقاطع ذباب كما في v308",
+  "fixes": [
+    "لا ضرر ولا ضرار → tts-lemma-clips/la_darara.mp3 (Fish مُختار؛ استقرار Whisper محلي 5/5 بلا اللاضر)",
+    "حاملة/خريطة نطق: فواصل بعد لا/ولا مع الإبقاء على نصب ضررَ وضرارَ؛ العرض على الشاشة بلا تغيير",
+    "ذباب clips دون مساس — إعادة تحقق مباشرة بعد النشر"
+  ],
+  "lemmaClips": {
+    "dir": "tts-lemma-clips/",
+    "providerHeader": "fish-lemma-clip",
+    "keys": ["ذباب", "ذبابا", "قرب ذبابا", "قرب ذبابا لصنم", "قرب ذبابا للصنم", "لا ضرر ولا ضرار"],
+    "darar": {
+      "file": "la_darara.mp3",
+      "localStability": "5/5 PASS_ضرر",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "spoken": "أَعْنِي قَاعِدَةَ: لَا،  ضَرَرَ  عَلَى أَحَدٍ،  وَلَا،  ضِرَارَ"
+    }
+  },
+  "displayUnchanged": true,
+  "irab": "نصب بلا النافية للجنس (ضَرَرَ / ضِرَارَ)",
+  "supabase": "لا PATCH — مسار نطق فقط",
+  "cache": "alhuda-v309"
+}

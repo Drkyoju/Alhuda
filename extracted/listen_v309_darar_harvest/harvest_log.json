@@ -1,0 +1,79 @@
+{
+  "log": [
+    {
+      "kind": "seed",
+      "id": "darar",
+      "verdict": "PASS_ضرر",
+      "transcript": "أعنيق عدة لا ضرر على أحد ولا ضرار"
+    },
+    {
+      "kind": "seed",
+      "id": "darar_r1",
+      "verdict": "PASS_ضرر",
+      "transcript": "عني قاعدة لا ضرر على أحد ولا ضرار"
+    },
+    {
+      "kind": "seed",
+      "id": "darar_r3",
+      "verdict": "PASS_ضرر",
+      "transcript": "عنيق عيدة لا ضرر على أحد ولا ضرار"
+    },
+    {
+      "kind": "seed",
+      "id": "darar_r4",
+      "verdict": "PASS_ضرر",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار"
+    },
+    {
+      "kind": "seed",
+      "id": "darar_r5",
+      "verdict": "PASS_ضرر",
+      "transcript": "عن قاعدة لا ضرر على أحد ولا ضرار"
+    },
+    {
+      "kind": "attempt",
+      "id": "darar_r1",
+      "verdict": "PASS_ضرر",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار"
+    }
+  ],
+  "winner": {
+    "bare": "لا ضرر ولا ضرار",
+    "file": "la_darara.mp3",
+    "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+    "spoken": "أَعْنِي قَاعِدَةَ: لَا،  ضَرَرَ  عَلَى أَحَدٍ،  وَلَا،  ضِرَارَ",
+    "source": "darar_r1",
+    "note": "PASS_ضرر × stability; نصب ضررَ/ضرارَ"
+  },
+  "stability": {
+    "pass": 5,
+    "total": 5,
+    "scored": [
+      {
+        "id": "stab_1",
+        "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+        "verdict": "PASS_ضرر"
+      },
+      {
+        "id": "stab_2",
+        "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+        "verdict": "PASS_ضرر"
+      },
+      {
+        "id": "stab_3",
+        "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+        "verdict": "PASS_ضرر"
+      },
+      {
+        "id": "stab_4",
+        "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+        "verdict": "PASS_ضرر"
+      },
+      {
+        "id": "stab_5",
+        "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+        "verdict": "PASS_ضرر"
+      }
+    ]
+  }
+}

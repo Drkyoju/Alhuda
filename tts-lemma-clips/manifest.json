@@ -1,7 +1,7 @@
 {
-  "at": "2026-08-09T20:07:51.609Z",
+  "at": "2026-08-09T20:18:39.400Z",
   "voice": "راوٍ عربي حكيم",
-  "note": "Pre-recorded Fish clips for ذباب lemmas. Live Fish Hakim often → دباب/دبابة; these clips were Whisper-verified PASS_ذ. UI display stays bare ذباب/قرب ذبابا.",
+  "note": "Pre-recorded Fish clips for stubborn lemmas (ذباب ذ/د؛ لا ضرر merge→اللاضر). Whisper-verified. UI display unchanged.",
   "clips": {
     "ذباب": {
       "bare": "ذباب",
@@ -42,6 +42,14 @@
       "spoken": "الذَّالُ  ثُمَّ الذُّبَابُ  قَرَّبَ حَشَرَةً لِلصَّنَمِ",
       "source": "قرب_ذبابا_لصنم_r2",
       "note": "alias_للصنم"
+    },
+    "لا ضرر ولا ضرار": {
+      "bare": "لا ضرر ولا ضرار",
+      "file": "la_darara.mp3",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "spoken": "أَعْنِي قَاعِدَةَ: لَا،  ضَرَرَ  عَلَى أَحَدٍ،  وَلَا،  ضِرَارَ",
+      "source": "darar_r1",
+      "note": "PASS_ضرر × stability; نصب ضررَ/ضرارَ"
     }
   }
 }

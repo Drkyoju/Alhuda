@@ -1,0 +1,30 @@
+{
+  "pass": 5,
+  "scored": [
+    {
+      "id": "stab_1",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    },
+    {
+      "id": "stab_2",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    },
+    {
+      "id": "stab_3",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    },
+    {
+      "id": "stab_4",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    },
+    {
+      "id": "stab_5",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "verdict": "PASS_ضرر"
+    }
+  ]
+}

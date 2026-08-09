@@ -1,0 +1,36 @@
+{
+  "model": "small",
+  "n": 5,
+  "results": [
+    {
+      "file": "darar.mp3",
+      "id": "darar",
+      "transcript": "أعنيق عدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r1.mp3",
+      "id": "darar_r1",
+      "transcript": "عني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r3.mp3",
+      "id": "darar_r3",
+      "transcript": "عنيق عيدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r4.mp3",
+      "id": "darar_r4",
+      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "darar_r5.mp3",
+      "id": "darar_r5",
+      "transcript": "عن قاعدة لا ضرر على أحد ولا ضرار",
+      "ok": true
+    }
+  ]
+}

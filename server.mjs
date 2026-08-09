@@ -230,7 +230,7 @@ app.post('/api/tts', async (req, res) => {
   if (!text) return sendJson(res, 400, { ok: false, error: 'Empty after punctuation strip' });
   if (text.length > TTS_MAX_CHARS) return sendJson(res, 400, { ok: false, error: 'Text too long' });
 
-  // Lemma clips first — ذباب etc. where live Fish Hakim mixes ذ/د with دباب/دبّابة.
+  // Lemma clips first — ذباب (ذ/د→دباب) and لا ضرر (merge→اللاضر) where live Fish is unreliable.
   const lemmaClip =
     resolveLemmaTtsClip(textRaw) || resolveLemmaTtsClip(text) || null;
   if (lemmaClip) {
