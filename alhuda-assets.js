@@ -1,4 +1,4 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v311 no-cache bank/speech maps; haraka audit from v310) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v312 path-bust questions-bank; haraka audit) */
 window.ALHUDA_ASSETS = {
   cache: "alhuda-v312",
   styles: 83,
