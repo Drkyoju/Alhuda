@@ -87,6 +87,22 @@ export { bareArabicKey, SHORT_SPEECH_CARRIERS, applyShortSpeechCarriers };
  */
 export const HIJRI_YEAR_SPEECH = 'هِجْرِيَّة';
 
+/** Spoken year bodies for ultra-short MC year options (digits alone confuse Fish/Whisper). */
+const HIJRI_YEAR_WORDS = Object.freeze({
+  '1115': 'أَلْفٍ وَمِائَةٍ وَخَمْسَةَ عَشَرَ',
+  '1150': 'أَلْفٍ وَمِائَةٍ وَخَمْسِينَ',
+  '1100': 'أَلْفٍ وَمِائَةٍ',
+  '1206': 'أَلْفٍ وَمِائَتَيْنِ وَسِتٍّ',
+  '1300': 'أَلْفٍ وَثَلَاثِمِائَةٍ',
+});
+
+function padHijriYearUtterance(yearToken) {
+  const w = HIJRI_YEAR_WORDS[yearToken];
+  return w
+    ? `أَعْنِي عَامَ ${w} هِجْرِيَّةً`
+    : `أَعْنِي عَامَ ${yearToken} هِجْرِيَّةً`;
+}
+
 export function expandHijriYearForSpeech(text) {
   let s = String(text || '');
   // 1115 ه / 1206هـ / ١١١٥ه — not «1206 هجرية» (negative lookahead on ج)
@@ -96,6 +112,10 @@ export function expandHijriYearForSpeech(text) {
   );
   // Lone «هـ» (tatweel form) after non-letter — not inside الله
   s = s.replace(/(^|[^\u0621-\u064A])ه\u0640(?=[^\u0621-\u064A]|$)/g, `$1${HIJRI_YEAR_SPEECH}`);
+  // Ultra-short year-only MC options — pad (+ Arabic year words when known)
+  s = s.replace(/^([0-9٠-٩]{2,4})\s+هِجْرِيَّةً?$/u, (_, y) => padHijriYearUtterance(y));
+  s = s.replace(/^([0-9٠-٩]{2,4})\s+هجرية$/u, (_, y) => padHijriYearUtterance(y));
+  s = s.replace(/^أَعْنِي\s+عَامَ\s+([0-9٠-٩]{2,4})\s+هِجْرِيَّةً?$/u, (_, y) => padHijriYearUtterance(y));
   return s;
 }
 
@@ -656,6 +676,21 @@ export function prepareFishTtsText(text) {
   // أنواط short phrase — contextual carrier شجرة (same lesson sense)
   s = s.replace(/^ذَاتِ\s+أَنْوَاطْ\s+كَانَتْ$/u, 'شَجَرَةُ ذَاتِ أَنْوَاطْ كَانَتْ');
   s = s.replace(/^ذَات[َُِ]?\s+أَنْوَاطْ?\s+كَانَتْ$/u, 'شَجَرَةُ ذَاتِ أَنْوَاطْ كَانَتْ');
+  // CranL STT hardFails: strengthen residual shorts (Fish mangles bare/أَعْنِي-only)
+  s = s.replace(/^هِيَ\s+سَبْعَةٌ$/u, 'أَعْنِي أَنَّهَا سَبْعَةٌ');
+  s = s.replace(/^أَعْنِي\s+الصَّابِئَةَ$/u, 'أَعْنِي طَائِفَةَ الصَّابِئَةِ');
+  // year-only leftovers → Arabic year words when mapped
+  s = s.replace(
+    /^أَعْنِي\s+عَامَ\s+([0-9٠-٩]{2,4})\s+هِجْرِيَّةً?$/u,
+    (_, y) => {
+      const w = HIJRI_YEAR_WORDS[y];
+      return w ? `أَعْنِي عَامَ ${w} هِجْرِيَّةً` : `أَعْنِي عَامَ ${y} هِجْرِيَّةً`;
+    }
+  );
+  s = s.replace(/^([0-9٠-٩]{2,4})\s+هِجْرِيَّةً?$/u, (_, y) => {
+    const w = HIJRI_YEAR_WORDS[y];
+    return w ? `أَعْنِي عَامَ ${w} هِجْرِيَّةً` : `أَعْنِي عَامَ ${y} هِجْرِيَّةً`;
+  });
   // عقبة بن عامر — reinforce micro-gaps (also set earlier; re-assert after strip)
   s = s.replace(/عُقْبَةُ\s+بْنُ\s+عَامِرٍ/g, 'عُقْبَةُ  بْنُ  عَامِرٍ');
   // أن تعبد الله — residual تعبو/دلله: clear mansub + gap before الله

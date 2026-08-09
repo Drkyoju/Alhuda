@@ -42,6 +42,8 @@ function bumpApiError(kind, code) {
 const POPULAR_QURAN_VERSES = [
   '51:56', '4:48', '6:82', '2:256', '3:175', '47:19', '74:1', '16:125', '27:62', '9:31',
   '6:162', '1:2', '108:2', '96:1', '53:19', '6:57', '7:138', '41:53', '2:102', '4:142',
+  // Extra high-frequency lesson ayahs (warm on boot via /api/quran-warm)
+  '2:21', '2:163', '4:36', '4:116', '5:72', '18:110', '39:3', '98:5', '112:1', '112:2',
 ];
 
 const QURAN_RECITER_CDN = {
@@ -365,9 +367,20 @@ app.use(express.static(ROOT, {
   index: 'index.html',
   fallthrough: true,
   setHeaders(res, filePath) {
-    if (filePath.endsWith('service-worker.js')) {
+    const base = path.basename(filePath);
+    if (base === 'service-worker.js') {
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Service-Worker-Allowed', '/');
+      return;
+    }
+    // HTML always revalidate (SPA shell + version pointers).
+    if (base.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache');
+      return;
+    }
+    // Fingerprinted assets (?v= in index.html) — long cache OK.
+    if (/\.(?:js|css|woff2?|ttf|otf|png|jpe?g|webp|svg|ico|mp3)$/i.test(base)) {
+      res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
     }
   },
 }));
@@ -380,6 +393,7 @@ app.get('*', (req, res) => {
   if (!fs.existsSync(indexPath)) {
     return res.status(500).send('index.html missing');
   }
+  res.setHeader('Cache-Control', 'no-cache');
   res.sendFile(indexPath);
 });
 

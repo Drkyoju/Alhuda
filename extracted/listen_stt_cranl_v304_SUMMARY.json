@@ -1,0 +1,51 @@
+{
+  "at": "2026-08-09T14:40:33.763Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "voice": "راوٍ عربي حكيم",
+  "runtime": "cranl-node",
+  "books": {
+    "usool": {
+      "questions": 73,
+      "qPass": 73,
+      "optionsPass": 272,
+      "clips": 345,
+      "pass": 345,
+      "fail": 0,
+      "hardFail": 0
+    },
+    "nawawi": {
+      "questions": 184,
+      "qPass": 184,
+      "optionsPass": 674,
+      "clips": 858,
+      "pass": 858,
+      "fail": 0,
+      "hardFail": 0
+    },
+    "tawheed": {
+      "questions": 338,
+      "qPass": 338,
+      "optionsPass": 1294,
+      "clips": 1632,
+      "pass": 1632,
+      "fail": 0,
+      "hardFail": 0
+    }
+  },
+  "totals": {
+    "clips": 2835,
+    "pass": 2835,
+    "fail": 0,
+    "q": 595,
+    "options": 2240
+  },
+  "coveragePct": 100,
+  "note": "Full bank q+options via CranL /api/tts Fish Hakim + Whisper. Speech carriers for hijri years, سبعة, صابئة, نطق باللسان. Not a 100% scholarly iʿrāb guarantee.",
+  "fixesShipped": [
+    "hijri year-only MC → أعني عام + Arabic year words",
+    "سبعة/صابئة carriers strengthened",
+    "النطق باللسان carrier",
+    "static Cache-Control on CranL server",
+    "SW/version v304"
+  ]
+}
