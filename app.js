@@ -1694,7 +1694,7 @@ function toggleSound() {
 const TTS_FISH_HAKIM = 'aa9c8260269c411d9863ab1b1bfa3158';
 let TTS_VOICE = TTS_FISH_HAKIM;
 /** Bump: Fish Hakim mild loudness — kill quiet/muffled cached clips. */
-const TTS_CACHE_VER = 'v82';
+const TTS_CACHE_VER = 'v83';
 /**
  * Lesson Fish TTS only — mild gain + soft limiter (no HP/presence EQ).
  * Never applied to Quran Hudhaify.
