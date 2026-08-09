@@ -173,6 +173,7 @@ const fnNames = [
   'scrubSpeechDiacriticsNoise',
   'sanitizeTtsText',
   'hasWellFormedTashkeel',
+  'hasBareArabicWords',
   'fixDetachedHarakat',
   'hasOcrTashkeelGaps',
   'hasSoftOcrLetterBreaks',
@@ -195,6 +196,8 @@ const fnNames = [
   'speechPart',
   'buildQuestionOptionSpeechList',
   'buildQuestionSpeechParts',
+  'normalizeQuotedLessonStemForSpeech',
+  'fixLessonHadithPronunciation',
   'prepareTtsPayload',
 ];
 

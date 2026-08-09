@@ -1,0 +1,208 @@
+{
+  "at": "2026-08-09T20:44:57.694Z",
+  "versionTarget": "v310+",
+  "auditOnly": true,
+  "coverage": {
+    "questions": 595,
+    "uniqueBareWords": 3095,
+    "display": {
+      "fields": 3376,
+      "words": 16021,
+      "bare": 15975,
+      "marked": 46
+    },
+    "speech": {
+      "fields": 3348,
+      "words": 15977,
+      "bare": 834,
+      "marked": 15143,
+      "wordingMismatch": 0,
+      "weakSpeech": 0,
+      "phraseMapSize": 3108
+    },
+    "ocrResidual": [],
+    "irabPatternHits": 0,
+    "irabSamples": [],
+    "allahForms": {
+      "nominative": 141,
+      "genitive": 291,
+      "accusative": 75,
+      "bare": 0,
+      "other": 0
+    },
+    "fishSpot": {
+      "checked": 80,
+      "severeDrift": 0
+    }
+  },
+  "verify": {
+    "checked": 595,
+    "wordingMismatches": 0,
+    "weakTashkeel": 0,
+    "missingIds": 0,
+    "abadBad": 0,
+    "allahBad": 0
+  },
+  "scholarResidual": [
+    {
+      "ids": [
+        "30e67e81-85f8-44e0-abee-f4c482fa9a03"
+      ],
+      "item": "تصوير ذوات الأرواح",
+      "note": "حكم «حرام» وفق منهج الكتاب؛ خلاف الصور غير المجسّمة معاصر — لم يُختَرع حكم."
+    },
+    {
+      "ids": [
+        "34f0da6e-4ab8-4721-b1eb-1105c59d76f2"
+      ],
+      "item": "التوسل بجاه النبي",
+      "note": "«بدعة لا تجوز» وفق المقرر النجدي؛ خلاف مذهبي معروف."
+    },
+    {
+      "ids": [
+        "6b5e357b-2337-4685-ae2c-804d957878ea"
+      ],
+      "item": "تقسيم البدعة حسنة/سيئة",
+      "note": "نفيه متسق مع «كل بدعة ضلالة» في المقرر؛ تُرك."
+    },
+    {
+      "ids": [
+        "213fc1f9-d919-4153-b28a-6e53cb13acce"
+      ],
+      "item": "تعلّم السحر كفر",
+      "note": "موافق لباب الكتاب؛ تفصيل أنواع السحر للمراجع."
+    },
+    {
+      "ids": [
+        "4bf4fd9c-e6d5-4550-b476-2f86353dd123"
+      ],
+      "item": "الحكم بغير ما أنزل الله",
+      "note": "يحتاج ضبط أكبر/أصغر عند الاشتباه مع مراجع."
+    },
+    {
+      "ids": [],
+      "item": "حالات إضافة ملتبسة (ركن/مرتبة/وجوب + اسم)",
+      "note": "عند تعارض قراءات المصحف/الكتب اترك للعالم — لا اختراع حركة."
+    },
+    {
+      "ids": [],
+      "item": "ذباب / قرب ذبابا (Fish)",
+      "note": "مغطى بـ lemma clips (v308–v309)؛ STT كان يسمع دباب — العرض بلا تغيير."
+    },
+    {
+      "ids": [],
+      "item": "لا ضرر ولا ضرار (Fish دمج لا+ضرر)",
+      "note": "مقطع lemma مثبت؛ الإعراب المنطوق نصب؛ العرض بلا تشكيل إضافي."
+    }
+  ],
+  "honestScope": {
+    "ar": "«كل حركة وكل كلمة» في هذا المرور = تغطية آلية كاملة لـ595 سؤالاً (عرض+خريطة نطق+قواعد إعراب عالية الثقة+استماع للعبارات الهشة الموثّقة). ليست مراجعة عالم بشري حرفاً حرفاً لكل تشكيل في الخريطة.",
+    "displayPolicy": "شاشة الدرس بلا تشكيل؛ التشكيل في مسار النطق (SPEECH_BY_QUESTION_ID / خرائط / scrub / allah-irab / حاملات / lemma clips).",
+    "methods": [
+      "programmatic OCR/glue",
+      "rule-based iʿrāb",
+      "speech↔bank wording sync",
+      "prior listen STT residuals v305–v309",
+      "allah-irab consistency"
+    ]
+  },
+  "final": {
+    "at": "2026-08-09T20:46:00Z",
+    "base": "https://alhuda-zi6bbd.cranl.net",
+    "voice": "راوٍ عربي حكيم",
+    "version": "v310",
+    "mandate": "ابغا كل حركه وكل كلمة — exhaustive haraka/word audit",
+    "coverage": {
+      "questions": 595,
+      "displayFields": 3376,
+      "displayWords": 16021,
+      "uniqueBareWords": 3095,
+      "speechFields": 3348,
+      "speechWords": 15977,
+      "speechMarkedWords": 15143,
+      "verifyWordingMismatches": 0,
+      "verifyWeakTashkeel": 0,
+      "verifyAllahBad": 0,
+      "ocrResidualDisplay": 0
+    },
+    "fixes": {
+      "bankOcrDisplay": {
+        "count": 8,
+        "examples": [
+          "جميعاًلأعمال → جميع الأعمال (عدة أسئلة توحيد)",
+          "جميعاًلعمل → جميع العمل",
+          "بإخالص → بإخلاص + إزالة نقطة OCR في اقتباس تعريف التوحيد",
+          "اقتباس مؤلف كتاب التوحيد: رمحه/تعاىل/زوائد معلمة → رحمه الله تعالى (مختصر)"
+        ],
+        "sql": "extracted/exhaustive_haraka_supabase.sql",
+        "supabase": "لا SUPABASE_KEY في البيئة — SQL جاهز؛ لا تُرفع أسرار"
+      },
+      "speechResync": {
+        "wordingFixed": 450,
+        "note": "بعد إصلاح الفوائد النووية (شرعي) كانت خريطة النطق تتكلم نصاً قديماً — رُمزت من البنك"
+      },
+      "speechIrab": {
+        "ruleHits": 30,
+        "allahIrabMapPass": 69,
+        "examples": [
+          "عَلَى الْمُسْلِمُ → عَلَى الْمُسْلِمِ",
+          "عَلَى الْإِخْلَاصُ → عَلَى الْإِخْلَاصِ",
+          "إِلَى التَّوْحِيدُ → إِلَى التَّوْحِيدِ",
+          "نَعَمْ، الْإِيمَانِ ب → نَعَمْ، الْإِيمَانُ ب",
+          "إِنَّ اللَّهُ → إِنَّ اللَّهَ (خريطة + allah-irab وقت التشغيل)"
+        ],
+        "runtimeScrub": "app.js + collect_tts_strings.mjs"
+      }
+    },
+    "listenFragile": {
+      "preDeployLiveStillV309Clips": {
+        "لا ضرر ولا ضرار": "2/2 PASS_ضرر (lemma-clip)",
+        "ذباب": "2/2 PASS_ذ",
+        "ذبابا": "2/2 PASS_ذ",
+        "قرب ذبابا": "2/2 PASS_ذ",
+        "قرب ذبابا لصنم": "2/2 PASS_ذ"
+      },
+      "evidence": "extracted/listen_v309_fragile/score.json"
+    },
+    "scholarResidual": [
+      {
+        "id": "30e67e81-85f8-44e0-abee-f4c482fa9a03",
+        "item": "تصوير ذوات الأرواح",
+        "note": "خلاف الصور غير المجسّمة معاصر — لم يُختَرع حكم."
+      },
+      {
+        "id": "34f0da6e-4ab8-4721-b1eb-1105c59d76f2",
+        "item": "التوسل بجاه النبي",
+        "note": "خلاف مذهبي؛ المقرر النجدي متروك كما هو."
+      },
+      {
+        "id": "6b5e357b-2337-4685-ae2c-804d957878ea",
+        "item": "تقسيم البدعة حسنة/سيئة",
+        "note": "متسق مع «كل بدعة ضلالة» في المقرر."
+      },
+      {
+        "id": "213fc1f9-d919-4153-b28a-6e53cb13acce",
+        "item": "تعلّم السحر كفر",
+        "note": "تفصيل أنواع السحر للمراجع."
+      },
+      {
+        "id": "4bf4fd9c-e6d5-4550-b476-2f86353dd123",
+        "item": "الحكم بغير ما أنزل الله",
+        "note": "ضبط أكبر/أصغر عند الاشتباه."
+      },
+      {
+        "id": null,
+        "item": "إضافة ملتبسة (ركن/مرتبة/وجوب + اسم)",
+        "note": "اترك للعالم إن تعارضت قراءات — لا اختراع حركة."
+      },
+      {
+        "id": null,
+        "item": "تشكيل كلمة بكلمة لكل 15k+ كلمة منطوقة",
+        "note": "ليس مراجعة عالم بشري لكل حركة؛ التغطية آلية+قواعد+استماع هش."
+      }
+    ],
+    "honestEveryHaraka": "بعد هذا المرور: كل حقول الدرس (595× سؤال/خيارات/شرح/اقتباس) فُحصت برمجياً؛ مسار النطق مُزامَن مع العرض (0 اختلاف صياغة)؛ قواعد إعراب عالية الثقة + allah-irab؛ استماع Whisper للعبارات الهشة. ليست شهادة عالم أن كل تنوين/إعراب في الخريطة معصوم.",
+    "displayPolicy": "الشاشة بلا تشكيل؛ التشكيل في TTS (خرائط/scrub/حاملات/lemma clips).",
+    "cache": "alhuda-v310"
+  }
+}
