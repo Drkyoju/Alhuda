@@ -29,7 +29,7 @@ const exportIdx = args.indexOf('--export');
 const exportDir = exportIdx >= 0 ? args[exportIdx + 1] : null;
 const providerArg = args.includes('--provider') ? args[args.indexOf('--provider') + 1] : 'worker';
 const provider = ['edge', 'elevenlabs', 'worker', 'fish'].includes(providerArg) ? providerArg : 'worker';
-const ttsUrl = (process.env.TTS_URL || 'https://alhuda.ryodan71.workers.dev').replace(/\/$/, '');
+const ttsUrl = (process.env.TTS_URL || 'https://alhuda-zi6bbd.cranl.net').replace(/\/$/, '');
 const delayArg = args.indexOf('--delay');
 const delayMs =
   delayArg >= 0

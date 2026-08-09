@@ -1,5 +1,5 @@
 # Deploy / redeploy Alhuda on CranL (Dockerfile → server.mjs).
-# Cloudflare workflow stays active until cutover checklist is 100% green.
+# Sole production deploy path (Cloudflare Workers removed).
 #
 # Required GitHub secrets (Settings → Secrets → Actions):
 #   CRANL_API_KEY  — from https://app.cranl.com/ → Settings → API Keys (cranl_sk_…)

@@ -1,11 +1,11 @@
 /**
- * API smoke tests against a live deploy (CranL preferred, Cloudflare still supported).
- * Default LIVE_API_BASE → CranL staging. Override with LIVE_API_BASE or use npm run test:api:cf.
+ * API smoke tests against the live CranL deploy.
+ * Default LIVE_API_BASE → https://alhuda-zi6bbd.cranl.net
  */
 const { test, expect } = require('@playwright/test');
 
 const LIVE = process.env.LIVE_API_BASE
-  || (process.env.BASE_URL && /(workers\.dev|cranl\.net|alhuda)/i.test(process.env.BASE_URL) ? process.env.BASE_URL : '')
+  || (process.env.BASE_URL && /(cranl\.net|alhuda)/i.test(process.env.BASE_URL) ? process.env.BASE_URL : '')
   || 'https://alhuda-zi6bbd.cranl.net';
 
 const HAKIM_VOICE_ID = 'aa9c8260269c411d9863ab1b1bfa3158';
@@ -13,7 +13,7 @@ const runLive = !!LIVE && process.env.SKIP_LIVE_API !== '1';
 const base = LIVE.replace(/\/$/, '');
 
 test.describe('Live deploy APIs', () => {
-  test.skip(!runLive, 'Set LIVE_API_BASE (or use cranl.net / workers.dev BASE_URL)');
+  test.skip(!runLive, 'Set LIVE_API_BASE (or use cranl.net BASE_URL)');
 
   test('GET /api/tts-status reports provider', async ({ request }) => {
     const res = await request.get(`${base}/api/tts-status`);

@@ -10,7 +10,6 @@
     "test:e2e": "playwright test tests/e2e-login.spec.js",
     "test:api": "playwright test tests/api-live.spec.js",
     "test:api:cranl": "LIVE_API_BASE=https://alhuda-zi6bbd.cranl.net playwright test tests/api-live.spec.js",
-    "test:api:cf": "LIVE_API_BASE=https://alhuda.ryodan71.workers.dev playwright test tests/api-live.spec.js",
     "test:tts-order": "playwright test tests/tts-order.spec.js",
     "check:baked-tts": "node scripts/check_baked_tts_coverage.mjs",
     "bump:version": "node scripts/bump_version.mjs --all",
@@ -22,8 +21,7 @@
     "bake:tts:fish": "node scripts/bake_tts_audio.mjs --provider fish",
     "bake:tts:edge": "node scripts/bake_tts_audio.mjs --provider edge",
     "bake:tts:sample": "node scripts/bake_tts_audio.mjs --provider fish --limit 10",
-    "lighthouse": "npx lighthouse https://alhuda-zi6bbd.cranl.net --only-categories=performance,accessibility,best-practices --chrome-flags='--headless' --output=json --output-path=./lighthouse-report.json",
-    "lighthouse:cf": "npx lighthouse https://alhuda.ryodan71.workers.dev --only-categories=performance,accessibility,best-practices --chrome-flags='--headless' --output=json --output-path=./lighthouse-report.json"
+    "lighthouse": "npx lighthouse https://alhuda-zi6bbd.cranl.net --only-categories=performance,accessibility,best-practices --chrome-flags='--headless' --output=json --output-path=./lighthouse-report.json"
   },
   "dependencies": {
     "express": "^4.22.2"

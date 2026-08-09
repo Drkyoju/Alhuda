@@ -1,7 +1,6 @@
 /**
- * CranL / Docker production server — parity with Cloudflare worker.js.
+ * CranL / Docker production server (sole host). Historical CF Worker: archive/cloudflare/worker.js.
  * Serves the static SPA + critical API routes (Fish TTS, Quran, student-creds).
- * Cutover: CranL primary when checklist in README_CRANL.md is green; CF kept until then.
  */
 import crypto from 'node:crypto';
 import fs from 'node:fs';

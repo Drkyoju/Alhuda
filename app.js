@@ -3567,7 +3567,7 @@ function updateFeedbackSpeakBtn(show) {
   btn.style.display = show === false ? 'none' : '';
 }
 
-/* ── Quran recitation (الحذيفي فقط — عبر بروكسي Cloudflare + prefetch) ── */
+/* ── Quran recitation (الحذيفي فقط — عبر /api/quran-audio + prefetch) ── */
 const QURAN_RECITERS = {
   hudhaify: {
     key: 'hudhaify',
@@ -3799,7 +3799,7 @@ function getQuranRecitationUrls(verseKey) {
   if (!surah || !ayah) return [];
   const reciter = getActiveQuranReciter();
   const urls = [];
-  // Prefer Cloudflare Worker edge cache proxy.
+  // Prefer same-origin /api/quran-audio proxy (CranL).
   urls.push(`/api/quran-audio?surah=${surah}&ayah=${ayah}&reciter=${encodeURIComponent(reciter.key)}`);
   const globalNum = verseKeyToGlobalAyahNum(verseKey);
   if (globalNum) {
