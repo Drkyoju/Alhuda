@@ -1,0 +1,119 @@
+[
+  {
+    "id": "darar",
+    "bare": "لا ضرر ولا ضرار",
+    "prep": "لَا ضَرَرَ وَلَا ضِرَارَ",
+    "provider": "fish",
+    "transcript": "لا ضرر ولا ضرار",
+    "inventBad": false,
+    "stem": "PASS_ضرر"
+  },
+  {
+    "id": "dhubab",
+    "bare": "ذباب",
+    "prep": "ذُبَابٌ",
+    "provider": "fish",
+    "transcript": "زوبابون",
+    "inventBad": false,
+    "stem": "no_stem"
+  },
+  {
+    "id": "dhubaban",
+    "bare": "ذبابا",
+    "prep": "ذُبَابًا",
+    "provider": "fish",
+    "transcript": "دوبابن",
+    "inventBad": false,
+    "stem": "no_stem"
+  },
+  {
+    "id": "qarraba_sanam",
+    "bare": "قرب ذبابا لصنم",
+    "prep": "قَرَّبَ ذُبَابًا لِصَنَمٍ",
+    "provider": "fish",
+    "transcript": "قرب دبابا لصنم",
+    "inventBad": false,
+    "stem": "FAIL_د"
+  },
+  {
+    "id": "ibn_masud",
+    "bare": "ابن مسعود",
+    "prep": "ابْنُ مَسْعُودٍ",
+    "provider": "fish",
+    "transcript": "ابن مسعود",
+    "inventBad": false,
+    "stem": "PASS_مسعود"
+  },
+  {
+    "id": "anwat",
+    "bare": "ذات أنواط",
+    "prep": "ذَاتِ أَنْوَاطْ",
+    "provider": "fish",
+    "transcript": "ذات أنواط",
+    "inventBad": false,
+    "stem": "ok_generic"
+  },
+  {
+    "id": "hijri",
+    "bare": "1206 ه",
+    "prep": "أَلْفٍ وَمِائَتَيْنِ وَسِتٍّ هِجْرِيَّةً",
+    "provider": "fish",
+    "transcript": "الف ومائتين وستهجرية",
+    "inventBad": false,
+    "stem": "PASS_هجرية"
+  },
+  {
+    "id": "ahl_yaman",
+    "bare": "أهل اليمن",
+    "prep": "أَهْلَ الْيَمَنِ",
+    "provider": "fish",
+    "transcript": "أهل اليمان",
+    "inventBad": false,
+    "stem": "ok_generic"
+  },
+  {
+    "id": "sah",
+    "bare": "صح",
+    "prep": "صَحْ",
+    "provider": "fish",
+    "transcript": "صح",
+    "inventBad": false,
+    "stem": "ok_generic"
+  },
+  {
+    "id": "allah",
+    "bare": "الله",
+    "prep": "اللَّهُ",
+    "provider": "fish",
+    "transcript": "الله",
+    "inventBad": false,
+    "stem": "ok_generic"
+  },
+  {
+    "id": "r1",
+    "bare": "الشرك الأكبر",
+    "prep": "الشرك الأكبر",
+    "provider": "fish",
+    "transcript": "أشرك الأكبر",
+    "inventBad": false,
+    "stem": "ok_generic"
+  },
+  {
+    "id": "r2",
+    "bare": "لا إله إلا الله",
+    "prep": "لَا إِلَٰهَ إِلَّا اللَّهُ",
+    "provider": "fish",
+    "transcript": "لا إله إلا الله",
+    "inventBad": false,
+    "stem": "ok_generic"
+  },
+  {
+    "id": "r3",
+    "bare": "الرياء",
+    "prep": "الرِّيَاءَ",
+    "provider": "fish",
+    "transcript": "أريا",
+    "inventBad": false,
+    "stem": "ok_generic"
+  }
+]

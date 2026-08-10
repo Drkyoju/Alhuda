@@ -1,0 +1,84 @@
+{
+  "model": "small",
+  "n": 13,
+  "results": [
+    {
+      "file": "ahl_yaman.mp3",
+      "id": "ahl_yaman",
+      "transcript": "أهل اليمان",
+      "ok": true
+    },
+    {
+      "file": "allah.mp3",
+      "id": "allah",
+      "transcript": "الله",
+      "ok": true
+    },
+    {
+      "file": "anwat.mp3",
+      "id": "anwat",
+      "transcript": "ذات أنواط",
+      "ok": true
+    },
+    {
+      "file": "darar.mp3",
+      "id": "darar",
+      "transcript": "لا ضرر ولا ضرار",
+      "ok": true
+    },
+    {
+      "file": "dhubab.mp3",
+      "id": "dhubab",
+      "transcript": "زوبابون",
+      "ok": true
+    },
+    {
+      "file": "dhubaban.mp3",
+      "id": "dhubaban",
+      "transcript": "دوبابن",
+      "ok": true
+    },
+    {
+      "file": "hijri.mp3",
+      "id": "hijri",
+      "transcript": "الف ومائتين وستهجرية",
+      "ok": true
+    },
+    {
+      "file": "ibn_masud.mp3",
+      "id": "ibn_masud",
+      "transcript": "ابن مسعود",
+      "ok": true
+    },
+    {
+      "file": "qarraba_sanam.mp3",
+      "id": "qarraba_sanam",
+      "transcript": "قرب دبابا لصنم",
+      "ok": true
+    },
+    {
+      "file": "r1.mp3",
+      "id": "r1",
+      "transcript": "أشرك الأكبر",
+      "ok": true
+    },
+    {
+      "file": "r2.mp3",
+      "id": "r2",
+      "transcript": "لا إله إلا الله",
+      "ok": true
+    },
+    {
+      "file": "r3.mp3",
+      "id": "r3",
+      "transcript": "أريا",
+      "ok": true
+    },
+    {
+      "file": "sah.mp3",
+      "id": "sah",
+      "transcript": "صح",
+      "ok": true
+    }
+  ]
+}
