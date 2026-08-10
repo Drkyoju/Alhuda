@@ -1,4 +1,4 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v318: abort current-Q TTS kick on navigate) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v319: abort current-Q TTS kick on navigate) */
 window.ALHUDA_ASSETS = {
   cache: "alhuda-v319",
   styles: 85,
