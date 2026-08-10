@@ -1,0 +1,104 @@
+{
+  "at": "2026-08-10T12:55:00Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "version": "v320",
+  "mandate": "spoken = written (+ tashkeel/iʿrāb/NFC/allah-irab/ه→هجرية only); no inventing paraphrases",
+  "coverage": {
+    "questions": 595,
+    "speechIds": 595,
+    "verifyWordingMismatches": 0,
+    "verifyWeakTashkeel": 0,
+    "verifyAllahBad": 0,
+    "missingIds": 0,
+    "fishSpotSevereDrift": 0
+  },
+  "fidelity": {
+    "carriers": {
+      "total": 423,
+      "inventingBefore": 385,
+      "inventingAfter": 0,
+      "note": "SHORT_SPEECH_CARRIERS rewritten: same bare words + تَشْكِيل only"
+    },
+    "phraseMap": {
+      "fixed": 142,
+      "remainingInventing": 0
+    },
+    "lexicon": {
+      "fixed": 21
+    },
+    "prepareFishTtsText": {
+      "removed": [
+        "أعني… pads",
+        "الذال ثم الذباب حشرة…",
+        "شجرة ذات أنواط when display is أنواط alone",
+        "عبد الله بن مسعود when display is ابن مسعود",
+        "إقليم/بلاد inventing for أهل اليمن",
+        "أعني عام before hijri year words"
+      ],
+      "kept": [
+        "ه→هجرية abbreviation expand",
+        "digit→Arabic year words when mapped",
+        "NFC / shadda+vowel order",
+        "allah-irab",
+        "systematic case endings",
+        "OCR/tashkeel fixes that do not add content words"
+      ]
+    },
+    "lemmaClips": {
+      "status": "cleared inventing clips",
+      "policy": "serve only if spoken/transcript bare === written bare",
+      "activeClips": 0,
+      "note": "Prior Whisper-verified clips invented أعني قاعدة… / الذال ثم… — removed for fidelity"
+    }
+  },
+  "v319RaceGuards": {
+    "expectQuestionId": "present (speakTtsSegment / hybrid / prefetch)",
+    "speakToken": "present",
+    "HEARTS_ENABLED": false
+  },
+  "scholarResidual": [
+    {
+      "id": "30e67e81-85f8-44e0-abee-f4c482fa9a03",
+      "item": "تصوير ذوات الأرواح",
+      "note": "خلاف الصور غير المجسّمة معاصر — لم يُختَرع حكم."
+    },
+    {
+      "id": "34f0da6e-4ab8-4721-b1eb-1105c59d76f2",
+      "item": "التوسل بجاه النبي",
+      "note": "خلاف مذهبي؛ المقرر النجدي متروك كما هو."
+    },
+    {
+      "id": "6b5e357b-2337-4685-ae2c-804d957878ea",
+      "item": "تقسيم البدعة حسنة/سيئة",
+      "note": "متسق مع «كل بدعة ضلالة» في المقرر."
+    },
+    {
+      "id": "213fc1f9-d919-4153-b28a-6e53cb13acce",
+      "item": "تعلّم السحر كفر",
+      "note": "تفصيل أنواع السحر للمراجع."
+    },
+    {
+      "id": "4bf4fd9c-e6d5-4550-b476-2f86353dd123",
+      "item": "الحكم بغير ما أنزل الله",
+      "note": "يحتاج ضبط أكبر/أصغر عند الاشتباه مع مراجع."
+    },
+    {
+      "ids": [],
+      "item": "حالات إضافة ملتبسة (ركن/مرتبة/وجوب + اسم)",
+      "note": "عند تعارض قراءات المصحف/الكتب اترك للعالم — لا اختراع حركة."
+    },
+    {
+      "ids": [],
+      "item": "ذباب / قرب ذبابا (Fish STT)",
+      "note": "أُزيلت مقاطع lemma المخترِعة؛ النطق الحي يطابق المكتوب (ذُبَابٌ…). قد يسمع Whisper دباب أحياناً — لم نختَرع كلمات لإصلاح STT."
+    },
+    {
+      "ids": [],
+      "item": "لا ضرر ولا ضرار (Fish دمج لا+ضرر)",
+      "note": "نطق fidelity: لَا ضَرَرَ وَلَا ضِرَارَ بلا أعني/قاعدة/على أحد."
+    }
+  ],
+  "honestScope": {
+    "ar": "تغطية آلية لـ595 سؤالاً (خرائط+حاملات+prepareFishTtsText+تحقق wording). ليست مراجعة عالم بشري حرفاً حرفاً لكل تشكيل."
+  }
+}

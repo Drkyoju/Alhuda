@@ -1,7 +1,76 @@
 {
-  "at": "2026-08-09T20:44:57.694Z",
+  "at": "2026-08-10T12:53:34.941Z",
   "versionTarget": "v310+",
-  "auditOnly": true,
+  "auditOnly": false,
+  "bankFixes": {
+    "applied": 0,
+    "already": 7,
+    "skipped": 0,
+    "details": [
+      {
+        "id": "9b8bd8b1-9714-4bb7-a052-ed729cf18151",
+        "field": "question_text",
+        "from": "الشرك الأصغر يحبط جميعاًلأعمال.",
+        "to": "الشرك الأصغر يحبط جميع الأعمال.",
+        "status": "already"
+      },
+      {
+        "id": "1846362e-ef04-4578-890d-f9cc27113266",
+        "field": "options",
+        "index": 0,
+        "from": "الأكبر يحبط جميعاًلعمل وصاحبه مخلد في النار ويخرج من الملة، والأصغر بخلافه",
+        "to": "الأكبر يحبط جميع العمل وصاحبه مخلد في النار ويخرج من الملة، والأصغر بخلافه",
+        "status": "already"
+      },
+      {
+        "id": "c24fc4ba-bfe7-2b9e-7afb-bcb17b18d1a9",
+        "field": "question_text",
+        "from": "الشرك الذي يحبط جميعاًلأعمال ويخلد صاحبه في النار هو:",
+        "to": "الشرك الذي يحبط جميع الأعمال ويخلد صاحبه في النار هو:",
+        "status": "already"
+      },
+      {
+        "id": "8285fb94-48e6-ff29-55f5-c45f1c8269e2",
+        "field": "options",
+        "index": 0,
+        "from": "يحبط جميعاًلأعمال ويخلد في النار وينقل عن الملة",
+        "to": "يحبط جميع الأعمال ويخلد في النار وينقل عن الملة",
+        "status": "already"
+      },
+      {
+        "id": "8285fb94-48e6-ff29-55f5-c45f1c8269e2",
+        "field": "explanation",
+        "from": "الإجابة الصحيحة: يحبط جميعاًلأعمال ويخلد في النار وينقل عن الملة.",
+        "to": "الإجابة الصحيحة: يحبط جميع الأعمال ويخلد في النار وينقل عن الملة.",
+        "status": "already"
+      },
+      {
+        "id": "ffe0b7b1-6ed0-c04f-9b6c-b180446b518f",
+        "field": "options",
+        "index": 1,
+        "from": "يحبط جميعاًلأعمال",
+        "to": "يحبط جميع الأعمال",
+        "status": "already"
+      },
+      {
+        "id": "8230d37a-f5c5-4dea-b8d2-ee499eec99e6",
+        "field": "source_quote",
+        "from": ".توحيد الله بإخالص العبادة له والبراءة من عبادة كل ما سواه",
+        "to": "توحيد الله بإخلاص العبادة له والبراءة من عبادة كل ما سواه",
+        "status": "already"
+      }
+    ],
+    "sqlPath": "extracted/exhaustive_haraka_supabase.sql"
+  },
+  "speechResync": {
+    "status": 0,
+    "stdout": "{\n  \"wordingFixed\": 0,\n  \"weakFixed\": 4,\n  \"manualFixed\": 4,\n  \"totalIds\": 595\n}",
+    "stderr": "(node:32339) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/aibi/gemni%20project/Alhuda%20nwest/Alhuda/allah-irab.js is not specified and it doesn't parse as CommonJS.\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\nTo eliminate this warning, add \"type\": \"module\" to /Users/aibi/gemni project/Alhuda nwest/Alhuda/package.json.\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  "speechIrabFixes": {
+    "fieldRuleHits": 0,
+    "phraseRuleHits": 2
+  },
   "coverage": {
     "questions": 595,
     "uniqueBareWords": 3095,
@@ -18,7 +87,7 @@
       "marked": 15143,
       "wordingMismatch": 0,
       "weakSpeech": 0,
-      "phraseMapSize": 3108
+      "phraseMapSize": 3111
     },
     "ocrResidual": [],
     "irabPatternHits": 0,
@@ -105,104 +174,5 @@
       "prior listen STT residuals v305–v309",
       "allah-irab consistency"
     ]
-  },
-  "final": {
-    "at": "2026-08-09T20:46:00Z",
-    "base": "https://alhuda-zi6bbd.cranl.net",
-    "voice": "راوٍ عربي حكيم",
-    "version": "v310",
-    "mandate": "ابغا كل حركه وكل كلمة — exhaustive haraka/word audit",
-    "coverage": {
-      "questions": 595,
-      "displayFields": 3376,
-      "displayWords": 16021,
-      "uniqueBareWords": 3095,
-      "speechFields": 3348,
-      "speechWords": 15977,
-      "speechMarkedWords": 15143,
-      "verifyWordingMismatches": 0,
-      "verifyWeakTashkeel": 0,
-      "verifyAllahBad": 0,
-      "ocrResidualDisplay": 0
-    },
-    "fixes": {
-      "bankOcrDisplay": {
-        "count": 8,
-        "examples": [
-          "جميعاًلأعمال → جميع الأعمال (عدة أسئلة توحيد)",
-          "جميعاًلعمل → جميع العمل",
-          "بإخالص → بإخلاص + إزالة نقطة OCR في اقتباس تعريف التوحيد",
-          "اقتباس مؤلف كتاب التوحيد: رمحه/تعاىل/زوائد معلمة → رحمه الله تعالى (مختصر)"
-        ],
-        "sql": "extracted/exhaustive_haraka_supabase.sql",
-        "supabase": "لا SUPABASE_KEY في البيئة — SQL جاهز؛ لا تُرفع أسرار"
-      },
-      "speechResync": {
-        "wordingFixed": 450,
-        "note": "بعد إصلاح الفوائد النووية (شرعي) كانت خريطة النطق تتكلم نصاً قديماً — رُمزت من البنك"
-      },
-      "speechIrab": {
-        "ruleHits": 30,
-        "allahIrabMapPass": 69,
-        "examples": [
-          "عَلَى الْمُسْلِمُ → عَلَى الْمُسْلِمِ",
-          "عَلَى الْإِخْلَاصُ → عَلَى الْإِخْلَاصِ",
-          "إِلَى التَّوْحِيدُ → إِلَى التَّوْحِيدِ",
-          "نَعَمْ، الْإِيمَانِ ب → نَعَمْ، الْإِيمَانُ ب",
-          "إِنَّ اللَّهُ → إِنَّ اللَّهَ (خريطة + allah-irab وقت التشغيل)"
-        ],
-        "runtimeScrub": "app.js + collect_tts_strings.mjs"
-      }
-    },
-    "listenFragile": {
-      "preDeployLiveStillV309Clips": {
-        "لا ضرر ولا ضرار": "2/2 PASS_ضرر (lemma-clip)",
-        "ذباب": "2/2 PASS_ذ",
-        "ذبابا": "2/2 PASS_ذ",
-        "قرب ذبابا": "2/2 PASS_ذ",
-        "قرب ذبابا لصنم": "2/2 PASS_ذ"
-      },
-      "evidence": "extracted/listen_v309_fragile/score.json"
-    },
-    "scholarResidual": [
-      {
-        "id": "30e67e81-85f8-44e0-abee-f4c482fa9a03",
-        "item": "تصوير ذوات الأرواح",
-        "note": "خلاف الصور غير المجسّمة معاصر — لم يُختَرع حكم."
-      },
-      {
-        "id": "34f0da6e-4ab8-4721-b1eb-1105c59d76f2",
-        "item": "التوسل بجاه النبي",
-        "note": "خلاف مذهبي؛ المقرر النجدي متروك كما هو."
-      },
-      {
-        "id": "6b5e357b-2337-4685-ae2c-804d957878ea",
-        "item": "تقسيم البدعة حسنة/سيئة",
-        "note": "متسق مع «كل بدعة ضلالة» في المقرر."
-      },
-      {
-        "id": "213fc1f9-d919-4153-b28a-6e53cb13acce",
-        "item": "تعلّم السحر كفر",
-        "note": "تفصيل أنواع السحر للمراجع."
-      },
-      {
-        "id": "4bf4fd9c-e6d5-4550-b476-2f86353dd123",
-        "item": "الحكم بغير ما أنزل الله",
-        "note": "ضبط أكبر/أصغر عند الاشتباه."
-      },
-      {
-        "id": null,
-        "item": "إضافة ملتبسة (ركن/مرتبة/وجوب + اسم)",
-        "note": "اترك للعالم إن تعارضت قراءات — لا اختراع حركة."
-      },
-      {
-        "id": null,
-        "item": "تشكيل كلمة بكلمة لكل 15k+ كلمة منطوقة",
-        "note": "ليس مراجعة عالم بشري لكل حركة؛ التغطية آلية+قواعد+استماع هش."
-      }
-    ],
-    "honestEveryHaraka": "بعد هذا المرور: كل حقول الدرس (595× سؤال/خيارات/شرح/اقتباس) فُحصت برمجياً؛ مسار النطق مُزامَن مع العرض (0 اختلاف صياغة)؛ قواعد إعراب عالية الثقة + allah-irab؛ استماع Whisper للعبارات الهشة. ليست شهادة عالم أن كل تنوين/إعراب في الخريطة معصوم.",
-    "displayPolicy": "الشاشة بلا تشكيل؛ التشكيل في TTS (خرائط/scrub/حاملات/lemma clips).",
-    "cache": "alhuda-v310"
   }
 }

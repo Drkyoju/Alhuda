@@ -2,6 +2,8 @@
  * Pre-recorded Fish Hakim clips for lemmas Fish cannot pronounce reliably live.
  * Matched on bare Arabic of the client request (UI bare, map iʿrāb, or carrier).
  * UI display is unchanged — only /api/tts audio is overridden.
+ * v320: only serve clips whose spoken/transcript bare words match the written key
+ * (no أعني… / الذال ثم… paraphrases).
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -13,8 +15,13 @@ const CLIP_DIR = path.join(ROOT, 'tts-lemma-clips');
 const MANIFEST_PATH = path.join(CLIP_DIR, 'manifest.json');
 
 let cached = null;
-/** @type {Map<string, string> | null} bareKey → clip bare key in manifest */
-let aliasIndex = null;
+
+function softBare(s) {
+  return bareArabicKey(s)
+    .replace(/[أإآٱ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ى/g, 'ي');
+}
 
 function loadManifest() {
   if (cached) return cached;
@@ -27,62 +34,14 @@ function loadManifest() {
   return cached;
 }
 
-function buildAliasIndex() {
-  if (aliasIndex) return aliasIndex;
-  const man = loadManifest();
-  const idx = new Map();
-  const add = (from, toBare) => {
-    const k = bareArabicKey(from);
-    if (k) idx.set(k, toBare);
-  };
-  for (const [bare, hit] of Object.entries(man.clips || {})) {
-    add(bare, bare);
-    if (hit.bare) add(hit.bare, bare);
-    if (hit.spoken) add(hit.spoken, bare);
-    if (hit.file) {
-      /* file not used as key */
-    }
-  }
-  // Common UI / map forms that prepareFishTtsText or speech-diacritics-map emit
-  add('ذباب', 'ذباب');
-  add('ذُبَابٍ', 'ذباب');
-  add('ذُبَابٌ', 'ذباب');
-  add('الذباب', 'ذباب');
-  add('أعني حشرة تسمى الذباب', 'ذباب');
-  add('أعني حشرة تسمى الذبابة', 'ذباب');
-  add('الذال ثم الذباب حشرة تطير', 'ذباب');
-  add('الذَّالُ ثُمَّ الذُّبَابُ حَشَرَةٌ تَطِيرُ', 'ذباب');
-
-  add('ذبابا', 'ذبابا');
-  add('ذُبَابًا', 'ذبابا');
-  add('ذباباً', 'ذبابا');
-  add('الذال ثم الذباب حشرة', 'ذبابا');
-  add('الذَّالُ ثُمَّ الذُّبَابَ حَشَرَةً', 'ذبابا');
-  add('الذَّالُ ثُمَّ الذُّبَابَ حَشَرَةً تَطِيرُ', 'ذبابا');
-
-  add('قرب ذبابا', 'قرب ذبابا');
-  add('قرب ذباباً', 'قرب ذبابا');
-  add('قَرَّبَ ذُبَابًا', 'قرب ذبابا');
-  add('قَرَّبَ حَشَرَةً تُسَمَّى الذُّبَابَةَ لِلصَّنَمِ', 'قرب ذبابا');
-  add('الذال ثم الذباب قرب حشرة للصنم', 'قرب ذبابا');
-  add('الذَّالُ ثُمَّ الذُّبَابُ قَرَّبَ حَشَرَةً لِلصَّنَمِ', 'قرب ذبابا');
-
-  add('قرب ذبابا لصنم', 'قرب ذبابا لصنم');
-  add('قرب ذبابا للصنم', 'قرب ذبابا لصنم');
-  add('قرب ذباباً للصنم', 'قرب ذبابا لصنم');
-  add('قرب ذباباً لصنم', 'قرب ذبابا لصنم');
-  add('قَرَّبَ ذُبَابًا لِلصَّنَمِ', 'قرب ذبابا لصنم');
-  add('قَرَّبَ ذُبَابًا لِصَنَمٍ', 'قرب ذبابا لصنم');
-
-  // لا ضرر: live Fish sometimes merges لا+ضرر → Whisper «اللاضر»
-  add('لا ضرر ولا ضرار', 'لا ضرر ولا ضرار');
-  add('لَا ضَرَرَ وَلَا ضِرَارَ', 'لا ضرر ولا ضرار');
-  add('أعني قاعدة لا ضرر على أحد ولا ضرار', 'لا ضرر ولا ضرار');
-  add('أَعْنِي قَاعِدَةَ لَا ضَرَرَ عَلَى أَحَدٍ وَلَا ضِرَارَ', 'لا ضرر ولا ضرار');
-  add('أَعْنِي قَاعِدَةَ: لَا، ضَرَرَ عَلَى أَحَدٍ، وَلَا، ضِرَارَ', 'لا ضرر ولا ضرار');
-
-  aliasIndex = idx;
-  return idx;
+function clipIsFidelity(bareKey, hit) {
+  const target = softBare(bareKey);
+  if (!target) return false;
+  const spoken = hit.spoken || hit.transcript || '';
+  if (spoken && softBare(spoken) === target) return true;
+  // Allow clip keyed exactly to bare with no spoken metadata
+  if (!spoken && softBare(hit.bare || bareKey) === target) return true;
+  return false;
 }
 
 /** @returns {{ bare: string, file: string, absPath: string, spoken?: string } | null} */
@@ -90,17 +49,15 @@ export function resolveLemmaTtsClip(textRaw) {
   const key = bareArabicKey(textRaw);
   if (!key) return null;
   const man = loadManifest();
-  const idx = buildAliasIndex();
-  const targetBare = idx.get(key) || (man.clips[key] ? key : null);
-  if (!targetBare) return null;
-  const hit = man.clips[targetBare];
+  const hit = man.clips[key];
   if (!hit?.file) return null;
+  if (!clipIsFidelity(key, hit)) return null;
   const absPath = path.join(CLIP_DIR, hit.file);
   if (!fs.existsSync(absPath)) return null;
   const st = fs.statSync(absPath);
   if (!st.isFile() || st.size < 800) return null;
   return {
-    bare: hit.bare || targetBare,
+    bare: hit.bare || key,
     file: hit.file,
     absPath,
     spoken: hit.spoken || null,

@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v319: abort current-Q TTS kick on navigate) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v320: TTS fidelity=written+tashkeel; keep v319 expectQuestionId race guards) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v319",
+  cache: "alhuda-v320",
   styles: 85,
   kidsUi: 15,
   enhancements: 18,
-  app: 279,
+  app: 280,
   platform: 21,
   auth: 16,
-  sw: 319,
+  sw: 320,
 };

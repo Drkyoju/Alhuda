@@ -1,55 +1,6 @@
 {
-  "at": "2026-08-09T20:18:39.400Z",
+  "at": "2026-08-10T12:52:23.461Z",
   "voice": "راوٍ عربي حكيم",
-  "note": "Pre-recorded Fish clips for stubborn lemmas (ذباب ذ/د؛ لا ضرر merge→اللاضر). Whisper-verified. UI display unchanged.",
-  "clips": {
-    "ذباب": {
-      "bare": "ذباب",
-      "file": "dhubab.mp3",
-      "transcript": "الذال ثم الذباب حشرة تطير",
-      "spoken": "الذَّالُ  ثُمَّ الذُّبَابُ  حَشَرَةٌ تَطِيرُ",
-      "source": "ذباب_dhubab",
-      "note": null
-    },
-    "قرب ذبابا": {
-      "bare": "قرب ذبابا",
-      "file": "qarraba_dhubaban.mp3",
-      "transcript": "الذال ثم الذباب قرب حشرة للصنم",
-      "spoken": "الذَّالُ  ثُمَّ الذُّبَابُ  قَرَّبَ حَشَرَةً لِلصَّنَمِ",
-      "source": "قرب_ذبابا_qarraba_r3",
-      "note": null
-    },
-    "ذبابا": {
-      "bare": "ذبابا",
-      "file": "dhubaban.mp3",
-      "transcript": "الذال ثم الذباب حشرة تطير",
-      "spoken": "الذَّالُ  ثُمَّ الذُّبَابَ  حَشَرَةً تَطِيرُ",
-      "source": "ذبابا_r3",
-      "note": null
-    },
-    "قرب ذبابا لصنم": {
-      "bare": "قرب ذبابا لصنم",
-      "file": "qarraba_dhubaban_sanam.mp3",
-      "transcript": "الذال تم الذباب قرب حشرة للصنم",
-      "spoken": "الذَّالُ  ثُمَّ الذُّبَابُ  قَرَّبَ حَشَرَةً لِلصَّنَمِ",
-      "source": "قرب_ذبابا_لصنم_r2",
-      "note": null
-    },
-    "قرب ذبابا للصنم": {
-      "bare": "قرب ذبابا للصنم",
-      "file": "qarraba_dhubaban_sanam.mp3",
-      "transcript": "الذال تم الذباب قرب حشرة للصنم",
-      "spoken": "الذَّالُ  ثُمَّ الذُّبَابُ  قَرَّبَ حَشَرَةً لِلصَّنَمِ",
-      "source": "قرب_ذبابا_لصنم_r2",
-      "note": "alias_للصنم"
-    },
-    "لا ضرر ولا ضرار": {
-      "bare": "لا ضرر ولا ضرار",
-      "file": "la_darara.mp3",
-      "transcript": "أعني قاعدة لا ضرر على أحد ولا ضرار",
-      "spoken": "أَعْنِي قَاعِدَةَ: لَا،  ضَرَرَ  عَلَى أَحَدٍ،  وَلَا،  ضِرَارَ",
-      "source": "darar_r1",
-      "note": "PASS_ضرر × stability; نصب ضررَ/ضرارَ"
-    }
-  }
+  "note": "v320 fidelity: lemma clips only when audio === written phrase. Prior inventing clips (الذال ثم… / أعني قاعدة…) removed; live Fish + fidelity carriers.",
+  "clips": {}
 }
