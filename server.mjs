@@ -404,6 +404,10 @@ app.use(express.static(ROOT, {
       'short-speech-carriers.js',
       'lemma-tts-clips.js',
       'app.js',
+      // CSS also needs revalidation — Bunny ignores ?v= and was sticky-HITting styles.
+      'styles.css',
+      'kids-ui.css',
+      'enhancements.css',
     ]);
     // BunnyCDN often ignores ?v= and can sticky-cache old Cache-Control —
     // force edge + browser revalidation for mutable lesson / version files.

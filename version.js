@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v314: hearts off + CDN no-store path-bust) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v315: force-hide hearts + CSS no-store) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v314",
-  styles: 84,
+  cache: "alhuda-v315",
+  styles: 85,
   kidsUi: 15,
   enhancements: 18,
-  app: 274,
+  app: 275,
   platform: 21,
   auth: 16,
-  sw: 314,
+  sw: 315,
 };

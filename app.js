@@ -7179,11 +7179,13 @@ function renderHearts() {
   if (!HEARTS_ENABLED) {
     c.hidden = true;
     c.setAttribute('aria-hidden', 'true');
+    c.style.display = 'none';
     c.innerHTML = '';
     return;
   }
   c.hidden = false;
   c.removeAttribute('aria-hidden');
+  c.style.display = '';
   const labels = ['لا محاولات', 'محاولة واحدة', 'محاولتان', '٣ محاولات', '٤ محاولات', '٥ محاولات'];
   c.setAttribute('aria-label', labels[state.hearts] || `${state.hearts} محاولات متبقية`);
   c.innerHTML = '';
