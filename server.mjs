@@ -405,8 +405,13 @@ app.use(express.static(ROOT, {
       'lemma-tts-clips.js',
       'app.js',
     ]);
-    if (noCacheExact.has(base)) {
-      res.setHeader('Cache-Control', 'no-cache');
+    // BunnyCDN often ignores ?v= and can sticky-cache old Cache-Control —
+    // force edge + browser revalidation for mutable lesson / version files.
+    const pathBustedMutable = /^version-v\d+\.js$/i.test(base)
+      || /^questions-bank-v\d+\.js$/i.test(base);
+    if (noCacheExact.has(base) || pathBustedMutable) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('CDN-Cache-Control', 'no-store');
       if (base === 'service-worker.js') {
         res.setHeader('Service-Worker-Allowed', '/');
       }
@@ -414,7 +419,8 @@ app.use(express.static(ROOT, {
     }
     // HTML always revalidate (SPA shell + version pointers).
     if (base.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('CDN-Cache-Control', 'no-store');
       return;
     }
     // Fingerprinted assets (?v= in index.html) — long cache OK.

@@ -5592,7 +5592,8 @@ function setTimerVisible(show) {
 
 function startQuestionTimer() {
   clearQuestionTimer();
-  if (trainingMode) {
+  // Hearts-off = listen-through mode: no countdown that auto-fails mid-TTS.
+  if (trainingMode || !HEARTS_ENABLED) {
     setTimerVisible(false);
     return;
   }

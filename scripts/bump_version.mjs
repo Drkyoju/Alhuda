@@ -8,12 +8,13 @@
  *   node scripts/bump_version.mjs --sw --app # both
  *   node scripts/bump_version.mjs --all      # bump sw/cache and app together
  */
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, unlinkSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const versionPath = join(root, 'version.js');
+const assetsPath = join(root, 'alhuda-assets.js');
 const swPath = join(root, 'service-worker.js');
 const indexPath = join(root, 'index.html');
 
@@ -58,8 +59,13 @@ function updateVersionJs(src, { sw, app, cache }) {
   return out;
 }
 
-function updateServiceWorker(src, cacheName) {
-  return src.replace(/const CACHE = 'alhuda-v\d+';/, `const CACHE = '${cacheName}';`);
+function updateServiceWorker(src, cacheName, swNum) {
+  let out = src.replace(/const CACHE = 'alhuda-v\d+';/, `const CACHE = '${cacheName}';`);
+  // Path-bust version.js — BunnyCDN ignores ?v= and can sticky-HIT bare paths.
+  if (/'\.\/version(?:-v\d+)?\.js'/.test(out)) {
+    out = out.replace(/'\.\/version(?:-v\d+)?\.js'/, `'./version-v${swNum}.js'`);
+  }
+  return out;
 }
 
 function updateIndexHtml(src, { sw, app }) {
@@ -67,10 +73,27 @@ function updateIndexHtml(src, { sw, app }) {
   if (sw != null && /speech-diacritics-core\.js\?v=\d+/.test(out)) {
     out = out.replace(/(speech-diacritics-core\.js\?v=)\d+/, `$1${sw}`);
   }
+  if (sw != null && /alhuda-assets\.js\?v=\d+/.test(out)) {
+    out = out.replace(/(alhuda-assets\.js\?v=)\d+/, `$1${sw}`);
+  }
   if (app != null) {
     out = out.replace(/(app\.js\?v=)\d+/, `$1${app}`);
   }
   return out;
+}
+
+function syncVersionCopies(swNum, versionSrc) {
+  writeFileSync(assetsPath, versionSrc);
+  const bustName = `version-v${swNum}.js`;
+  writeFileSync(join(root, bustName), versionSrc);
+  // Drop older path-bust copies to keep the tree lean (keep current only).
+  for (const name of readdirSync(root)) {
+    const m = name.match(/^version-v(\d+)\.js$/);
+    if (m && Number(m[1]) !== swNum) {
+      try { unlinkSync(join(root, name)); } catch (_) {}
+    }
+  }
+  return bustName;
 }
 
 const before = readAssets();
@@ -89,7 +112,7 @@ if (bumpSw) {
   changes.push(`version.js: cache "alhuda-v${before.cache}" → "alhuda-v${next.sw}", sw ${before.sw} → ${next.sw}`);
 
   const swSrc = readFileSync(swPath, 'utf8');
-  const swOut = updateServiceWorker(swSrc, cacheName);
+  const swOut = updateServiceWorker(swSrc, cacheName, next.sw);
   writeFileSync(swPath, swOut);
   changes.push(`service-worker.js: CACHE 'alhuda-v${before.cache}' → '${cacheName}'`);
 }
@@ -106,6 +129,13 @@ if (bumpApp) {
   changes.push(`version.js: app ${before.app} → ${next.app}`);
 }
 
+// Always keep alhuda-assets.js + path-busted version-vN.js in sync with version.js
+{
+  const finalVersion = readFileSync(versionPath, 'utf8');
+  const bustName = syncVersionCopies(next.sw, finalVersion);
+  changes.push(`synced ${bustName} + alhuda-assets.js`);
+}
+
 if (existsSync(indexPath) && (bumpSw || bumpApp)) {
   const indexSrc = readFileSync(indexPath, 'utf8');
   const indexOut = updateIndexHtml(indexSrc, {
@@ -117,6 +147,10 @@ if (existsSync(indexPath) && (bumpSw || bumpApp)) {
     if (bumpSw && /speech-diacritics-core\.js\?v=/.test(indexSrc)) {
       const oldCore = indexSrc.match(/speech-diacritics-core\.js\?v=(\d+)/)?.[1];
       changes.push(`index.html: speech-diacritics-core.js?v=${oldCore} → v=${next.sw}`);
+    }
+    if (bumpSw && /alhuda-assets\.js\?v=/.test(indexSrc)) {
+      const oldAssets = indexSrc.match(/alhuda-assets\.js\?v=(\d+)/)?.[1];
+      changes.push(`index.html: alhuda-assets.js?v=${oldAssets} → v=${next.sw}`);
     }
     if (bumpApp) {
       changes.push(`index.html: app.js?v=${before.app} → v=${next.app}`);

@@ -4,7 +4,7 @@
 // On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
 // without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v313';
+const CACHE = 'alhuda-v314';
 // Keep install precache lean — large speech-diacritics-map.js loads on demand.
 const ASSETS = [
   './',
@@ -18,7 +18,7 @@ const ASSETS = [
   './baked-tts.browser.js',
   './speech-diacritics-core.js',
   './questions-bank-v311.js',
-  './version.js',
+  './version-v314.js',
   './app.js',
   './auth.js',
   './platform.js',
@@ -103,8 +103,8 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
   if (url.origin.includes('supabase.co')) return;
 
-  // version.js must be network-first so clients detect updates.
-  if (url.origin === self.origin && /\/version\.js$/i.test(url.pathname)) {
+  // version.js / version-vN.js must be network-first so clients detect updates.
+  if (url.origin === self.origin && /\/version(?:-v\d+)?\.js$/i.test(url.pathname)) {
     e.respondWith(
       fetch(e.request)
         .then((res) => {
