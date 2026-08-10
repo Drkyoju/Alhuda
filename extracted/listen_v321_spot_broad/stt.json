@@ -1,0 +1,204 @@
+{
+  "model": "small",
+  "n": 33,
+  "results": [
+    {
+      "file": "s00.mp3",
+      "id": "s00",
+      "transcript": "صحب",
+      "ok": true
+    },
+    {
+      "file": "s01.mp3",
+      "id": "s01",
+      "transcript": "هذا خطأ",
+      "ok": true
+    },
+    {
+      "file": "s02.mp3",
+      "id": "s02",
+      "transcript": "وام",
+      "ok": true
+    },
+    {
+      "file": "s03.mp3",
+      "id": "s03",
+      "transcript": "ذات أنواع",
+      "ok": true
+    },
+    {
+      "file": "s04.mp3",
+      "id": "s04",
+      "transcript": "ابن مسعود",
+      "ok": true
+    },
+    {
+      "file": "s05.mp3",
+      "id": "s05",
+      "transcript": "عقبة بن عامر",
+      "ok": true
+    },
+    {
+      "file": "s06.mp3",
+      "id": "s06",
+      "transcript": "التولة",
+      "ok": true
+    },
+    {
+      "file": "s07.mp3",
+      "id": "s07",
+      "transcript": "اللذ",
+      "ok": true
+    },
+    {
+      "file": "s08.mp3",
+      "id": "s08",
+      "transcript": "العزة",
+      "ok": true
+    },
+    {
+      "file": "s09.mp3",
+      "id": "s09",
+      "transcript": "مونات",
+      "ok": true
+    },
+    {
+      "file": "s10.mp3",
+      "id": "s10",
+      "transcript": "بدا",
+      "ok": true
+    },
+    {
+      "file": "s11.mp3",
+      "id": "s11",
+      "transcript": "في بضعي أحدكم",
+      "ok": true
+    },
+    {
+      "file": "s12.mp3",
+      "id": "s12",
+      "transcript": "أن نطق باللسان",
+      "ok": true
+    },
+    {
+      "file": "s13.mp3",
+      "id": "s13",
+      "transcript": "سابية",
+      "ok": true
+    },
+    {
+      "file": "s14.mp3",
+      "id": "s14",
+      "transcript": "سبع",
+      "ok": true
+    },
+    {
+      "file": "s15.mp3",
+      "id": "s15",
+      "transcript": "1200 و 6 هجرية",
+      "ok": true
+    },
+    {
+      "file": "s16.mp3",
+      "id": "s16",
+      "transcript": "1115 هجرية",
+      "ok": true
+    },
+    {
+      "file": "s17.mp3",
+      "id": "s17",
+      "transcript": "معبدة",
+      "ok": true
+    },
+    {
+      "file": "s18.mp3",
+      "id": "s18",
+      "transcript": "كلما عبد",
+      "ok": true
+    },
+    {
+      "file": "s19.mp3",
+      "id": "s19",
+      "transcript": "حق الله على العباد",
+      "ok": true
+    },
+    {
+      "file": "s20.mp3",
+      "id": "s20",
+      "transcript": "من دون الله",
+      "ok": true
+    },
+    {
+      "file": "s21.mp3",
+      "id": "s21",
+      "transcript": "لعن الله",
+      "ok": true
+    },
+    {
+      "file": "s22.mp3",
+      "id": "s22",
+      "transcript": "تميمة",
+      "ok": true
+    },
+    {
+      "file": "s23.mp3",
+      "id": "s23",
+      "transcript": "و للتحذير",
+      "ok": true
+    },
+    {
+      "file": "s24.mp3",
+      "id": "s24",
+      "transcript": "شريك",
+      "ok": true
+    },
+    {
+      "file": "s25.mp3",
+      "id": "s25",
+      "transcript": "الإكراه",
+      "ok": true
+    },
+    {
+      "file": "s26.mp3",
+      "id": "s26",
+      "transcript": "السحر",
+      "ok": true
+    },
+    {
+      "file": "s27.mp3",
+      "id": "s27",
+      "transcript": "الزكاة شرعاً",
+      "ok": true
+    },
+    {
+      "file": "s28.mp3",
+      "id": "s28",
+      "transcript": "العبادة شرعا",
+      "ok": true
+    },
+    {
+      "file": "s29.mp3",
+      "id": "s29",
+      "transcript": "لا إله إلا الله",
+      "ok": true
+    },
+    {
+      "file": "s30.mp3",
+      "id": "s30",
+      "transcript": "الشركي الأصغر",
+      "ok": true
+    },
+    {
+      "file": "s31.mp3",
+      "id": "s31",
+      "transcript": "أهل الكتاب",
+      "ok": true
+    },
+    {
+      "file": "s32.mp3",
+      "id": "s32",
+      "transcript": "أبو حريرا",
+      "ok": true
+    }
+  ]
+}

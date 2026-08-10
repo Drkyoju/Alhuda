@@ -1,13 +1,18 @@
 # Lemma TTS clips (Fish Hakim, Whisper-verified)
 
-Short pre-recorded MP3s for lemmas where **live** Fish Hakim is unreliable:
+Pre-recorded MP3s for short lemmas where **live** Fish Hakim is unreliable.
+**v321 fidelity:** spoken/transcript bare words must match the written UI phrase
+(tashkeel / spacing / NFC only — no «أعني…», «الذال ثم…», «حشرة…» pads).
 
-- ذباب → دباب/دبّابة (ذ/د mix)
-- لا ضرر ولا ضرار → Whisper «اللاضر» (لا+ضرر merge)
+Examples covered: ذباب / قرب ذبابا، لا ضرر ولا ضرار، أهل اليمن، الرياء، الشرك الأكبر،
+صح/خطأ، ذات أنواط، اللات، مناة، بضع، صابئة، ما عبد، شرك، رقى، أبو هريرة.
 
-- Served by `server.mjs` `/api/tts` when the request bare-key matches `manifest.json`.
-- UI display text is unchanged; iʿrāb on spoken form stays نصب (ضررَ / ضرارَ).
-- Regenerate: `node scripts/harvest_dhubab_lemma_clips.mjs --local-fish`
-  and `node scripts/harvest_darar_lemma_clip.mjs --local-fish`
+- Served by `server.mjs` `/api/tts` when the request bare-key matches `manifest.json`
+  (`X-TTS-Provider: fish-lemma-clip`).
+- UI display text is unchanged.
+- Regenerate: `node scripts/harvest_fidelity_lemma_clips.mjs --local-fish --new-only`
+
+Honest Fish-hard leftovers (no inventing allowed): standalone **أنواط** → أنواع;
+**العزى** → العزة.
 
 Do **not** put secrets here. Clips are voice audio only.

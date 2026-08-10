@@ -1,0 +1,79 @@
+{
+  "at": "2026-08-10T13:45:00Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "version": "v321",
+  "mandate": "spoken = written (+ tashkeel/iʿrāb/NFC/allah-irab/ه→هجرية only); no inventing paraphrases",
+  "v319RaceGuards": {
+    "expectQuestionId": "kept",
+    "speakToken": "kept",
+    "HEARTS_ENABLED": false
+  },
+  "v320Fidelity": {
+    "kept": true,
+    "removedLeftoverInventPads": [
+      "هذا خطأ → خَطَأٌ فقط",
+      "هو الزمان → الزَّمَانُ فقط",
+      "المراد بـ → معنى/مقصود invent removed"
+    ]
+  },
+  "lemmaClips": {
+    "policy": "serve only if spoken softBare === written softBare",
+    "countKeys": 22,
+    "files": [
+      "dhubab.mp3",
+      "dhubaban.mp3",
+      "qarraba_dhubaban.mp3",
+      "qarraba_dhubaban_sanam.mp3",
+      "la_darara.mp3",
+      "ahl_yaman.mp3",
+      "riya.mp3",
+      "shirk_akbar.mp3",
+      "sah.mp3",
+      "khata.mp3",
+      "dhat_anwat.mp3",
+      "allat.mp3",
+      "manat.mp3",
+      "bud_a.mp3",
+      "sabia.mp3",
+      "ma_ubida.mp3",
+      "shirk.mp3",
+      "ruqa.mp3",
+      "abu_hurayra.mp3"
+    ],
+    "fixed": [
+      { "bare": "ذباب / ذبابا / قرب ذبابا / قرب ذبابا لصنم", "was": "دباب/زوباب (Fish حي)", "now": "lemma clip fidelity (Whisper: ذباباً أو ذو بابن — ذ لا د)" },
+      { "bare": "لا ضرر ولا ضرار", "was": "دمج اللاضر أحياناً", "now": "lemma clip: لا ضرر ولا ضرار" },
+      { "bare": "أهل اليمن", "was": "أهل اليمان", "now": "lemma clip: أهل اليمن" },
+      { "bare": "الرياء", "was": "أريا", "now": "lemma clip + حامل الرِّيَاءْ" },
+      { "bare": "الشرك الأكبر", "was": "أشرك الأكبر", "now": "lemma clip + تشكيل الشِّرْكُ الْأَكْبَرْ" },
+      { "bare": "صح / خطأ", "was": "صحب / هذا خطأ invent", "now": "clips fidelity؛ خطأ بلا هذا" },
+      { "bare": "ذات أنواط", "was": "ذات أنواع", "now": "lemma clip" },
+      { "bare": "اللّات / مناة / بضع / صابئة / ما عبد / شرك / رقى / أبو هريرة", "was": "تشويهات قصيرة", "now": "lemma clips fidelity" }
+    ]
+  },
+  "fishHardRemaining": [
+    {
+      "bare": "أنواط (مفردة قصيرة)",
+      "note": "Fish/Whisper يسمع أنواع/انواق غالباً؛ «ذات أنواط» مثبتة بمقطع. بلا اختراع كلمات."
+    },
+    {
+      "bare": "العزى",
+      "note": "Fish ينطقها دائماً تقريباً «العزة» (تاء)؛ لا مقطع fidelity بـ ى نجح في 16 محاولة. قيد محرك."
+    },
+    {
+      "bare": "ذباب مفردة",
+      "note": "Whisper يكتب غالباً «ذو بابن» حتى للمقطع المختار؛ الأذن تميّز الذال عن الدال أفضل من STT. في الجملة (قرب ذبابا) أوضح."
+    }
+  ],
+  "evidence": [
+    "extracted/listen_v321_fragile/score.json",
+    "extracted/listen_v321_fidelity_harvest/harvest_log.json",
+    "extracted/listen_v321_spot_broad/score.json",
+    "tts-lemma-clips/manifest.json"
+  ],
+  "ar_report": {
+    "fixed": "مقاطع lemma مطابقة للمكتوب لـ: ذباب/ذبابا/قرب ذبابا/لصنم، لا ضرر ولا ضرار، أهل اليمن، الرياء، الشرك الأكبر، صح، خطأ، ذات أنواط، اللات، مناة، بضع، صابئة، ما عبد، شرك، رقى، أبو هريرة — مع إزالة اختراعات هذا/هو/معنى من prepareFishTtsText.",
+    "remaining": "أنواط وحدها والعزى قيود Fish صعبة دون اختراع نص؛ ذباب المفردة STT هش (ذو بابن) لكن بلا دباب في المقطع المختار.",
+    "version": "v321"
+  }
+}

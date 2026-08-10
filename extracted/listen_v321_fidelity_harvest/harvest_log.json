@@ -1,7 +1,117 @@
 {
-  "at": "2026-08-10T13:49:52.933Z",
-  "voice": "راوٍ عربي حكيم",
-  "note": "v321 fidelity lemma clips: spoken/transcript bare === written bare (tashkeel/spacing only).",
+  "at": "2026-08-10T13:33:24.952Z",
+  "log": [
+    {
+      "bare": "صح",
+      "ok": true,
+      "winner": {
+        "spoken": "صَحْ",
+        "transcript": "صح",
+        "verdict": "PASS_صح",
+        "speed": 0.9
+      }
+    },
+    {
+      "bare": "خطأ",
+      "ok": true,
+      "winner": {
+        "spoken": "خَطَأٌ",
+        "transcript": "خطأ",
+        "verdict": "PASS_خطأ",
+        "speed": 0.9
+      }
+    },
+    {
+      "bare": "أنواط",
+      "ok": false,
+      "winner": null
+    },
+    {
+      "bare": "ذات أنواط",
+      "ok": true,
+      "winner": {
+        "spoken": "ذَاتِ أَنْوَاطْ",
+        "transcript": "ذاتي أنواط",
+        "verdict": "PASS_أنواط",
+        "speed": 0.9
+      }
+    },
+    {
+      "bare": "اللّات",
+      "ok": true,
+      "winner": {
+        "spoken": "اللّات",
+        "transcript": "اللات",
+        "verdict": "PASS_اللات",
+        "speed": 0.9
+      }
+    },
+    {
+      "bare": "العزى",
+      "ok": false,
+      "winner": null
+    },
+    {
+      "bare": "مناة",
+      "ok": true,
+      "winner": {
+        "spoken": "مَنَاةُ",
+        "transcript": "مناتو",
+        "verdict": "PASS_مناة",
+        "speed": 0.95
+      }
+    },
+    {
+      "bare": "بضع",
+      "ok": true,
+      "winner": {
+        "spoken": "بضع",
+        "transcript": "بضع",
+        "verdict": "PASS_بضع",
+        "speed": 0.9
+      }
+    },
+    {
+      "bare": "صابئة",
+      "ok": true,
+      "winner": {
+        "spoken": "صَابِئَةٌ",
+        "transcript": "صابئة",
+        "verdict": "PASS_صابئة",
+        "speed": 0.95
+      }
+    },
+    {
+      "bare": "ما عبد",
+      "ok": true,
+      "winner": {
+        "spoken": "مَا عُبِدَ",
+        "transcript": "ما عبدا",
+        "verdict": "PASS_ماعبد",
+        "speed": 0.9
+      }
+    },
+    {
+      "bare": "رقى",
+      "ok": false,
+      "winner": null
+    },
+    {
+      "bare": "شرك",
+      "ok": true,
+      "winner": {
+        "spoken": "شرك",
+        "transcript": "شرك",
+        "verdict": "PASS_شرك",
+        "speed": 0.9
+      }
+    },
+    {
+      "bare": "أبو هريرة",
+      "ok": false,
+      "winner": null
+    }
+  ],
   "clips": {
     "قرب ذبابا": {
       "bare": "قرب ذبابا",
@@ -171,30 +281,6 @@
       "source": "r1",
       "speed": 0.9,
       "note": "PASS_شرك; fidelity softBare match"
-    },
-    "رقى": {
-      "bare": "رقى",
-      "file": "ruqa.mp3",
-      "spoken": "رقى",
-      "transcript": "رقا",
-      "source": "r1",
-      "note": "PASS_رقى; fidelity softBare match"
-    },
-    "أبو هريرة": {
-      "bare": "أبو هريرة",
-      "file": "abu_hurayra.mp3",
-      "spoken": "أَبُو  هُرَيْرَةَ",
-      "transcript": "أبو هوريرا",
-      "source": "r14",
-      "note": "PASS_هريرة; fidelity softBare match"
-    },
-    "ابو هريرة": {
-      "bare": "ابو هريرة",
-      "file": "abu_hurayra.mp3",
-      "spoken": "أَبُو  هُرَيْرَةَ",
-      "transcript": "أبو هوريرا",
-      "source": "r14",
-      "note": "PASS_هريرة; fidelity softBare match; alias"
     }
   }
 }

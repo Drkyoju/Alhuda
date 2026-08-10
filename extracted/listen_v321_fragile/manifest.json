@@ -1,0 +1,58 @@
+[
+  {
+    "id": "قرب_ذبابا",
+    "bare": "قرب ذبابا",
+    "file": "qarraba_dhubaban.mp3",
+    "spoken": "قَرَّبَ  ذُبَابًا",
+    "expected_tr": "قرب ذباباً"
+  },
+  {
+    "id": "قرب_ذبابا_لصنم",
+    "bare": "قرب ذبابا لصنم",
+    "file": "qarraba_dhubaban_sanam.mp3",
+    "spoken": "قَرَّبَ  ذُبَابًا  لِصَنَمٍ",
+    "expected_tr": "قرب ذباباً لصنم"
+  },
+  {
+    "id": "لا_ضرر_ولا_ضرار",
+    "bare": "لا ضرر ولا ضرار",
+    "file": "la_darara.mp3",
+    "spoken": "لَا ضَرَرَ وَلَا ضِرَارَ",
+    "expected_tr": "لا ضرر ولا ضرار"
+  },
+  {
+    "id": "أهل_اليمن",
+    "bare": "أهل اليمن",
+    "file": "ahl_yaman.mp3",
+    "spoken": "أَهْلَ الْيَمَنِ",
+    "expected_tr": "أهل اليمن"
+  },
+  {
+    "id": "الرياء",
+    "bare": "الرياء",
+    "file": "riya.mp3",
+    "spoken": "الرِّيَاءُ",
+    "expected_tr": "رياء"
+  },
+  {
+    "id": "الشرك_الأكبر",
+    "bare": "الشرك الأكبر",
+    "file": "shirk_akbar.mp3",
+    "spoken": "الشِّرْكُ  الْأَكْبَرْ",
+    "expected_tr": "الشرك الأكبر"
+  },
+  {
+    "id": "ذباب",
+    "bare": "ذباب",
+    "file": "dhubab.mp3",
+    "spoken": "ذُبَابْ",
+    "expected_tr": "ذو بابن"
+  },
+  {
+    "id": "ذبابا",
+    "bare": "ذبابا",
+    "file": "dhubaban.mp3",
+    "spoken": "ذُبَابَا",
+    "expected_tr": "ذو بابن"
+  }
+]
