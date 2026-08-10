@@ -325,6 +325,10 @@ export function prepareFishTtsText(text) {
   s = s.replace(/يكنى/g, 'يُكَنَّى');
   s = s.replace(/والعزّى/g, 'وَالْعُزَّى');
   s = s.replace(/(^|[^\u0621-\u064A])العزّى/g, '$1الْعُزَّى');
+  // العزى alone — final يْ (softBare ى≡ي) steers clone away from «العزة»
+  s = s.replace(/^الْعُزَّى$/u, 'الْعُزَّيْ');
+  s = s.replace(/^العزى$/u, 'الْعُزَّيْ');
+  s = s.replace(/^العزّى$/u, 'الْعُزَّيْ');
   // High-mangled lesson tokens — NFC shadda+vowel order Fish clone prefers
   s = s.replace(/([\u064E\u064F\u0650])(\u0651)/g, '$2$1');
   s = s.replace(/الرِّيَاءُ/g, 'الرِّيَاءُ');
@@ -526,7 +530,7 @@ function resolveFishProsodySpeed(env = process.env, overrideSpeed) {
   return q.prosody.speed;
 }
 
-function buildFishTtsBody(cleanText, selectedVoice, env = process.env, opts = {}) {
+export function buildFishTtsBody(cleanText, selectedVoice, env = process.env, opts = {}) {
   const q = FISH_QUALITY_DEFAULTS;
   const volume = Number(env?.FISH_TTS_VOLUME);
   const temperature = Number(env?.FISH_TTS_TEMPERATURE);

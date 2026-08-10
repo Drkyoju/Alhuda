@@ -1,0 +1,36 @@
+{
+  "model": "small",
+  "n": 5,
+  "results": [
+    {
+      "file": "s1.mp3",
+      "id": "s1",
+      "transcript": "أنواط",
+      "ok": true
+    },
+    {
+      "file": "s2.mp3",
+      "id": "s2",
+      "transcript": "أنواط",
+      "ok": true
+    },
+    {
+      "file": "s3.mp3",
+      "id": "s3",
+      "transcript": "أنواط",
+      "ok": true
+    },
+    {
+      "file": "s4.mp3",
+      "id": "s4",
+      "transcript": "أنواط",
+      "ok": true
+    },
+    {
+      "file": "s5.mp3",
+      "id": "s5",
+      "transcript": "أنواط",
+      "ok": true
+    }
+  ]
+}

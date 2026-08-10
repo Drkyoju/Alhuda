@@ -1,0 +1,51 @@
+{
+  "at": "2026-08-10T14:20:00Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "version": "v322",
+  "mandate": "spoken = written (+ tashkeel/iʿrāb/NFC/allah-irab/ه→هجرية only); no inventing paraphrases",
+  "v319RaceGuards": {
+    "expectQuestionId": "kept",
+    "speakToken": "kept",
+    "HEARTS_ENABLED": false
+  },
+  "v320Fidelity": { "kept": true },
+  "lemmaClips": {
+    "policy": "serve only if spoken softBare === written softBare",
+    "newInV322": [
+      {
+        "bare": "أنواط",
+        "file": "anwat.mp3",
+        "spoken": "أَنْوَاطْ،",
+        "transcript": "أنواط",
+        "stability": "5/5 Whisper small"
+      },
+      {
+        "bare": "العزى",
+        "file": "uzza.mp3",
+        "spoken": "الْعُزَّيْ",
+        "transcript": "العزي",
+        "stability": "5/5 Whisper small (softBare ى≡ي)"
+      }
+    ],
+    "refreshed": [
+      {
+        "bare": "ذباب",
+        "file": "dhubab.mp3",
+        "transcript": "ذو بابون",
+        "note": "PASS_ذ 5/5 (ذ not د); Whisper still splits orthography"
+      }
+    ],
+    "keptFromV321": ["قرب ذبابا", "قرب ذبابا لصنم", "ذات أنواط", "لا ضرر ولا ضرار", "…"]
+  },
+  "verify": {
+    "extracted/listen_v322_verify/anwat_stt.json": "أنواط ×5",
+    "extracted/listen_v322_verify/uzza_stt.json": "العزي ×5",
+    "extracted/listen_v322_verify/dhubab_stt.json": "ذو بابون ×5",
+    "extracted/listen_v322_verify/qarraba_stt.json": "قرب ذباباً ×5"
+  },
+  "ar_report": {
+    "fixed": "مقاطع lemma مطابقة للمكتوب: أنواط (5/5 أنواط لا أنواع)، العزى عبر الْعُزَّيْ (5/5 العزي لا العزة)، وتثبيت ذباب بذال (Whisper: ذو بابون).",
+    "kept": "expectQuestionId / speakToken / HEARTS_ENABLED=false؛ بلا اختراع نص.",
+    "version": "v322"
+  }
+}

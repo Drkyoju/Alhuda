@@ -1,7 +1,7 @@
 {
-  "at": "2026-08-10T13:49:52.933Z",
+  "at": "2026-08-10T14:19:17.720521Z",
   "voice": "راوٍ عربي حكيم",
-  "note": "v321 fidelity lemma clips: spoken/transcript bare === written bare (tashkeel/spacing only).",
+  "note": "v322 fidelity lemma clips: أنواط + العزى (+ refreshed ذباب); spoken bare === written.",
   "clips": {
     "قرب ذبابا": {
       "bare": "قرب ذبابا",
@@ -69,18 +69,20 @@
     "ذباب": {
       "bare": "ذباب",
       "file": "dhubab.mp3",
-      "spoken": "ذُبَابْ",
-      "transcript": "ذو بابن",
-      "source": "r10",
-      "note": "PASS_ذ (Whisper split ذو بابن OK); fidelity softBare match"
+      "spoken": "ذُبَابٌ",
+      "transcript": "ذو بابون",
+      "source": "r1",
+      "speed": 0.78,
+      "note": "PASS_ذ; fidelity softBare match"
     },
     "ذبابا": {
       "bare": "ذبابا",
       "file": "dhubaban.mp3",
-      "spoken": "ذُبَابَا",
+      "spoken": "ذُبَابًا",
       "transcript": "ذو بابن",
-      "source": "r14",
-      "note": "PASS_ذ (Whisper split ذو بابن OK); fidelity softBare match"
+      "source": "r7",
+      "speed": 1.08,
+      "note": "PASS_ذ; fidelity softBare match"
     },
     "صح": {
       "bare": "صح",
@@ -103,10 +105,10 @@
     "ذات أنواط": {
       "bare": "ذات أنواط",
       "file": "dhat_anwat.mp3",
-      "spoken": "ذَاتِ أَنْوَاطْ",
+      "spoken": "ذَاتِ  أَنْوَاطْ",
       "transcript": "ذاتي أنواط",
-      "source": "r7",
-      "speed": 0.9,
+      "source": "r2",
+      "speed": 0.85,
       "note": "PASS_أنواط; fidelity softBare match"
     },
     "اللّات": {
@@ -195,6 +197,24 @@
       "transcript": "أبو هوريرا",
       "source": "r14",
       "note": "PASS_هريرة; fidelity softBare match; alias"
+    },
+    "أنواط": {
+      "bare": "أنواط",
+      "file": "anwat.mp3",
+      "spoken": "أَنْوَاطْ،",
+      "transcript": "أنواط",
+      "source": "r3",
+      "speed": 0.9,
+      "note": "PASS_أنواط; fidelity softBare match"
+    },
+    "العزى": {
+      "bare": "العزى",
+      "file": "uzza.mp3",
+      "spoken": "الْعُزَّيْ",
+      "transcript": "العزي",
+      "source": "r1",
+      "speed": 0.78,
+      "note": "PASS_العزى; fidelity softBare match"
     }
   }
 }

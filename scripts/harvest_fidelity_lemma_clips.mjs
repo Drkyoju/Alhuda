@@ -46,7 +46,7 @@ const ONLY = process.argv.find((a) => a.startsWith('--only='))?.slice(7) || '';
 const STABILITY_N = Number(process.argv.find((a) => a.startsWith('--stability='))?.slice(12) || 3);
 const NEW_ONLY = process.argv.includes('--new-only');
 
-const outDir = join(root, 'extracted/listen_v321_fidelity_harvest');
+const outDir = join(root, 'extracted/listen_v322_fidelity_harvest');
 const attemptDir = join(outDir, 'attempts');
 const clipDir = join(root, 'tts-lemma-clips');
 const MANIFEST_PATH = join(clipDir, 'manifest.json');
@@ -114,7 +114,19 @@ function spokenVariants(bare) {
     uniq.add('خَطَأٌ');
     uniq.add('خَطَأْ');
   }
-  if (/أنواط|انواط/.test(bare)) {
+  if (/^أنواط$/u.test(bare) || /^انواط$/u.test(bare)) {
+    // Standalone — emphasize ط (avoid أنواع). Same letters only; no ذات pad.
+    uniq.add('أَنْوَاطْ');
+    uniq.add('أَنْوَاطْ.');
+    uniq.add('أَنْوَاطْ،');
+    uniq.add('أَنْـوَاطْ');
+    uniq.add('أَنْوَاْطْ');
+    uniq.add('أَنْوَاطُ');
+    uniq.add('أَنْوَاطِ');
+    uniq.add('أَنْوَاطّ');
+    uniq.add('انْوَاطْ');
+    uniq.add('أَنْواطْ');
+  } else if (/أنواط|انواط/.test(bare)) {
     uniq.add('أَنْوَاطْ');
     uniq.add('ذَاتِ  أَنْوَاطْ');
   }
@@ -122,7 +134,17 @@ function spokenVariants(bare) {
     uniq.add('الْلَاتُ');
     uniq.add('اللَاتْ');
   }
-  if (/العزى/.test(bare)) {
+  if (/^العزى$/u.test(bare)) {
+    // Final ي (softBare ى≡ي) so Fish/Whisper keep yāʾ vs تاء مربوطة «العزة»
+    uniq.add('الْعُزَّى');
+    uniq.add('الْعُزَّيْ');
+    uniq.add('الْعُزِّي');
+    uniq.add('الْعُزَّي');
+    uniq.add('العُزَّيْ');
+    uniq.add('الْعُزَّىْ');
+    uniq.add('الْعُزّىٰ');
+    uniq.add('الْعُزَّى.');
+  } else if (/العزى/.test(bare)) {
     uniq.add('الْعُزَّى');
     uniq.add('وَالْعُزَّى');
   }
@@ -222,7 +244,8 @@ const TARGETS = [
   { bare: 'أبو هريرة', file: 'abu_hurayra.mp3', kind: 'hurayra', aliases: ['ابو هريرة'] },
 ].filter((t) => !ONLY || t.bare.includes(ONLY) || softBare(t.bare).includes(softBare(ONLY)));
 
-const SPEEDS = [0.9, 0.95, 1.0, 1.05, 1.08, 1.12];
+const SPEEDS = [0.78, 0.85, 0.9, 0.95, 1.0, 1.05, 1.08, 1.12];
+const TEMPS = [0.22, 0.35, 0.5, 0.65, 0.8];
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -347,18 +370,37 @@ async function fetchTtsCranl(text, speed) {
   };
 }
 
-async function fetchTtsLocal(text, speed) {
-  const { synthesizeFishArabicSpeech } = await import('../fish-audio-tts.js');
-  const stream = await synthesizeFishArabicSpeech(text, null, process.env, { speed });
-  const reader = stream.getReader();
-  const chunks = [];
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    chunks.push(Buffer.from(value));
-  }
-  const buf = Buffer.concat(chunks);
-  return { status: 200, buf, size: buf.length, provider: 'fish-local' };
+async function fetchTtsLocal(text, speed, temperature) {
+  // Bypass prepareFishTtsText so fidelity tashkeel variants actually reach Fish
+  // (prepare collapses أنواط endings → أَنْوَاطْ and would erase ي-ending العزى trials).
+  const {
+    FISH_TTS_ENDPOINT,
+    resolveFishVoiceId,
+    resolveFishModel,
+    buildFishTtsBody,
+  } = await import('../fish-audio-tts.js');
+  const env = { ...process.env };
+  if (temperature != null) env.FISH_TTS_TEMPERATURE = String(temperature);
+  const voice = resolveFishVoiceId(null, env);
+  const model = resolveFishModel(env);
+  const body = buildFishTtsBody(text, voice, env, { speed });
+  const res = await fetch(FISH_TTS_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${String(env.FISH_API_KEY || '').trim()}`,
+      'Content-Type': 'application/json',
+      model,
+    },
+    body: JSON.stringify(body),
+  });
+  const buf = Buffer.from(await res.arrayBuffer());
+  return {
+    status: res.status,
+    buf,
+    size: buf.length,
+    provider: 'fish-local-raw',
+    temperature: temperature ?? null,
+  };
 }
 
 function runWhisper(dir, outJson) {
@@ -432,9 +474,12 @@ async function harvestOne(target, fetchTts) {
   for (let i = 0; i < RETRIES; i++) {
     const spoken = variants[i % variants.length];
     const speed = SPEEDS[i % SPEEDS.length];
+    const temperature = TEMPS[i % TEMPS.length];
     const id = `r${i + 1}`;
     writeFileSync(join(batchDir, `${id}.txt`), spoken, 'utf8');
-    const r = await fetchTts(spoken, speed);
+    const r = USE_LOCAL
+      ? await fetchTts(spoken, speed, temperature)
+      : await fetchTts(spoken, speed);
     if (!(r.status >= 200 && r.status < 300 && r.size > 800)) {
       console.log(`  skip ${id}: status=${r.status} size=${r.size}`);
       continue;
@@ -444,10 +489,10 @@ async function harvestOne(target, fetchTts) {
       continue;
     }
     writeFileSync(join(batchDir, `${id}.mp3`), r.buf);
-    meta.push({ id, spoken, speed, size: r.size, provider: r.provider });
+    meta.push({ id, spoken, speed, temperature, size: r.size, provider: r.provider });
     n++;
-    process.stdout.write(`  got ${id} ${r.size}b speed=${speed}\n`);
-    await sleep(150);
+    process.stdout.write(`  got ${id} ${r.size}b speed=${speed} temp=${temperature}\n`);
+    await sleep(120);
   }
 
   if (!n) return null;
@@ -481,7 +526,7 @@ async function main() {
   man.at = new Date().toISOString();
   man.voice = 'راوٍ عربي حكيم';
   man.note =
-    'v321 fidelity lemma clips: spoken/transcript bare === written bare (tashkeel/spacing only).';
+    'v322 fidelity lemma clips: spoken/transcript bare === written bare (tashkeel/spacing only).';
   man.clips = man.clips && typeof man.clips === 'object' ? man.clips : {};
 
   const log = [];
