@@ -1743,6 +1743,9 @@
       min-width: 0;
       direction: ltr;
     }
+    #hearts[hidden] {
+      display: none !important;
+    }
     #hearts {
       display: flex;
       flex-direction: row;

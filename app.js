@@ -35,6 +35,8 @@ const TIMER_SAND_BOTTOM_H = 22;
 const TIMER_SAND_TOP_Y = 12;
 const TIMER_SAND_BOTTOM_Y = 56;
 const LOGIN_LOCKED = false;
+/** Hearts/lives + early game-over disabled so players can listen through the full bank. */
+const HEARTS_ENABLED = false;
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
   usool: ['👤 المؤلف','📖 الكتاب','📚 المسائل الأربع','📚 العلم','🕌 الرب','🙏 العبادة','👤 النبي','📿 الدين','🤲 الدعاء','🛡️ التوكل','🆘 الاستعانة','📿 الاستعاذة']
@@ -5620,18 +5622,23 @@ function onQuestionTimeUp() {
   const selfBox = document.getElementById('fb-self-correct');
   if (!trainingMode) state.wrongLog.push({ q, index: state.idx, picked: '—' });
   if (!trainingMode) {
-    state.hearts--; state.streak = 0; state.wrong++;
-    renderHearts();
-    playSound('wrong');
-    if (state.hearts <= 0) {
-      fb.className = 'feedback show bad';
-      document.getElementById('fb-icon').textContent = '💔';
-      document.getElementById('fb-title').textContent = `${n}، انتهت المحاولات — راجع/ي أخطاءك لاحقاً 💪`;
-      selfBox.style.display = 'none';
-      expEl.textContent = '';
-      setFeedbackPanelOpen(true);
-      scheduleEndGame(1800);
-      return;
+    state.streak = 0; state.wrong++;
+    if (HEARTS_ENABLED) {
+      state.hearts--;
+      renderHearts();
+      playSound('wrong');
+      if (state.hearts <= 0) {
+        fb.className = 'feedback show bad';
+        document.getElementById('fb-icon').textContent = '💔';
+        document.getElementById('fb-title').textContent = `${n}، انتهت المحاولات — راجع/ي أخطاءك لاحقاً 💪`;
+        selfBox.style.display = 'none';
+        expEl.textContent = '';
+        setFeedbackPanelOpen(true);
+        scheduleEndGame(1800);
+        return;
+      }
+    } else {
+      playSound('wrong');
     }
   }
   fb.className = 'feedback show bad';
@@ -6902,19 +6909,24 @@ function pick(btn, isOk) {
       state.wrongLog.push({ q, index: state.idx, picked });
     }
     if (!trainingMode) {
-      state.hearts--; state.streak = 0; state.wrong++;
-      renderHearts();
-      playSound('wrong');
-      if (state.hearts <= 0) {
-        fb.className = 'feedback show bad';
-        document.getElementById('fb-icon').textContent = '💔';
-        document.getElementById('fb-title').textContent = `${n}، انتهت المحاولات — راجع/ي أخطاءك لاحقاً 💪`;
-        selfBox.style.display = 'none';
-        expEl.textContent = '';
-        setFeedbackPanelOpen(true);
-        scheduleEndGame(1800);
-        updatePrevQBtn();
-        return;
+      state.streak = 0; state.wrong++;
+      if (HEARTS_ENABLED) {
+        state.hearts--;
+        renderHearts();
+        playSound('wrong');
+        if (state.hearts <= 0) {
+          fb.className = 'feedback show bad';
+          document.getElementById('fb-icon').textContent = '💔';
+          document.getElementById('fb-title').textContent = `${n}، انتهت المحاولات — راجع/ي أخطاءك لاحقاً 💪`;
+          selfBox.style.display = 'none';
+          expEl.textContent = '';
+          setFeedbackPanelOpen(true);
+          scheduleEndGame(1800);
+          updatePrevQBtn();
+          return;
+        }
+      } else {
+        playSound('wrong');
       }
     } else if (trainingMode) {
       playSound('wrong');
@@ -7073,7 +7085,7 @@ async function endGame() {
     await saveGameScore(gamePoints, qFrom);
   }
 
-  if (state.hearts <= 0 && !isTraining) {
+  if (HEARTS_ENABLED && state.hearts <= 0 && !isTraining) {
     document.getElementById('go-score').textContent = state.score;
     document.getElementById('go-cor').textContent = state.correct;
     document.getElementById('go-wr').textContent = state.wrong;
@@ -7163,6 +7175,14 @@ function updateProgress() {
 function renderHearts() {
   const c = document.getElementById('hearts');
   if (!c) return;
+  if (!HEARTS_ENABLED) {
+    c.hidden = true;
+    c.setAttribute('aria-hidden', 'true');
+    c.innerHTML = '';
+    return;
+  }
+  c.hidden = false;
+  c.removeAttribute('aria-hidden');
   const labels = ['لا محاولات', 'محاولة واحدة', 'محاولتان', '٣ محاولات', '٤ محاولات', '٥ محاولات'];
   c.setAttribute('aria-label', labels[state.hearts] || `${state.hearts} محاولات متبقية`);
   c.innerHTML = '';
