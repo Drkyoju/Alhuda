@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v317: speech orphan purge + no inventing expansions) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v318: abort current-Q TTS kick on navigate) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v317",
+  cache: "alhuda-v319",
   styles: 85,
   kidsUi: 15,
   enhancements: 18,
-  app: 277,
+  app: 279,
   platform: 21,
   auth: 16,
-  sw: 317,
+  sw: 319,
 };

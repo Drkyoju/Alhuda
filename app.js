@@ -1713,6 +1713,8 @@ let ttsStatusReadyPromise = null;
 /** AbortController for background (next-Q / answer) warms — cancelled when current Q speaks. */
 let ttsBackgroundWarmAbort = null;
 let currentQuestionTtsKick = null;
+/** AbortController for CURRENT question kick — aborted on navigate/stopSpeaking. */
+let currentQuestionTtsAbort = null;
 /** Bumped by stopSpeaking — stale speak/fetch joins must abort when this changes. */
 let hybridSpeechToken = 0;
 
@@ -2239,21 +2241,35 @@ function kickCurrentQuestionTts(q) {
   if (currentQuestionTtsKick?.qId === q.id && currentQuestionTtsKick.promise) {
     return currentQuestionTtsKick.promise;
   }
+  // Abort any prior question's kick network work.
+  if (currentQuestionTtsAbort) {
+    try { currentQuestionTtsAbort.abort(); } catch { /* ignore */ }
+  }
+  currentQuestionTtsAbort = new AbortController();
+  const kickSignal = currentQuestionTtsAbort.signal;
+  const kickId = q.id;
+  const kickToken = hybridSpeechToken;
   const work = (async () => {
     // Maps load in parallel — never gate first-byte on them (was up to 40ms silence).
     void ensureSpeechMapsLoaded();
+    if (kickSignal.aborted || kickToken !== hybridSpeechToken) return null;
+    if (state.questions?.[state.idx]?.id !== kickId) return null;
     const { questionText } = buildQuestionSpeechParts(q);
     // Same Fish prose as speakQuestion (incl. ayah-strip) so kick hits the play cache key.
     const qClean = prepareQuestionFishProse(q, questionText);
     if (qClean && qClean.length >= 2) {
       const key = ttsCacheKey(qClean, TTS_VOICE, TTS_FISH_SPEED_QUESTION);
-      // Current Q must not use background abort — cancelBackgroundTtsWarms must not kill it.
-      if (!ttsBlobMemoryCache.has(key) && !ttsPrefetchInFlight.has(key)) {
-        void fetchTtsBlob(qClean, TTS_VOICE, undefined, TTS_FISH_SPEED_QUESTION).catch(() => null);
-      } else if (ttsPrefetchInFlight.has(key)) {
-        await ttsPrefetchInFlight.get(key).catch(() => null);
+      // Abortable: stopSpeaking / navigate must cancel this fetch join.
+      if (!ttsBlobMemoryCache.has(key)) {
+        try {
+          await fetchTtsBlob(qClean, TTS_VOICE, kickSignal, TTS_FISH_SPEED_QUESTION);
+        } catch (e) {
+          if (e?.name === 'AbortError') return null;
+        }
       }
     }
+    if (kickSignal.aborted || kickToken !== hybridSpeechToken) return null;
+    if (state.questions?.[state.idx]?.id !== kickId) return null;
     return qClean || null;
   })();
   currentQuestionTtsKick = { qId: q.id, promise: work };
@@ -2327,16 +2343,15 @@ async function prefetchHybridSpeechForQuestion(q, signal) {
 
 function prefetchUpcomingTts(fromIdx = state.idx) {
   // Never warm CURRENT idx here — kickCurrentQuestionTts / speakQuestion own it.
-  // Immediate next is non-abortable; N+2 stays abortable. Answers after speak starts.
+  // All upcoming warms are abortable so navigate cannot leave stale /api/tts in flight.
   const start = Math.max(0, (fromIdx | 0) + 1);
   const qs = state.questions || [];
   const sig = backgroundTtsSignal();
   for (let i = start; i < start + 2 && i < qs.length; i++) {
     const q = qs[i];
     if (!q) continue;
-    const warmSig = i === start ? null : sig;
-    void prefetchHybridSpeechForQuestion(q, warmSig);
-    if (i === start) void warmQuestionSpeech(q, { allowAnswers: false, signal: null });
+    void prefetchHybridSpeechForQuestion(q, sig);
+    void warmQuestionSpeech(q, { allowAnswers: false, signal: sig });
   }
 }
 
@@ -2365,7 +2380,7 @@ async function warmRoundAudioForOffline(questions, { notify = true } = {}) {
     ensureSpeechMapsLoaded(),
     new Promise((r) => setTimeout(r, 50)),
   ]);
-  try { await warmQuestionSpeech(q, { allowAnswers: false, signal: null }); } catch { /* ignore */ }
+  try { await warmQuestionSpeech(q, { allowAnswers: false, signal: backgroundTtsSignal() }); } catch { /* ignore */ }
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   if (verseKey) {
     try { await fetchQuranAudioObjectUrl(verseKey); } catch { /* ignore */ }
@@ -4556,6 +4571,12 @@ function stopSpeaking() {
   hybridSpeechToken += 1;
   // Drop kick reuse — next speak/render must start a fresh fetch for the new question.
   currentQuestionTtsKick = null;
+  if (currentQuestionTtsAbort) {
+    try { currentQuestionTtsAbort.abort(); } catch { /* ignore */ }
+    currentQuestionTtsAbort = null;
+  }
+  // Also kill next-Q / answer warms so they cannot fetch/play under a new painted question.
+  cancelBackgroundTtsWarms();
   clearTtsAudio();
   stopQuranAudio();
   document.querySelectorAll('.voice-btn.speaking').forEach(b => b.classList.remove('speaking'));
@@ -4883,8 +4904,8 @@ function speakQuestion() {
         cancelBackgroundTtsWarms();
         const next = state.questions[askIdx + 1];
         const bg = backgroundTtsSignal();
-        // Immediate next: non-abortable so advancing does not kill a near-ready clip.
-        if (next) void warmQuestionSpeech(next, { allowAnswers: false, signal: null });
+        // Abortable next warm — stopSpeaking on navigate cancels it.
+        if (next) void warmQuestionSpeech(next, { allowAnswers: false, signal: bg });
         for (const opt of opts) {
           prefetchTtsText(opt, TTS_VOICE, bg, TTS_FISH_SPEED_ANSWER);
         }
