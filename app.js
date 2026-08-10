@@ -1695,8 +1695,8 @@ function toggleSound() {
 /** Locked Fish lesson voice — resolved from /api/tts-status (FISH_VOICE_ID / حكيم). */
 const TTS_FISH_HAKIM = 'aa9c8260269c411d9863ab1b1bfa3158';
 let TTS_VOICE = TTS_FISH_HAKIM;
-/** Bump: Fish Hakim mild clarity (vol 14 + gain 1.6) — kill quieter cached clips. */
-const TTS_CACHE_VER = 'v85';
+/** Bump: abort-aware TTS join + speakToken guard (fix wrong-question audio). */
+const TTS_CACHE_VER = 'v86';
 /**
  * Lesson Fish TTS only — mild gain + soft limiter (no HP/presence EQ).
  * Never applied to Quran Hudhaify.
@@ -1713,6 +1713,8 @@ let ttsStatusReadyPromise = null;
 /** AbortController for background (next-Q / answer) warms — cancelled when current Q speaks. */
 let ttsBackgroundWarmAbort = null;
 let currentQuestionTtsKick = null;
+/** Bumped by stopSpeaking — stale speak/fetch joins must abort when this changes. */
+let hybridSpeechToken = 0;
 
 /** Signal for next-Q / answer warms only — never attach to current-question fetch. */
 function backgroundTtsSignal() {
@@ -1871,6 +1873,52 @@ function ttsBlobLooksLikeMp3(blob) {
   }).catch(() => false);
 }
 
+/** AbortError helper — stale question playback must never continue after navigate. */
+function ttsAbortError() {
+  return new DOMException('Aborted', 'AbortError');
+}
+
+/**
+ * Join an in-flight prefetch BUT honor the caller's abort signal.
+ * Previous bug: kick used signal=undefined, speak joined the same promise and
+ * ignored ttsAbort — after navigate, old question audio still played.
+ */
+function awaitTtsPrefetch(key, signal) {
+  const p = ttsPrefetchInFlight.get(key);
+  if (!p) return null;
+  if (!signal) return p;
+  if (signal.aborted) return Promise.reject(ttsAbortError());
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const onAbort = () => {
+      if (settled) return;
+      settled = true;
+      signal.removeEventListener('abort', onAbort);
+      reject(ttsAbortError());
+    };
+    signal.addEventListener('abort', onAbort, { once: true });
+    p.then(
+      (v) => {
+        if (settled) return;
+        settled = true;
+        signal.removeEventListener('abort', onAbort);
+        if (signal.aborted) reject(ttsAbortError());
+        else resolve(v);
+      },
+      (e) => {
+        if (settled) return;
+        settled = true;
+        signal.removeEventListener('abort', onAbort);
+        reject(e);
+      }
+    );
+  });
+}
+
+function assertTtsSpeakToken(speakToken) {
+  if (speakToken != null && speakToken !== hybridSpeechToken) throw ttsAbortError();
+}
+
 async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FISH_SPEED_QUESTION) {
   const lookupVoice =
     voice === TTS_VOICE || /Neural|google|Wavenet/i.test(String(voice || ''))
@@ -1887,7 +1935,11 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
     throw new Error('tts baked miss');
   }
   // Join kick/prefetch BEFORE IDB — speak must not wait on IndexedDB while network is live.
-  if (ttsPrefetchInFlight.has(key)) return ttsPrefetchInFlight.get(key);
+  // CRITICAL: abort-aware join so navigate cancels stale speak awaits.
+  {
+    const joined = awaitTtsPrefetch(key, signal);
+    if (joined) return joined;
+  }
 
   // Prefer static baked MP3s only when explicitly enabled (legacy offline mode).
   if (window.__alhudaSkipBakedTts !== true && typeof bakedTtsAssetPath === 'function') {
@@ -1956,7 +2008,10 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
     ttsKnownMissCache.add(key);
     throw new Error('tts baked miss');
   }
-  if (ttsPrefetchInFlight.has(key)) return ttsPrefetchInFlight.get(key);
+  {
+    const joined = awaitTtsPrefetch(key, signal);
+    if (joined) return joined;
+  }
 
   const work = (async () => {
     let lastErr = null;
@@ -2044,9 +2099,11 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
 async function ensureTtsObjectUrl(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FISH_SPEED_QUESTION) {
   const clean = String(text || '').trim();
   if (!clean) return null;
+  if (signal?.aborted) throw ttsAbortError();
   const key = ttsCacheKey(clean, voice, fishSpeed);
   if (ttsBlobMemoryCache.has(key)) return ttsBlobMemoryCache.get(key);
   const blob = await fetchTtsBlob(clean, voice, signal, fishSpeed);
+  if (signal?.aborted) throw ttsAbortError();
   if (ttsBlobMemoryCache.has(key)) return ttsBlobMemoryCache.get(key);
   if (!blob) throw new Error('empty audio');
   const url = URL.createObjectURL(blob);
@@ -3090,7 +3147,6 @@ function speechTextFor(q, field, raw) {
 let ttsAudio = null;
 let ttsAbort = null;
 let ttsObjectUrl = null;
-let hybridSpeechToken = 0;
 
 function stripForSpeech(text) {
   const cleaned = (text || '')
@@ -3384,9 +3440,9 @@ function buildQuestionOptionSpeechList(q) {
       if (t) items.push(t);
     });
   } else if (q?.type === 'tf') {
-    // Must match on-screen buttons «صح ✓» / «خطأ ✗» (full tashkeel for Hamed).
-    items.push('هَذَا صَحِيحٌ');
-    items.push('هَذَا خَطَأٌ');
+    // Must match on-screen buttons «صح ✓» / «خطأ ✗» — never invent «هذا صحيح».
+    items.push('صَحّ ✓');
+    items.push('خَطَأ ✗');
   }
   return items;
 }
@@ -3551,7 +3607,11 @@ async function speakFeedbackOnce(q, wrongText, btn) {
           await playQuranRecitation(seg.verseKey, btn, { interruptAll: false });
         } else if (seg.type === 'tts' && seg.text?.trim()) {
           const clean = prepareTtsPayload(seg.text) || stripForSpeech(seg.text);
-          if (clean) await speakTtsSegment(clean, btn, { alreadyPrepared: true });
+          if (clean) await speakTtsSegment(clean, btn, {
+            alreadyPrepared: true,
+            speakToken: token,
+            expectQuestionId: q.id,
+          });
         }
       } catch (e) {
         if (e.name === 'AbortError') throw e;
@@ -4494,6 +4554,8 @@ function clearTtsAudio(btn) {
 
 function stopSpeaking() {
   hybridSpeechToken += 1;
+  // Drop kick reuse — next speak/render must start a fresh fetch for the new question.
+  currentQuestionTtsKick = null;
   clearTtsAudio();
   stopQuranAudio();
   document.querySelectorAll('.voice-btn.speaking').forEach(b => b.classList.remove('speaking'));
@@ -4501,19 +4563,23 @@ function stopSpeaking() {
 }
 
 
-async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE, onStarted) {
+async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE, onStarted, speakToken) {
   if (!ttsAudio) return;
-  try { ttsAudio.playbackRate = playbackRate; } catch { /* ignore */ }
-  try { ttsAudio.muted = false; ttsAudio.volume = 1; } catch { /* ignore */ }
-  // Lesson Azure only (this helper). Quran path never enters here.
-  routeTtsThroughMildBoost(ttsAudio);
+  assertTtsSpeakToken(speakToken);
+  const el = ttsAudio;
+  try { el.playbackRate = playbackRate; } catch { /* ignore */ }
+  try { el.muted = false; el.volume = 1; } catch { /* ignore */ }
+  // Lesson Fish only (this helper). Quran path never enters here.
+  routeTtsThroughMildBoost(el);
   if (btn) btn.classList.add('speaking');
   try {
-    await ttsAudio.play();
+    assertTtsSpeakToken(speakToken);
+    await el.play();
   } catch (first) {
+    assertTtsSpeakToken(speakToken);
     unlockTtsAudio();
     try {
-      await ttsAudio.play();
+      await el.play();
     } catch (second) {
       const msg = String(second?.name || first?.name || second?.message || first?.message || '');
       if (/NotAllowedError|not allowed|user.*gesture/i.test(msg)) {
@@ -4522,29 +4588,47 @@ async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE, onS
       throw second || first;
     }
   }
+  assertTtsSpeakToken(speakToken);
+  // Navigation cleared/replaced this element — never continue stale playback.
+  if (ttsAudio !== el) throw ttsAbortError();
   try { onStarted?.(); } catch { /* ignore */ }
   await new Promise((resolve, reject) => {
-    ttsAudio.onended = resolve;
-    ttsAudio.onerror = () => reject(new Error('audio error'));
+    if (ttsAudio !== el || (speakToken != null && speakToken !== hybridSpeechToken)) {
+      reject(ttsAbortError());
+      return;
+    }
+    el.onended = () => resolve();
+    el.onerror = () => reject(new Error('audio error'));
   });
 }
 
 async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_DEFAULT_PLAYBACK_RATE, {
   fishSpeed = TTS_FISH_SPEED_QUESTION,
   onStarted,
+  speakToken,
+  expectQuestionId,
 } = {}) {
+  const myToken = speakToken ?? hybridSpeechToken;
+  const assertLive = () => {
+    assertTtsSpeakToken(myToken);
+    if (expectQuestionId != null && state.questions?.[state.idx]?.id !== expectQuestionId) {
+      throw ttsAbortError();
+    }
+  };
+  assertLive();
   const key = ttsCacheKey(text, voice, fishSpeed);
-  // Live Azure mode: never play old baked narrator URLs.
+  // Live path: never play old baked narrator URLs when skip-baked is on.
   if (window.__alhudaSkipBakedTts !== true && typeof bakedTtsAssetPath === 'function') {
     try {
       const bakedUrl = await bakedTtsAssetPath(text, voice);
+      assertLive();
       const bust = typeof window !== 'undefined' && window.ALHUDA_ASSETS?.sw
         ? `?v=${window.ALHUDA_ASSETS.sw}`
         : '';
       const direct = `${bakedUrl}${bust}`;
       ttsObjectUrl = direct;
       ttsAudio = makePlayableAudio(direct);
-      await playTtsElement(btn, playbackRate, onStarted);
+      await playTtsElement(btn, playbackRate, onStarted, myToken);
       void ensureTtsObjectUrl(text, voice, undefined, fishSpeed).catch(() => {});
       return;
     } catch (e) {
@@ -4559,15 +4643,18 @@ async function speakTextCloud(text, btn, voice = TTS_VOICE, playbackRate = TTS_D
     ttsAbort = new AbortController();
     url = await ensureTtsObjectUrl(text, voice, ttsAbort.signal, fishSpeed);
   }
+  assertLive();
   if (!url) throw new Error('empty audio');
   ttsObjectUrl = url;
   ttsAudio = makePlayableAudio(url);
-  await playTtsElement(btn, playbackRate, onStarted);
+  assertLive();
+  await playTtsElement(btn, playbackRate, onStarted, myToken);
 }
 
 /** Play a preloaded Audio element with no fetch gap (used to chain Q → answers). */
-async function playPreloadedAudio(audio, btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE, onStarted) {
+async function playPreloadedAudio(audio, btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE, onStarted, speakToken = null) {
   if (!audio) return;
+  assertTtsSpeakToken(speakToken);
   // Swap in without aborting in-flight prefetches (clearTtsAudio aborts ttsAbort).
   if (ttsAudio) {
     ttsAudio.onended = null;
@@ -4579,7 +4666,7 @@ async function playPreloadedAudio(audio, btn, playbackRate = TTS_DEFAULT_PLAYBAC
   const src = audio.src || '';
   ttsAudio = src ? makePlayableAudio(src) : audio;
   ttsObjectUrl = src || ttsObjectUrl;
-  await playTtsElement(btn, playbackRate, onStarted);
+  await playTtsElement(btn, playbackRate, onStarted, speakToken);
 }
 
 async function speakTtsSegment(text, btn, {
@@ -4589,14 +4676,26 @@ async function speakTtsSegment(text, btn, {
   playbackRate = TTS_DEFAULT_PLAYBACK_RATE,
   fishSpeed = TTS_FISH_SPEED_QUESTION,
   onStarted,
+  speakToken,
+  expectQuestionId,
 } = {}) {
   // Same pipeline as prefetchTtsText — shared cache key = instant when warmed.
   // alreadyPrepared: caller already ran prepareTtsPayload (avoid double-normalize cache miss).
   const clean = alreadyPrepared ? String(text || '').trim() : prepareTtsPayload(text);
   if (!clean) return;
+  const myToken = speakToken ?? hybridSpeechToken;
+  assertTtsSpeakToken(myToken);
+  if (expectQuestionId != null && state.questions?.[state.idx]?.id !== expectQuestionId) {
+    throw ttsAbortError();
+  }
   try {
     try {
-      await speakTextCloud(clean, btn, TTS_VOICE, playbackRate, { fishSpeed, onStarted });
+      await speakTextCloud(clean, btn, TTS_VOICE, playbackRate, {
+        fishSpeed,
+        onStarted,
+        speakToken: myToken,
+        expectQuestionId,
+      });
     } catch (e) {
       if (e.name === 'AbortError') throw e;
       // Do NOT fall back to browser SpeechSynthesis — it is a different voice
@@ -4619,6 +4718,7 @@ async function playSpeechForText(text, q, btn, token) {
   const recited = new Set();
   const src = String(text || '').trim();
   if (!src) return recited;
+  const expectId = q?.id ?? null;
   if (textMayHaveQuranAyah(src, q)) {
     const plan = await buildSpeechPlan(src, q);
     if (token !== hybridSpeechToken) return recited;
@@ -4629,13 +4729,13 @@ async function playSpeechForText(text, q, btn, token) {
           recited.add(seg.verseKey);
           await playQuranRecitation(seg.verseKey, btn, { interruptAll: false });
         } else if (seg.type === 'tts' && seg.text?.trim()) {
-          await speakTtsSegment(seg.text, btn);
+          await speakTtsSegment(seg.text, btn, { speakToken: token, expectQuestionId: expectId });
         }
       }
       return recited;
     }
   }
-  await speakTtsSegment(src, btn);
+  await speakTtsSegment(src, btn, { speakToken: token, expectQuestionId: expectId });
   return recited;
 }
 
@@ -4644,12 +4744,13 @@ async function speakHybrid(text, q, btn, { allowAnswers = false } = {}) {
   if (!maySpeak || !text) return;
   stopSpeaking();
   const token = hybridSpeechToken;
+  const expectId = q?.id ?? null;
   if (btn) btn.classList.add('speaking');
   try {
     const plan = await buildSpeechPlan(text, q);
     if (!plan.length) {
       const clean = stripForSpeech(text);
-      if (clean) await speakTtsSegment(clean, btn);
+      if (clean) await speakTtsSegment(clean, btn, { speakToken: token, expectQuestionId: expectId });
       return;
     }
     for (const seg of plan) {
@@ -4657,7 +4758,7 @@ async function speakHybrid(text, q, btn, { allowAnswers = false } = {}) {
       if (seg.type === 'quran' && seg.verseKey) {
         await playQuranRecitation(seg.verseKey, btn, { interruptAll: false });
       } else if (seg.type === 'tts' && seg.text?.trim()) {
-        await speakTtsSegment(seg.text, btn);
+        await speakTtsSegment(seg.text, btn, { speakToken: token, expectQuestionId: expectId });
       }
     }
   } catch (e) {
@@ -4699,11 +4800,15 @@ async function speakText(text, btn, { allowAnswers = false, question = null } = 
   const clean = stripForSpeech(text);
   if (!clean) return;
   stopSpeaking();
+  const token = hybridSpeechToken;
+  const expectId = q?.id ?? null;
   try {
     await speakTtsSegment(clean, btn, {
       keepBtnState: false,
       playbackRate: allowAnswers ? TTS_ANSWER_PLAYBACK_RATE : TTS_DEFAULT_PLAYBACK_RATE,
       fishSpeed: allowAnswers ? TTS_FISH_SPEED_ANSWER : TTS_FISH_SPEED_QUESTION,
+      speakToken: token,
+      expectQuestionId: expectId,
     });
   } catch (e) {
     if (e.name === 'AbortError') return;
@@ -4746,11 +4851,9 @@ function speakQuestion() {
   const btn = document.getElementById('btn-speak-question');
   const askIdx = state.idx;
   const askId = q.id;
-  // Ensure fetch is in flight (no-op if kickCurrentQuestionTts already started it).
-  kickCurrentQuestionTts(q);
-  // Cut previous audio once. Avoid a second stopSpeaking later that aborts the
-  // just-started clip (token bump + ttsAbort race).
+  // Cut previous audio first, THEN kick current — avoids stale play after navigate.
   stopSpeaking();
+  kickCurrentQuestionTts(q);
   const token = hybridSpeechToken;
   unlockTtsAudio();
   void (async () => {
@@ -4790,16 +4893,20 @@ function speakQuestion() {
       if (btn) btn.classList.add('speaking');
       try {
         // 1) Question prose — identical pipeline to kickCurrentQuestionTts (shared cache key).
+        // Guard: speakToken + askId so a slow fetch from a prior question NEVER plays here.
         const qProse = prepareQuestionFishProse(q, questionText);
         if (qProse) {
           for (let attempt = 0; attempt < 3; attempt++) {
             if (token !== hybridSpeechToken || state.idx !== askIdx) return;
+            if (state.questions[state.idx]?.id !== askId) return;
             try {
               await speakTtsSegment(qProse, btn, {
                 clearAfter: false,
                 alreadyPrepared: true,
                 fishSpeed: TTS_FISH_SPEED_QUESTION,
                 onStarted: warmAnswersAndNext,
+                speakToken: token,
+                expectQuestionId: askId,
               });
               break;
             } catch (e) {
@@ -4814,11 +4921,14 @@ function speakQuestion() {
                 try {
                   const raw = prepareQuestionFishProse(q, String(q.q || '').trim());
                   if (raw && raw !== qProse) {
+                    if (token !== hybridSpeechToken || state.questions[state.idx]?.id !== askId) return;
                     await speakTtsSegment(raw, btn, {
                       clearAfter: false,
                       alreadyPrepared: true,
                       fishSpeed: TTS_FISH_SPEED_QUESTION,
                       onStarted: warmAnswersAndNext,
+                      speakToken: token,
+                      expectQuestionId: askId,
                     });
                   } else if (!String(e?.message || '').includes('baked miss')) {
                     toastTtsFail();
@@ -4879,6 +4989,8 @@ function speakQuestion() {
                   alreadyPrepared: true,
                   playbackRate: TTS_ANSWER_PLAYBACK_RATE,
                   fishSpeed: TTS_FISH_SPEED_ANSWER,
+                  speakToken: token,
+                  expectQuestionId: askId,
                 });
                 played = true;
               } catch (e) {
@@ -6699,12 +6811,12 @@ function startGame() {
 function renderQ() {
   if (state.idx >= state.questions.length) { void endGame(); return; }
   const q = state.questions[state.idx];
-  // CRITICAL latency: start CURRENT question TTS fetch the instant idx is known,
-  // before paint / double-rAF — so audio is already downloading when text appears.
+  // Cancel ANY prior question audio/fetch-join FIRST — then kick CURRENT.
+  // (Old order kick→stop left non-abortable prefetch joins able to play stale audio.)
+  stopSpeaking();
   if (voiceOn) {
     kickCurrentQuestionTts(q);
   }
-  stopSpeaking();
   const prior = state.answerLog?.[state.idx] || null;
   state.answered = !!prior;
   document.getElementById('show-answer-btn').style.display = 'none';
