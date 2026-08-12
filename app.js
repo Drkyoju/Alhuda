@@ -37,6 +37,10 @@ const TIMER_SAND_BOTTOM_Y = 56;
 const LOGIN_LOCKED = false;
 /** Hearts/lives + early game-over disabled so players can listen through the full bank. */
 const HEARTS_ENABLED = false;
+/** Listen-through: no short rounds — play the whole current book/level selection. */
+function isListenThroughMode() {
+  return !HEARTS_ENABLED;
+}
 const CHAPTER_ORDER = {
   tawheed: ['🕌 حق الله','🕌 حق الله على العباد','📖 لماذا خُلقنا','🌟 فضل التوحيد','✅ تحقيق التوحيد','⚠️ الخوف من الشرك','⚠️ الشرك','📿 الرقى والتمائم','📚 مسائل متنوعة'],
   usool: ['👤 المؤلف','📖 الكتاب','📚 المسائل الأربع','📚 العلم','🕌 الرب','🙏 العبادة','👤 النبي','📿 الدين','🤲 الدعاء','🛡️ التوكل','🆘 الاستعانة','📿 الاستعاذة']
@@ -718,8 +722,9 @@ function syncStageCompletion(stageNum) {
 }
 
 function getQuestionsForStageGame() {
-  // Pick up to roundSize unsolved questions from the capped difficulty tier.
-  // Solved questions stay out until the learner explicitly starts review.
+  // Pick questions from the capped difficulty tier.
+  // Normal play: up to roundSize unsolved. Listen-through (!HEARTS): full pool — no mid-bank results.
+  // Solved questions stay out until review — except listen-through, which replays the whole selection.
   if (state.useManualRange || state.homeworkId || trainingMode) return null;
   if (state.level === 'all' || !LEVEL_FLOW.includes(state.level)) return null;
   if (!isLevelUnlocked(state.book, state.level)) return [];
@@ -728,16 +733,22 @@ function getQuestionsForStageGame() {
   if (!pool.length) return [];
 
   const round = Math.max(ROUND_SIZE_MIN, Math.min(ROUND_SIZE_MAX, state.roundSize || ROUND_SIZE_DEFAULT));
+  const listenFull = isListenThroughMode();
 
   if (state.stageReviewMode) {
     const solvedQs = pool.filter((q) => prog.solvedIds.includes(q.id));
     if (!solvedQs.length) return [];
-    const size = Math.min(round, solvedQs.length);
-    const shuffled = shuffleArr(solvedQs);
-    const next = shuffled.slice(0, size);
+    const next = listenFull ? solvedQs.slice() : shuffleArr(solvedQs).slice(0, Math.min(round, solvedQs.length));
     state.qFrom = 1;
     state.activeStageNum = 1;
     return dedupeQuestionList(next);
+  }
+
+  // Listen-through: entire tier/selection so TTS can run the full bank without a 15/round cut.
+  if (listenFull) {
+    state.qFrom = 1;
+    state.activeStageNum = 1;
+    return dedupeQuestionList(pool.slice());
   }
 
   // Finished the tier — do not auto-recycle into review.
@@ -791,38 +802,50 @@ function updateStagePickerUI() {
   }
 
   const remaining = Math.max(0, total - solved);
+  const listenFull = isListenThroughMode();
   const maxPick = Math.max(1, Math.min(ROUND_SIZE_MAX, done ? total : (remaining || total)));
-  if ((state.roundSize || ROUND_SIZE_DEFAULT) > maxPick) state.roundSize = maxPick;
-  if ((state.roundSize || ROUND_SIZE_DEFAULT) < ROUND_SIZE_MIN && maxPick >= ROUND_SIZE_MIN) {
-    state.roundSize = ROUND_SIZE_MIN;
+  if (!listenFull) {
+    if ((state.roundSize || ROUND_SIZE_DEFAULT) > maxPick) state.roundSize = maxPick;
+    if ((state.roundSize || ROUND_SIZE_DEFAULT) < ROUND_SIZE_MIN && maxPick >= ROUND_SIZE_MIN) {
+      state.roundSize = ROUND_SIZE_MIN;
+    }
   }
-
-  const roundBtns = ROUND_SIZE_OPTIONS.filter((n) => n <= maxPick).map((n) => {
-    const on = (state.roundSize || ROUND_SIZE_DEFAULT) === n ? 'sel' : '';
-    return `<button type="button" class="level-btn round-size-btn ${on}" data-round="${n}" onclick="selectRoundSize(${n})">${arabicNum(n)}</button>`;
-  }).join('');
 
   const reviewBtn = solved > 0
     ? `<button type="button" class="btn btn-white btn-sm review-tier-btn" onclick="startTierReview()">🔁 مراجعة ما حلّيته (${arabicNum(solved)})</button>`
     : '';
 
-  const minPick = Math.min(ROUND_SIZE_MIN, maxPick);
-  el.innerHTML = `
-    <div class="round-size-wrap">
-      <div class="level-row round-size-row">${roundBtns}</div>
-      <div class="round-custom-row">
-        <label for="round-custom-input">أو اكتب العدد بالضبط</label>
-        <input type="number" id="round-custom-input" class="q-range-input round-custom-input" min="${minPick}" max="${maxPick}" value="${state.roundSize || ROUND_SIZE_DEFAULT}" inputmode="numeric" onchange="onRoundCustomInput()" oninput="onRoundCustomInput()">
-        <span class="round-custom-max">إلى ${arabicNum(maxPick)}</span>
-      </div>
-      ${reviewBtn}
-    </div>`;
+  if (listenFull) {
+    el.innerHTML = `
+      <div class="round-size-wrap listen-full-wrap">
+        <p class="listen-full-badge">🎧 استماع كامل: ${arabicNum(total)} سؤال لهذا المستوى — بلا جولة قصيرة</p>
+        ${reviewBtn}
+      </div>`;
+  } else {
+    const roundBtns = ROUND_SIZE_OPTIONS.filter((n) => n <= maxPick).map((n) => {
+      const on = (state.roundSize || ROUND_SIZE_DEFAULT) === n ? 'sel' : '';
+      return `<button type="button" class="level-btn round-size-btn ${on}" data-round="${n}" onclick="selectRoundSize(${n})">${arabicNum(n)}</button>`;
+    }).join('');
+    const minPick = Math.min(ROUND_SIZE_MIN, maxPick);
+    el.innerHTML = `
+      <div class="round-size-wrap">
+        <div class="level-row round-size-row">${roundBtns}</div>
+        <div class="round-custom-row">
+          <label for="round-custom-input">أو اكتب العدد بالضبط</label>
+          <input type="number" id="round-custom-input" class="q-range-input round-custom-input" min="${minPick}" max="${maxPick}" value="${state.roundSize || ROUND_SIZE_DEFAULT}" inputmode="numeric" onchange="onRoundCustomInput()" oninput="onRoundCustomInput()">
+          <span class="round-custom-max">إلى ${arabicNum(maxPick)}</span>
+        </div>
+        ${reviewBtn}
+      </div>`;
+  }
 
   if (hint) {
     const label = LEVEL_LABELS_AR[state.level] || state.level;
     const round = Math.min(state.roundSize || ROUND_SIZE_DEFAULT, maxPick);
     if (state.useManualRange) {
       hint.textContent = 'وضع النطاق اليدوي مفعّل — مسار التدرّج معطّل لهذه الجولة';
+    } else if (listenFull) {
+      hint.textContent = `${label}: استماع لكل أسئلة المستوى (${arabicNum(total)}) حتى النهاية — شاشة النتائج بعد اكتمال البنك فقط`;
     } else if (done) {
       hint.textContent = `🎉 أنهيت ${label} بالكامل (${arabicNum(total)} سؤال). الأسئلة المحلولة لن تظهر إلا إذا ضغطت مراجعة.`;
     } else {
@@ -830,9 +853,11 @@ function updateStagePickerUI() {
     }
   }
   if (note) {
-    note.textContent = done
-      ? '✅ كل أسئلة هذا المستوى محلولة — استخدم المراجعة إذا أردت إعادة التدريب'
-      : `📌 السؤال الذي تجيب عليه صح يُحفظ ولن يعود في الجولات التالية (إلا بالمراجعة)`;
+    note.textContent = listenFull
+      ? '🎧 وضع الاستماع: تُعرض كل أسئلة المستوى المختار دون قطع الجولة عند ١٥/٢٠'
+      : done
+        ? '✅ كل أسئلة هذا المستوى محلولة — استخدم المراجعة إذا أردت إعادة التدريب'
+        : `📌 السؤال الذي تجيب عليه صح يُحفظ ولن يعود في الجولات التالية (إلا بالمراجعة)`;
   }
   updateStartButtonLabel();
   updateLevelLockUI();
@@ -958,9 +983,14 @@ function updateStartButtonLabel() {
     return;
   }
   const remaining = Math.max(0, total - solved);
-  const n = Math.min(state.roundSize || ROUND_SIZE_DEFAULT, state.stageReviewMode || done ? total : (remaining || total));
+  const listenFull = isListenThroughMode();
+  const n = listenFull
+    ? (state.stageReviewMode ? Math.max(1, solved) : total)
+    : Math.min(state.roundSize || ROUND_SIZE_DEFAULT, state.stageReviewMode || done ? total : (remaining || total));
   if (state.stageReviewMode) {
     btn.textContent = `مراجعة ${arabicNum(n)} سؤال 🔁`;
+  } else if (listenFull) {
+    btn.textContent = `ابدأ استماع ${arabicNum(n)} سؤال 🎧`;
   } else if (done) {
     btn.textContent = 'أنهيت المستوى — اختر مراجعة أو مستوى آخر';
   } else {
@@ -981,7 +1011,9 @@ function updateStageGameBadge() {
   const { solved, total } = getTierProgress(state.book, state.level);
   const label = LEVEL_LABELS_AR[state.level] || '';
   el.style.display = '';
-  el.textContent = `📊 ${label}: ${arabicNum(solved)}/${arabicNum(total)} — جولة ${arabicNum(state.roundSize || ROUND_SIZE_DEFAULT)}`;
+  el.textContent = isListenThroughMode()
+    ? `🎧 ${label}: استماع كامل ${arabicNum(total)} سؤال`
+    : `📊 ${label}: ${arabicNum(solved)}/${arabicNum(total)} — جولة ${arabicNum(state.roundSize || ROUND_SIZE_DEFAULT)}`;
 }
 
 function updateLevelCounts() {
@@ -1206,7 +1238,11 @@ function updateQuestionRangeUI() {
     return;
   }
   let from = parseInt(fromEl.value, 10) || 1;
-  let to = parseInt(toEl.value, 10) || Math.min(20, max);
+  let to = parseInt(toEl.value, 10) || (isListenThroughMode() ? max : Math.min(20, max));
+  if (isListenThroughMode() && !state.useManualRange) {
+    from = 1;
+    to = max;
+  }
   from = Math.max(1, Math.min(from, max));
   to = Math.max(from, Math.min(to, max));
   fromEl.value = from;
@@ -6337,7 +6373,8 @@ function getQuestionsForGame() {
     slice = seededShuffle(slice, seed);
   }
   // Respect solved questions for «الكل» and manual range (same as tier path).
-  if (!state.homeworkId && !trainingMode && !state.stageReviewMode) {
+  // Listen-through keeps the full selection so the bank is not cut mid-way.
+  if (!state.homeworkId && !trainingMode && !state.stageReviewMode && !isListenThroughMode()) {
     const solved = getSolvedIdSet(state.book);
     if (solved.size) {
       const filtered = slice.filter((q) => !solved.has(q.id));
@@ -6718,7 +6755,11 @@ function selectLevel(l) {
   const toEl = document.getElementById('q-to-input');
   const fromEl = document.getElementById('q-from-input');
   if (fromEl) fromEl.value = 1;
-  if (toEl) toEl.value = max ? Math.min(Math.max(state.roundSize || ROUND_SIZE_DEFAULT, ROUND_SIZE_MIN), max) : 1;
+  if (toEl) {
+    toEl.value = max
+      ? (isListenThroughMode() ? max : Math.min(Math.max(state.roundSize || ROUND_SIZE_DEFAULT, ROUND_SIZE_MIN), max))
+      : 1;
+  }
   updateQuestionRangeUI();
   updateStagePickerUI();
   updateLevelCounts();

@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v324: usool+nawawi Fish Hakim tashkeel A/B extend KEEP; keep v319 guards + v320–v323) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v325: listen-through full bank — no roundSize mid-bank results when HEARTS_ENABLED=false; keep expectQuestionId TTS guards) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v324",
-  styles: 85,
+  cache: "alhuda-v325",
+  styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 283,
+  app: 284,
   platform: 21,
   auth: 16,
-  sw: 324,
+  sw: 325,
 };
