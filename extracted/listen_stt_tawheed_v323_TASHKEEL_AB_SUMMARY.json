@@ -1,0 +1,130 @@
+{
+  "at": "2026-08-12T10:50:47.475Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "version": "v323",
+  "book": "tawheed",
+  "voice": "aa9c8260269c411d9863ab1b1bfa3158",
+  "voiceName": "راوٍ عربي حكيم",
+  "method": "A/B WITH current tashkeel vs BARE strip via CranL TTS + Whisper; KEEP preserves contextual iʿrāb",
+  "segments": {
+    "total": 1402,
+    "keepTashkeel": 541,
+    "stripHarakat": 861
+  },
+  "words": {
+    "keepCount": 796,
+    "stripCount": 1645
+  },
+  "enrichment": {
+    "addedFromWithShortSegs": 386,
+    "keepAfterEnrich": 796
+  },
+  "spotVerify": [
+    {
+      "id": "with_0",
+      "winner": "with",
+      "prepared": "رباً",
+      "transcript": "روبا"
+    },
+    {
+      "id": "with_1",
+      "winner": "with",
+      "prepared": "وهناً",
+      "transcript": "وهنن"
+    },
+    {
+      "id": "with_2",
+      "winner": "with",
+      "prepared": "نفعاً",
+      "transcript": "نفعاً"
+    },
+    {
+      "id": "with_3",
+      "winner": "with",
+      "prepared": "ولياً",
+      "transcript": "ولياً"
+    },
+    {
+      "id": "with_4",
+      "winner": "with",
+      "prepared": "ديناً",
+      "transcript": "ديناً"
+    },
+    {
+      "id": "with_5",
+      "winner": "with",
+      "prepared": "شهراً",
+      "transcript": "شهر"
+    },
+    {
+      "id": "with_6",
+      "winner": "with",
+      "prepared": "عرّاف",
+      "transcript": "اراف"
+    },
+    {
+      "id": "with_7",
+      "winner": "with",
+      "prepared": "وثناً",
+      "transcript": "وإثنان"
+    },
+    {
+      "id": "bare_8",
+      "winner": "bare",
+      "prepared": "النُّطْقَ بِهَا فَقَطْ",
+      "transcript": "أن نطق بها فقط"
+    },
+    {
+      "id": "bare_9",
+      "winner": "bare",
+      "prepared": "العلم  والعمل",
+      "transcript": "العلم ولا عمل"
+    },
+    {
+      "id": "bare_10",
+      "winner": "bare",
+      "prepared": "الشِّرْكِ  الْأَصْغَرْْْ",
+      "transcript": "الشرك الأصغر"
+    },
+    {
+      "id": "bare_11",
+      "winner": "bare",
+      "prepared": "قَالَ تَعَالَى الكوثر 2",
+      "transcript": "خالت على الكوثرة إثنان"
+    },
+    {
+      "id": "bare_12",
+      "winner": "bare",
+      "prepared": "لَا خالق إِلَّا اللَّهَ",
+      "transcript": "لا خالق إلا الله"
+    },
+    {
+      "id": "bare_13",
+      "winner": "bare",
+      "prepared": "لَا رازق إِلَّا اللَّهَ",
+      "transcript": "لرازق إلا الله"
+    },
+    {
+      "id": "bare_14",
+      "winner": "bare",
+      "prepared": "الْحَلِفُ بِغَيْرِ اللَّهِ",
+      "transcript": "الحلف بغير الله"
+    }
+  ],
+  "v319RaceGuards": {
+    "expectQuestionId": "kept",
+    "speakToken": "kept",
+    "HEARTS_ENABLED": false
+  },
+  "artifacts": {
+    "policy": "extracted/ab_tashkeel_tawheed_v323/harakat_policy.json",
+    "decisions": "extracted/ab_tashkeel_tawheed_v323/decisions.json",
+    "arReport": "extracted/tawheed_tashkeel_ab_v323_AR.md",
+    "runtime": "speech-harakat-policy.js"
+  },
+  "next": [
+    "usool",
+    "nawawi"
+  ],
+  "whisperLimitNote": "Whisper لا يسمع الإعراب بدقة؛ التعادل → تجريد. KEEP فقط عند تفوق واضح أو قائمة CRITICAL_KEEP."
+}

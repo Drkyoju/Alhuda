@@ -1,0 +1,137 @@
+[
+  {
+    "id": "with_0",
+    "winner": "with",
+    "status": 200,
+    "size": 16299,
+    "prepared": "رباً",
+    "with": "رباً",
+    "transcript": "روبا"
+  },
+  {
+    "id": "with_1",
+    "winner": "with",
+    "status": 200,
+    "size": 18180,
+    "prepared": "وهناً",
+    "with": "وهناً",
+    "transcript": "وهنن"
+  },
+  {
+    "id": "with_2",
+    "winner": "with",
+    "status": 200,
+    "size": 22568,
+    "prepared": "نفعاً",
+    "with": "نفعاً",
+    "transcript": "نفعاً"
+  },
+  {
+    "id": "with_3",
+    "winner": "with",
+    "status": 200,
+    "size": 20688,
+    "prepared": "ولياً",
+    "with": "ولياً",
+    "transcript": "ولياً"
+  },
+  {
+    "id": "with_4",
+    "winner": "with",
+    "status": 200,
+    "size": 20688,
+    "prepared": "ديناً",
+    "with": "ديناً",
+    "transcript": "ديناً"
+  },
+  {
+    "id": "with_5",
+    "winner": "with",
+    "status": 200,
+    "size": 17553,
+    "prepared": "شهراً",
+    "with": "شهراً",
+    "transcript": "شهر"
+  },
+  {
+    "id": "with_6",
+    "winner": "with",
+    "status": 200,
+    "size": 18180,
+    "prepared": "عرّاف",
+    "with": "عرّاف",
+    "transcript": "اراف"
+  },
+  {
+    "id": "with_7",
+    "winner": "with",
+    "status": 200,
+    "size": 18180,
+    "prepared": "وثناً",
+    "with": "وثناً",
+    "transcript": "وإثنان"
+  },
+  {
+    "id": "bare_8",
+    "winner": "bare",
+    "status": 200,
+    "size": 35734,
+    "prepared": "النُّطْقَ بِهَا فَقَطْ",
+    "with": "النُّطْقُ بِهَا فَقَطْ",
+    "transcript": "أن نطق بها فقط"
+  },
+  {
+    "id": "bare_9",
+    "winner": "bare",
+    "status": 200,
+    "size": 38869,
+    "prepared": "العلم  والعمل",
+    "with": "الْعِلْمُ  وَالْعَمَلُ",
+    "transcript": "العلم ولا عمل"
+  },
+  {
+    "id": "bare_10",
+    "winner": "bare",
+    "status": 200,
+    "size": 43257,
+    "prepared": "الشِّرْكِ  الْأَصْغَرْْْ",
+    "with": "الشِّرْكِ  الْأَصْغَرْْ",
+    "transcript": "الشرك الأصغر"
+  },
+  {
+    "id": "bare_11",
+    "winner": "bare",
+    "status": 200,
+    "size": 49527,
+    "prepared": "قَالَ تَعَالَى الكوثر 2",
+    "with": "قَالَ تَعَالَى الكوثر 2",
+    "transcript": "خالت على الكوثرة إثنان"
+  },
+  {
+    "id": "bare_12",
+    "winner": "bare",
+    "status": 200,
+    "size": 36988,
+    "prepared": "لَا خالق إِلَّا اللَّهَ",
+    "with": "لَا خَالِقَ إِلَّا اللَّهَ",
+    "transcript": "لا خالق إلا الله"
+  },
+  {
+    "id": "bare_13",
+    "winner": "bare",
+    "status": 200,
+    "size": 35734,
+    "prepared": "لَا رازق إِلَّا اللَّهَ",
+    "with": "لَا رَازِقَ إِلَّا اللَّهَ",
+    "transcript": "لرازق إلا الله"
+  },
+  {
+    "id": "bare_14",
+    "winner": "bare",
+    "status": 200,
+    "size": 36988,
+    "prepared": "الْحَلِفُ بِغَيْرِ اللَّهِ",
+    "with": "الْحَلِفُ بِغَيْرِ اللَّهِ",
+    "transcript": "الحلف بغير الله"
+  }
+]

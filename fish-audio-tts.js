@@ -77,6 +77,7 @@ import {
   SHORT_SPEECH_CARRIERS,
   applyShortSpeechCarriers,
 } from './short-speech-carriers.js';
+import { applyHarakatPolicy } from './speech-harakat-policy.js';
 
 export { bareArabicKey, SHORT_SPEECH_CARRIERS, applyShortSpeechCarriers };
 
@@ -517,6 +518,10 @@ export function prepareFishTtsText(text) {
   s = applyShortSpeechCarriers(s);
   s = applySystematicCaseEndings(s);
   s = applyShortSpeechCarriers(s);
+
+  // v323: Fish Hakim A/B — strip harakat except KEEP words (tawheed listen winners).
+  // KEEP preserves contextual iʿrāb already on the token; bare often reads cleaner.
+  s = applyHarakatPolicy(s);
 
   return fixAllahIrabInText(s);
 }

@@ -1,0 +1,96 @@
+{
+  "model": "small",
+  "n": 15,
+  "results": [
+    {
+      "file": "bare_10.mp3",
+      "id": "bare_10",
+      "transcript": "الشرك الأصغر",
+      "ok": true
+    },
+    {
+      "file": "bare_11.mp3",
+      "id": "bare_11",
+      "transcript": "خالت على الكوثرة إثنان",
+      "ok": true
+    },
+    {
+      "file": "bare_12.mp3",
+      "id": "bare_12",
+      "transcript": "لا خالق إلا الله",
+      "ok": true
+    },
+    {
+      "file": "bare_13.mp3",
+      "id": "bare_13",
+      "transcript": "لرازق إلا الله",
+      "ok": true
+    },
+    {
+      "file": "bare_14.mp3",
+      "id": "bare_14",
+      "transcript": "الحلف بغير الله",
+      "ok": true
+    },
+    {
+      "file": "bare_8.mp3",
+      "id": "bare_8",
+      "transcript": "أن نطق بها فقط",
+      "ok": true
+    },
+    {
+      "file": "bare_9.mp3",
+      "id": "bare_9",
+      "transcript": "العلم ولا عمل",
+      "ok": true
+    },
+    {
+      "file": "with_0.mp3",
+      "id": "with_0",
+      "transcript": "روبا",
+      "ok": true
+    },
+    {
+      "file": "with_1.mp3",
+      "id": "with_1",
+      "transcript": "وهنن",
+      "ok": true
+    },
+    {
+      "file": "with_2.mp3",
+      "id": "with_2",
+      "transcript": "نفعاً",
+      "ok": true
+    },
+    {
+      "file": "with_3.mp3",
+      "id": "with_3",
+      "transcript": "ولياً",
+      "ok": true
+    },
+    {
+      "file": "with_4.mp3",
+      "id": "with_4",
+      "transcript": "ديناً",
+      "ok": true
+    },
+    {
+      "file": "with_5.mp3",
+      "id": "with_5",
+      "transcript": "شهر",
+      "ok": true
+    },
+    {
+      "file": "with_6.mp3",
+      "id": "with_6",
+      "transcript": "اراف",
+      "ok": true
+    },
+    {
+      "file": "with_7.mp3",
+      "id": "with_7",
+      "transcript": "وإثنان",
+      "ok": true
+    }
+  ]
+}
