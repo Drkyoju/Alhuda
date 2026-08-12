@@ -1,0 +1,90 @@
+{
+  "model": "base",
+  "n": 14,
+  "results": [
+    {
+      "file": "nawawi_bare_0.mp3",
+      "id": "nawawi_bare_0",
+      "transcript": "حلالا",
+      "ok": true
+    },
+    {
+      "file": "nawawi_bare_1.mp3",
+      "id": "nawawi_bare_1",
+      "transcript": "حجه",
+      "ok": true
+    },
+    {
+      "file": "nawawi_bare_2.mp3",
+      "id": "nawawi_bare_2",
+      "transcript": "الفقر",
+      "ok": true
+    },
+    {
+      "file": "nawawi_with_0.mp3",
+      "id": "nawawi_with_0",
+      "transcript": "رابع",
+      "ok": true
+    },
+    {
+      "file": "nawawi_with_1.mp3",
+      "id": "nawawi_with_1",
+      "transcript": "نم",
+      "ok": true
+    },
+    {
+      "file": "nawawi_with_2.mp3",
+      "id": "nawawi_with_2",
+      "transcript": "الحرّة",
+      "ok": true
+    },
+    {
+      "file": "nawawi_with_3.mp3",
+      "id": "nawawi_with_3",
+      "transcript": "كثيراً",
+      "ok": true
+    },
+    {
+      "file": "usool_bare_0.mp3",
+      "id": "usool_bare_0",
+      "transcript": "نبياً",
+      "ok": true
+    },
+    {
+      "file": "usool_bare_1.mp3",
+      "id": "usool_bare_1",
+      "transcript": "رسولاً",
+      "ok": true
+    },
+    {
+      "file": "usool_bare_2.mp3",
+      "id": "usool_bare_2",
+      "transcript": "واحد",
+      "ok": true
+    },
+    {
+      "file": "usool_with_0.mp3",
+      "id": "usool_with_0",
+      "transcript": "لا",
+      "ok": true
+    },
+    {
+      "file": "usool_with_1.mp3",
+      "id": "usool_with_1",
+      "transcript": "نم",
+      "ok": true
+    },
+    {
+      "file": "usool_with_2.mp3",
+      "id": "usool_with_2",
+      "transcript": "مكى",
+      "ok": true
+    },
+    {
+      "file": "usool_with_3.mp3",
+      "id": "usool_with_3",
+      "transcript": "المال",
+      "ok": true
+    }
+  ]
+}

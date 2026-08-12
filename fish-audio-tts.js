@@ -519,7 +519,7 @@ export function prepareFishTtsText(text) {
   s = applySystematicCaseEndings(s);
   s = applyShortSpeechCarriers(s);
 
-  // v323: Fish Hakim A/B — strip harakat except KEEP words (tawheed listen winners).
+  // v324: Fish Hakim A/B — strip harakat except KEEP (tawheed+usool+nawawi winners).
   // KEEP preserves contextual iʿrāb already on the token; bare often reads cleaner.
   s = applyHarakatPolicy(s);
 

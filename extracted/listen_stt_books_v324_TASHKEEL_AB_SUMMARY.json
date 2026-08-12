@@ -1,0 +1,138 @@
+{
+  "at": "2026-08-12T11:18:20.806Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "version": "v324",
+  "books": [
+    "tawheed",
+    "usool",
+    "nawawi"
+  ],
+  "voice": "aa9c8260269c411d9863ab1b1bfa3158",
+  "voiceName": "راوٍ عربي حكيم",
+  "mergedKeepCount": 1238,
+  "sources": {
+    "tawheed": {
+      "keep": 796,
+      "segs": {
+        "total": 1402,
+        "keepTashkeel": 541,
+        "stripHarakat": 861
+      }
+    },
+    "usool": {
+      "keep": 252,
+      "segs": {
+        "total": 331,
+        "keepTashkeel": 120,
+        "stripHarakat": 211
+      }
+    },
+    "nawawi": {
+      "keep": 437,
+      "segs": {
+        "total": 723,
+        "keepTashkeel": 217,
+        "stripHarakat": 506
+      }
+    }
+  },
+  "spotVerify": [
+    {
+      "id": "usool_with_0",
+      "winner": "with",
+      "prepared": "لَا",
+      "transcript": "لا"
+    },
+    {
+      "id": "usool_with_1",
+      "winner": "with",
+      "prepared": "نَعَمْ",
+      "transcript": "نم"
+    },
+    {
+      "id": "usool_with_2",
+      "winner": "with",
+      "prepared": "مَكَّةُ",
+      "transcript": "مكى"
+    },
+    {
+      "id": "usool_with_3",
+      "winner": "with",
+      "prepared": "الْمَالِ",
+      "transcript": "المال"
+    },
+    {
+      "id": "usool_bare_0",
+      "winner": "bare",
+      "prepared": "نبيا",
+      "transcript": "نبياً"
+    },
+    {
+      "id": "usool_bare_1",
+      "winner": "bare",
+      "prepared": "رسولا",
+      "transcript": "رسولاً"
+    },
+    {
+      "id": "usool_bare_2",
+      "winner": "bare",
+      "prepared": "واحد",
+      "transcript": "واحد"
+    },
+    {
+      "id": "nawawi_with_0",
+      "winner": "with",
+      "prepared": "غَابَ",
+      "transcript": "رابع"
+    },
+    {
+      "id": "nawawi_with_1",
+      "winner": "with",
+      "prepared": "نَامَ",
+      "transcript": "نم"
+    },
+    {
+      "id": "nawawi_with_2",
+      "winner": "with",
+      "prepared": "الحرّة",
+      "transcript": "الحرّة"
+    },
+    {
+      "id": "nawawi_with_3",
+      "winner": "with",
+      "prepared": "كثيراً",
+      "transcript": "كثيراً"
+    },
+    {
+      "id": "nawawi_bare_0",
+      "winner": "bare",
+      "prepared": "حلالا",
+      "transcript": "حلالا"
+    },
+    {
+      "id": "nawawi_bare_1",
+      "winner": "bare",
+      "prepared": "حجه",
+      "transcript": "حجه"
+    },
+    {
+      "id": "nawawi_bare_2",
+      "winner": "bare",
+      "prepared": "الفقر",
+      "transcript": "الفقر"
+    }
+  ],
+  "v319RaceGuards": {
+    "expectQuestionId": "kept",
+    "speakToken": "kept",
+    "HEARTS_ENABLED": false
+  },
+  "artifacts": {
+    "mergedPolicy": "extracted/ab_tashkeel_merged_v324/harakat_policy.json",
+    "runtime": "speech-harakat-policy.js",
+    "arCombined": "extracted/books_tashkeel_ab_v324_AR.md",
+    "usoolAr": "extracted/usool_tashkeel_ab_v324_AR.md",
+    "nawawiAr": "extracted/nawawi_tashkeel_ab_v324_AR.md"
+  },
+  "noCloudflare": true
+}

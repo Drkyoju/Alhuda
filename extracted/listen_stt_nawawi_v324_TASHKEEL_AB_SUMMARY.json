@@ -1,0 +1,79 @@
+{
+  "at": "2026-08-12T11:18:20.806Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "version": "v324",
+  "book": "nawawi",
+  "voice": "aa9c8260269c411d9863ab1b1bfa3158",
+  "voiceName": "راوٍ عربي حكيم",
+  "method": "A/B WITH current tashkeel vs BARE strip via CranL TTS + Whisper; KEEP preserves contextual iʿrāb",
+  "segments": {
+    "total": 723,
+    "keepTashkeel": 217,
+    "stripHarakat": 506
+  },
+  "words": {
+    "keepCount": 437,
+    "stripCount": 929
+  },
+  "enrichment": {
+    "addedFromWithShortSegs": 181,
+    "keepAfterEnrich": 437
+  },
+  "spotVerify": [
+    {
+      "id": "nawawi_with_0",
+      "winner": "with",
+      "prepared": "غَابَ",
+      "transcript": "رابع"
+    },
+    {
+      "id": "nawawi_with_1",
+      "winner": "with",
+      "prepared": "نَامَ",
+      "transcript": "نم"
+    },
+    {
+      "id": "nawawi_with_2",
+      "winner": "with",
+      "prepared": "الحرّة",
+      "transcript": "الحرّة"
+    },
+    {
+      "id": "nawawi_with_3",
+      "winner": "with",
+      "prepared": "كثيراً",
+      "transcript": "كثيراً"
+    },
+    {
+      "id": "nawawi_bare_0",
+      "winner": "bare",
+      "prepared": "حلالا",
+      "transcript": "حلالا"
+    },
+    {
+      "id": "nawawi_bare_1",
+      "winner": "bare",
+      "prepared": "حجه",
+      "transcript": "حجه"
+    },
+    {
+      "id": "nawawi_bare_2",
+      "winner": "bare",
+      "prepared": "الفقر",
+      "transcript": "الفقر"
+    }
+  ],
+  "v319RaceGuards": {
+    "expectQuestionId": "kept",
+    "speakToken": "kept",
+    "HEARTS_ENABLED": false
+  },
+  "artifacts": {
+    "policy": "extracted/ab_tashkeel_nawawi_v324/harakat_policy.json",
+    "decisions": "extracted/ab_tashkeel_nawawi_v324/decisions.json",
+    "arReport": "extracted/nawawi_tashkeel_ab_v324_AR.md",
+    "runtime": "speech-harakat-policy.js",
+    "merged": "extracted/ab_tashkeel_merged_v324/harakat_policy.json"
+  },
+  "whisperLimitNote": "Whisper لا يسمع الإعراب بدقة؛ التعادل → تجريد. KEEP يحافظ على التشكيل الحالي للكلمة (لا يفرض شكلاً واحداً لله). مقاطع قصيرة ≤6 أحرف تفضّل WITH إذا كان STT سليماً."
+}
