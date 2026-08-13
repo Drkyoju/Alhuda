@@ -4,13 +4,13 @@
 // On install we skipWaiting() so players leave stale UI (e.g. old «شرح» block)
 // without needing a manual toast tap. clients.claim() on activate.
 
-const CACHE = 'alhuda-v335';
+const CACHE = 'alhuda-v336';
 // Keep install precache lean — large speech-diacritics-map.js loads on demand.
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './citation-canonical.js',
+  './citation-canonical-v336.js',
   './question-verse-map.js',
   './ayah-snippet-map.js',
   './speech-pronunciation-lexicon.js',
@@ -18,7 +18,7 @@ const ASSETS = [
   './baked-tts.browser.js',
   './speech-diacritics-core.js',
   './questions-bank-v311.js',
-  './version-v335.js',
+  './version-v336.js',
   './app.js',
   './auth.js',
   './platform.js',

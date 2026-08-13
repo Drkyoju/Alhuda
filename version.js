@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v335: maximize citation restore from book sources; OCR/spell; mute cite TTS; HEARTS off; KEEP أرسل/سنين; TF صح/خطأ) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v336: path-bust citation-canonical CDN; maximize book cites; mute cite TTS; HEARTS off; KEEP أرسل/سنين) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v335",
+  cache: "alhuda-v336",
   styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 294,
+  app: 295,
   platform: 21,
   auth: 16,
-  sw: 335,
+  sw: 336,
 };

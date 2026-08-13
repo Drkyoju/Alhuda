@@ -397,12 +397,15 @@ app.use(express.static(ROOT, {
       'questions-bank.js',
       'questions-bank-v311.js',
       'questions-bank.json',
+      'citation-canonical.js',
       'speech-diacritics-map.js',
       'speech-diacritics-core.js',
       'speech-pronunciation-lexicon.js',
+      'speech-harakat-policy.js',
       'allah-irab.browser.js',
       'short-speech-carriers.js',
       'lemma-tts-clips.js',
+      'fish-audio-tts.js',
       'app.js',
       // CSS also needs revalidation — Bunny ignores ?v= and was sticky-HITting styles.
       'styles.css',
@@ -412,7 +415,8 @@ app.use(express.static(ROOT, {
     // BunnyCDN often ignores ?v= and can sticky-cache old Cache-Control —
     // force edge + browser revalidation for mutable lesson / version files.
     const pathBustedMutable = /^version-v\d+\.js$/i.test(base)
-      || /^questions-bank-v\d+\.js$/i.test(base);
+      || /^questions-bank-v\d+\.js$/i.test(base)
+      || /^citation-canonical-v\d+\.js$/i.test(base);
     if (noCacheExact.has(base) || pathBustedMutable) {
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('CDN-Cache-Control', 'no-store');
