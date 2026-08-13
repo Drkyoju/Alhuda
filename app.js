@@ -5308,6 +5308,15 @@ function isAnswerPrefixedQuote(raw) {
     || /^الإجابة\s*الصحيحة\s*:/i.test(s);
 }
 
+/** Invented meta / worksheet filler — never show as book citation. */
+function isInventedMetaCitation(s) {
+  const t = String(s || '').replace(/^«|»$/g, '').trim();
+  if (!t) return false;
+  return /هذه من فوائد حديث|الحكم الصحيح هو\s*«|هو المعنى الصحيح المذكور في شرح الكتاب|هو ما ثبت في لفظ الحديث\/الأثر كما أورده الكتاب|الموضع الصحيح الذي استدل به المؤلف في هذا الموطن|هذا ما جاء في حديث معاذ/.test(
+    t
+  );
+}
+
 function isGarbageCitation(s) {
   if (!s) return true;
   if (isAnswerPrefixedQuote(s)) return true;
@@ -5320,12 +5329,14 @@ function isGarbageCitation(s) {
   if (/[\uE000-\uF8FF]|اأ|ألم|ألمة|األ/.test(s)) return true;
   // High-confidence OCR / reversed-letter garbage that still passes spacing checks.
   if (
-    /ىلع|يشء|بيشء|افرتض|أويلاء|إيل\s|يد عو|اإلحسان|االنتقال|تعاىل|رمحه الله|حميي|حييى|مجعت المادة|لثالث\b|فليغريه|انلظر|نفيس\b|بسنيت|دلواء|يف حرام|بىل\b/.test(
+    /ىلع|يشء|بيشء|افرتض|أويلاء|إيل\s|يد عو|اإلحسان|االنتقال|تعاىل|رمحه الله|حميي|حييى|مجعت المادة|لثالث\b|فليغريه|انلظر|نفيس\b|بسنيت|دلواء|يف حرام|بىل\b|ش يء|يف اللوح|هم حبسنة|حسنة اكملة/.test(
       s
     )
   ) {
     return true;
   }
+  // AI/worksheet meta dumped under «الاستشهاد» — not book text.
+  if (isInventedMetaCitation(s)) return true;
   // اال… (double-alef OCR) except الله/اللهم/والله family.
   if (/اال(?![لهم])/.test(s)) return true;
   // Leading colon leftovers after stripping «اجل واب».
@@ -5371,6 +5382,12 @@ function postFixCitationPhrases(s) {
     .replace(/رمحه الله/g, 'رحمه الله')
     .replace(/تعاىل/g, 'تعالى')
     .replace(/النجوم لثالث\b/g, 'النجوم لثلاث')
+    // Letter-break / common OCR swaps proven against book OCR windows.
+    .replace(/ش يء/g, 'شيء')
+    .replace(/يف اللوح/g, 'في اللوح')
+    .replace(/هم حبسنة/g, 'هم بحسنة')
+    .replace(/حسنة اكملة/g, 'حسنة كاملة')
+    .replace(/بني ذلك وفصله/g, 'بيّن ذلك وفصّله')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -5571,7 +5588,7 @@ function getCleanExplanationText(q) {
   if (!raw || raw.length < 8) return '';
   // null id — do not swap explanation for canonical while cleaning.
   const cleaned = cleanArabicCitation(raw, null) || collapseBrokenArabicSpaces(raw);
-  if (!cleaned || cleaned.length < 8 || isGarbageCitation(cleaned)) return '';
+  if (!cleaned || cleaned.length < 8 || isGarbageCitation(cleaned) || isInventedMetaCitation(cleaned)) return '';
   // Only drop if the whole text is literally the answer option (not a longer book sentence that contains it).
   const bare = normalizeArabicForMatch(cleaned.replace(/^«|»$/g, ''));
   const cor = normalizeArabicForMatch(getCorrectAnswerText(q));
@@ -5609,8 +5626,9 @@ function findBookCitation(q) {
       for (const opt of q.a) {
         const ob = normalizeArabicForMatch(String(opt || ''));
         if (ob && (bare === ob || stripped === ob)) return true;
-        // Near-paraphrase of the keyed answer (e.g. يسهل vs سهل الله له…).
-        if (ob && ob.length >= 6 && (stripped.includes(ob) || ob.includes(stripped))) return true;
+        // Near-paraphrase / answer dump only — do NOT drop a longer book sentence that merely contains the keyed option.
+        if (ob && ob.length >= 6 && stripped.includes(ob) && stripped.length <= ob.length + 24) return true;
+        if (ob && stripped.length >= 6 && ob.includes(stripped) && ob.length <= stripped.length + 12) return true;
       }
     }
     // Explanation already covers this line — don't double-speak as «استشهاد».
@@ -5623,11 +5641,11 @@ function findBookCitation(q) {
 
   const canonRaw = q?.id ? getCanonicalQuote(q.id) : '';
   if (canonRaw) {
-    if (isAnswerPrefixedQuote(canonRaw) || isGarbageCitation(canonRaw)) {
+    if (isAnswerPrefixedQuote(canonRaw) || isInventedMetaCitation(canonRaw) || isGarbageCitation(canonRaw)) {
       /* fall through */
     } else {
       const canon = cleanArabicCitation(canonRaw, null) || collapseBrokenArabicSpaces(canonRaw);
-      if (canon && !isGarbageCitation(canon) && !rejectAsAnswerOnly(canon)) {
+      if (canon && !isInventedMetaCitation(canon) && !isGarbageCitation(canon) && !rejectAsAnswerOnly(canon)) {
         return formatCitationQuote(canon);
       }
     }
@@ -5635,9 +5653,9 @@ function findBookCitation(q) {
 
   const quoteRaw = String(q?.quote || '').trim();
   if (quoteRaw) {
-    if (isAnswerPrefixedQuote(quoteRaw) || isGarbageCitation(quoteRaw)) return '';
+    if (isAnswerPrefixedQuote(quoteRaw) || isInventedMetaCitation(quoteRaw) || isGarbageCitation(quoteRaw)) return '';
     const cleaned = cleanArabicCitation(quoteRaw, null);
-    if (cleaned && !isGarbageCitation(cleaned) && !rejectAsAnswerOnly(cleaned)) {
+    if (cleaned && !isInventedMetaCitation(cleaned) && !isGarbageCitation(cleaned) && !rejectAsAnswerOnly(cleaned)) {
       return formatCitationQuote(cleaned);
     }
   }

@@ -391,7 +391,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "محبة غير الله محبة كحب الله أو أشد شرك أكبر.",
-      "source_quote": "ومن الناس من يتخذ من دون الله أندادا يحبونهم كحب الله — محبة غير الله كحب الله أو أشد شرك أكبر",
+      "source_quote": "ومن الناس من يتخذ من دون الله أندادا يحبونهم كحب الله",
       "language": "ar"
     },
     {
@@ -1308,7 +1308,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "والطيرة شرك.",
-      "source_quote": "الطيرة من الشرك — والتشاؤم بالأيام والأرقام من الطيرة المنهي عنها",
+      "source_quote": "الطيرة شرك",
       "language": "ar"
     },
     {
@@ -1710,7 +1710,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الأسماء والصفات.",
-      "source_quote": "يستفاد من الباب: أن جحود ش يء من الأسماء والصفات كفر",
+      "source_quote": "يستفاد من الباب: أن جحود شيء من الأسماء والصفات كفر",
       "language": "ar"
     },
     {
@@ -2432,7 +2432,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "اتقاء العين.",
-      "source_quote": "التمائم: ش يء يعلقونه على الأولاد يتقون به العين",
+      "source_quote": "التمائم: شيء يعلقونه على الأولاد يتقون به العين",
       "language": "ar"
     },
     {
@@ -2470,7 +2470,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "المرأة إلى زوجها.",
-      "source_quote": "التولة: ش يء يصنعونه، يزعمون أنه يحبب المرأة إلى زوجها، والرجل إلى امرأته",
+      "source_quote": "التولة: شيء يصنعونه، يزعمون أنه يحبب المرأة إلى زوجها، والرجل إلى امرأته",
       "language": "ar"
     },
     {
@@ -2489,7 +2489,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الشرك.",
-      "source_quote": "الشرك: هو صرف ش يء من العبادة",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -2717,7 +2717,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "شرك أكبر.",
-      "source_quote": "فصل لربك وانحر — الذبح عبادة لا تصرف إلا لله",
+      "source_quote": "فصل لربك وانحر",
       "language": "ar"
     },
     {
@@ -6968,7 +6968,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "ثلاث وستون سنة.",
-      "source_quote": "عاش ثلاثا وستين سنة — من سيرة النبي في مختصر الأصول الثلاثة",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -7734,7 +7734,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "النية محلها القلب.",
-      "source_quote": "النية محلها القلب.",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -7885,7 +7885,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": false,
       "explanation": "كل بدعة ضلالة.",
-      "source_quote": "كل بدعة ضلالة — رواه أبو داود والترمذي",
+      "source_quote": "كل بدعة ضلالة",
       "language": "ar"
     },
     {
@@ -8517,7 +8517,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "كتبها الله عنده حسنة كاملة.",
-      "source_quote": "واقعة بقضاء الله وقدره والمكتوب يف اللوح المحفوظ ثم بني ذلك وفصله فمن هم حبسنة فلم يعملها كتبها الله عنده حسنة اكملة وإن هم بها فعملها تكتب عشر حسنات",
+      "source_quote": "واقعة بقضاء الله وقدره والمكتوب في اللوح المحفوظ ثم بيّن ذلك وفصّله فمن هم بحسنة فلم يعملها كتبها الله عنده حسنة كاملة وإن هم بها فعملها تكتب عشر حسنات",
       "language": "ar"
     },
     {
@@ -8531,7 +8531,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "فإن عملها كتبها الله سيئة واحدة.",
-      "source_quote": "واقعة بقضاء الله وقدره والمكتوب يف اللوح المحفوظ ثم بني ذلك وفصله فمن هم حبسنة فلم يعملها كتبها الله عنده حسنة اكملة وإن هم بها فعملها تكتب عشر حسنات",
+      "source_quote": "واقعة بقضاء الله وقدره والمكتوب في اللوح المحفوظ ثم بيّن ذلك وفصّله فمن هم بحسنة فلم يعملها كتبها الله عنده حسنة كاملة وإن هم بها فعملها تكتب عشر حسنات",
       "language": "ar"
     },
     {
@@ -8729,8 +8729,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": null,
       "is_true": true,
-      "explanation": "شهادة أن لا إله إلا الله... إلخ.",
-      "source_quote": "شهادة أن لا إله إلا الله... إلخ.",
+      "explanation": "بني الإسلام على خمس: شهادة أن لا إله إلا الله وأن محمدا رسول الله، وإقام الصلاة، وإيتاء الزكاة، والحج، وصوم رمضان.",
+      "source_quote": "بني الإسلام على خمس: شهادة أن لا إله إلا الله وأن محمدا رسول الله، وإقام الصلاة، وإيتاء الزكاة، والحج، وصوم رمضان",
       "language": "ar"
     },
     {
@@ -10288,7 +10288,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "عمر بن الخطاب.",
-      "source_quote": "عمر بن الخطاب — راوي حديث: إنما الأعمال بالنيات",
+      "source_quote": "إنما الأعمال بالنية، وإنما لامرئ ما نوى",
       "language": "ar"
     },
     {
@@ -10326,7 +10326,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "النواس بن سمعان.",
-      "source_quote": "البر حسن الخلق والإثم ما حاك في صدرك وكرهت أن يطلع عليه الناس — راويه النواس بن سمعان",
+      "source_quote": "البر حسن الخلق، والإثم ما حاك في صدرك، وكرهت أن يطلع عليه الناس",
       "language": "ar"
     },
     {
