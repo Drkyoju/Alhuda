@@ -2907,7 +2907,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "فليرض.",
-      "source_quote": null,
+      "source_quote": "من حلف بالله فليصدق، ومن حلف له بالله فليرض، ومن لم يرض فليس من الله",
       "language": "ar"
     },
     {
@@ -2964,7 +2964,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الترتيب والتراخي.",
-      "source_quote": null,
+      "source_quote": "العطف بالواو يقتضي الجمع والمساواة، والعطف بثم يقتضي الترتيب والتراخي",
       "language": "ar"
     },
     {
@@ -3040,7 +3040,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "وسائل الشرك.",
-      "source_quote": null,
+      "source_quote": "نهي النبي عن اتخاذ القبور مساجد؛ واتخاذ المساجد على القبور من الغلو",
       "language": "ar"
     },
     {
@@ -3154,7 +3154,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الشرك.",
-      "source_quote": null,
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -3211,7 +3211,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الذات والقدر والقهر.",
-      "source_quote": null,
+      "source_quote": "وهو العلي الذي له علو القدر وعلو القهر وعلو الذات",
       "language": "ar"
     },
     {
@@ -3363,7 +3363,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "إلى الله.",
-      "source_quote": null,
+      "source_quote": "عن أبي شريح أنه كان يكنى أبا الحكم فقال له النبي: إن الله هو الحكم وإليه الحكم",
       "language": "ar"
     },
     {
@@ -3401,7 +3401,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "بنيه.",
-      "source_quote": null,
+      "source_quote": "تكنية الرجل بأكبر بنيه",
       "language": "ar"
     },
     {
@@ -3496,7 +3496,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "يخوضون ويلعبون.",
-      "source_quote": null,
+      "source_quote": "نخوض ونلعب ولم نقصد الاستهزاء والتكذيب وإنما قصدنا الخوض في الحديث واللعب",
       "language": "ar"
     },
     {
@@ -3743,7 +3743,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "السحر.",
-      "source_quote": null,
+      "source_quote": "التنجيم نوع من أنواع السحر؛ والاستدلال بالنجوم على الحوادث المستقبلة من ادعاء علم الغيب",
       "language": "ar"
     },
     {
@@ -3895,7 +3895,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "من تمام الإيمان.",
-      "source_quote": null,
+      "source_quote": "باب من الإيمان بالله الصبر على أقدار الله",
       "language": "ar"
     },
     {
@@ -3933,7 +3933,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "عكاشة بن محصن.",
-      "source_quote": null,
+      "source_quote": "ثم قام رجل آخر فقال ادع الله أن يجعلني منهم فقال: سبقك بها عكاشة",
       "language": "ar"
     },
     {
@@ -4009,7 +4009,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "يلت السويق للحاج.",
-      "source_quote": null,
+      "source_quote": "اللات اسم لرجل كان يلت السويق للحاج فمات فعكفوا على قبره",
       "language": "ar"
     },
     {
@@ -4047,7 +4047,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "تنفع وتضر بذاتها.",
-      "source_quote": null,
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -4066,7 +4066,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "قبره.",
-      "source_quote": null,
+      "source_quote": "كان يلت السويق للحاج فمات فعكفوا على قبره",
       "language": "ar"
     },
     {
@@ -4180,7 +4180,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "فليصدق.",
-      "source_quote": null,
+      "source_quote": "لا تحلفوا بآبائكم؛ من حلف بالله فليصدق، ومن حلف له بالله فليرض",
       "language": "ar"
     },
     {
@@ -4199,7 +4199,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "يرضى.",
-      "source_quote": null,
+      "source_quote": "من حلف بالله فليصدق، ومن حلف له بالله فليرض، ومن لم يرض فليس من الله",
       "language": "ar"
     },
     {
@@ -4237,7 +4237,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "يصدق.",
-      "source_quote": null,
+      "source_quote": "من حلف بالله فليصدق، ومن حلف له بالله فليرض",
       "language": "ar"
     },
     {
@@ -4256,7 +4256,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الله.",
-      "source_quote": null,
+      "source_quote": "ومن لم يرض فليس من الله",
       "language": "ar"
     },
     {
@@ -4294,7 +4294,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "استهان بعظمة الله.",
-      "source_quote": null,
+      "source_quote": "من حلف بالله وهو كاذب فقد استهان بعظمة الله سبحانه وتعالى",
       "language": "ar"
     },
     {
@@ -4332,7 +4332,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الله.",
-      "source_quote": null,
+      "source_quote": "يؤذيني ابن آدم يسب الدهر وأنا الدهر؛ أقلب الليل والنهار",
       "language": "ar"
     },
     {
@@ -4370,7 +4370,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "فاعل مع الله.",
-      "source_quote": null,
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -4389,7 +4389,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "التسوية والمشاركة.",
-      "source_quote": null,
+      "source_quote": "العطف بالواو يقتضي الجمع والمساواة، والعطف بثم يقتضي الترتيب والتراخي",
       "language": "ar"
     },
     {
@@ -4541,7 +4541,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "ربا.",
-      "source_quote": null,
+      "source_quote": "من أطاع العلماء والأمراء في تحريم ما أحل الله أو تحليل ما حرمه فقد اتخذهم أربابا",
       "language": "ar"
     },
     {
@@ -4940,7 +4940,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "قطعه.",
-      "source_quote": null,
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -5035,7 +5035,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "أربعين يوما.",
-      "source_quote": null,
+      "source_quote": "من أتى كاهنا فصدقه بما يقول فقد كفر بما أنزل على محمد؛ ومن ذهب إلى الكهان ولم يصدقهم لم تقبل له صلاة أربعين يوما",
       "language": "ar"
     },
     {
@@ -5054,7 +5054,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "قل الكهان.",
-      "source_quote": null,
+      "source_quote": "كلما انتشر الجهل في الأمة ظهر الكهان، وكلما كثر العلم والتمسك بالدين والعقيدة قل الكهان",
       "language": "ar"
     },
     {
@@ -5168,7 +5168,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "عيدا.",
-      "source_quote": null,
+      "source_quote": "لا تجعلوا بيوتكم قبورا ولا تجعلوا قبري عيدا وصلوا علي فإن صلاتكم تبلغني حيث كنتم",
       "language": "ar"
     },
     {
@@ -5225,7 +5225,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الفأل.",
-      "source_quote": null,
+      "source_quote": "قال رسول الله: لا عدوى ولا طيرة ويعجبني الفأل قالوا وما الفأل قال الكلمة الطيبة",
       "language": "ar"
     },
     {
@@ -5244,7 +5244,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الكلمة الطيبة.",
-      "source_quote": null,
+      "source_quote": "ويعجبني الفأل قالوا وما الفأل قال الكلمة الطيبة",
       "language": "ar"
     },
     {
@@ -5263,7 +5263,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "صفر.",
-      "source_quote": null,
+      "source_quote": "لا عدوى ولا طيرة ولا هامة ولا صفر",
       "language": "ar"
     },
     {
@@ -5396,7 +5396,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "رخص فيه أحمد وإسحاق.",
-      "source_quote": null,
+      "source_quote": "رخص في تعلم المنازل أحمد وإسحاق",
       "language": "ar"
     },
     {
@@ -5415,7 +5415,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "السحر والشرك.",
-      "source_quote": null,
+      "source_quote": "التنجيم نوع من أنواع السحر؛ والاستدلال بالنجوم على الحوادث المستقبلة من ادعاء علم الغيب وهو كفر",
       "language": "ar"
     },
     {
@@ -5434,7 +5434,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "السحر.",
-      "source_quote": null,
+      "source_quote": "من اقتبس شعبة من النجوم فقد اقتبس شعبة من السحر",
       "language": "ar"
     },
     {
@@ -5491,7 +5491,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "عبادة صرفت لغير الله.",
-      "source_quote": null,
+      "source_quote": "الذبح عبادة يجب صرفها لله وحده؛ فمن ذبح لغير الله فقد أشرك",
       "language": "ar"
     },
     {
@@ -5548,7 +5548,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "عبادة الأموات.",
-      "source_quote": null,
+      "source_quote": "الغلو في القبور وسيلة إلى الشرك المضاد للتوحيد وذلك بعبادة الأموات",
       "language": "ar"
     },
     {
@@ -5567,7 +5567,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "نوعين.",
-      "source_quote": null,
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -5681,7 +5681,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الجمع والمساواة.",
-      "source_quote": null,
+      "source_quote": "العطف بالواو يقتضي الجمع والمساواة",
       "language": "ar"
     },
     {
@@ -5814,7 +5814,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الله تعالى.",
-      "source_quote": null,
+      "source_quote": "التحليل والتحريم حق لله تعالى",
       "language": "ar"
     },
     {
@@ -5833,7 +5833,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الربوبية.",
-      "source_quote": null,
+      "source_quote": "التشريع من خصائص الربوبية",
       "language": "ar"
     },
     {
@@ -5852,7 +5852,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "معصية الله.",
-      "source_quote": null,
+      "source_quote": "لا تطع أحدا من الخلق إلا إذا كانت طاعته في غير معصية الله",
       "language": "ar"
     },
     {
@@ -6118,7 +6118,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "القرآن.",
-      "source_quote": null,
+      "source_quote": "إذا كان المعلق من القرآن فرخص فيه بعض السلف وبعضهم لم يرخص فيه ويجعله من المنهي عنه منهم ابن مسعود",
       "language": "ar"
     },
     {
@@ -6156,7 +6156,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "قطعت.",
-      "source_quote": null,
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -6462,7 +6462,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "كل ما سوى الله عالم.",
-      "source_quote": "«كل ما سوى الله عالم»",
+      "source_quote": "إذا قيل لك: من ربك؟ فقل: ربي الله الذي رباني وربى جميع العالمين بنعمه",
       "language": "ar"
     },
     {
@@ -7115,7 +7115,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "ستة.",
-      "source_quote": null,
+      "source_quote": "أركان الإيمان ستة: أن تؤمن بالله وملائكته وكتبه ورسله واليوم الآخر وتؤمن بالقدر خيره وشره",
       "language": "ar"
     },
     {
@@ -7134,7 +7134,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "كأنك تراه.",
-      "source_quote": null,
+      "source_quote": "الإحسان: أن تعبد الله كأنك تراه فإن لم تكن تراه فإنه يراك",
       "language": "ar"
     },
     {
@@ -7210,7 +7210,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "معرفة الله.",
-      "source_quote": null,
+      "source_quote": "العلم وهو معرفة الله ومعرفة نبيه ومعرفة دين الإسلام بالأدلة",
       "language": "ar"
     },
     {
@@ -7229,7 +7229,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإسلام.",
-      "source_quote": null,
+      "source_quote": "معرفة دين الإسلام بالأدلة",
       "language": "ar"
     },
     {
@@ -7305,7 +7305,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "على بصيرة.",
-      "source_quote": null,
+      "source_quote": "وعبد الله على بصيرة",
       "language": "ar"
     },
     {
@@ -7324,7 +7324,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الشهادتان.",
-      "source_quote": null,
+      "source_quote": "بني الإسلام على خمس: شهادة أن لا إله إلا الله",
       "language": "ar"
     },
     {
@@ -7552,7 +7552,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "دين الإسلام بالأدلة.",
-      "source_quote": null,
+      "source_quote": "الأصل الثاني معرفة دين الإسلام بالأدلة وهو الاستسلام لله بالتوحيد",
       "language": "ar"
     },
     {
@@ -7590,7 +7590,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "فريضة.",
-      "source_quote": null,
+      "source_quote": "والهجرة فريضة على هذه الأمة من بلد الشرك إلى بلد الإسلام وهي باقية",
       "language": "ar"
     },
     {
@@ -7852,7 +7852,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "بأربع كلمات.",
-      "source_quote": null,
+      "source_quote": "ثم يبعث الله إليه الملك فيؤمر بأربع كلمات فيكتب عمله وأجله ورزقه وشقي أو سعيد",
       "language": "ar"
     },
     {
@@ -8470,7 +8470,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "وذلك أضعف الإيمان.",
-      "source_quote": null,
+      "source_quote": "من رأى منكم منكرا فليغيره بيده؛ فإن لم يستطع فبلسانه؛ فإن لم يستطع فبقلبه وذلك أضعف الإيمان",
       "language": "ar"
     },
     {
@@ -8578,7 +8578,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": false,
       "explanation": "بل كغريب أو عابر سبيل.",
-      "source_quote": null,
+      "source_quote": "كن في الدنيا كأنك غريب أو عابر سبيل",
       "language": "ar"
     },
     {
@@ -8673,7 +8673,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "حديث حسن.",
-      "source_quote": null,
+      "source_quote": "لا ضرر ولا ضرار",
       "language": "ar"
     },
     {
@@ -8806,7 +8806,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "احفظ الله يحفظك.",
-      "source_quote": null,
+      "source_quote": "احفظ الله يحفظك؛ احفظ الله تجده تجاهك",
       "language": "ar"
     },
     {
@@ -10288,7 +10288,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "عمر بن الخطاب.",
-      "source_quote": null,
+      "source_quote": "عمر بن الخطاب — راوي حديث: إنما الأعمال بالنيات",
       "language": "ar"
     },
     {
@@ -10326,7 +10326,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "النواس بن سمعان.",
-      "source_quote": null,
+      "source_quote": "البر حسن الخلق والإثم ما حاك في صدرك وكرهت أن يطلع عليه الناس — راويه النواس بن سمعان",
       "language": "ar"
     },
     {
@@ -10402,7 +10402,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الطهارة.",
-      "source_quote": null,
+      "source_quote": "الطهور شطر الإيمان",
       "language": "ar"
     },
     {
@@ -10934,7 +10934,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "تركه ما لا يعنيه.",
-      "source_quote": null,
+      "source_quote": "من حسن إسلام المرء تركه ما لا يعنيه",
       "language": "ar"
     },
     {
@@ -10972,7 +10972,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "طيبا.",
-      "source_quote": null,
+      "source_quote": "إن الله طيب لا يقبل إلا طيبا",
       "language": "ar"
     },
     {
@@ -10991,7 +10991,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "نفسك.",
-      "source_quote": null,
+      "source_quote": "البر حسن الخلق والإثم ما حاك في صدرك وكرهت أن يطلع عليه الناس",
       "language": "ar"
     }
   ]
