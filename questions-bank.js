@@ -880,7 +880,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "من صدق كاهنا أو منجما بما يخبر به من الغيب فقد كفر.",
-      "source_quote": null,
+      "source_quote": "من صدق كاهنا أو منجما بما يخبر به من الغيب فقد كفر",
       "language": "ar"
     },
     {
@@ -1125,7 +1125,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "قال ﷺ: فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم.",
-      "source_quote": null,
+      "source_quote": "قال ﷺ: فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم",
       "language": "ar"
     },
     {
@@ -1327,7 +1327,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "من أتى عرافا فسأله عن شيء لم تقبل له صلاة أربعين ليلة.",
-      "source_quote": null,
+      "source_quote": "من أتى عرافا فسأله عن شيء لم تقبل له صلاة أربعين ليلة",
       "language": "ar"
     },
     {
@@ -6609,7 +6609,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "قوله: (فصل لربك وانحر).",
-      "source_quote": null,
+      "source_quote": "قوله: (فصل لربك وانحر)",
       "language": "ar"
     },
     {
@@ -6799,7 +6799,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "بعثه الله بالنذارة عن الشرك ويدعو إلى التوحيد.",
-      "source_quote": null,
+      "source_quote": "بعثه الله بالنذارة عن الشرك ويدعو إلى التوحيد",
       "language": "ar"
     },
     {
@@ -7753,7 +7753,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإسلام: الشهادة، إقام الصلاة، إيتاء الزكاة، صوم رمضان، حج البيت.",
-      "source_quote": null,
+      "source_quote": "الإسلام: الشهادة، إقام الصلاة، إيتاء الزكاة، صوم رمضان، حج البيت",
       "language": "ar"
     },
     {
@@ -7805,7 +7805,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "أن تلد الأمة ربتها، وأن ترى الحفاة العراة يتطاولون في البنيان.",
-      "source_quote": null,
+      "source_quote": "أن تلد الأمة ربتها، وأن ترى الحفاة العراة يتطاولون في البنيان",
       "language": "ar"
     },
     {
@@ -7937,7 +7937,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "قلنا: لمن؟ قال: لله ولكتابه ولرسوله ولأئمة المسلمين وعامتهم.",
-      "source_quote": null,
+      "source_quote": "قلنا: لمن؟ قال: لله ولكتابه ولرسوله ولأئمة المسلمين وعامتهم",
       "language": "ar"
     },
     {
@@ -7951,7 +7951,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "النصيحة لله هي التعظيم لأمره والشفقة على خلقه.",
-      "source_quote": null,
+      "source_quote": "النصيحة لله هي التعظيم لأمره والشفقة على خلقه",
       "language": "ar"
     },
     {
@@ -8173,7 +8173,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "وأتبع السيئة الحسنة تمحها.",
-      "source_quote": null,
+      "source_quote": "وأتبع السيئة الحسنة تمحها",
       "language": "ar"
     },
     {
@@ -8456,7 +8456,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "البينة على المدعي، واليمين على من أنكر.",
-      "source_quote": null,
+      "source_quote": "البينة على المدعي، واليمين على من أنكر",
       "language": "ar"
     },
     {
@@ -8484,7 +8484,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "كل المسلم على المسلم حرام.",
-      "source_quote": null,
+      "source_quote": "كل المسلم على المسلم حرام",
       "language": "ar"
     },
     {
@@ -8498,7 +8498,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "كل المسلم على المسلم حرام.",
-      "source_quote": null,
+      "source_quote": "كل المسلم على المسلم حرام",
       "language": "ar"
     },
     {

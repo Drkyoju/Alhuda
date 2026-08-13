@@ -5388,8 +5388,10 @@ function cleanArabicCitation(raw, questionId) {
   if (isAnswerPrefixedQuote(raw)) return '';
   let s = raw.trim();
   // Strip PDF/OCR private-use glyphs and presentation forms leftovers.
+  // Keep ﷺ (U+FDFA) and ﷻ (U+FDFB) — they are legitimate display honorifics
+  // (same pitfall as speech scrub; FB50–FDFF would delete them).
   s = s.replace(/[\uE000-\uF8FF]/g, '');
-  s = s.replace(/[\uFB50-\uFDFF\uFE70-\uFEFF]/g, ''); // Arabic presentation / Quran-font OCR leftovers
+  s = s.replace(/[\uFB50-\uFDF1\uFDF3-\uFDF9\uFDFC-\uFDFF\uFE70-\uFEFF]/g, '');
   s = s.replace(/[\uFD3E\uFD3F]/g, ''); // ornate Quran paren ornaments often OCR'd empty
   s = s.replace(/[\uFE00-\uFE0F]/g, ''); // variation selectors
   s = s.replace(/^كتاب التوحيد[^.«]{0,120}?\d+\s*/u, '');
