@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v331: keep ﷺ in citation display scrub; restore 14 residual garbage cites; KEEP أرسل/سنين; جاهزة gone; expectQuestionId; HEARTS off; mute cite TTS) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v332: صح/خطأ exact speech not صحيحن/خطأن; KEEP أرسل/سنين; full cites; mute cite TTS; جاهزة gone; HEARTS off) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v331",
+  cache: "alhuda-v332",
   styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 290,
+  app: 291,
   platform: 21,
   auth: 16,
-  sw: 331,
+  sw: 332,
 };

@@ -2655,7 +2655,13 @@ function scrubSpeechDiacriticsNoise(text) {
   s = s.replace(/ذَاتِ\s+أَنْوَاطْ?/g, 'ذَاتِ  أَنْوَاطْ');
   s = s.replace(/ذَات[َ]?\s+أَنْوَاطْ?/g, 'ذَاتِ  أَنْوَاطْ');
   s = s.replace(/بُضْعِ\s+أَحَدِكُمْ/g, 'بُضْعِ  أَحَدِكُمْ');
-  s = s.replace(/(^|[\s،,])صَحّ(?=$|[\s،,])/g, '$1صَحِيحٌ');
+  // NEVER expand صح→صحيح (Fish reads صَحِيحٌ as «صحيحن»). KEEP lemma صَحْ + sah.mp3.
+  s = s.replace(/(^|[\s،,])صَحّ(?=$|[\s،,✓])/g, '$1صَحْ');
+  s = s.replace(/(^|[\s،,])صح(?=$|[\s،,✓])/g, '$1صَحْ');
+  // خطأ: sukun not dammatan — Fish reads خَطَأٌ as «خطأن».
+  s = s.replace(/(^|[\s،,])خَطَأٌ(?=$|[\s،,✗])/g, '$1خَطَأْ');
+  s = s.replace(/(^|[\s،,])خَطَأ(?=$|[\s،,✗])/g, '$1خَطَأْ');
+  s = s.replace(/(^|[\s،,])خطأ(?=$|[\s،,✗])/g, '$1خَطَأْ');
   s = s.replace(/^إِكْرَاه[ٍُِ]?$/u, 'الْإِكْرَاهُ');
   s = s.replace(/^اكراه$/u, 'الْإِكْرَاهُ');
   s = s.replace(/^السِّحْر[َُِ]?$/u, 'السِّحْرْ');
@@ -3491,9 +3497,9 @@ function buildQuestionOptionSpeechList(q) {
       if (t) items.push(t);
     });
   } else if (q?.type === 'tf') {
-    // Must match on-screen buttons «صح ✓» / «خطأ ✗» — never invent «هذا صحيح».
-    items.push('صَحّ ✓');
-    items.push('خَطَأ ✗');
+    // Exact on-screen lemmas — never صحيح / هذا خطأ (Fish → صحيحن / خطأن).
+    items.push('صَحْ');
+    items.push('خَطَأْ');
   }
   return items;
 }
@@ -5141,8 +5147,9 @@ function appendAnswerOption(grid, text, isOk, colorIdx, q, speechField = null) {
     sp.textContent = '🔊';
     const rawSpeak = raw.replace(/[✓✗]/g, '').trim();
     let toSpeak;
-    if (speechField === 'tf0') toSpeak = 'صَحِيحٌ';
-    else if (speechField === 'tf1') toSpeak = 'هَذَا خَطَأٌ';
+    // TF buttons: exact «صح» / «خطأ» → lemma clips sah.mp3 / khata.mp3 (no صحيحن/خطأن).
+    if (speechField === 'tf0') toSpeak = 'صَحْ';
+    else if (speechField === 'tf1') toSpeak = 'خَطَأْ';
     else if (speechField) toSpeak = speechPart(q, speechField, rawSpeak);
     else toSpeak = prepareArabicForSpeech(applyManualSpeechDiacritics(rawSpeak));
     prefetchTtsText(toSpeak);
@@ -5180,7 +5187,7 @@ async function shareScore() {
 }
 
 function getCorrectAnswerText(q) {
-  if (q.type === 'tf') return q.tf ? 'صَحّ ✓' : 'خَطَأٌ ✗';
+  if (q.type === 'tf') return q.tf ? 'صح ✓' : 'خطأ ✗';
   const raw = q.a && q.c != null ? q.a[q.c] : '';
   if (!raw) return '';
   return speechPart(q, `a${q.c}`, raw) || raw;

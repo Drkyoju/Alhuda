@@ -398,11 +398,11 @@ export function prepareFishTtsText(text) {
   s = s.replace(/فَرَائِضَ\s*فَلَا/g, 'فَرَائِضْ  فَلَا');
   s = s.replace(/فَرَائِض\s*فَلَا/g, 'فَرَائِضْ  فَلَا');
   s = s.replace(/فرائض\s*فلا/g, 'فَرَائِضْ  فَلَا');
-  // خطأ alone — tashkeel only (no «هذا» invent)
-  s = s.replace(/^خَطَأٌ$/u, 'خَطَأٌ');
-  s = s.replace(/^خَطَأ$/u, 'خَطَأٌ');
-  s = s.replace(/^خطأ$/u, 'خَطَأٌ');
-  // Ultra-short MC options Fish mangles — article/pad like صح→صحيح (UI bare unchanged)
+  // خطأ alone — sukun (not dammatan→«خطأن»); no «هذا» invent
+  s = s.replace(/^خَطَأٌ$/u, 'خَطَأْ');
+  s = s.replace(/^خَطَأ$/u, 'خَطَأْ');
+  s = s.replace(/^خطأ$/u, 'خَطَأْ');
+  // Ultra-short MC options Fish mangles — article/pad only (never صح→صحيح)
   s = s.replace(/^إِكْرَاه[ٍُِ]?$/u, 'الْإِكْرَاهُ');
   s = s.replace(/^اكراه$/u, 'الْإِكْرَاهُ');
   s = s.replace(/^إكراه$/u, 'الْإِكْرَاهُ');
@@ -439,10 +439,12 @@ export function prepareFishTtsText(text) {
   s = s.replace(/ذات\s+أنواط/g, 'ذَاتِ  أَنْوَاطْ');
   // بُضْع clarity without tatweel: separate from أحدكم
   s = s.replace(/بُضْعِ\s+أَحَدِكُمْ/g, 'بُضْعِ  أَحَدِكُمْ');
-  // ── v320 fidelity: tashkeel / iʿrāb / spacing only — no أعني… / paraphrases ──
-  // صح → صحيح (same lemma family on TF buttons); no «هذا»
-  s = s.replace(/(^|[\s،,])صَحّ(?=$|[\s،,])/g, '$1صَحِيحٌ');
-  s = s.replace(/(^|[\s،,])صح(?=$|[\s،,])/g, '$1صَحِيحٌ');
+  // ── v332 fidelity: never expand صح→صحيح (Fish→صحيحن); خطأ without dammatan→خطأن
+  s = s.replace(/(^|[\s،,])صَحّ(?=$|[\s،,✓])/g, '$1صَحْ');
+  s = s.replace(/(^|[\s،,])صح(?=$|[\s،,✓])/g, '$1صَحْ');
+  s = s.replace(/(^|[\s،,])خَطَأٌ(?=$|[\s،,✗])/g, '$1خَطَأْ');
+  s = s.replace(/^هَذَا\s+خَطَأٌ$/u, 'خَطَأْ');
+  s = s.replace(/^هذا\s+خطأ$/u, 'خَطَأْ');
   // ذات أنواط / أنواط — تشكيل فقط
   s = s.replace(/ذَات[َُِ]?\s+أَنْوَاطْ?/g, 'ذَاتِ  أَنْوَاطْ');
   s = s.replace(/ذات\s+أنواط/g, 'ذَاتِ  أَنْوَاطْ');
@@ -535,6 +537,18 @@ export function prepareFishTtsText(text) {
   // v324: Fish Hakim A/B — strip harakat except KEEP (tawheed+usool+nawawi winners).
   // KEEP preserves contextual iʿrāb already on the token; bare often reads cleaner.
   s = applyHarakatPolicy(s);
+
+  // Final TF lemmas AFTER KEEP — whole utterance only (never «صحيحن»/«خطأن»).
+  // Mid-sentence «حديث صحيح» untouched.
+  s = s.replace(/^صَحِيحٌ$/u, 'صَحْ');
+  s = s.replace(/^صحيح$/u, 'صَحْ');
+  s = s.replace(/^صَحّ$/u, 'صَحْ');
+  s = s.replace(/^صح$/u, 'صَحْ');
+  s = s.replace(/^خَطَأٌ$/u, 'خَطَأْ');
+  s = s.replace(/^خَطَأ$/u, 'خَطَأْ');
+  s = s.replace(/^خطأ$/u, 'خَطَأْ');
+  s = s.replace(/^هَذَا\s+خَطَأٌ$/u, 'خَطَأْ');
+  s = s.replace(/^هذا\s+خطأ$/u, 'خَطَأْ');
 
   return fixAllahIrabInText(s);
 }

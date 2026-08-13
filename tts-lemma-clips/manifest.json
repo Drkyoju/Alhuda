@@ -96,11 +96,11 @@
     "خطأ": {
       "bare": "خطأ",
       "file": "khata.mp3",
-      "spoken": "خَطَأٌ",
+      "spoken": "خَطَأْ",
       "transcript": "خطأ",
       "source": "r1",
       "speed": 0.9,
-      "note": "PASS_خطأ; fidelity softBare match"
+      "note": "PASS_خطأ; fidelity softBare match; sukun not dammatan"
     },
     "ذات أنواط": {
       "bare": "ذات أنواط",
