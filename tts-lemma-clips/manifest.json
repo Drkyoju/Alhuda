@@ -1,7 +1,7 @@
 {
-  "at": "2026-08-10T14:19:17.720521Z",
+  "at": "2026-08-13T22:21:47.419Z",
   "voice": "راوٍ عربي حكيم",
-  "note": "v322 fidelity lemma clips: أنواط + العزى (+ refreshed ذباب); spoken bare === written.",
+  "note": "v345 fidelity lemma clips: اللهو (Whisper 5/5 exact); اللهو واللعب (5/5 لهو stem, not الله). spoken softBare === written.",
   "clips": {
     "قرب ذبابا": {
       "bare": "قرب ذبابا",
@@ -215,6 +215,42 @@
       "source": "r1",
       "speed": 0.78,
       "note": "PASS_العزى; fidelity softBare match"
+    },
+    "اللهو": {
+      "bare": "اللهو",
+      "file": "lahw.mp3",
+      "spoken": "اَلْـلَهْوُ",
+      "transcript": "اللهو",
+      "source": "r13",
+      "speed": 0.9,
+      "note": "PASS_exact; fidelity softBare match; Whisper 5/5 اللهو not الله"
+    },
+    "اللهو واللعب": {
+      "bare": "اللهو واللعب",
+      "file": "lahw_laib.mp3",
+      "spoken": "اَلْـلَهْوُ وَاللـَّعِبُ",
+      "transcript": "اللهوة واللعب",
+      "source": "p10",
+      "speed": 0.95,
+      "note": "PASS_phrase; fidelity softBare match; Whisper 5/5 لهو stem (اللهوة) not الله"
+    },
+    "اللَّهْوُ": {
+      "bare": "اللَّهْوُ",
+      "file": "lahw.mp3",
+      "spoken": "اَلْـلَهْوُ",
+      "transcript": "اللهو",
+      "source": "r13",
+      "speed": 0.9,
+      "note": "PASS_exact; fidelity softBare match; Whisper 5/5 اللهو not الله; alias"
+    },
+    "اللَّهْوُ وَاللَّعِبُ": {
+      "bare": "اللَّهْوُ وَاللَّعِبُ",
+      "file": "lahw_laib.mp3",
+      "spoken": "اَلْـلَهْوُ وَاللـَّعِبُ",
+      "transcript": "اللهوة واللعب",
+      "source": "p10",
+      "speed": 0.95,
+      "note": "PASS_phrase; fidelity softBare match; Whisper 5/5 لهو stem (اللهوة) not الله; alias"
     }
   }
 }

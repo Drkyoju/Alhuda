@@ -177,17 +177,18 @@ function spokenVariants(bare) {
     uniq.add('أَبُو هُرَيْرَةَ');
   }
   if (/^اللهو$/u.test(bare)) {
-    // Emphasize هْو so Fish does not collapse to الله
+    // Tatweel between letters steers Fish away from الله (v345 winner: اَلْـلَهْوُ)
+    uniq.add('اَلْـلَهْوُ');
+    uniq.add('اَلـلـهـو');
+    uniq.add('الـلـهـوُ');
+    uniq.add('الـلـهـو');
     uniq.add('اللَّهْوُ');
     uniq.add('اللَّهْوْ');
-    uniq.add('الَلَّهْوُ');
-    uniq.add('اللّهْوُ');
-    uniq.add('اللَهْوْ');
   } else if (/اللهو\s+واللعب/.test(bare)) {
-    uniq.add('اللَّهْوُ  وَاللَّعِبُ');
-    uniq.add('اللَّهْوْ  وَاللَّعِبْ');
-    uniq.add('اللَّهْوُ وَاللَّعِبُ');
-    uniq.add('اللَهْوْ وَاللَعِبْ');
+    uniq.add('اَلْـلَهْوُ وَاللـَّعِبُ');
+    uniq.add('اَلْـلَهْوُ وَاللَّعِبُ');
+    uniq.add('اَلـلـهـو وَاللَّعِبُ');
+    uniq.add('الـلـهـوُ وَاللَّعِبُ');
   }
   if (/^الزنا$/u.test(bare)) {
     uniq.add('الزِّنَا');

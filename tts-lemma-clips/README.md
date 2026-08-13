@@ -5,7 +5,7 @@ Pre-recorded MP3s for short lemmas where **live** Fish Hakim is unreliable.
 (tashkeel / spacing / NFC only — no «أعني…», «الذال ثم…», «حشرة…» pads).
 
 Examples covered: ذباب / قرب ذبابا، لا ضرر ولا ضرار، أهل اليمن، الرياء، الشرك الأكبر،
-صح/خطأ، **أنواط**، ذات أنواط، **العزى**، اللات، مناة، بضع، صابئة، ما عبد، شرك، رقى، أبو هريرة.
+صح/خطأ، **أنواط**، ذات أنواط، **العزى، **اللهو** / اللهو واللعب**، اللات، مناة، بضع، صابئة، ما عبد، شرك، رقى، أبو هريرة.
 
 - Served by `server.mjs` `/api/tts` when the request bare-key matches `manifest.json`
   (`X-TTS-Provider: fish-lemma-clip`).
