@@ -1,0 +1,350 @@
+{
+  "at": "2026-08-13T19:18:26.382Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "voice": "راوٍ عربي حكيم",
+  "whisper": "small",
+  "n": 31,
+  "pass": 28,
+  "fail": 3,
+  "lemmaMisses": [],
+  "fails": [
+    {
+      "id": "khams_sinin",
+      "text": "خمس سنين",
+      "prep": "خَمْسَ  سِنِينَ",
+      "transcript": "5 سنين",
+      "soft": {
+        "pass": false,
+        "writtenSoft": "خمس سنين",
+        "heardSoft": "سنين",
+        "exact": false,
+        "setOverlap": 0.6,
+        "flags": [],
+        "lemma": null,
+        "provider": "fish"
+      },
+      "lemmaMiss": null,
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "manat",
+      "text": "مناة",
+      "prep": "مناة",
+      "transcript": "مناتو",
+      "soft": {
+        "pass": false,
+        "writtenSoft": "مناه",
+        "heardSoft": "مناتو",
+        "exact": false,
+        "setOverlap": 0.75,
+        "flags": [],
+        "lemma": "manat.mp3",
+        "provider": "fish-lemma-clip"
+      },
+      "lemmaMiss": null,
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "manat.mp3"
+    },
+    {
+      "id": "ruqa",
+      "text": "رقى",
+      "prep": "رقى",
+      "transcript": "رقا",
+      "soft": {
+        "pass": false,
+        "writtenSoft": "رقي",
+        "heardSoft": "رقا",
+        "exact": false,
+        "setOverlap": 0.667,
+        "flags": [],
+        "lemma": "ruqa.mp3",
+        "provider": "fish-lemma-clip"
+      },
+      "lemmaMiss": null,
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "ruqa.mp3"
+    }
+  ],
+  "criticalSample": [
+    {
+      "id": "tf_sah",
+      "text": "صح",
+      "transcript": "صح",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "sah.mp3"
+    },
+    {
+      "id": "tf_khata",
+      "text": "خطأ",
+      "transcript": "خطأ",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "khata.mp3"
+    },
+    {
+      "id": "mc_sahih",
+      "text": "صحيح",
+      "transcript": "صحيح",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "arsal",
+      "text": "أرسل",
+      "transcript": "أرسل",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "arsal_q",
+      "text": "بماذا أرسل النبي أولا؟",
+      "transcript": "بما ده أرسل النبي أولاً؟",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "arsal_q2",
+      "text": "أرسل النبي رسولا في بعض أسفاره ألا يبقى في رقبة بعير قلادة من وتر إلا:",
+      "transcript": "أرسل النبي رسولا في بعض أسفاره إلا يبقى في رقبة بعير قلادة من وترأيلا",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "sinin",
+      "text": "سنين",
+      "transcript": "سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "ashr_sinin",
+      "text": "عشر سنين",
+      "transcript": "عشرة سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "thalath_sinin",
+      "text": "ثلاث سنين",
+      "transcript": "ثلاثة سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "khams_sinin",
+      "text": "خمس سنين",
+      "transcript": "5 سنين",
+      "pass": false,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "min_sinin",
+      "text": "من السنين",
+      "transcript": "من السنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    },
+    {
+      "id": "dhubab",
+      "text": "ذباب",
+      "transcript": "ذو بابون",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "dhubab.mp3"
+    },
+    {
+      "id": "dhubaban",
+      "text": "ذبابا",
+      "transcript": "ذو بابن",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "dhubaban.mp3"
+    },
+    {
+      "id": "qarraba",
+      "text": "قرب ذبابا",
+      "transcript": "قرب ذباباً",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "qarraba_dhubaban.mp3"
+    },
+    {
+      "id": "qarraba_sanam",
+      "text": "قرب ذبابا لصنم",
+      "transcript": "قرب ذباباً لصنم",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "qarraba_dhubaban_sanam.mp3"
+    },
+    {
+      "id": "la_darar",
+      "text": "لا ضرر ولا ضرار",
+      "transcript": "لا ضرر ولا ضرار",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "la_darara.mp3"
+    },
+    {
+      "id": "ahl_yaman",
+      "text": "أهل اليمن",
+      "transcript": "أهل اليمن",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "ahl_yaman.mp3"
+    },
+    {
+      "id": "uzza",
+      "text": "العزى",
+      "transcript": "العزي",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "uzza.mp3"
+    },
+    {
+      "id": "anwat",
+      "text": "أنواط",
+      "transcript": "أنواط",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "anwat.mp3"
+    },
+    {
+      "id": "dhat_anwat",
+      "text": "ذات أنواط",
+      "transcript": "ذاتي أنواط",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "dhat_anwat.mp3"
+    },
+    {
+      "id": "riya",
+      "text": "الرياء",
+      "transcript": "رياء",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "riya.mp3"
+    },
+    {
+      "id": "shirk_akbar",
+      "text": "الشرك الأكبر",
+      "transcript": "الشرك الأكبر",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "shirk_akbar.mp3"
+    },
+    {
+      "id": "abu_hurayra",
+      "text": "أبو هريرة",
+      "transcript": "أبو هوريرا",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "abu_hurayra.mp3"
+    },
+    {
+      "id": "allat",
+      "text": "اللات",
+      "transcript": "اللات",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "allat.mp3"
+    },
+    {
+      "id": "manat",
+      "text": "مناة",
+      "transcript": "مناتو",
+      "pass": false,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "manat.mp3"
+    },
+    {
+      "id": "ruqa",
+      "text": "رقى",
+      "transcript": "رقا",
+      "pass": false,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "ruqa.mp3"
+    },
+    {
+      "id": "shirk",
+      "text": "شرك",
+      "transcript": "شرك",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "shirk.mp3"
+    },
+    {
+      "id": "buda",
+      "text": "بضع",
+      "transcript": "بضع",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "bud_a.mp3"
+    },
+    {
+      "id": "sabia",
+      "text": "صابئة",
+      "transcript": "صابئة",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "sabia.mp3"
+    },
+    {
+      "id": "ma_ubida",
+      "text": "ما عبد",
+      "transcript": "ما عبدا",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemmaFile": "ma_ubida.mp3"
+    },
+    {
+      "id": "lat_uzza_q",
+      "text": "اللات والعزى ومناة أصنام كانت تعبدها:",
+      "transcript": "اللات والعزة ومنات أصنام كانت تعبدها",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemmaFile": null
+    }
+  ]
+}

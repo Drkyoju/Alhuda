@@ -326,7 +326,10 @@ export function prepareFishTtsText(text) {
   s = s.replace(/يكنى/g, 'يُكَنَّى');
   s = s.replace(/والعزّى/g, 'وَالْعُزَّى');
   s = s.replace(/(^|[^\u0621-\u064A])العزّى/g, '$1الْعُزَّى');
-  // العزى alone — final يْ (softBare ى≡ي) steers clone away from «العزة»
+  // العزى — final يْ (softBare ى≡ي) steers Fish away from «العزة» (alone + phrases)
+  s = s.replace(/الْعُزَّى/g, 'الْعُزَّيْ');
+  s = s.replace(/(^|[^\u0621-\u064A])العزى(?![\u0621-\u064A])/g, '$1الْعُزَّيْ');
+  s = s.replace(/(^|[^\u0621-\u064A])العزّى(?![\u0621-\u064A])/g, '$1الْعُزَّيْ');
   s = s.replace(/^الْعُزَّى$/u, 'الْعُزَّيْ');
   s = s.replace(/^العزى$/u, 'الْعُزَّيْ');
   s = s.replace(/^العزّى$/u, 'الْعُزَّيْ');
@@ -538,6 +541,22 @@ export function prepareFishTtsText(text) {
   // v324: Fish Hakim A/B — strip harakat except KEEP (tawheed+usool+nawawi winners).
   // KEEP preserves contextual iʿrāb already on the token; bare often reads cleaner.
   s = applyHarakatPolicy(s);
+
+  // AFTER KEEP: force العزى → يْ (KEEP form وَالْعُزَّى was reading as «العزة»).
+  s = s.replace(/الْعُزَّى/g, 'الْعُزَّيْ');
+  s = s.replace(/(^|[^\u0621-\u064A])العزى(?![\u0621-\u064A])/g, '$1الْعُزَّيْ');
+
+  // v341: repair broken nominative iʿrāb leftovers (Verifier3 map fixes + defense in prepare).
+  s = s.replace(/حَدِيثٍ\s+صَحِيحٌ/g, 'حَدِيثٌ صَحِيحٌ');
+  s = s.replace(/حديثٍ\s+صحيحٌ/g, 'حَدِيثٌ صَحِيحٌ');
+  s = s.replace(/حَدِيثٍ\s+حُسْنُ/g, 'حَدِيثٌ حَسَنٌ');
+  s = s.replace(/حديثٍ\s+حسنُ?/g, 'حَدِيثٌ حَسَنٌ');
+  s = s.replace(/^حديث\s+صحيح\.?$/u, 'حَدِيثٌ صَحِيحٌ');
+  s = s.replace(/^حديث\s+حسن\.?$/u, 'حَدِيثٌ حَسَنٌ');
+  s = s.replace(/غَيْرَ\s+صَحِيحٌ/g, 'غَيْرُ صَحِيحٍ');
+  s = s.replace(/لَا\s+يُ?سْ?قِطُ?\s+حُقُوقُ/g, 'لَا يُسْقِطُ حُقُوقَ');
+  s = s.replace(/لا\s+يسقط\s+حقوق/g, 'لَا يُسْقِطُ حُقُوقَ');
+  s = s.replace(/يُسْقِطُ\s+حُقُوقُ/g, 'يُسْقِطُ حُقُوقَ');
 
   // Final TF lemmas AFTER KEEP — «صح»/«خطأ» only (never expand to صحيحن/خطأن).
   // Do NOT collapse written «صحيح» → صح (MC options must stay صحيح).

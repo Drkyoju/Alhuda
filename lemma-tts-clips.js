@@ -4,6 +4,7 @@
  * UI display is unchanged — only /api/tts audio is overridden.
  * v320: only serve clips whose spoken/transcript bare words match the written key
  * (no أعني… / الذال ثم… paraphrases).
+ * v338: softBare lookup (ى≡ي) so prepared الْعُزَّيْ still hits العزى clip.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -44,20 +45,34 @@ function clipIsFidelity(bareKey, hit) {
   return false;
 }
 
+function findClipHit(man, key) {
+  if (!key) return null;
+  const direct = man.clips[key];
+  if (direct?.file) return { key, hit: direct };
+  // softBare alias (ى≡ي) so prepared الْعُزَّيْ still hits العزى clip
+  const soft = softBare(key);
+  if (!soft) return null;
+  for (const [k, v] of Object.entries(man.clips || {})) {
+    if (v?.file && softBare(k) === soft) return { key: k, hit: v };
+  }
+  return null;
+}
+
 /** @returns {{ bare: string, file: string, absPath: string, spoken?: string } | null} */
 export function resolveLemmaTtsClip(textRaw) {
   const key = bareArabicKey(textRaw);
   if (!key) return null;
   const man = loadManifest();
-  const hit = man.clips[key];
-  if (!hit?.file) return null;
-  if (!clipIsFidelity(key, hit)) return null;
+  const found = findClipHit(man, key);
+  if (!found) return null;
+  const { hit } = found;
+  if (!clipIsFidelity(key, hit) && !clipIsFidelity(found.key, hit)) return null;
   const absPath = path.join(CLIP_DIR, hit.file);
   if (!fs.existsSync(absPath)) return null;
   const st = fs.statSync(absPath);
   if (!st.isFile() || st.size < 800) return null;
   return {
-    bare: hit.bare || key,
+    bare: hit.bare || found.key || key,
     file: hit.file,
     absPath,
     spoken: hit.spoken || null,

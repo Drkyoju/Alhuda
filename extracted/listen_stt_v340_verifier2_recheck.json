@@ -1,0 +1,279 @@
+{
+  "at": "2026-08-13T19:29:07.158Z",
+  "live": "alhuda-v340",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "n": 103,
+  "pass": 103,
+  "fail": 0,
+  "lemmaMisses": 1,
+  "critical": [
+    {
+      "id": "sah",
+      "text": "صح",
+      "prep": "صَحْ",
+      "transcript": "صح",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "sah.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "khata",
+      "text": "خطأ",
+      "prep": "خَطَأْ",
+      "transcript": "خطأ",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "khata.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "sahih",
+      "text": "صحيح",
+      "prep": "صَحِيحٌ",
+      "transcript": "صحيح",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "arsal",
+      "text": "أرسل",
+      "prep": "أَرْسَلَ",
+      "transcript": "أرسلة",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "arsal_q",
+      "text": "بماذا أرسل النبي أولا؟",
+      "prep": "بِمَاذَا أَرْسَلَ النَّبِيَّ أولا",
+      "transcript": "بما ده أرسل النبي أولاً؟",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "sinin",
+      "text": "سنين",
+      "prep": "سِنِينَ",
+      "transcript": "سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "ashr",
+      "text": "عشر سنين",
+      "prep": "عَشْرَ  سِنِينَ",
+      "transcript": "عشر سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "thalath",
+      "text": "ثلاث سنين",
+      "prep": "ثَلَاثَ  سِنِينَ",
+      "transcript": "ثلاثة سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "khams",
+      "text": "خمس سنين",
+      "prep": "خَمْسَ  سِنِينَ",
+      "transcript": "5 سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "hadith_sahih",
+      "text": "حديث صحيح",
+      "prep": "حَدِيثٌ صَحِيحٌ",
+      "transcript": "حديث صحيح",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "hadith_hasan",
+      "text": "حديث حسن",
+      "prep": "حَدِيثٌ حَسَنٌ",
+      "transcript": "حديث حسن",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "hadith_sahih_bad",
+      "text": "حَدِيثٍ صَحِيحٌ",
+      "prep": "حَدِيثٌ صَحِيحٌ",
+      "transcript": "حديث صحيح",
+      "pass": true,
+      "flags": [],
+      "provider": "cached",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "hadith_hasan_bad",
+      "text": "حَدِيثٍ حُسْنُ",
+      "prep": "حَدِيثٌ حَسَنٌ",
+      "transcript": "حديث حسن",
+      "pass": true,
+      "flags": [],
+      "provider": "cached",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "ghayr",
+      "text": "غَيْرَ صَحِيحٌ",
+      "prep": "غَيْرُ صَحِيحٍ",
+      "transcript": "غير صحيح",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "uzza",
+      "text": "العزى",
+      "prep": "الْعُزَّيْ",
+      "transcript": "العزي",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": {
+        "expected": "uzza.mp3",
+        "got": null
+      }
+    },
+    {
+      "id": "uzza_prep",
+      "text": "الْعُزَّيْ",
+      "prep": "الْعُزَّيْ",
+      "transcript": "العزي",
+      "pass": true,
+      "flags": [],
+      "provider": "cached",
+      "lemma": "uzza.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "lat_uzza_q",
+      "text": "اللات والعزى ومناة أصنام كانت تعبدها:",
+      "prep": "الْلَاتُ وَالْعُزَّيْ وَمَنَاةُ أصنامٌ كَانَتْ تَعْبُدُهَا",
+      "transcript": "اللات والعزي ومنات أصنام كانت تعبدها",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "lat_uzza_q2",
+      "text": "اللات والعزى ومناة الثالثة ذكرت في سورة:",
+      "prep": "الْلَاتُ وَالْعُزَّيْ وَمَنَاةُ الثالثة ذكرت فِي سورة",
+      "transcript": "اللات العزي ومنات الثالثة ذكرت في صورة",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "dhubab",
+      "text": "ذباب",
+      "prep": "ذُبَابٌ",
+      "transcript": "ذو بابون",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "dhubab.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "qarraba",
+      "text": "قرب ذبابا",
+      "prep": "قَرَّبَ ذُبَابًا",
+      "transcript": "قرب ذباباً",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "qarraba_dhubaban.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "la_darar",
+      "text": "لا ضرر ولا ضرار",
+      "prep": "لَا ضَرَرَ وَلَا ضِرَارَ",
+      "transcript": "لا ضرر ولا ضرار",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "la_darara.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "ahl_yaman",
+      "text": "أهل اليمن",
+      "prep": "أهل الْيَمَنِ",
+      "transcript": "أهل اليمن",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "ahl_yaman.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "anwat",
+      "text": "أنواط",
+      "prep": "أَنْوَاطْ",
+      "transcript": "أنواط",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "anwat.mp3",
+      "lemmaMiss": null
+    }
+  ],
+  "fails": [],
+  "lemmaMissList": [
+    {
+      "id": "uzza",
+      "text": "العزى",
+      "miss": {
+        "expected": "uzza.mp3",
+        "got": null
+      },
+      "provider": "fish"
+    }
+  ]
+}
