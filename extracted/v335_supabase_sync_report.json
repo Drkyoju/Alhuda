@@ -1,0 +1,10 @@
+{
+  "patched_http_ok": 502,
+  "errors": 0,
+  "err_samples": [],
+  "total": 502,
+  "spot_verified_match": 13,
+  "spot_missing": 7,
+  "spot_n": 20,
+  "at": "2026-08-13T18:30:54Z"
+}

@@ -1,0 +1,3228 @@
+{
+  "updates": [
+    {
+      "id": "67831742-cfc3-4c12-a11c-4be748e40bda",
+      "source_quote": "الشرك بالله هو أعظم الذنوب، لأنه لا يغفر إلا بالتوبة.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "57e222ad-b48e-442c-8f88-6a512c0a54da",
+      "source_quote": "لا بد من سبعة شروط: العلم، اليقين، القبول، الانقياد، الصدق، الإخلاص، المحبة.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "fcbcf713-b692-4fbf-a3e4-097b3dcb5320",
+      "source_quote": "الذبح عبادة لا تصرف إلا لله، وصرفها لغير الله شرك أكبر.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "80bc1390-88d3-4749-b6f5-8ec7faf53c88",
+      "source_quote": "الشرك ظلم عظيم لأنه يتضمن التسوية بين الخالق والمخلوق.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "13d43d42-9990-4713-b002-fb1a5a675b9c",
+      "source_quote": "إن اعتقد أن النجم فاعل مستقل فهو كفر/شرك أكبر في الربوبية؛ وإن نسب المطر للنجم عادة مع اعتقاد أن الله الخالق فهو شرك أصغر.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "fb26ac3b-5e44-4831-89a2-446a7b7efa67",
+      "source_quote": "لأنه خوف تعبدي صرف لغير الله.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "cdcf1909-c177-465a-8192-c6ba6fd2bdd7",
+      "source_quote": "قال : أخوف ما أخاف عليكم الشرك الأصغر قالوا: وما هو؟ قال: الرياء.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "470ab1f1-7138-41d9-9bea-539f78397d5c",
+      "source_quote": "طلب مشابهة المشركين في التعليق/التعظيم وسيلة إلى الشرك فأنكره النبي عليهم تحذيرا قبل أن يفعلوا؛ وليس المراد اتهام الصحابة بوقوع الشرك.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "e4f11a98-c645-4925-928b-ca8c3de9bd02",
+      "source_quote": "الشفاعة التي فيها شرك منتفية يوم القيامة.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "87c0642e-bfe5-4aa1-8843-14455b9f2230",
+      "source_quote": "وقوله: «ومن سحر ، فقد أشرك، ومن تعلق شيئا، وكل إليه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "72ab80d0-d4f0-4667-9ccf-2ba887973b8d",
+      "source_quote": "ممنوع للمبالغة بما يضاهي تعظيم الرب (كقاضي القضاة/ملك الملوك)، لا لنفي ولاية القضاء الشرعية عن القضاة.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "79060455-082e-4ede-9964-2c3c684bd269",
+      "source_quote": "أن يعبدوه ولا يشركوا به شيئا.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "2a7cf393-de79-4b77-8e40-a2ecab752d54",
+      "source_quote": "نهى النبي عن الجمع بالواو.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "e069ac98-4775-48e3-be48-d8928457a9fc",
+      "source_quote": "حق العباد على الله: ألا يعذب من عبده ولم يشرك به شيئا.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "81b93c71-d614-4610-8da3-86aa7e75fa90",
+      "source_quote": "وعن جابر: أ ن ر سول الل ق ال : «من لقي الل ل يشرك به شيئا ؛ دخل الجنة ومن لقيه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "c54d1682-3662-427d-a959-c54766568898",
+      "source_quote": "يؤذيني ابن آدم يسب الدهر وأنا الدهر",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "2ce7876d-da2d-771f-1bcf-846c44ce4181",
+      "source_quote": "أول ما بدأ به هو التوحيد شهادة أن لا إله إلا الله ثم الصالة ثم الزكاة .",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "6f7a051d-54a0-1c5d-160c-daad711b7fd2",
+      "source_quote": "توحيد العبادة: وهو إفراد الله بالعبادة وترك عبادة ما سواه، والبراءة من ذلك",
+      "book": "tawheed",
+      "note": "book_backed_def"
+    },
+    {
+      "id": "a9167a6b-2a31-2fe0-79ac-8eb95ba1a0a1",
+      "source_quote": "توحيد الربوبية: إفراد الله بالخلق والملك والتدبير",
+      "book": "tawheed",
+      "note": "book_backed_def"
+    },
+    {
+      "id": "42842c86-b2e8-6c93-7a98-68cc42b89f2d",
+      "source_quote": "يستفاد من الباب: أن جحود ش يء من الأسماء والصفات كفر",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "c24fc4ba-bfe7-2b9e-7afb-bcb17b18d1a9",
+      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "6bcf0708-2a97-009c-1cbf-c3ad0762d8f8",
+      "source_quote": "الرياء: إظهار العبادة لقصد رؤية الناس لها فيحمدونه عليها، وهو من الشرك الأصغر",
+      "book": "tawheed",
+      "note": "book_backed_def"
+    },
+    {
+      "id": "e881d91f-2c37-b482-14be-391c934c16d5",
+      "source_quote": "أعظم الذنوب: الشرك؛ لأن الله تعالى أخبر أنه لا يغفره لمن لم يتب منه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "ec30c523-46b4-dc9c-1f73-c43fac4f8848",
+      "source_quote": "تصفيته من الشرك والبدع والمعاصي",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "3c2dca5b-9bbb-c924-b7b3-30d829990edd",
+      "source_quote": "وجوب إفراد الله بالعبادة",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "09846afa-dc24-2013-1ad9-f7a3ed6466f0",
+      "source_quote": "أخوف ما أخاف عليكم الشرك الأصغر",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "13df780d-6b8d-7f4c-cdf2-12af4234c38e",
+      "source_quote": "منشروط صحة العبادة: اجتناب الشرك؛ لأن الله قرن الأمر بالعبادة بالنهي عن الشرك",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "9264aaba-431f-cca5-457d-ca5e404cc733",
+      "source_quote": "من فضائل التوحيد: أنه يوجب ملن مات عليه النجاة من النار",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "e7ee3a7e-f954-7c5b-2abd-dece5ca3ac4a",
+      "source_quote": "أول ما بدأ به هو التوحيد شهادة أن لا إله إلا الله ثم الصالة ثم الزكاة .",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "90691e5a-7b89-3748-6eba-acf19718861d",
+      "source_quote": "يكفر الذنوب وينجي من النار.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8be0e1a0-890c-883e-109b-1a5ecc0fb4ec",
+      "source_quote": "كل ما يحبه الله ويرضاه من الأقوال والأعمال.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "2cd97dec-c009-6bfd-c646-0492ec5d5480",
+      "source_quote": "وضع للعبادة في غير موضعها.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "aba366ee-ee58-27a8-59a0-988961e1a38a",
+      "source_quote": "أعظم الذنوب: الشرك؛ لأن الله تعالى أخبر أنه لا يغفره لمن لم يتب منه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "8f89d3ad-1032-db79-10a8-11bf2a058481",
+      "source_quote": "التوحيد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "04781ea7-f7e9-1e10-89e4-92f12109f201",
+      "source_quote": "التذلل والخضوع» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "10b1da12-b44f-3d90-d0c8-33dc56c911da",
+      "source_quote": "مجاوزة الحد، وكل ما عبد من دون الله وهو راض.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "89818f30-b836-8da4-21a9-f9010f5b8dc8",
+      "source_quote": "كتاب الله وسنة رسوله لأنهما طريق إلى الجنة",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "dcf033d4-6c85-39f2-fbc3-c564255e8f7a",
+      "source_quote": "يخلطوا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c134a6e9-d0a8-9643-3943-267e128ea448",
+      "source_quote": "الشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "de608085-2f6f-c6a3-ae18-f773910abb1d",
+      "source_quote": "المقبل على الله المعرض عما سواه",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ce370ae2-ddfd-506d-2db6-f58f325e2414",
+      "source_quote": "لا يسترقون ولا يكتوون ولا يتطيرون وعلى ربهم يتوكلون.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "0bcddf92-25ad-85ef-148e-40e34a0f9afe",
+      "source_quote": "لا يطلبون من يرقيهم استغناء عن الناس",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "91968af9-6184-e3c5-9501-a0c75ccce7c9",
+      "source_quote": "لا يتشاءمون بالطيور ونحوها",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "eb80069a-736f-b2cd-a7db-4cfe0b3401ef",
+      "source_quote": "عكاشة بن محصن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8285fb94-48e6-ff29-55f5-c45f1c8269e2",
+      "source_quote": "يحبط جميع الأعمال ويخلد في النار وينقل عن الملة.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ffe0b7b1-6ed0-c04f-9b6c-b180446b518f",
+      "source_quote": "يحبط العمل المقارن له ولا يخلد صاحبه في النار ولا ينقل عن الملة.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "e8ff6321-abd3-0fdc-0ab3-9bd383411a79",
+      "source_quote": "ما كان منحوتا على صورة بشر أو حيوان.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "4351cedc-3797-48f7-9bb5-140178721941",
+      "source_quote": "أن الشرك ينقسم إلى أكبر وأصغر",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "5bbc1f59-864b-2fc5-6d56-f19e86d03ee6",
+      "source_quote": "خلق مدبر، فيرجع السب إلى خالقها ومدبرها",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ce9e78b4-9639-1443-460c-2a525fef7661",
+      "source_quote": "اللهم إنا نسألك خير هذه الريح وخير ما فيها",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "3c5586ce-b648-5692-8627-d7418aae60d9",
+      "source_quote": "بعث النبي معاذا إلى اليمن داعيا ومعلما.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "613367ce-33bc-8944-569c-8c075760966b",
+      "source_quote": "التمائم: ش يء يعلقونه على الأولاد يتقون به العين",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "adc7a568-4e61-f5de-b5c8-6066befcd2af",
+      "source_quote": "أشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b2f4d852-0565-19f0-0844-8b82158b6815",
+      "source_quote": "التولة: ش يء يصنعونه، يزعمون أنه يحبب المرأة إلى زوجها، والرجل إلى امرأته",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "0a39f855-482c-f146-569d-3d385c8375df",
+      "source_quote": "الشرك: هو صرف ش يء من العبادة",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "43bbfed4-e1de-3362-041e-f83a0df7d062",
+      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "1b25a6c2-7818-e3c9-a8fa-56b38f284850",
+      "source_quote": "الشرك الأصغر: هو ما أتى في النصوص أنه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "3f9eedfa-40d0-20fe-15be-fdda9d03f1cd",
+      "source_quote": "وهنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a65b90a9-be7c-b2b5-de1f-1ed22818eedf",
+      "source_quote": "وقوله: «ومن سحر ، فقد أشرك، ومن تعلق شيئا، وكل إليه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "4ff8f624-b5e4-d550-fd73-c7e6393b4a73",
+      "source_quote": "أنواط» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "fb5c41b3-eba0-54a2-c53c-8c0133d1b17e",
+      "source_quote": "التشبه بالأمم السابقة.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a64cee3b-138e-eea4-2145-25fee4f47a12",
+      "source_quote": "من ذبح لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "f9b205c9-d036-dcce-37a6-92d32684064b",
+      "source_quote": "وعن جابر: أ ن ر سول الل ق ال : «من لقي الل ل يشرك به شيئا ؛ دخل الجنة ومن لقيه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "e6cca78e-0f71-6b6d-dcec-080c56648ab1",
+      "source_quote": "ذكر املصنف في هذا الباب نوع من أنواع الشرك بالله وهو: النذر لغير الله",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "4c9efdcf-09d5-9b03-542c-8826bfcf3865",
+      "source_quote": "مساجد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "62522a88-5416-ba4f-e12d-561454ac5972",
+      "source_quote": "تكرار قصده للعبادة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ae30c919-3a52-7ab5-a806-74e087ee5d8a",
+      "source_quote": "النساء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "46929e1c-d963-b231-cf0e-86e1c81f0b90",
+      "source_quote": "بآبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8b93bfa9-f222-a23f-7bdf-8708edf2c27c",
+      "source_quote": "حكم الحلف بغير الله: والحلف بغير الله شرك أصغر، إن كان ال يقصد تعظيم املحلوف",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "542fd77d-8c52-4278-b7d4-378820396a41",
+      "source_quote": "ما شاء الله ثم شئت» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "3f235e4e-2499-065f-db2c-0af2a5a2d13f",
+      "source_quote": "عظمة الله وبيان استحقاقه للعبادة .وحده",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "d753dca5-cc6a-7ded-d4da-9b283ce8289e",
+      "source_quote": "عبادة أصحابها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b878ea91-91ae-ff0b-7415-a26a2c629b0d",
+      "source_quote": "نصيب من الملك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "5d35540a-f040-ca4c-2a2e-d039b63dbd7a",
+      "source_quote": "الشفاعة لا تنفع إلا بشرطين: إذن الرب و رضاه عن المشفوع",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "567c2c9d-b7d8-842b-9853-1cbf6933e169",
+      "source_quote": "عظمة الله وبيان استحقاقه للعبادة .وحده",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "1daff522-fc91-45ac-53e5-97b695f61624",
+      "source_quote": "إذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "5ad52d9e-878d-9cff-5c86-676aa7551f7f",
+      "source_quote": "الفزع والخوف عند سماع الوحي",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "cf01dde6-f233-bcb0-c1ef-9dfc31188179",
+      "source_quote": "غشية وخوف» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "0dd290e3-d278-598a-ed06-a8ab75e72506",
+      "source_quote": "تعظيم الملائكة لكلامه",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7d78416d-6cda-19b9-47aa-8f8967683393",
+      "source_quote": "الملائكة والأنبياء والصالحين.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "e517de7c-d07a-33a1-43bc-5bc9ee685d4e",
+      "source_quote": "قال الله: يؤذيني ابن آدم يسب الدهر، وأنا الدهر، أقلب الليل والنهار",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6e7cce8a-102f-8014-8d3f-641c62a6f4d6",
+      "source_quote": "الشرك الأصغر: هو ما أتى في النصوص أنه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "5168477c-e114-9664-733e-2b8c0bf9d637",
+      "source_quote": "الوقت والزمان» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "180cb92e-7e47-cff4-d622-d7b03375cd0c",
+      "source_quote": "مدبر الأمور وهو الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ec0bc0b0-c001-76a6-0259-df26d8584598",
+      "source_quote": "لا يرد حكمه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "39d543ed-8c5d-a3ba-9480-c85261e939ca",
+      "source_quote": "إن الله هو الحكم وإليه الحكم",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "e7bdf5fb-5aca-ead8-d265-89ed6e5a9b3a",
+      "source_quote": "غزوة تبوك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ca364f60-09e1-eb09-2b6b-aa6543dd8937",
+      "source_quote": "ألسنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "1e0f8eb8-fb5d-489e-9d37-f0572539b34e",
+      "source_quote": "وفي الصحيح عن النبي ؛ أنه قال: «من قال : ل إله إل الله، وكفر بما يعبد من دون الله،",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "db7233b3-b67d-3b3e-790a-bb13127866fe",
+      "source_quote": "عوف بن مالك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "964a2e87-d6a0-474f-e82c-431e42474753",
+      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "2df78ba9-b5c9-a84a-2312-902f6e8a4814",
+      "source_quote": "قرب ذبابا لصنم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "f5e0a909-ac2d-a750-91c6-5c2c05aaade7",
+      "source_quote": "أبى أن يقرب شيئا للصنم",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "da5fd343-b6f1-ca1f-0ac7-4e9d3b3eeede",
+      "source_quote": "قال تعالى: «فصل لربك وانحر» [الكوثر: 2].",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "1ba321f4-a52a-8707-ce06-f21ba86c41f1",
+      "source_quote": "محدثا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6d35ab9a-e6e0-b6c7-53ae-638469077f13",
+      "source_quote": "عن أبي هريرة: «من أتى عرافا، أو كاهنا فصدقه بما يقول، فقد كفر بما أنزل على محمد",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "383da44e-91d3-2a0c-5224-50f23cdf3ece",
+      "source_quote": "الكاهن: هو الذي يدعي علم الغيب و يخبر عن المغيبات من الأشياء المستقبلة، والأشياء",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "933e4b70-e0aa-c29c-a3e1-07a1c99a22dc",
+      "source_quote": "بسحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "5147d430-cc93-53e2-5469-18ebe51fcc29",
+      "source_quote": "التشاؤم بالطير ونحوه.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "f508a223-2d15-9036-b3be-c8c4b67d067d",
+      "source_quote": "التوكل» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "85561da3-6305-3089-80bf-d25205d587c5",
+      "source_quote": "املصدر السابق (2) يروى في ذلك حديث مرفوع فيه: (رب معلم حروف أبي جاد دارس في النجوم ليس له عند الله من خالق) رواه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "cb699104-13a4-c4d2-b960-2d755a7acc1b",
+      "source_quote": "كافر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ee4c83d6-8ff1-1228-fd34-13c6dfb4de41",
+      "source_quote": "اعتقاد أن النوء فاعل مستقل كفر أكبر؛ وهذا موافق لتقرير كتاب التوحيد.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "272794ec-4981-1e28-3199-eceefebda72a",
+      "source_quote": "مؤمن بالله كافر بالكوكب",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "4bd70525-216d-9c50-492c-ad0e11e6123c",
+      "source_quote": "من ثمار الصبر: هداية قلبه، ألن الله يجعل في قلبه الإيمان والبصيرة والنور، وهذه ثمرة",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "9056a278-446a-3482-7d53-beabdbbe4977",
+      "source_quote": "الجاهلية» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "194c609c-81c0-3d96-6c8c-c1b6f9111b8c",
+      "source_quote": "بالأنواء/تحريم/ الجاهلية/ وأنه من أمور/ الستسقاء: تحريم الاستسقاء بالأنواء وأنه من أمور الجاهلية",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "d608ce45-fe60-a99f-7383-4a963d20451b",
+      "source_quote": "شجرة يعكف عندها المشركون.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c1563c51-2b17-512e-d449-8fec776f6137",
+      "source_quote": "ينوطون بها أسلحتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "23579d1b-dc8a-f633-5ba3-cb439e3a3d74",
+      "source_quote": "الجاهلية واليهود والنصارى.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "e0f8acf6-7366-94d9-1b93-49a30f6e34d2",
+      "source_quote": "في حديث معاذ لما بعثه النبي إلى اليمن: بعد التوحيد يعلمهم أن الله افترض عليهم خمس صلوات.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "056c9e25-4057-d6bb-40b9-68c439b5ee1b",
+      "source_quote": "واتق دعوة المظلوم؛ فإنه ليس بينها وبين الله حجاب",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b94c3f18-c6e1-fb19-2f4d-a0ad6e4e76be",
+      "source_quote": "من ثمار الصبر: هداية قلبه، ألن الله يجعل في قلبه الإيمان والبصيرة والنور، وهذه ثمرة",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "91eb89af-4c29-f159-bea4-d6c351552f31",
+      "source_quote": "آبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7387bc4d-66de-2e08-bf7c-43849dd62351",
+      "source_quote": "حكم الحلف بغير الله: والحلف بغير الله شرك أصغر، إن كان ال يقصد تعظيم املحلوف",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "39e56524-4689-3754-f7c7-7b3f5d144f9a",
+      "source_quote": "الدهر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a64e7df5-28bd-111f-29aa-8f7d514a7130",
+      "source_quote": "أنا مدبر الزمان ومصرفه",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "28aba9b7-8312-826c-21ed-ece8a4227029",
+      "source_quote": "فلا تجعلوا لله أندادا",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8763fe64-4a49-cdc3-d58f-3f7d8649a5e8",
+      "source_quote": "الله» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "787a9a22-8783-d394-629e-58d3ec982663",
+      "source_quote": "طلب الغوث وكشف الشدة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a6bea38c-66ef-98f6-06de-9daa67e45f3e",
+      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "320cbcbb-b9c0-5f5b-1e83-b6b6ba51200d",
+      "source_quote": "تحويلا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b72ea408-d6ee-dfa4-851c-8d2752266c93",
+      "source_quote": "أطاعوهم في تحليل الحرام وتحريم الحلال.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "31c21ea2-7151-e501-5cd7-d6dba31717a6",
+      "source_quote": "اليهود: ،غلوا في عزير و",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "c9df2d89-66ee-f038-0856-8912054cc6cf",
+      "source_quote": "النصارى: قالت أن ا ملسيح",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "b47b0cea-8e73-b16f-d548-add5450fccf2",
+      "source_quote": "الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "32063d02-b9d8-1c56-c796-ce94db8df17b",
+      "source_quote": "لله وحده» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "2df4c9b6-6eb9-bfc1-8d78-ff092cdba9b5",
+      "source_quote": "صنمهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "82dd4e52-6c26-63c2-58c5-489ab067703c",
+      "source_quote": "الشفاعة لا تنفع إلا بشرطين: إذن الرب و رضاه عن المشفوع",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "fa9ff40e-4c9d-a6e4-3593-d3a8083e5345",
+      "source_quote": "الشرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "649bc12b-6203-aab8-429c-ac035ff905d0",
+      "source_quote": "سواه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7da44f63-4cb4-c79d-4ac4-80a5af7bec84",
+      "source_quote": "قدوة وإماما للخير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6f510ff6-25e8-0848-a982-09c25418cdcf",
+      "source_quote": "الطاعة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c069f2f4-4043-0233-c5b8-e09ff5e4e53e",
+      "source_quote": "الواهنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "36cfda46-eb08-83b8-ad47-2e258a22f23d",
+      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "4d63611d-ee84-9809-0edb-bcd81fed7f0a",
+      "source_quote": "ابن مسعود» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "1cc9fb32-7441-2bf5-ea1e-d267ad9e7198",
+      "source_quote": "عقبة بن عامر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "43b1d026-0657-6c22-aa53-33494ad66de7",
+      "source_quote": "الحمة (لدغة ذات السم).",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "10bd646c-d34c-ab41-147e-0a5d27b7a6b8",
+      "source_quote": "عامله الله بنقيض قصده",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7242bea4-a5bd-6559-d95f-1a5b3be6f64e",
+      "source_quote": "عدل رقبة (عتق رقبة)» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "35308379-5670-5cf6-2bf4-01d362869250",
+      "source_quote": "العزائم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b05823b3-b623-6284-e037-870249a376f3",
+      "source_quote": "رخص فيها بعض السلف ومنعها آخرون.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "d7a0a593-c742-ec66-43a5-242a98e0c849",
+      "source_quote": "أصغر أو أكبر بحسب الاعتقاد.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "3e9ff1c7-e3c9-1d21-7b0f-e811e0c501e0",
+      "source_quote": "والطرق: وهو الخط يخط بالأرض، يخطه الرمالون ويدعون به علم الغيب",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "3bab8e81-9112-ec81-9eaf-3bfe54cf70cf",
+      "source_quote": "الشيطان» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7c1c17ca-2f9f-99a9-dc02-c14a1c4ec4ef",
+      "source_quote": "النشرة املحرمة: من عمل الشيطان",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "97710dbd-3c05-7a32-f876-ad445be0ea78",
+      "source_quote": "الرقية والتعوذات والأدعية المباحة.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c2a14adb-0100-610e-a5c8-da341d438608",
+      "source_quote": "المسحور» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8efbe414-030b-94da-fd21-43b316ae0a0f",
+      "source_quote": "ساحر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "0831673f-d9d3-beff-61d5-da9901236251",
+      "source_quote": "الصلاة على النبي » هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "3c0e58b1-2712-a531-eacd-7db40f8e4eae",
+      "source_quote": "الطيور والأسماء والبقاع.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "4802c81b-9f3a-b5d0-cdee-ebce523cfb46",
+      "source_quote": "البومة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ef38a117-0965-d156-9606-52022e7b9bbd",
+      "source_quote": "ثمرة التوكل على الله سبحانه وتعالى: أن الله يكفي من توكل عليه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "0cdbe121-b6a0-d8e2-94d6-f38ee01bda47",
+      "source_quote": "بالأنواء/تحريم/ الجاهلية/ وأنه من أمور/ الستسقاء: تحريم الاستسقاء بالأنواء وأنه من أمور الجاهلية",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "51b62643-f330-5b1c-c5a0-93fffffe4109",
+      "source_quote": "علامات يهتدى بها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "cf2cfe15-868b-5cb6-4b12-b1a7242bd9a9",
+      "source_quote": "دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "33c79ed1-d34d-8ec8-90ab-19356959ba12",
+      "source_quote": "غير منار الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6239765b-3c79-0f72-7df7-6d8632ee6443",
+      "source_quote": "الشفاعة بإذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "d4e74d12-8b9d-625b-1856-4b8f458758df",
+      "source_quote": "سحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "4f8a2f0f-d9f4-4e5c-3674-2d081133fd2b",
+      "source_quote": "حدودها وأعلامها الفاصلة.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "aaeba64a-6965-c291-3f4e-80d5d7c0e643",
+      "source_quote": "الجاني أو المبتدع» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7d4d2b6c-ae59-7c72-70ca-2722ba99da30",
+      "source_quote": "النهي عن قول: ما شاء الله وشئت؛ لما فيه من عطف مشيئة العبد على مشيئة الله بالواو",
+      "book": "tawheed",
+      "note": "book_backed_def"
+    },
+    {
+      "id": "029f1425-5ec8-1c05-d21b-ec13af1f35b8",
+      "source_quote": "الحكم الصحيح هو «جائز»، كما قرره النص الشرعي في الباب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "2575946e-70ba-2e7c-3daa-f8d1b649a992",
+      "source_quote": "هو شرك أصغر/لفظي؛ والصواب: ما شاء الله ثم شئت. وذكر ابن عباس آية الأنداد من باب التحذير لا تكفير كل قائل.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "3382e610-5dd5-54c2-cda8-1af103aee3f3",
+      "source_quote": "وتقولون: والكعبة): وهذا قسم بغير الله",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "9f928e75-908e-92b1-25d6-67b6c27a58f3",
+      "source_quote": "نعبدهم» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "90cd4fad-69b4-1966-d63d-da83750af59d",
+      "source_quote": "النشرة املحرمة: من عمل الشيطان",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "7b4b13fd-83ea-7f6b-d4e5-558ce37b4324",
+      "source_quote": "التحليل والتحريم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c37d20ea-790d-5e1d-05d4-bca79e540be3",
+      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "7c6aa456-10b7-13db-114f-b722476ae13a",
+      "source_quote": "و في رو اي ة: «ل تسبوا الدهر؛ فإن اللهو الدهر » (3)",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "29a83d41-8344-0fa1-2da6-28465ba5e4fd",
+      "source_quote": "صفات النقص» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c215efc0-7fd5-2526-153d-092fd52d6e5a",
+      "source_quote": "نزول المصائب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c3392727-5339-0873-d08b-efd125e28b91",
+      "source_quote": "القضاء والقدر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ccea4f17-e7ed-bbf2-3dc5-49a7a5a13e18",
+      "source_quote": "لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "4d44fecd-56a7-0a37-f7ef-8592d55ffa1b",
+      "source_quote": "وعن طارق بن شهاب: أ ن ر سول الل ق ال : «دخل الجنة رجل في ذباب ودخل النار رجل",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "ad766d97-4821-ee7e-1a31-d35abbabb781",
+      "source_quote": "وعن طارق بن شهاب: أ ن ر سول الل ق ال : «دخل الجنة رجل في ذباب ودخل النار رجل",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "90c75869-6875-2303-b90c-7443a43c686a",
+      "source_quote": "دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "0275a719-afbb-f0d9-06e8-2dc9cdf36dd0",
+      "source_quote": "يدخل النار» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a0cd9a30-0663-ff17-2f92-32ba946394e7",
+      "source_quote": "شرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a3add015-2a87-d1fe-89c2-9ad5be364cb9",
+      "source_quote": "العين والحمة» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "74959bce-d2f2-9144-73b8-10c9972290ba",
+      "source_quote": "بريء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b86c4401-c533-81ae-26c6-0d80bcfdb481",
+      "source_quote": "غير القرآن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "0b57c0bd-0666-e1f9-e03f-a59f92704a0e",
+      "source_quote": "العين» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "040e0de9-8969-8a02-267a-446de187da40",
+      "source_quote": "الحكم الصحيح هو «التحريم»، كما قرره النص الشرعي في الباب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "aac595c3-7c7e-68fe-f4f9-80c36713d147",
+      "source_quote": "الرد على المشركين الذين يعبدون الملائكة والأنبياء.والصالحين",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "b0d7fe00-2b72-a49e-2c28-309dd65fa569",
+      "source_quote": "كل يوم وليلة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "tawheed",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "fac8127c-fbb2-ed3f-5253-963589a39e05",
+      "source_quote": "كرائم: خيار المال ونفائسه",
+      "book": "tawheed",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "3c6a55b5-9c87-4cbe-8963-9ea596edf789",
+      "source_quote": "نبينا محمد بن عبد الله بن عبد المطلب بن هاشم.",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "9daed191-d0b4-ab7b-83e4-47a315fdd750",
+      "source_quote": "حقوق النبي في الأصول: 1) الإيمان بنبوته ورسالته 2) محبته أكثر من النفس والأهل والمال 3) طاعته فيما أمر 4) تصديقه فيما أخبر 5) اجتناب ما نهى عنه وزجر 6) ألا يعبد الله إلا بما شرع.",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6055629a-ed13-0e3b-c6f4-a94bc014ceb0",
+      "source_quote": "البضع بكسر الباء: العدد من الثلاثة إلى التسعة.",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ab907a81-fd29-4415-f55b-c9feb0449f8e",
+      "source_quote": "العمل الصالح هو العمل الموافق لسنة رسول الله .",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6abbc82b-f777-1486-896d-a5101cc2393e",
+      "source_quote": "معرفة الله ونبيه ودينه",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "410ca1b0-13a7-194a-251d-44c93645b24c",
+      "source_quote": "الربوبية والألوهية والأسماء والصفات.",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "165fec78-bd32-0aac-70fd-c2aa62971f6f",
+      "source_quote": "الإسلام والإيمان والإحسان.",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "d510b762-1fe3-2f22-dd1e-88163a00e52b",
+      "source_quote": "العصر» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "9f0d840c-cbf5-1b33-f54b-3ccc7b0446b8",
+      "source_quote": "من بلد الشرك إلى بلد الإسلام",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "51c0a21a-8e4f-628d-7676-4148114aca38",
+      "source_quote": "معرفة الله ونبيه ودينه بالأدلة.",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "45d683d3-7ede-ec26-86b0-4fce56feb03d",
+      "source_quote": "الإيمان بالقدر خيره وشره.",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "d1612563-8194-6203-ef2a-5131e9299d10",
+      "source_quote": "على أقدار الله المؤلمة",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "02e39da8-d33e-cf41-05c0-0c522fe9f171",
+      "source_quote": "إفراد الله بالعبادة وترك عبادة ما سواه",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "331044a6-06d2-ba91-2958-fcfa40520cde",
+      "source_quote": "إفراد الله بالعبادة والإعراض عما سواه",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6ec151b4-f674-25cd-8f25-7c9ca637ab2a",
+      "source_quote": "الله ونبيه ودين الإسلام بالأدلة.",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ef35ad7a-6c9d-fac3-ea1f-c2baf59810f7",
+      "source_quote": "نفي جميع ما يعبد من دون الله",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b01efb63-f4b7-22fc-002a-2b8c93d4f79d",
+      "source_quote": "إثبات العبادة لله وحده",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "57609348-66fa-19c8-6db5-4f13174e5c6e",
+      "source_quote": "يا أيها المدثر قم فأنذر",
+      "book": "usool",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "bb712df7-5aa7-7e07-7cd8-89a90d6efb19",
+      "source_quote": "ثم كان رسولا حين نزل عليه قوله تعالى:",
+      "book": "usool",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "f6687348-8da8-4773-bc22-ca1b1bfecd9d",
+      "source_quote": "إنما هلك من كان قبلكم بكثرة سؤالهم واختلافهم.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c657e959-434b-4c9c-b1c7-60206d85138d",
+      "source_quote": "إني لأعلم كلمة لو قالها لذهب عنه ما يجد.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7bf71509-12cb-415e-9974-2ea1b237c14a",
+      "source_quote": "الغضب جمرة يلقيها الشيطان.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "14691ce7-a4a6-4aae-b4c1-084fe8dd206c",
+      "source_quote": "فإذا قتلتم فأحسنوا القتلة، وإذا ذبحتم فأحسنوا الذبحة.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8b903aae-b88a-48a8-a498-cecfc51f8a03",
+      "source_quote": "قل آمنت بالله ثم استقم.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "d8425a0c-a97f-41a0-a601-876587f77f94",
+      "source_quote": "من ألفاظ حديث «يا عبادي…» في سعة المغفرة؛ والمراد مع التوبة وعدم الإشراك، لا إسقاط التكاليف ولا الإرجاء.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "2ce74baf-e8dd-4963-9a65-72de04664a3a",
+      "source_quote": "فعليكم بسنتي وسنة الخلفاء الراشدين.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a1d8f12b-4697-41c4-8b9a-ee32cacb22f3",
+      "source_quote": "من أحدث في أمرنا هذا ما ليس منه فهو رد.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "9218b66d-d695-4c63-bc4d-2cf6ea1419ee",
+      "source_quote": "وبينهما أمور مشتبهات.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "4e0c618e-520b-4511-9a67-5b9f328aa7c3",
+      "source_quote": "سهل الله له به طريقا إلى الجنة.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "9ef7f53c-a9c8-4f0e-9057-fe16b630df14",
+      "source_quote": "شهادة أن لا إله إلا الله... إلخ.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8913f815-94e4-4e3c-b899-d09e92d717f8",
+      "source_quote": "دع ما يريبك إلى ما لا يريبك.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "3ba3317a-9fef-4994-9535-07520ea0fdc2",
+      "source_quote": "كن في الدنيا كأنك غريب أو عابر سبيل.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a2193183-1fae-524d-f67a-aa8201744fa4",
+      "source_quote": "هذه من فوائد حديث (1- النية).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6d926dd8-cfe5-8573-4427-38044f6ed8b8",
+      "source_quote": "هذه من فوائد حديث (28- السنة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "906b9850-0a26-a499-222b-a33ecde138c5",
+      "source_quote": "هذه من فوائد حديث (17- الإحسان).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "75664f37-3afd-0dfb-adc9-cd9994b1dc3d",
+      "source_quote": "هذه من فوائد حديث (4- القدر).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "f1a6c469-15e1-56f0-a44a-06b57f1780d8",
+      "source_quote": "هذه من فوائد حديث (2- جبريل).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "2f1b3b32-0cdd-7502-4d4b-b946c30534da",
+      "source_quote": "هذه من فوائد حديث (22- الجنة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "03b27c61-5b02-557b-596e-9601c22a5e92",
+      "source_quote": "هذه من فوائد حديث (23- جوامع الخير).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "64a1726d-4b2f-8504-3cfc-b18a7cdc42ee",
+      "source_quote": "هذه من فوائد حديث (24- فضل الله).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "437ad277-3c89-1263-1b74-9204fbc5f5aa",
+      "source_quote": "هذه من فوائد حديث (30- الحدود).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "4397f405-8af7-d524-a75f-435909283aac",
+      "source_quote": "هذه من فوائد حديث (8- الجهاد).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "425762b4-61b3-abfa-d422-cdc225e731a2",
+      "source_quote": "هذه من فوائد حديث (5- البدعة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "896c6dfb-64c6-d874-95dc-dee6f3d668cb",
+      "source_quote": "هذه من فوائد حديث (26- الصدقة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "cfc9e71a-7c34-4fcb-1e30-b70255ca7f4e",
+      "source_quote": "هذه من فوائد حديث (27- البر والإثم).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "9e259b14-a48b-93c8-6f84-7cdaf6bcb3c4",
+      "source_quote": "هذه من فوائد حديث (18- التقوى).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6a19ccc6-f254-fe98-d63c-81a6dfa1cdda",
+      "source_quote": "هذه من فوائد حديث (22- الجنة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8b5637fa-bb34-d293-074e-057706eaf146",
+      "source_quote": "هذه من فوائد حديث (22- الجنة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "91a6c372-020a-6863-2ba6-7e8483517391",
+      "source_quote": "هذه من فوائد حديث (33- القضاء).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "25e5403b-55ef-a07f-9766-812f0057be86",
+      "source_quote": "هذه من فوائد حديث (36- طلب العلم).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8857258e-936b-5493-f566-1ad754f6fa30",
+      "source_quote": "هذه من فوائد حديث (9- السؤال).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "d2a20a31-fd50-ad5c-5b27-54c2ae1671f0",
+      "source_quote": "هذه من فوائد حديث (2- جبريل).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "4fb3f9eb-7397-0855-30d8-8a6bfd82d626",
+      "source_quote": "نعم، أن أوامر الله قسمان فريضة ونافلة",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "5e7bae87-bd7d-512c-9c59-70167b1259ee",
+      "source_quote": "هذه من فوائد حديث (33- القضاء).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "099f23ff-6051-2d9f-41cb-9c23238361e6",
+      "source_quote": "هذه من فوائد حديث (6- الشبهات).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "846fe9ec-4924-a41a-70e4-c51a9507d649",
+      "source_quote": "هذه من فوائد حديث (13- المحبة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "5a98a349-c5d8-544b-49ec-ee151c7a6fc4",
+      "source_quote": "هذه من فوائد حديث (15- الأخلاق).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "484b48a0-41f5-91cf-e39d-edb9ae868301",
+      "source_quote": "هذه من فوائد حديث (1- النية).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "dd51ea0f-f4e5-f742-33e7-83462205db05",
+      "source_quote": "هذه من فوائد حديث (16- الغضب).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "12c566c3-8740-a38c-1dde-5317d83b3ca5",
+      "source_quote": "هذه من فوائد حديث (19- التوكل).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "bb99556a-58c7-049a-d21c-0bd9d39a1708",
+      "source_quote": "هذه من فوائد حديث (24- فضل الله).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "19d99ff8-694d-56fb-07dc-7c0e004794c9",
+      "source_quote": "هذه من فوائد حديث (21- الاستقامة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "9a20847b-9b06-d2af-b0f4-60cd850bb674",
+      "source_quote": "هذه من فوائد حديث (18- التقوى).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "cbe119d0-2dd7-6ef0-2f2f-521675e8f85b",
+      "source_quote": "هذه من فوائد حديث (23- جوامع الخير).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "bd0fff2f-0a4f-399e-5cdb-d186571a8c92",
+      "source_quote": "هذه من فوائد حديث (24- فضل الله).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "d814a840-58ac-2179-1c8e-bf09252504d9",
+      "source_quote": "هذه من فوائد حديث (6- الشبهات).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8be3cabe-ff07-592c-3b9c-5f3601dee012",
+      "source_quote": "هذه من فوائد حديث (5- البدعة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "464b1057-57fe-aeb9-90a5-802d7f23a0ba",
+      "source_quote": "هذه من فوائد حديث (36- طلب العلم).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "1bc930e0-47a5-ae0e-ee04-77c987ff4bd1",
+      "source_quote": "هذه من فوائد حديث (27- البر والإثم).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c56f0704-53a2-1ddd-1835-f6c779c2443a",
+      "source_quote": "هذه من فوائد حديث (28- السنة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "c297287c-cea1-ae05-3c35-7e5365404015",
+      "source_quote": "هذه من فوائد حديث (30- الحدود).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7c5e3c1f-d652-cdd6-31ea-88ee8a6cf830",
+      "source_quote": "هذه من فوائد حديث (31- الزهد).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7a01ef3d-e455-3330-06ce-14e77ac64941",
+      "source_quote": "هذه من فوائد حديث (34- إنكار المنكر).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7ca0f3a8-fa82-1beb-f697-7342cfbf1c61",
+      "source_quote": "هذه من فوائد حديث (36- طلب العلم).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "02f984b0-6e9b-c756-f74c-47ce3ab0d4a2",
+      "source_quote": "هذه من فوائد حديث (9- السؤال).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a74fd505-de4e-a44d-1446-80ed00ce0878",
+      "source_quote": "هذه من فوائد حديث (37- الحسنات).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "d073fc69-659f-a959-8a27-26547ac8e2af",
+      "source_quote": "هذه من فوائد حديث (39- العفو).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "61306d65-b4a6-b6a7-0c02-0995070571b8",
+      "source_quote": "هذه من فوائد حديث (10- الحلال).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "81217de3-9634-fe40-8bc5-901b2c899f7f",
+      "source_quote": "هذه من فوائد حديث (12- الفضول).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "eaaebb18-d8d4-24f3-437d-6ccb291930b9",
+      "source_quote": "هذه من فوائد حديث (14- الدماء).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "094dda57-ab07-a877-c831-35a1547406a7",
+      "source_quote": "هذه من فوائد حديث (29- اللسان).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b23a3a09-6689-d7f6-a93a-54bf7a57001a",
+      "source_quote": "هذه من فوائد حديث (2- جبريل).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "9098bdf4-f17e-a785-7da1-de1817bf8b74",
+      "source_quote": "هذه من فوائد حديث (17- الإحسان).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "5e09b3cf-15ad-e7a0-a253-8d558d48999e",
+      "source_quote": "هذه من فوائد حديث (19- التوكل).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ea1bdf15-c744-c990-aabf-ac8449bc9e18",
+      "source_quote": "هذه من فوائد حديث (20- الحياء).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "cf2f39f4-bbb9-3563-384b-f08871b45bc1",
+      "source_quote": "هذه من فوائد حديث (2- جبريل).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "e6625894-00f3-6965-16d9-befd4807efde",
+      "source_quote": "هذه من فوائد حديث (18- التقوى).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "0fbc2f0d-d298-55b4-faf5-61d0bf47ae9c",
+      "source_quote": "هذه من فوائد حديث (25- الصدقة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "5e2b8c69-bffc-3fe5-494c-e219be557c6d",
+      "source_quote": "هذه من فوائد حديث (25- الصدقة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "14a86a81-79b7-5025-81b6-cf28890e3cbc",
+      "source_quote": "هذه من فوائد حديث (7- النصيحة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "dcbd46f3-c4c0-4ad1-7338-fc307df1020c",
+      "source_quote": "هذه من فوائد حديث (6- الشبهات).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "0cccbf55-d6f0-f0a9-1297-7c3763ad035d",
+      "source_quote": "هذه من فوائد حديث (15- الأخلاق).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "38d59623-17fa-6862-336b-d53c355a56a0",
+      "source_quote": "هذه من فوائد حديث (28- السنة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "f7cad26c-0bd3-d972-68b9-0c0580d8126c",
+      "source_quote": "هذه من فوائد حديث (30- الحدود).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "031be154-3c4f-ca8d-372a-ea9b94c806cc",
+      "source_quote": "هذه من فوائد حديث (32- الضرر).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "dea419eb-30e5-a731-fbac-fa1c33f149cb",
+      "source_quote": "هذه من فوائد حديث (34- إنكار المنكر).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "5dc0cd57-1d12-f4d9-e761-b34ed48cc0f0",
+      "source_quote": "هذه من فوائد حديث (36- طلب العلم).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "3d4d6b26-1dd8-f603-ac83-c7080a2a8a8e",
+      "source_quote": "هذه من فوائد حديث (9- السؤال).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7439f688-1ff6-4811-0061-d148ba81bd44",
+      "source_quote": "هذه من فوائد حديث (38- الأولياء).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "fd7131dd-dcbd-3e81-33d3-877b0e0d8de2",
+      "source_quote": "هذه من فوائد حديث (40- الزهد).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "262dd6f0-29d6-3681-35c3-c67066d5fd6c",
+      "source_quote": "هذه من فوائد حديث (10- الحلال).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "3fd9a284-0813-2253-4b49-c872aa4630aa",
+      "source_quote": "هذه من فوائد حديث (13- المحبة).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "11041d31-a78a-671e-f791-5f9084e1de31",
+      "source_quote": "هذه من فوائد حديث (14- الدماء).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "dec1f15b-7823-52e7-c041-486cdf6a2e2c",
+      "source_quote": "هذه من فوائد حديث (15- الأخلاق).",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "776a51ad-a027-f148-83e0-67d340e03717",
+      "source_quote": "النية والإخلاص» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "e7f55baf-38ae-a3d0-9b22-518a907121f7",
+      "source_quote": "الإسلام والإيمان والإحسان",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "075d3586-414b-bfbc-263d-055b1319e4e5",
+      "source_quote": "أربعين يوما نطفة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ef1393af-603b-d4a1-1cad-70b76d71f50d",
+      "source_quote": "العمل والأجل والرزق والشقاوة أو السعادة.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6390fbbb-4776-88a6-95d5-3ac50f8941d5",
+      "source_quote": "الله وكتابه ورسوله وأئمة المسلمين وعامتهم",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "76f476ff-04be-4845-49fb-df97aaceacf7",
+      "source_quote": "الزهد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "d4161bab-404d-2657-a0ed-267ce6957756",
+      "source_quote": "كأنك تراه فإن لم تكن تراه فإنه يراك",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b4754c19-6921-d9e6-cbe7-ca5604fc4f79",
+      "source_quote": "بيان مراتب ادلين: الإسلام والإيمان والإحسان",
+      "book": "nawawi",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "764b1b2d-6144-568d-edbf-c971e81c3272",
+      "source_quote": "حقوق الله وحقوق العباد.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "11047b53-8a8b-a67b-a8fe-cc6dc50a0543",
+      "source_quote": "العمال القلبيةوالإنابة. 2) العمال النطقية: ما ينطق به اللسان",
+      "book": "nawawi",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "163a1e55-0fb2-4467-5564-2d0bff81f49c",
+      "source_quote": "الصادق المصدوق» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "ec222f45-8bbf-390a-fa68-3ad07048f867",
+      "source_quote": "قدسي» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "1ee43245-3fe9-14ea-1e14-6805cad62a82",
+      "source_quote": "رفع الحرج» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "10033404-8f09-e6f8-4523-ed60f6e203ec",
+      "source_quote": "بيان مراتب الدين: الإسلام والإيمان والإحسان",
+      "book": "nawawi",
+      "note": "book_qa_pair"
+    },
+    {
+      "id": "18aa1c12-194c-29fe-ca5f-31ccf419f8ee",
+      "source_quote": "عمر بن الخطاب رضي الله عنه",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "1f685ac2-6447-756f-c1a9-2de879701530",
+      "source_quote": "كان يفرق بين الحق والباطل.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b4abc0b2-0328-2c30-3a76-547e37e538c6",
+      "source_quote": "الثالثة والعشرين من الهجرة",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "337ce515-4aa6-9d2a-28ae-08795f2bc485",
+      "source_quote": "مع أبيه بمكة وهو صغير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "40de4c27-f6cc-b509-95fc-a186a2a2e4f9",
+      "source_quote": "عبد الله بن مسعود رضي الله عنه",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "bb75112b-febb-9faa-7c11-71a057a47a74",
+      "source_quote": "الحبشة ثم المدينة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7b36acc7-c89d-5910-daad-5a9114b76e9f",
+      "source_quote": "أبو هريرة وابن عباس على الترتيب",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "b36bcaec-d7b7-7b96-abe1-1a2e16cba89c",
+      "source_quote": "العزم على فعل العبادة تقربا إلى الله وحمله بالحق",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "963542fc-c630-6925-1386-98fe6d5a097e",
+      "source_quote": "خرج علينا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "a849f4ad-9b6f-4ff0-52ef-e2c8b4ad68de",
+      "source_quote": "أنه لا يعرف من الصحابة وفيه غرابة",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "4336ca8e-6857-af62-9d20-dbb932298be9",
+      "source_quote": "المملوكة» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "8a6f4c97-74bc-18ca-a752-ca26b0d2f948",
+      "source_quote": "الفقراء» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "2d138f54-6f13-6935-33d2-146edf167b2e",
+      "source_quote": "الاستسلام لله بالتوحيد والانقياد له بالطاعة والبراءة من الشرك",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6921f42b-ed91-9bfb-59cc-5e3518dc4a59",
+      "source_quote": "عبادة مالية مقدرة شرعا تصرف لطائفة مخصوصة.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "30d816fb-da99-58a8-9976-c643b27b5de0",
+      "source_quote": "الإمساك عن الأكل والشرب والمفطرات من الفجر إلى الغروب تعبدا.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "708a6e20-fb10-b7d2-138e-31dd98d2081b",
+      "source_quote": "قصد بيت الله الحرام لأداء نسك مخصوص في وقت مخصوص.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "90740421-cfa1-e46f-042e-73d598f0c7b0",
+      "source_quote": "أعلنت عليه الحرب» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "1b0f4867-ddf6-9c9f-08e7-6553f70bcf05",
+      "source_quote": "أداء الفرائض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "9ab05330-bb0d-27e5-72fe-c230e166c37d",
+      "source_quote": "ما يرتكبه الإنسان من العمل من غير عمد",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "24298053-bdf7-d3bc-f61c-0586b69520de",
+      "source_quote": "ذهول القلب عن شيء معلوم من قبل",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "34a96b6d-df2b-caa0-0b90-96edf2b022f4",
+      "source_quote": "الخطأ والنسيان والإكراه",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "6dd9abd3-21db-3bb7-5430-76d389915cc8",
+      "source_quote": "أئمة المسلمين وعامتهم",
+      "book": "nawawi",
+      "note": "explanation_verified"
+    },
+    {
+      "id": "7622c398-510e-464f-86ee-0c79abdb4c64",
+      "source_quote": "التوحيد يكفر الذنوب، فمن مات على التوحيد غير مشرك بالله شيئا دخل الجنة",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "40fd1b0a-b12e-4b92-9958-5241f6df5912",
+      "source_quote": "الطاغوت: مشتق من الطغيان، فكل ما عبد من دون الله وهو راض بالعبادة فهو طاغوت",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "c68cab87-c801-4d1f-bd2f-869373b36903",
+      "source_quote": "الرقية الشرعية جائزة، وقد كان النبي يرقي ويرقى",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "81287c88-b793-4ccc-90e9-e225878487b1",
+      "source_quote": "الشرك الأكبر: أن يجعل لله ندا في شيء من خصائصه.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "d3ef73b7-d767-4445-a6d7-c1f92032be45",
+      "source_quote": "من حلف بغير الله فقد كفر أو أشرك",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "5368f73b-1420-40fe-a885-0d983324b673",
+      "source_quote": "شرطا القبول: الإخلاص لله والمتابعة للنبي .",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "93710d33-5a37-4812-9ff4-5b4b44916ad5",
+      "source_quote": "التبرك بغير ما ورد به الشرع يعتبر شركا إذا اعتقد أن ذلك الشيء يبارك بذاته.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "df5108ef-c680-4871-90b4-f87d718b4d57",
+      "source_quote": "ه ل كان فيها وثن من أوثان ال ج اه لية يعبد ؟",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "f810ad04-6a66-4c32-b8fe-47d23f1c8b75",
+      "source_quote": "السحر لا يتعلم إلا بعبادة الشياطين.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "6e55abe0-45c5-4cb2-a74a-6f97e74dbd6f",
+      "source_quote": "التطير شرك لأنه اعتقاد أن ما يتشاءم به يجلب الضر.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "288554fc-7b6d-4532-b1a7-018cb647e5e2",
+      "source_quote": "الرياء: إظهار العبادة ليرى، والسمعة: التحدث بها ليسمع.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "fffea01c-4f20-4dda-b6f3-866b7de378ba",
+      "source_quote": "الحديث دل على أن من حقق التوحيد وتوكل على الله كان من السبعين ألفا.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "7c7275f1-4261-442c-aeeb-92c41a5ffcb9",
+      "source_quote": "لا يجوز إذا كان المكان عيدا للمشركين.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "213fc1f9-d919-4153-b28a-6e53cb13acce",
+      "source_quote": "لأنه لا يتوصل إليه إلا بالاستعانة بالشياطين.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "dcdd2714-5e35-4b4c-811d-feaab1306cfd",
+      "source_quote": "سبعون ألفا مع كل ألف سبعون ألفا.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "de6475f4-5d82-4bb1-a4c6-2708898479dd",
+      "source_quote": "قال : فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "fc43ad7d-27ed-4266-816b-603cd16efb3e",
+      "source_quote": "قال : إن الرقى والتمائم والتولة شرك.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "ee6a5d9b-c802-4d0d-b362-8eefb47ea716",
+      "source_quote": "بل يبدأ بالتوحيد كما أمر النبي معاذا.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "4bf4fd9c-e6d5-4550-b476-2f86353dd123",
+      "source_quote": "إذا حكم بغير ما أنزل الله مستحلا لذلك فهو طاغوت.",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "00fb1757-a23c-46e3-a4dc-825537d500c3",
+      "source_quote": "لعن الله من ذبح لغير الله، ولعن الله من لعن والديه، ولعن الله من آوى محدثا",
+      "book": "tawheed",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "971de374-b952-4843-bd00-fbbb9f29be49",
+      "source_quote": "مولده: ولد في بلدة العيينة سنة1115 هجرية في بيت علم وشرف ودين فأبوه .عالم وجده سليمان عالم كيف كانت نشأ ة المؤلف",
+      "book": "usool",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "5160169e-5368-44b1-81b7-cf4074a86523",
+      "source_quote": "يوفون بالنذر ويخافون يوما كان شره مستطيرا",
+      "book": "usool",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "d3e5d0d4-711f-46ac-b7a3-840b9258f67c",
+      "source_quote": "الهجرة فريضة على هذه الأمة من بلد الشرك إلى بلد الإسلام، وهي باقية إلى أن تقوم الساعة",
+      "book": "usool",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "390a98fa-c43d-41d2-80f0-82a6894ba5db",
+      "source_quote": "مولده: ولد في بلدة العيينة سنة1115 هجرية في بيت علم وشرف ودين فأبوه .عالم وجده سليمان عالم كيف كانت نشأ ة المؤلف",
+      "book": "usool",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "66db9e22-c10c-44ad-875c-e8081d21d442",
+      "source_quote": "عاش ثلاثا وستين سنة — من سيرة النبي في مختصر الأصول الثلاثة",
+      "book": "usool",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "5d48a971-422a-6cc7-d309-d4799d6cf1e0",
+      "source_quote": "ومعنى شهادة أن محمدا رسول الله: طاعته فيما أمر، وتصديقه فيما أخبر، واجتناب ما نهى عنه وزجر، وأن لا يعبد الله إلا بما شرع",
+      "book": "usool",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "869d0b38-9f04-4f43-a1ae-60b340d5c6a3",
+      "source_quote": "من عمل عملا ليس عليه أمرنا فهو رد.",
+      "book": "nawawi",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "9fe79480-583d-4338-928a-f375d51a476d",
+      "source_quote": "كالراعي يرعى حول الحمى.",
+      "book": "nawawi",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "6ed4bd4d-321c-48b4-b26f-0d6426edfc6d",
+      "source_quote": "من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت، ومن كان يؤمن بالله واليوم الآخر فليكرم جاره، ومن كان يؤمن بالله واليوم الآخر فليكرم ضيفه",
+      "book": "nawawi",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "59571e92-ff34-4008-aa2e-a6a0bc4545b4",
+      "source_quote": "من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت، ومن كان يؤمن بالله واليوم الآخر فليكرم جاره، ومن كان يؤمن بالله واليوم الآخر فليكرم ضيفه",
+      "book": "nawawi",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "ac4a2acc-6628-446c-a313-81e5405d9f0b",
+      "source_quote": "تويف بالمدينة يف ال سنة الحادية والربعني .من اهلجرة انلبوية ي معان : الكلمات :الحياء ترك .ما يعاب به المرء من قو ل أو فعل",
+      "book": "nawawi",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "26f3d3b0-1e3a-4f81-9cf4-aa945f8f0d04",
+      "source_quote": "إن الله فرض فرائض فلا تضيعوها، وحد حدودا فلا تعتدوها، وحرم أشياء فلا تنتهكوها",
+      "book": "nawawi",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "850c6a73-1256-4c7a-998a-a20d527e9d5c",
+      "source_quote": "واقعة بقضاء الله وقدره والمكتوب يف اللوح المحفوظ ثم بني ذلك وفصله فمن هم حبسنة فلم يعملها كتبها الله عنده حسنة اكملة وإن هم بها فعملها تكتب عشر حسنات",
+      "book": "nawawi",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "10a36d97-16ad-43f5-a9d1-414da3860480",
+      "source_quote": "واقعة بقضاء الله وقدره والمكتوب يف اللوح المحفوظ ثم بني ذلك وفصله فمن هم حبسنة فلم يعملها كتبها الله عنده حسنة اكملة وإن هم بها فعملها تكتب عشر حسنات",
+      "book": "nawawi",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "e5367815-958c-4ec4-9138-ed6455725381",
+      "source_quote": "من رأى منكم منكرا فليغيره بيده، فإن لم يستطع فبلسانه، فإن لم يستطع فبقلبه",
+      "book": "nawawi",
+      "note": "ocr_clean_existing"
+    },
+    {
+      "id": "535f5711-195b-4edd-aa2b-c64b651895f0",
+      "source_quote": "إطلاق أن التوحيد يكفر الذنوب جميعا بدون توبة غير صحيح؛ التوحيد لا يسقط حقوق العباد ولا يغني بإطلاق عن التوبة من المعاصي",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "6dea92e9-ae29-4fda-bbf1-55f3b0f2ac90",
+      "source_quote": "وما خلقت الجن والإنس إلا ليعبدون",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "cabe3338-0c2a-4919-8fda-3ff1f5683271",
+      "source_quote": "الجن: عالم عظيم مكلفون مثل الإنس، لكننا لا نراهم",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "8230d37a-f5c5-4dea-b8d2-ee499eec99e6",
+      "source_quote": "توحيد الله بإخلاص العبادة له والبراءة من عبادة كل ما سواه",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "7622c398-510e-464f-86ee-0c79abdb4c64",
+      "source_quote": "التوحيد يكفر الذنوب، فمن مات على التوحيد غير مشرك بالله شيئا دخل الجنة",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "74fcdf06-6ccd-451a-a967-754dbc37cd78",
+      "source_quote": "إبراهيم عليه السلام خاف على نفسه وبنيه من عبادة الأصنام.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "cf8afd35-6bf5-4c83-927e-dfd142b2c05b",
+      "source_quote": "لما بعث النبي معاذا إلى اليمن قال: فليكن أول ما تدعوهم إليه شهادة أن لا إله إلا الله",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c8762ee3-e24d-4cf7-a3de-49d30a412e53",
+      "source_quote": "معنى لا إله إلا الله: لا معبود بحق إلا الله وحده",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "40fd1b0a-b12e-4b92-9958-5241f6df5912",
+      "source_quote": "الطاغوت: مشتق من الطغيان، فكل ما عبد من دون الله وهو راض بالعبادة فهو طاغوت",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "98e27a6b-d241-4d3c-a1a6-bab114689db0",
+      "source_quote": "إبليس هو رأس الطواغيت، لأنه أول من دعا إلى عبادة غير الله",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "fa7be18f-983b-4d45-bdcb-3f5a953e66e2",
+      "source_quote": "اعتقاد أن التميمة تنفع أو تضر بذاتها شرك أكبر",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c68cab87-c801-4d1f-bd2f-869373b36903",
+      "source_quote": "الرقية الشرعية جائزة، وقد كان النبي يرقي ويرقى",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "1cb55316-5773-4fd4-9cbc-ed8a3ad77fcf",
+      "source_quote": "التبرك بالأشجار والأحجار معتقدا فيها البركة شرك",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "8b90c623-9d83-4b86-ae85-46e901a301ec",
+      "source_quote": "النذر عبادة لا تصرف إلا لله، والنذر لغير الله كالأضرحة شرك",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c5249eee-758d-4e2e-8f28-b0f9306100cc",
+      "source_quote": "الدعاء عبادة عظيمة، فلا يجوز صرفها لغير الله.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c4723bbb-7b5e-4367-a261-897ac2764355",
+      "source_quote": "تعلم السحر كفر، لأنه يستعان فيه بالشياطين.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "7be4404c-a2ed-4095-b440-c88f49d56a10",
+      "source_quote": "الخوف الطبيعي جائز، وأما الخوف التعبدي الذي يصرف لغير الله فهو شرك",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "0f1efff9-1444-4eb2-a109-250d262cb098",
+      "source_quote": "ومن الناس من يتخذ من دون الله أندادا يحبونهم كحب الله — محبة غير الله كحب الله أو أشد شرك أكبر",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "3dab6f57-2460-41c7-b8f3-7067eff967b3",
+      "source_quote": "الاستعانة بغير الله فيما لا يقدر عليه إلا الله شرك أكبر.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "81287c88-b793-4ccc-90e9-e225878487b1",
+      "source_quote": "الشرك الأكبر: أن يجعل لله ندا في شيء من خصائصه.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "d3ef73b7-d767-4445-a6d7-c1f92032be45",
+      "source_quote": "من حلف بغير الله فقد كفر أو أشرك",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "701bdc34-a025-4d74-ae73-ddc5044695b7",
+      "source_quote": "كتاب التوحيد الذي هو حق الله على العبيد لشيخ الإسلام محمد بن عبد الوهاب التميمي رحمه الله تعالى",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "5368f73b-1420-40fe-a885-0d983324b673",
+      "source_quote": "شرطا القبول: الإخلاص لله والمتابعة للنبي .",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "06457497-1ae6-4bec-8658-6013bb90d3d9",
+      "source_quote": "قال تعالى: (إن الله لا يغفر أن يشرك به ويغفر ما دون ذلك لمن يشاء).",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "da419f24-e82d-4e63-800d-0bde0f05c9d2",
+      "source_quote": "أول واجب على المكلف: التوحيد",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "9b8bd8b1-9714-4bb7-a052-ed729cf18151",
+      "source_quote": "الشرك الأصغر يحبط العمل الذي قارنه فقط.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c456ef68-5e71-4cfe-8712-e1bcadd8ca07",
+      "source_quote": "الرقية المحرمة: ما كان فيها استعانة بالجن أو بأسماء مجهولة.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "93710d33-5a37-4812-9ff4-5b4b44916ad5",
+      "source_quote": "التبرك بغير ما ورد به الشرع يعتبر شركا إذا اعتقد أن ذلك الشيء يبارك بذاته.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "df5108ef-c680-4871-90b4-f87d718b4d57",
+      "source_quote": "ه ل كان فيها وثن من أوثان ال ج اه لية يعبد ؟",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "5e0df875-e917-44a4-b798-2cd8a0b72fe2",
+      "source_quote": "النذر لله عبادة، ولغير الله شرك.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "3cedf36e-e899-4336-be8f-e6f4a279cdaa",
+      "source_quote": "توسلوا إلى الله بأعمالهم الصالحة كبر الوالدين والعفاف.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ff421e92-583f-4f6e-9c2c-2d6437826ead",
+      "source_quote": "الأمن من مكر الله من الكبائر.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "0b79cc37-e91a-43e2-b864-f3435b7b633b",
+      "source_quote": "علامة صدق محبة الله: أن يكون الله ورسوله أحب إليه مما سواهما",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "f810ad04-6a66-4c32-b8fe-47d23f1c8b75",
+      "source_quote": "السحر لا يتعلم إلا بعبادة الشياطين.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "42e93943-2605-4da9-80a5-b627eaf71cbe",
+      "source_quote": "الربوبية: الخلق والتدبير، والألوهية: العبادة.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "3c25460f-3ac5-43d1-9aec-fc24349f558d",
+      "source_quote": "احرص على ما ينفعك واستعن بالله ولا تعجز",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "6e55abe0-45c5-4cb2-a74a-6f97e74dbd6f",
+      "source_quote": "التطير شرك لأنه اعتقاد أن ما يتشاءم به يجلب الضر.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "288554fc-7b6d-4532-b1a7-018cb647e5e2",
+      "source_quote": "الرياء: إظهار العبادة ليرى، والسمعة: التحدث بها ليسمع.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "1846362e-ef04-4578-890d-f9cc27113266",
+      "source_quote": "الشرك الأكبر: يحبط كل العمل، يخلد في النار، يخرج من الإسلام.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "fffea01c-4f20-4dda-b6f3-866b7de378ba",
+      "source_quote": "الحديث دل على أن من حقق التوحيد وتوكل على الله كان من السبعين ألفا.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "0b1422bb-6481-49a0-aef1-b939c2d5974b",
+      "source_quote": "التوحيد ثلاثة أنواع: الربوبية، الألوهية، الأسماء والصفات.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "8f0b87fc-a2fc-4a90-9dbd-7b333fc1f919",
+      "source_quote": "الإلحاد في أسماء الله: الميل بها عن الحق",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "a8f23c47-fc66-475b-932a-466229070465",
+      "source_quote": "من صدق كاهنا أو منجما بما يخبر به من الغيب فقد كفر",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "34f0da6e-4ab8-4721-b1eb-1105c59d76f2",
+      "source_quote": "التوسل بالجاه لم يرد عن السلف، وهو ذريعة إلى الشرك.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "a0843318-ca13-4eb8-8738-14b57dcb6919",
+      "source_quote": "وصف الله المنافقين بأنهم يراؤون الناس في صلاتهم وعبادتهم.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c7f49e10-f1b3-4e90-83b0-7e609c62df8c",
+      "source_quote": "الحديث فيه إخبار بوقوع الشرك في بعض هذه الأمة.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "3c319970-f000-4353-b0de-d0e25c6c77ee",
+      "source_quote": "دعاء الأموات شرك أكبر",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "7c7275f1-4261-442c-aeeb-92c41a5ffcb9",
+      "source_quote": "لا يجوز إذا كان المكان عيدا للمشركين.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "6a3a6490-ff2a-4ad8-b7e1-51caca18e6ca",
+      "source_quote": "دعاء الأموات شرك أكبر",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "213fc1f9-d919-4153-b28a-6e53cb13acce",
+      "source_quote": "لأنه لا يتوصل إليه إلا بالاستعانة بالشياطين.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "40bc29cf-0f21-4126-a200-85f313d0c18a",
+      "source_quote": "مذهب السلف إمرارها كما جاءت.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+      "source_quote": "هذا ما جاء في حديث معاذ بن جبل.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "9980f48a-b3d0-4514-981c-6f7247604a7d",
+      "source_quote": "قال تعالى: (الذين آمنوا ولم يلبسوا إيمانهم بظلم أولئك لهم الأمن وهم مهتدون).",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "dcdd2714-5e35-4b4c-811d-feaab1306cfd",
+      "source_quote": "سبعون ألفا مع كل ألف سبعون ألفا.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "de6475f4-5d82-4bb1-a4c6-2708898479dd",
+      "source_quote": "قال : فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "2ef865ff-631d-4bce-bf3e-6ccb0a2637a1",
+      "source_quote": "التوحيد المنجي: معرفة معناها، والإيمان بها، والعمل بمقتضاها",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "39a35c94-3034-43c9-bcc0-3032b1b01381",
+      "source_quote": "فمن يكفر بالطاغوت ويؤمن بالله فقد استمسك بالعروة الوثقى",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "fc43ad7d-27ed-4266-816b-603cd16efb3e",
+      "source_quote": "قال : إن الرقى والتمائم والتولة شرك.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ee6a5d9b-c802-4d0d-b362-8eefb47ea716",
+      "source_quote": "بل يبدأ بالتوحيد كما أمر النبي معاذا.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "cd227066-93f7-42f7-aead-2ac78970fef6",
+      "source_quote": "بل معناها: لا معبود بحق إلا الله",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "4bf4fd9c-e6d5-4550-b476-2f86353dd123",
+      "source_quote": "إذا حكم بغير ما أنزل الله مستحلا لذلك فهو طاغوت.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "2e022c6c-53d1-4f7e-95d8-18cb13747147",
+      "source_quote": "لأنه صرف عبادة لغير الله.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "2556dfe6-ba39-4492-84b3-e2f47a8c7162",
+      "source_quote": "الخوف التعبدي لا يصرف إلا لله.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ff50232f-88ff-44b7-a9c2-220eee83a838",
+      "source_quote": "يجب أن يكون الله ورسوله أحب إلينا مما سواهما",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "2dde27a6-9bcf-4813-bdcd-7f7ab454c272",
+      "source_quote": "الطيرة من الشرك — والتشاؤم بالأيام والأرقام من الطيرة المنهي عنها",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "f48ef856-cf46-4a40-8e36-5f7104f14a90",
+      "source_quote": "من أتى عرافا فسأله عن شيء لم تقبل له صلاة أربعين ليلة",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c06cb748-cd3b-4529-940b-a3f237ed7fde",
+      "source_quote": "أما الاعتقاد بتأثيرها فحرام",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "d8dfe2df-419d-44df-96af-9dfcb47357db",
+      "source_quote": "النشرة الجاهلية محرمة.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "a53737b1-3a95-4bf9-acf7-12013d319761",
+      "source_quote": "أما حله بسحر مثله فحرام.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "b6c16560-bb78-4da3-acd3-ff7913c0f63c",
+      "source_quote": "وأخبر النبي أنها لا تكون إلا لأهل الإخلاص",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "3eceeead-10fc-43d9-8d95-773316ea05e3",
+      "source_quote": "نسبة المطر إلى الأنواء: شرك أكبر إن اعتقد فاعلية النوء استقلالا، وشرك أصغر إن نسبه عادة مع توحيد الله",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "30e67e81-85f8-44e0-abee-f4c482fa9a03",
+      "source_quote": "أشد الناس عذابا يوم القيامة",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "a4a25e9a-3c4f-4533-8680-0c6c87f411f2",
+      "source_quote": "وتؤمن بالقدر خيره وشره.",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "00fb1757-a23c-46e3-a4dc-825537d500c3",
+      "source_quote": "لعن الله من ذبح لغير الله، ولعن الله من لعن والديه، ولعن الله من آوى محدثا",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ee419252-53dc-c1f9-383c-9a3023698050",
+      "source_quote": "فإن هم أطاعوا لذلك فأخبرهم أن الله قد فرض عليهم صدقة تؤخذ من أغنيائهم فترد على فقرائهم",
+      "book": "tawheed",
+      "note": "sync_usable"
+    },
+    {
+      "id": "323ba563-ffd8-455e-8551-dfc13d4656c3",
+      "source_quote": "اسمه :هو شيخ الإسلام محمد بن عبد الوهاب بن سليمان بن علي بن محمد أ بن حمد الحن ظلي ا لتميم ي",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "971de374-b952-4843-bd00-fbbb9f29be49",
+      "source_quote": "مولده: ولد في بلدة العيينة سنة1115 هجرية في بيت علم وشرف ودين فأبوه .عالم وجده سليمان عالم كيف كانت نشأ ة المؤلف",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "5963941f-e801-4c27-8a42-2e1bc89e00f6",
+      "source_quote": "توفي عام 1206 هجرية فرحمه الله رحمة واسعة وجزاه عن الإسلام والمسلمين خير الجزاء",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "45b11c1a-6569-4653-85ee-fc3397d5dce7",
+      "source_quote": "لأنها تتضمن جواب الأسئلة الثلاثة التي يسأل عنها الإنسان في قبره",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "07d01f29-b988-4574-8ca1-9cedad8ca864",
+      "source_quote": "من ربك؟ وما دينك؟ ومن نبيك؟",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c68b2f57-38b0-4671-ad6d-c546eeea2945",
+      "source_quote": "العلم، والعمل به، والدعوة إليه، والصبر على الأذى فيه",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "16ecb0b3-3e5e-4823-ac0f-7440174c37e1",
+      "source_quote": "فبدأ بالعلم قبل القول والعمل",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "cae566ed-4e67-442d-a8bd-df8c76928ebd",
+      "source_quote": "فإذا قيل لك: بماذا تعرف ربك؟ فقل: بآياته ومخلوقاته، ومن آياته الليل والنهار والشمس والقمر، ومن مخلوقاته السموات السبع والأرضون السبع وما فيهن وما بينهما",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "5556e086-7f16-4278-9896-2e6a809ae5d4",
+      "source_quote": "الخالق لهذه الأشياء هو المستحق للعبادة",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "51b3515c-278d-4df5-a4fb-a7b71c920153",
+      "source_quote": "العبادة: اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال الظاهرة والباطنة",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "9f8799c0-1350-4ea9-ab20-8e85fc579416",
+      "source_quote": "لا يرضى الله أن يشرك معه أحد",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "4116d4b3-fd57-4fc9-a4de-0b12024fef7e",
+      "source_quote": "دعاء المسألة: طلب الحاجات، ودعاء العبادة: الصلاة والصيام",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "68277684-9448-4d6e-816c-9ea1d9f4eb91",
+      "source_quote": "وأنواع العبادة التي أمر الله بها مثل الإسلام والإيمان والإحسان، ومنه الدعاء والخوف والرجاء والتوكل والرغبة والرهبة والخشوع",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "44c0fa04-4e25-40dc-8b0e-9a4ea3ff9291",
+      "source_quote": "فلا تخافوهم وخافوني إن كنتم مؤمنين",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "736116de-b4ed-4a86-88b9-864dc9d070d2",
+      "source_quote": "وعلى الله فتوكلوا إن كنتم مؤمنين",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "06ded618-669a-40ce-8574-4da46b041242",
+      "source_quote": "قوله: (فصل لربك وانحر)",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "5160169e-5368-44b1-81b7-cf4074a86523",
+      "source_quote": "يوفون بالنذر ويخافون يوما كان شره مستطيرا",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ba9248fa-89c6-4afc-bc87-75de3d59fe13",
+      "source_quote": "الإسلام: الاستسلام لله بالتوحيد والانقياد له بالطاعة",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "01b52421-bfcb-42b0-9034-591c60e3d641",
+      "source_quote": "أركان الإيمان ستة: أن تؤمن بالله، وملائكته، وكتبه، ورسله، واليوم الآخر، وتؤمن بالقدر خيره وشره",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "be04d3f7-8a37-4530-8555-2c66c59d9970",
+      "source_quote": "أركان الإيمان ستة: أن تؤمن بالله، وملائكته، وكتبه، ورسله، واليوم الآخر، وتؤمن بالقدر خيره وشره",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "3d67e37f-25a0-4485-adb0-1e9601625d14",
+      "source_quote": "أن تعبد الله كأنك تراه فإن لم تكن تراه فإنه يراك.",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "3de5c20f-1bb6-4549-b43b-be29806bc6f8",
+      "source_quote": "وله من العمر ثلث وستون سنة",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "a004480b-4a29-4568-9962-95152cd0dade",
+      "source_quote": "أخذ على هذا عشر سنين يدعو إلى التوحيد",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "0291b09c-537f-45e0-b8b0-bfaf14d919bc",
+      "source_quote": "بعثه الله بالنذارة عن الشرك ويدعو إلى التوحيد",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "004bafb8-c799-4a85-a78a-46282c27ca1a",
+      "source_quote": "الهجرة: الانتقال من بلد الشرك إلى بلد الإسلام.",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "d3e5d0d4-711f-46ac-b7a3-840b9258f67c",
+      "source_quote": "الهجرة فريضة على هذه الأمة من بلد الشرك إلى بلد الإسلام، وهي باقية إلى أن تقوم الساعة",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c0177eaf-4cb9-4c0a-8e87-1092a0729381",
+      "source_quote": "أعظم ما نهى الله عنه الشرك.",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c549c1de-82ac-4d19-9a1c-f02cc6b3da5a",
+      "source_quote": "الشرك الأكبر والشرك الأصغر",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "390a98fa-c43d-41d2-80f0-82a6894ba5db",
+      "source_quote": "مولده: ولد في بلدة العيينة سنة1115 هجرية في بيت علم وشرف ودين فأبوه .عالم وجده سليمان عالم كيف كانت نشأ ة المؤلف",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "79aede6f-0a02-4c6e-b467-0d0445355194",
+      "source_quote": "بل لأنها تجيب عن أسئلة القبر الثلاثة.",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "38050b3a-babc-450a-8904-aa43288de9b8",
+      "source_quote": "فبدأ بالعلم قبل القول والعمل",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "085b6169-6a01-4998-b190-d30a3296ae00",
+      "source_quote": "فإذا قيل لك: بماذا تعرف ربك؟ فقل: بآياته ومخلوقاته، ومن آياته الليل والنهار والشمس والقمر، ومن مخلوقاته السموات السبع والأرضون السبع وما فيهن وما بينهما",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "83b23ea8-83d5-49a4-b927-a67372fbc35a",
+      "source_quote": "وهي من أنواع العبادة التي أمر الله بها.",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "119d35bc-1357-43b6-a136-0700351ecf99",
+      "source_quote": "النذر عبادة لا تصرف إلا لله",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "66db9e22-c10c-44ad-875c-e8081d21d442",
+      "source_quote": "عاش ثلاثا وستين سنة — من سيرة النبي في مختصر الأصول الثلاثة",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "996dc082-6aba-408e-9709-9e2336e6e0c6",
+      "source_quote": "الهجرة: الانتقال من بلد الشرك إلى بلد الإسلام.",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "5d48a971-422a-6cc7-d309-d4799d6cf1e0",
+      "source_quote": "ومعنى شهادة أن محمدا رسول الله: طاعته فيما أمر، وتصديقه فيما أخبر، واجتناب ما نهى عنه وزجر، وأن لا يعبد الله إلا بما شرع",
+      "book": "usool",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ff6b7cba-3fad-47e1-a748-5ea7336bc1e5",
+      "source_quote": "أبو زكريا محيي الدين يحيى بن شرف النووي رحمه الله",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "bd0f2004-eda9-4993-975c-25d4786e349a",
+      "source_quote": "كل حديث منها قاعدة عظيمة من قواعد الدين",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "da89ed81-0fb5-4f49-a689-880a89271aed",
+      "source_quote": "إنما الأعمال بالنيات",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c222d45d-12aa-489b-b6d5-8c71d179b249",
+      "source_quote": "إنما الأعمال بالنيات، وإنما لكل امرئ ما نوى",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "1b0341c0-5655-4f88-abde-09ae69cb7fcd",
+      "source_quote": "فهجرته إلى الله ورسوله.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "7adf11c1-2f42-412c-87e8-7adbe489d73b",
+      "source_quote": "الإسلام: الشهادة، إقام الصلاة، إيتاء الزكاة، صوم رمضان، حج البيت",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ea0b0624-8cb1-4ff7-9403-bb2539696ef4",
+      "source_quote": "أن تؤمن بالله وملائكته وكتبه ورسله واليوم الآخر والقدر خيره وشره.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "45777616-94a2-45a0-81c4-1dbcc82a606b",
+      "source_quote": "أن تعبد الله كأنك تراه فإن لم تكن تراه فإنه يراك",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "bca53c44-9668-4fdd-a671-cbe8dbe507bf",
+      "source_quote": "أن تلد الأمة ربتها، وأن ترى الحفاة العراة يتطاولون في البنيان",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "9cce0d7b-db39-4846-bbdd-4ec5fe7edce2",
+      "source_quote": "إذا طلع علينا رجل شديد بياض اثلياب",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "e62798c1-f97f-4ca7-926e-f3ab931b6b80",
+      "source_quote": "إن أحدكم يجمع خلقه في بطن أمه أربعين يوما نطفة، ثم يكون علقة مثل ذلك، ثم يكون مضغة مثل ذلك",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "869d0b38-9f04-4f43-a1ae-60b340d5c6a3",
+      "source_quote": "من عمل عملا ليس عليه أمرنا فهو رد.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "6b5e357b-2337-4685-ae2c-804d957878ea",
+      "source_quote": "كل بدعة ضلالة — رواه أبو داود والترمذي",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "9fe79480-583d-4338-928a-f375d51a476d",
+      "source_quote": "كالراعي يرعى حول الحمى.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "6d80017a-77d3-4857-99b8-3a193479a911",
+      "source_quote": "قلنا: لمن؟ قال: لله ولكتابه ولرسوله ولأئمة المسلمين وعامتهم",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "40459252-7195-453e-8b26-71fd6756bda5",
+      "source_quote": "النصيحة لله هي التعظيم لأمره والشفقة على خلقه",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "e993741b-058c-44ef-932a-e438bbf48942",
+      "source_quote": "أمرت أن أقاتل الناس حتى يشهدوا أن لا إله إلا الله",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "47e120ad-2c58-4fd8-9cb5-e018878a0f98",
+      "source_quote": "إن الله كره لكم قيل وقال وكثرة السؤال.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "54c16810-a520-4ec8-961e-270bff6c1839",
+      "source_quote": "ثم ذكر الرجل يطيل السفر",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "b5ff7eaf-2065-47f3-8037-b81eadc02288",
+      "source_quote": "سبحانه ال يقبل إال الطيب من القوال والعمال وغيها وأن الله أمر المؤمنني بما أمر به المرسلني",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "371c3a70-cb31-4f62-a927-3576432f673e",
+      "source_quote": "لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "c0cbca1e-37ae-41a7-b752-4062ec19577d",
+      "source_quote": "الثيب الزاني، والنفس بالنفس، والتارك لدينه المفارق للجماعة",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "6ed4bd4d-321c-48b4-b26f-0d6426edfc6d",
+      "source_quote": "من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت، ومن كان يؤمن بالله واليوم الآخر فليكرم جاره، ومن كان يؤمن بالله واليوم الآخر فليكرم ضيفه",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "59571e92-ff34-4008-aa2e-a6a0bc4545b4",
+      "source_quote": "من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت، ومن كان يؤمن بالله واليوم الآخر فليكرم جاره، ومن كان يؤمن بالله واليوم الآخر فليكرم ضيفه",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "7ca5574a-1866-4575-91d2-abec2ef3166e",
+      "source_quote": "وأتبع السيئة الحسنة تمحها",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ac4a2acc-6628-446c-a313-81e5405d9f0b",
+      "source_quote": "تويف بالمدينة يف ال سنة الحادية والربعني .من اهلجرة انلبوية ي معان : الكلمات :الحياء ترك .ما يعاب به المرء من قو ل أو فعل",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "b21de284-8a66-491d-8b8c-f73373989d28",
+      "source_quote": "والحمد لله تملأ الميزان.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ff19a316-58a1-4278-bee4-b6f49b4fc435",
+      "source_quote": "حديث أبي مالك الأشعري.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "cb18a215-07dd-4621-ab08-773096785520",
+      "source_quote": "يا عبادي إني حرمت الظلم على نفسي وجعلته بينكم محرما",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "50870bd5-2d04-413e-a3e5-a91569c7eccb",
+      "source_quote": "قالوا: أيأتي أحدنا شهوته ويكون له فيها أجر؟ قال: نعم.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "5d714abc-747b-4e95-8ab4-e31e6f985a3d",
+      "source_quote": "البر حسن الخلق، والإثم ما حاك في صدرك وكرهت أن يطلع عليه الناس",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "7bdfccd0-03b8-4002-a193-faea65aa043d",
+      "source_quote": "البر حسن الخلق، والإثم ما حاك في صدرك وكرهت أن يطلع عليه الناس",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "521e7ce5-fff3-455b-ad0d-92d7cd87b029",
+      "source_quote": "فعليكم بسنتي وسنة الخلفاء الراشدين المهديين",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "a45c0c04-0e89-42f3-a392-f2606b766bf4",
+      "source_quote": "وهل يكب الناس على وجوههم في النار إلا حصائد ألسنتهم",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "26f3d3b0-1e3a-4f81-9cf4-aa945f8f0d04",
+      "source_quote": "إن الله فرض فرائض فلا تضيعوها، وحد حدودا فلا تعتدوها، وحرم أشياء فلا تنتهكوها",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "135d0bb6-d43e-4f1a-a566-2efe89c1e26d",
+      "source_quote": "يحبك الله، ويحبك الناس.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "e40007c9-1ee6-4bd0-a75c-344b8259d2c9",
+      "source_quote": "البينة على المدعي، واليمين على من أنكر",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "1db7086a-ddff-4b54-a188-3ab280f420cb",
+      "source_quote": "كل المسلم على المسلم حرام",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "f469d4e4-8926-4773-b925-6a920c4f84b1",
+      "source_quote": "كل المسلم على المسلم حرام",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "850c6a73-1256-4c7a-998a-a20d527e9d5c",
+      "source_quote": "واقعة بقضاء الله وقدره والمكتوب يف اللوح المحفوظ ثم بني ذلك وفصله فمن هم حبسنة فلم يعملها كتبها الله عنده حسنة اكملة وإن هم بها فعملها تكتب عشر حسنات",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "10a36d97-16ad-43f5-a9d1-414da3860480",
+      "source_quote": "واقعة بقضاء الله وقدره والمكتوب يف اللوح المحفوظ ثم بني ذلك وفصله فمن هم حبسنة فلم يعملها كتبها الله عنده حسنة اكملة وإن هم بها فعملها تكتب عشر حسنات",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "74076c42-5f23-4e68-8de6-2864ca262829",
+      "source_quote": "وما تقرب إلي عبدي بشيء أحب إلي مما افترضته عليه",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "40c35b74-2576-4bb5-a509-ae206f55c610",
+      "source_quote": "مفارقتها واكن ابن عمر يقول إذا أمسيت فال تنتظر الصباح",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "6e3a3e38-6070-4352-8eb3-1a5848052bf3",
+      "source_quote": "الزكاة: المال الواجب لمستحقه.",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "e5367815-958c-4ec4-9138-ed6455725381",
+      "source_quote": "من رأى منكم منكرا فليغيره بيده، فإن لم يستطع فبلسانه، فإن لم يستطع فبقلبه",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "ef0c9b86-fc95-4c6c-b10d-ef93a2e46153",
+      "source_quote": "لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه",
+      "book": "nawawi",
+      "note": "sync_usable"
+    },
+    {
+      "id": "5aeee9f3-c1a0-44e9-a85e-f26691ac1502",
+      "source_quote": "وما خلقت الجن والإنس إلا ليعبدون",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "cab8d777-a5ef-4376-a28f-a2eb43fdea02",
+      "source_quote": "النهي عما فيه عطف بالواو على الله كقول: لولا الله وفلان؛ لأن الواو تقتضي التشريك",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "a81056cb-d3e3-4c51-8268-eb1ba5704758",
+      "source_quote": "النهي عما فيه عطف بالواو على الله كقول: لولا الله وفلان؛ لأن الواو تقتضي التشريك",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "569e7192-7b3b-3027-e0b6-ec7e9b70296f",
+      "source_quote": "الذين آمنوا ولم يلبسوا إيمانهم بظلم أولئك لهم الأمن وهم مهتدون",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "88cd103c-248f-4ded-c9c8-58b008cd53fb",
+      "source_quote": "الثقلان: الجن والإنس",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "04f0e7ba-0689-0e29-8837-a95309fb3b29",
+      "source_quote": "من لقي الله لا يشرك به شيئا دخل الجنة",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "a1ac427f-0ef1-b3c4-dddb-7c1ed0132da6",
+      "source_quote": "واجنبني وبني أن نعبد الأصنام",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "61a7f3c8-7fd9-71d2-40cd-a96657cc6c6b",
+      "source_quote": "أخوف ما أخاف عليكم الشرك الأصغر؛ فالخوف من الشرك واجب لأنه خفي قد يقع فيه المرء",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "7704f604-a213-51b3-4086-d4eb4310823e",
+      "source_quote": "إياك وكرائم أموالهم واتق دعوة المظلوم",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "d647c100-8e13-8c71-780d-11a1d0c0a050",
+      "source_quote": "التبرك بالأشجار والأحجار معتقدا فيها البركة شرك",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "6c2b93a9-19f8-b242-62ca-0d95988be23b",
+      "source_quote": "الله أكبر إنها السنن قلتم والذي نفسي بيده كما قالت بنو إسرائيل اجعل لنا إلها",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "94c4e444-476e-50ec-1160-472655b5cfed",
+      "source_quote": "أفرأيتم اللات والعزى ومناة الثالثة الأخرى",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "2b205783-bc0c-749a-2898-854ddddf8f65",
+      "source_quote": "فصل لربك وانحر — الذبح عبادة لا تصرف إلا لله",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "464f92f2-8cfd-6a09-0fea-fc7562da176d",
+      "source_quote": "اللهم لا تجعل قبري وثنا يعبد، اشتد غضب الله على قوم اتخذوا قبور أنبيائهم مساجد",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "8ebd189f-c25b-d2de-1056-e231bd6cd69e",
+      "source_quote": "اللهم لا تجعل قبري وثنا يعبد، اشتد غضب الله على قوم اتخذوا قبور أنبيائهم مساجد",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "7553099d-8f57-26fe-d67f-1169936f4a29",
+      "source_quote": "أفرأيتم اللات والعزى ومناة الثالثة الأخرى",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    },
+    {
+      "id": "557bd30b-b29f-fb76-925f-610e683113a0",
+      "source_quote": "اللهم لا تجعل قبري وثنا يعبد، اشتد غضب الله على قوم اتخذوا قبور أنبيائهم مساجد",
+      "book": "tawheed",
+      "note": "book_backed_extra"
+    }
+  ],
+  "restored": 344,
+  "residual": 89
+}
