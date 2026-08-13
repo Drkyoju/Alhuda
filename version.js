@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v338: Verifier-1 display cite OCR/invention cleanup; mute cite TTS; HEARTS off; KEEP أرسل/سنين) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v340: Verifier3 OCR/meta-stub/iʿrāb + cache-bust; mute cite TTS; صح/خطأ KEEP) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v338",
+  cache: "alhuda-v340",
   styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 297,
+  app: 299,
   platform: 21,
   auth: 16,
-  sw: 338,
+  sw: 340,
 };
