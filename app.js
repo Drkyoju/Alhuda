@@ -3531,9 +3531,11 @@ function diacritizeFieldText(q, rawText) {
 }
 
 /**
- * Ordered speech plan for the feedback panel that mirrors exactly what is shown:
- * (wrong answer →) correct answer → citation.
- * Ayah citations → Hudhaify only; hadith citations → TTS as curated; else full harakat.
+ * Ordered speech plan for the feedback panel:
+ * (wrong answer →) correct answer → optional Hudhaify ayah.
+ * Never TTS «الاستشهاد من الكتاب» (book quote / exp / hadith) for any book —
+ * still shown on screen; book quote field ≠ Quran.
+ * Ayah only → Hudhaify via /api/quran-audio.
  */
 function buildFeedbackSpeechPlan(q, wrongText) {
   const plan = [];
@@ -3551,55 +3553,31 @@ function buildFeedbackSpeechPlan(q, wrongText) {
     const correctSpeech = diacritizeFieldText(q, correct);
     if (correctSpeech) plan.push({ type: 'tts', text: correctSpeech });
   }
+  // Mute book-citation TTS (tawheed / usool / nawawi). Screen HTML unchanged.
   const verseKey = getPrimaryVerseKeyForQuestion(q);
-  // Prefer real book quote for speech; fall back to explanation — never answer-as-quote / OCR junk.
+  if (!verseKey) return plan;
+
   let citeBody = (typeof getBookQuoteOnly === 'function' ? getBookQuoteOnly(q) : '')
     || (typeof getCitationBodyText === 'function' ? getCitationBodyText(q) : '')
     || '';
-  const rawQuote = String(q?.quote || '').trim();
-  if (
-    isAnswerPrefixedQuote(rawQuote)
-    || isGarbageCitation(rawQuote)
-    || (citeBody && isGarbageCitation(citeBody))
-  ) {
-    // Drop fake/OCR quote; speak clean explanation only when it adds value beyond the answer.
-    const exp = typeof getCleanExplanationText === 'function' ? getCleanExplanationText(q) : '';
-    const corBare = normalizeArabicForMatch(correct || '');
-    const expBare = normalizeArabicForMatch(exp || '');
-    citeBody = exp && expBare && expBare !== corBare && !textIsSubstantiallyContained(expBare, corBare)
-      ? exp
-      : '';
+  if (citeBody && (isAnswerPrefixedQuote(citeBody) || isGarbageCitation(String(citeBody).replace(/^«|»$/g, '')))) {
+    citeBody = '';
   }
   const quoteIsAyah = typeof citationLooksLikeAyah === 'function'
     ? citationLooksLikeAyah(citeBody, verseKey)
     : false;
-  // Hadith / book prose → TTS. Quran ayah only → Hudhaify (never TTS the ayah wording).
-  if (citeBody && (isAnswerPrefixedQuote(citeBody) || isGarbageCitation(String(citeBody).replace(/^«|»$/g, '')))) {
-    citeBody = '';
-  }
+  // Book prose / hadith under الاستشهاد → silent (no Fish TTS).
   if (isHadithPassage(citeBody) || (citeBody && !quoteIsAyah && !fieldHasEmbeddedAyah(citeBody))) {
-    const citeSpeech = diacritizeFieldText(q, citeBody);
-    if (citeSpeech) plan.push({ type: 'tts', text: citeSpeech });
-  } else if (verseKey && (quoteIsAyah || fieldHasEmbeddedAyah(citeBody))) {
-    // Ayah citation (incl. «قوله: (…)» after strip) → Hudhaify only, never bare «قوله».
-    plan.push({ type: 'quran', verseKey });
-  } else if (citeBody) {
-    // Mixed or unresolved — TTS the prose (ayah markers stripped in prepareTtsPayload path).
-    const citeSpeech = diacritizeFieldText(q, citeBody);
-    const bareCite = normalizeArabicForMatch(citeSpeech || '');
-    // Leftover «قوله» after ayah-strip with a resolvable key → recite, don't mangle قوله.
-    if (verseKey && /^(قوله|قولها|قال|قالت)(تعالى)?$/.test(bareCite)) {
-      plan.push({ type: 'quran', verseKey });
-    } else if (citeSpeech) {
-      plan.push({ type: 'tts', text: citeSpeech });
-    }
-  } else if (verseKey) {
+    return plan;
+  }
+  // Quran ayah path only (incl. empty cite + mapped verse, or «قوله» ayah lead-in).
+  if (quoteIsAyah || fieldHasEmbeddedAyah(citeBody) || !citeBody) {
     plan.push({ type: 'quran', verseKey });
   }
   return plan;
 }
 
-/** After answering: read correct answer + hadith (TTS) or ayah (Hudhaify only). */
+/** After answering: read correct answer; ayah via Hudhaify; never book-citation TTS. */
 function maybeSpeakFeedbackAfterAnswer(q, wrongText) {
   if (!voiceOn || !q || state.gameEnding || state.gameEnded) return;
   const btn = document.getElementById('btn-speak-question');

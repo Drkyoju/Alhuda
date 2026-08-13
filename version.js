@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v325: listen-through full bank — no roundSize mid-bank results when HEARTS_ENABLED=false; keep expectQuestionId TTS guards) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v326: mute TTS for الاستشهاد من الكتاب / book quotes — keep answer TTS + Hudhaify ayah; expectQuestionId + HEARTS_ENABLED=false) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v325",
+  cache: "alhuda-v326",
   styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 284,
+  app: 285,
   platform: 21,
   auth: 16,
-  sw: 325,
+  sw: 326,
 };
