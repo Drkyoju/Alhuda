@@ -442,9 +442,10 @@ export function prepareFishTtsText(text) {
   // ── v332 fidelity: never expand صح→صحيح (Fish→صحيحن); خطأ without dammatan→خطأن
   s = s.replace(/(^|[\s،,])صَحّ(?=$|[\s،,✓])/g, '$1صَحْ');
   s = s.replace(/(^|[\s،,])صح(?=$|[\s،,✓])/g, '$1صَحْ');
-  s = s.replace(/(^|[\s،,])خَطَأٌ(?=$|[\s،,✗])/g, '$1خَطَأْ');
-  s = s.replace(/^هَذَا\s+خَطَأٌ$/u, 'خَطَأْ');
+  // Collapse «هذا خطأ» invent BEFORE dammatan→sukun (order matters).
+  s = s.replace(/^ه[\u064B-\u065F\u0670]*ذ[\u064B-\u065F\u0670]*ا\s+خ[\u064B-\u065F\u0670]*ط[\u064B-\u065F\u0670]*أ[\u064B-\u065F\u0670]*$/u, 'خَطَأْ');
   s = s.replace(/^هذا\s+خطأ$/u, 'خَطَأْ');
+  s = s.replace(/(^|[\s،,])خَطَأٌ(?=$|[\s،,✗])/g, '$1خَطَأْ');
   // ذات أنواط / أنواط — تشكيل فقط
   s = s.replace(/ذَات[َُِ]?\s+أَنْوَاطْ?/g, 'ذَاتِ  أَنْوَاطْ');
   s = s.replace(/ذات\s+أنواط/g, 'ذَاتِ  أَنْوَاطْ');
@@ -538,17 +539,15 @@ export function prepareFishTtsText(text) {
   // KEEP preserves contextual iʿrāb already on the token; bare often reads cleaner.
   s = applyHarakatPolicy(s);
 
-  // Final TF lemmas AFTER KEEP — whole utterance only (never «صحيحن»/«خطأن»).
-  // Mid-sentence «حديث صحيح» untouched.
-  s = s.replace(/^صَحِيحٌ$/u, 'صَحْ');
-  s = s.replace(/^صحيح$/u, 'صَحْ');
+  // Final TF lemmas AFTER KEEP — «صح»/«خطأ» only (never expand to صحيحن/خطأن).
+  // Do NOT collapse written «صحيح» → صح (MC options must stay صحيح).
   s = s.replace(/^صَحّ$/u, 'صَحْ');
   s = s.replace(/^صح$/u, 'صَحْ');
-  s = s.replace(/^خَطَأٌ$/u, 'خَطَأْ');
-  s = s.replace(/^خَطَأ$/u, 'خَطَأْ');
-  s = s.replace(/^خطأ$/u, 'خَطَأْ');
-  s = s.replace(/^هَذَا\s+خَطَأٌ$/u, 'خَطَأْ');
+  s = s.replace(/^ه[َٰ]?ذَ?ا\s+خ[\u064B-\u065F\u0670]*ط[\u064B-\u065F\u0670]*أ[\u064B-\u065F\u0670]*$/u, 'خَطَأْ');
   s = s.replace(/^هذا\s+خطأ$/u, 'خَطَأْ');
+  s = s.replace(/^خَطَأٌ$/u, 'خَطَأْ');
+  s = s.replace(/^خَطَأْ?$/u, 'خَطَأْ');
+  s = s.replace(/^خطأ$/u, 'خَطَأْ');
 
   return fixAllahIrabInText(s);
 }
