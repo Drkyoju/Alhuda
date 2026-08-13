@@ -12,7 +12,7 @@
 | expectQuestionId | موجود |
 | صح/خطأ | بلا تسرّب صيغ نطق |
 | Supabase | PATCH ناجح 9/9 |
-| النشر | v338 CranL (path-bust `citation-canonical-v338`) |
+| النشر | محتوى الإصلاحات على `main` (تزامن شجرة مع V3 ثم cache-bust v340) — path-bust `citation-canonical-v338` |
 | Cloudflare | لا |
 
 ## الأرقام
