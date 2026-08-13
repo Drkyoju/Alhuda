@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v342: Reviewer B — حسن/من حسن إسلام، لأنّ الله، اللهو≠الله، map iʿrāb; mute cite TTS; صح/خطأ) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v342b: Reviewer B follow-up — في حديثِ + صدق النبيُّ; اللهو residual needs lemma) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v342",
+  cache: "alhuda-v343",
   styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 301,
+  app: 302,
   platform: 21,
   auth: 16,
-  sw: 342,
+  sw: 343,
 };
