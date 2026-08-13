@@ -4016,10 +4016,8 @@ function setQuranReciteStatus(q, status) {
       if (status === 'loading') {
         el.textContent = 'جاري تحميل التلاوة…';
         el.hidden = false;
-      } else if (status === 'ready') {
-        el.textContent = 'جاهزة';
-        el.hidden = false;
       } else {
+        // ready / idle: silent — never show «جاهزة»
         el.textContent = '';
         el.hidden = true;
       }
