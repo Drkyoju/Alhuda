@@ -1,0 +1,46 @@
+{
+  "hits": [],
+  "citeIssues": [],
+  "preserve": {
+    "arsala": [
+      {
+        "id": "ea3f8f19-a1d9-a32c-9650-8b8ec47507b4",
+        "f": "q"
+      },
+      {
+        "id": "0291b09c-537f-45e0-b8b0-bfaf14d919bc",
+        "f": "q"
+      }
+    ],
+    "sineen": [
+      {
+        "id": "a004480b-4a29-4568-9962-95152cd0dade",
+        "f": "e"
+      },
+      {
+        "id": "a004480b-4a29-4568-9962-95152cd0dade",
+        "f": "sq"
+      },
+      {
+        "id": "a004480b-4a29-4568-9962-95152cd0dade",
+        "f": "canon"
+      },
+      {
+        "id": "a004480b-4a29-4568-9962-95152cd0dade",
+        "f": "opt0"
+      },
+      {
+        "id": "a004480b-4a29-4568-9962-95152cd0dade",
+        "f": "opt1"
+      },
+      {
+        "id": "a004480b-4a29-4568-9962-95152cd0dade",
+        "f": "opt2"
+      }
+    ],
+    "sahKhata": [],
+    "hearts": true,
+    "expectQ": true,
+    "ttsCiteMute": true
+  }
+}
