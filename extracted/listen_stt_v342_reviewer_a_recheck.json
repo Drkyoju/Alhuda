@@ -1,0 +1,141 @@
+{
+  "at": "2026-08-13T22:09:31.822Z",
+  "rows": [
+    {
+      "id": "lahw",
+      "text": "اللهو واللعب",
+      "prep": "اللَّهْوُ واللعب",
+      "transcript": "الله واللعب",
+      "provider": "fish",
+      "lemma": null,
+      "flags": [
+        "اللهو→الله"
+      ],
+      "w": "اللهو واللعب",
+      "h": "الله واللعب"
+    },
+    {
+      "id": "lahw_voc",
+      "text": "اللَّهْوُ وَاللَّعِبُ",
+      "prep": "اللَّهْوُ واللعب",
+      "transcript": "الله واللعب",
+      "provider": "fish",
+      "lemma": null,
+      "flags": [
+        "اللهو→الله"
+      ],
+      "w": "اللهو واللعب",
+      "h": "الله واللعب"
+    },
+    {
+      "id": "zina",
+      "text": "الزنا",
+      "prep": "الزِّنَا",
+      "transcript": "ازينة",
+      "provider": "fish",
+      "lemma": null,
+      "flags": [],
+      "w": "الزنا",
+      "h": "ازينه"
+    },
+    {
+      "id": "jaiz",
+      "text": "جائز",
+      "prep": "جَائِزٌ",
+      "transcript": "جا إزون",
+      "provider": "fish",
+      "lemma": null,
+      "flags": [],
+      "w": "جائز",
+      "h": "جا ازون"
+    },
+    {
+      "id": "takhmin",
+      "text": "بالتخمين",
+      "prep": "بِالتَّخْمِينِ",
+      "transcript": "بتحمين",
+      "provider": "fish",
+      "lemma": null,
+      "flags": [],
+      "w": "بالتخمين",
+      "h": "بتحمين"
+    },
+    {
+      "id": "arbaeen",
+      "text": "أربعين يوما فقط",
+      "prep": "أَرْبَعِينَ يوماً فَقَطْ",
+      "transcript": "40 يوما فقط",
+      "provider": "fish",
+      "lemma": null,
+      "flags": [],
+      "w": "اربعين يوما فقط",
+      "h": "يوما فقط"
+    },
+    {
+      "id": "mia",
+      "text": "مئة وعشرين يوما",
+      "prep": "مِئَةً وعشرين يَوْمًا",
+      "transcript": "120 يوم",
+      "provider": "fish",
+      "lemma": null,
+      "flags": [],
+      "w": "مئه وعشرين يوما",
+      "h": "يوم"
+    },
+    {
+      "id": "uzza",
+      "text": "العزى",
+      "prep": "الْعُزَّيْ",
+      "transcript": "العزي",
+      "provider": "fish-lemma-clip",
+      "lemma": "uzza.mp3",
+      "flags": [],
+      "w": "العزي",
+      "h": "العزي"
+    },
+    {
+      "id": "sah",
+      "text": "صح",
+      "prep": "صَحْ",
+      "transcript": "صح",
+      "provider": "fish-lemma-clip",
+      "lemma": "sah.mp3",
+      "flags": [],
+      "w": "صح",
+      "h": "صح"
+    },
+    {
+      "id": "khata",
+      "text": "خطأ",
+      "prep": "خَطَأْ",
+      "transcript": "خطأ",
+      "provider": "fish-lemma-clip",
+      "lemma": "khata.mp3",
+      "flags": [],
+      "w": "خطا",
+      "h": "خطا"
+    },
+    {
+      "id": "arsal",
+      "text": "أرسل",
+      "prep": "أَرْسَلَ",
+      "transcript": "أرسل",
+      "provider": "fish",
+      "lemma": null,
+      "flags": [],
+      "w": "ارسل",
+      "h": "ارسل"
+    },
+    {
+      "id": "sinin",
+      "text": "سنين",
+      "prep": "سِنِينَ",
+      "transcript": "سنين",
+      "provider": "fish",
+      "lemma": null,
+      "flags": [],
+      "w": "سنين",
+      "h": "سنين"
+    }
+  ]
+}

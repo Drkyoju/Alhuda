@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v342b: Reviewer B follow-up — في حديثِ + صدق النبيُّ; اللهو residual needs lemma) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v344: Reviewer A — واللعب KEEP + verified speech sync; اللهو residual needs lemma clip; B حسن/لأنّ preserved) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v343",
+  cache: "alhuda-v344",
   styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 302,
+  app: 303,
   platform: 21,
   auth: 16,
-  sw: 343,
+  sw: 344,
 };

@@ -602,9 +602,10 @@ export function prepareFishTtsText(text) {
   s = s.replace(/لأن\s+الحكم/g, 'لِأَنَّ الْحُكْمَ');
   s = s.replace(/^الصَّلَاةِ\s+عَلَى/u, 'الصَّلَاةُ عَلَى');
   s = s.replace(/^الصلاة\s+على/u, 'الصَّلَاةُ عَلَى');
-  // اللهو ≠ الله (Fish) — KEEP + explicit
+  // اللهو ≠ الله (Fish) — KEEP + explicit; واللعب paired option spelling
   s = s.replace(/(^|[^\u0621-\u064A])اللهو(?![\u0621-\u064A])/g, '$1اللَّهْوُ');
   s = s.replace(/(^|[^\u0621-\u064A])واللهو(?![\u0621-\u064A])/g, '$1وَاللَّهْوُ');
+  s = s.replace(/(^|[^\u0621-\u064A])واللعب(?![\u0621-\u064A])/g, '$1وَاللَّعِبُ');
 
   // Final TF lemmas AFTER KEEP — «صح»/«خطأ» only (never expand to صحيحن/خطأن).
   // Do NOT collapse written «صحيح» → صح (MC options must stay صحيح).
@@ -625,6 +626,7 @@ export function prepareFishTtsText(text) {
   s = s.replace(/اللَّهِْوُ/g, 'اللَّهْوُ');
   s = s.replace(/(^|[^\u0621-\u064A])اللهو(?![\u0621-\u064A])/g, '$1اللَّهْوُ');
   s = s.replace(/(^|[^\u0621-\u064A])واللهو(?![\u0621-\u064A])/g, '$1وَاللَّهْوُ');
+  s = s.replace(/(^|[^\u0621-\u064A])واللعب(?![\u0621-\u064A])/g, '$1وَاللَّعِبُ');
   return s;
 }
 

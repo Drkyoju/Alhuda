@@ -1,0 +1,297 @@
+{
+  "at": "2026-08-13T22:06:48.055Z",
+  "base": "https://alhuda-zi6bbd.cranl.net",
+  "liveNote": "v341 at start; fixes ship as v342",
+  "voice": "راوٍ عربي حكيم",
+  "whisper": "small",
+  "n": 158,
+  "pass": 153,
+  "fail": 5,
+  "lemmaMisses": 0,
+  "byBookSample": {
+    "critical": 23,
+    "tawheed": 54,
+    "usool": 38,
+    "nawawi": 43
+  },
+  "critical": [
+    {
+      "id": "tf_sah",
+      "text": "صح",
+      "transcript": "صح",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "sah.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "tf_khata",
+      "text": "خطأ",
+      "transcript": "خطأ",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "khata.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "mc_sahih",
+      "text": "صحيح",
+      "transcript": "صحيح",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "arsal",
+      "text": "أرسل",
+      "transcript": "أرسل",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "arsal_q",
+      "text": "بماذا أرسل النبي أولا؟",
+      "transcript": "بما ده أرسل النبي أولاً",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "sinin",
+      "text": "سنين",
+      "transcript": "سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "ashr_sinin",
+      "text": "عشر سنين",
+      "transcript": "عشر سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "thalath_sinin",
+      "text": "ثلاث سنين",
+      "transcript": "ثلاث سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "khams_sinin",
+      "text": "خمس سنين",
+      "transcript": "خمسة سنين",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "hadith_sahih",
+      "text": "حديث صحيح",
+      "transcript": "حديث صحيح",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "hadith_hasan",
+      "text": "حديث حسن",
+      "transcript": "حديث حسن",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "uzza",
+      "text": "العزى",
+      "transcript": "العزي",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "uzza.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "lat_uzza_q",
+      "text": "اللات والعزى ومناة أصنام كانت تعبدها:",
+      "transcript": "اللات والعزي ومنات أصنام كانت تعبدها",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "dhubab",
+      "text": "ذباب",
+      "transcript": "ذو بابون",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "dhubab.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "qarraba",
+      "text": "قرب ذبابا",
+      "transcript": "قرب ذباباً",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "qarraba_dhubaban.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "la_darar",
+      "text": "لا ضرر ولا ضرار",
+      "transcript": "لا ضرر ولا ضرار",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "la_darara.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "ahl_yaman",
+      "text": "أهل اليمن",
+      "transcript": "أهل اليمن",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "ahl_yaman.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "anwat",
+      "text": "أنواط",
+      "transcript": "أنواط",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "anwat.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "dhat_anwat",
+      "text": "ذات أنواط",
+      "transcript": "ذاتي أنواط",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "dhat_anwat.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "riya",
+      "text": "الرياء",
+      "transcript": "رياء",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "riya.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "shirk_akbar",
+      "text": "الشرك الأكبر",
+      "transcript": "الشرك الأكبر",
+      "pass": true,
+      "flags": [],
+      "provider": "fish-lemma-clip",
+      "lemma": "shirk_akbar.mp3",
+      "lemmaMiss": null
+    },
+    {
+      "id": "lahw_play",
+      "text": "اللهو واللعب",
+      "transcript": "الله واللعب",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    },
+    {
+      "id": "shahada_q",
+      "text": "شهادة أن محمدًا رسول الله تقتضي:",
+      "transcript": "شهادة أن محمد رسول الله تقطضي",
+      "pass": true,
+      "flags": [],
+      "provider": "fish",
+      "lemma": null,
+      "lemmaMiss": null
+    }
+  ],
+  "fails": [
+    {
+      "id": "opt_tawheed_67831742_2",
+      "text": "الزنا",
+      "prep": "الزِّنَا",
+      "transcript": "ازينة",
+      "flags": [],
+      "setOverlap": 0.75,
+      "provider": "fish"
+    },
+    {
+      "id": "opt_usool_cae566ed_3",
+      "text": "بالتخمين",
+      "prep": "بِالتَّخْمِينِ",
+      "transcript": "بتحمين",
+      "flags": [],
+      "setOverlap": 0.625,
+      "provider": "fish"
+    },
+    {
+      "id": "opt_nawawi_e62798c1_2",
+      "text": "أربعين يوما فقط",
+      "prep": "أَرْبَعِينَ يوماً فَقَطْ",
+      "transcript": "40 يوما فقط",
+      "flags": [],
+      "setOverlap": 0.636,
+      "provider": "fish"
+    },
+    {
+      "id": "opt_nawawi_e62798c1_3",
+      "text": "مئة وعشرين يوما",
+      "prep": "مِئَةً وعشرين يَوْمًا",
+      "transcript": "120 يوم",
+      "flags": [],
+      "setOverlap": 0.3,
+      "provider": "fish"
+    },
+    {
+      "id": "opt_nawawi_869d0b38_2",
+      "text": "جائز",
+      "prep": "جَائِزٌ",
+      "transcript": "جا إزون",
+      "flags": [],
+      "setOverlap": 0.75,
+      "provider": "fish"
+    }
+  ],
+  "lemmaMissList": []
+}

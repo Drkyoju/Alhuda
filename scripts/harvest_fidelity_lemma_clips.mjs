@@ -176,6 +176,35 @@ function spokenVariants(bare) {
     uniq.add('أَبُو  هُرَيْرَةَ');
     uniq.add('أَبُو هُرَيْرَةَ');
   }
+  if (/^اللهو$/u.test(bare)) {
+    // Emphasize هْو so Fish does not collapse to الله
+    uniq.add('اللَّهْوُ');
+    uniq.add('اللَّهْوْ');
+    uniq.add('الَلَّهْوُ');
+    uniq.add('اللّهْوُ');
+    uniq.add('اللَهْوْ');
+  } else if (/اللهو\s+واللعب/.test(bare)) {
+    uniq.add('اللَّهْوُ  وَاللَّعِبُ');
+    uniq.add('اللَّهْوْ  وَاللَّعِبْ');
+    uniq.add('اللَّهْوُ وَاللَّعِبُ');
+    uniq.add('اللَهْوْ وَاللَعِبْ');
+  }
+  if (/^الزنا$/u.test(bare)) {
+    uniq.add('الزِّنَا');
+    uniq.add('الزِّنَى');
+    uniq.add('الزِنَا');
+    uniq.add('الزِّنَاْ');
+  }
+  if (/^جائز$/u.test(bare)) {
+    uniq.add('جَائِزٌ');
+    uniq.add('جَائِزْ');
+    uniq.add('جائِزْ');
+  }
+  if (/^بالتخمين$/u.test(bare)) {
+    uniq.add('بِالتَّخْمِينِ');
+    uniq.add('بِالتَّخْمِينْ');
+    uniq.add('بِالتَخْمِينِ');
+  }
   // Strict: soft bare of spoken must equal soft bare of written key
   return [...uniq].filter((v) => softBare(v) === softBare(bare));
 }
@@ -242,6 +271,16 @@ const TARGETS = [
   { bare: 'رقى', file: 'ruqa.mp3', kind: 'ruqa', aliases: [] },
   { bare: 'شرك', file: 'shirk.mp3', kind: 'shirk_short', aliases: [] },
   { bare: 'أبو هريرة', file: 'abu_hurayra.mp3', kind: 'hurayra', aliases: ['ابو هريرة'] },
+  { bare: 'اللهو', file: 'lahw.mp3', kind: 'lahw', aliases: [] },
+  {
+    bare: 'اللهو واللعب',
+    file: 'lahw_laib.mp3',
+    kind: 'lahw_laib',
+    aliases: ['اللَّهْوُ وَاللَّعِبُ'],
+  },
+  { bare: 'الزنا', file: 'zina.mp3', kind: 'zina', aliases: [] },
+  { bare: 'جائز', file: 'jaiz.mp3', kind: 'jaiz', aliases: [] },
+  { bare: 'بالتخمين', file: 'biltakhmin.mp3', kind: 'takhmin', aliases: [] },
 ].filter((t) => !ONLY || t.bare.includes(ONLY) || softBare(t.bare).includes(softBare(ONLY)));
 
 const SPEEDS = [0.78, 0.85, 0.9, 0.95, 1.0, 1.05, 1.08, 1.12];
@@ -345,6 +384,30 @@ function score(kind, transcript, bare) {
     if (/حرير/.test(soft) && !/هرير/.test(soft)) return 'FAIL_حريرا';
     if (/هرير/.test(soft)) return 'PASS_هريرة';
     return 'no_hurayra';
+  }
+  if (kind === 'lahw' || kind === 'lahw_laib') {
+    // Reject collapse اللهو → الله
+    if (/\bالله\b/.test(soft) && !/اللهو|لهو/.test(soft)) return 'FAIL_الله';
+    if (/اللهو|لهو/.test(soft) && (kind === 'lahw' || /لعب/.test(soft))) return 'PASS_اللهو';
+    return 'no_lahw';
+  }
+  if (kind === 'zina') {
+    if (/زينه|زينة|ازينه/.test(soft) && !/زنا|زنى/.test(soft)) return 'FAIL_زينة';
+    // Whisper often hears الزنا as ازينة / الزنا — accept زنا stem
+    if (/زنا|زنى|ازنا/.test(soft)) return 'PASS_زنا';
+    return 'no_zina';
+  }
+  if (kind === 'jaiz') {
+    if (/جوز|جوازا/.test(soft) && !/جائز|جايز/.test(soft)) return 'FAIL_جوز';
+    if (/جائز|جايز|جايز/.test(soft) || /^جا\s*ائز/.test(soft)) return 'PASS_جائز';
+    return 'no_jaiz';
+  }
+  if (kind === 'takhmin') {
+    if (/تخمين|تحمين/.test(soft) && /تخم/.test(soft)) return 'PASS_تخمين';
+    if (/تخمين/.test(soft)) return 'PASS_تخمين';
+    // require خ audible: reject تحمين without خ
+    if (/تحمين/.test(soft) && !/تخم/.test(soft)) return 'FAIL_بلا_خ';
+    return 'no_takhmin';
   }
   // Generic: soft bare of transcript should contain target
   if (soft.includes(target) || softBare(s.replace(/\s+/g, '')) === target.replace(/\s+/g, '')) {
