@@ -5219,24 +5219,16 @@ function stripArabicDiacritics(s) {
   return (s || '').replace(/[\u064B-\u065F\u0670\u0610-\u061A\u0640\u200c\u200f]/g, '');
 }
 
-/** Soft OCR: mid-word letter breaks that keep singles-ratio under 0.35 (ي ؤمن، الل ه، ق ل…). */
+/** Soft OCR: mid-word letter breaks only (ي ؤمن، الل ه، ق ل…).
+ *  Do NOT treat normal Arabic particles (من/لا/أن/إن/ما) as torn — that glued
+ *  good citations into garbage and hid ~40 real استشهادات. */
 function hasSoftOcrLetterBreaks(s) {
   const t = String(s || '');
   if (!t) return false;
   // Known torn stems from PDF/worksheet OCR (avoid \\b — it breaks on Arabic letters).
-  if (/(?:ي\s+ؤ(?:من)?|بالل\s+ه|الل\s+ه|(?:^|[\s«"'])ق\s+ل(?:[\s»"'،,]|$)|(?:^|[\s«"'])إ\s+ن(?:[\s»"'،,]|$)|ف\s+لي|ل\s+يص|أم\s+تي|الخ\s+طأ|است\s+كره|عل\s+يه|يعني\s+ه(?:[\s»"'،.]|$)|ف\s+لي\s*قل|ل\s+يص\s*مت|الب\s+ضع|ان\s+واط|الري\s+اء|فر\s+ائض)/.test(t)) {
-    return true;
-  }
-  // ≥3 short (1–2 letter) Arabic tokens adjacent to longer Arabic tokens → torn words.
-  const toks = t.split(/\s+/).filter(Boolean);
-  let torn = 0;
-  for (let i = 0; i < toks.length - 1; i++) {
-    const a = toks[i].replace(/[^\u0621-\u064A\u0671]/g, '');
-    const b = toks[i + 1].replace(/[^\u0621-\u064A\u0671]/g, '');
-    if (!a || !b) continue;
-    if ((a.length <= 2 && b.length >= 2) || (a.length >= 2 && b.length === 1)) torn++;
-  }
-  return torn >= 3;
+  return /(?:ي\s+ؤ(?:من)?|بالل\s+ه|الل\s+ه|(?:^|[\s«"'])ق\s+ل(?:[\s»"'،,]|$)|(?:^|[\s«"'])إ\s+ن(?:[\s»"'،,]|$)|ف\s+لي|ل\s+يص|أم\s+تي|الخ\s+طأ|است\s+كره|عل\s+يه|يعني\s+ه(?:[\s»"'،.]|$)|ف\s+لي\s*قل|ل\s+يص\s*مت|الب\s+ضع|ان\s+واط|الري\s+اء|فر\s+ائض)/.test(
+    t
+  );
 }
 
 function hasBrokenArabicSpacing(s) {
@@ -5254,16 +5246,43 @@ function collapseBrokenArabicSpaces(s) {
     return stripArabicDiacritics(s).replace(/\s+/g, ' ').trim();
   }
   let out = stripArabicDiacritics(s);
-  for (let i = 0; i < 50; i++) {
-    const n = out.replace(/([\u0621-\u064A\u0671])\s+(?=[\u0621-\u064A\u0671])/g, '$1');
-    if (n === out) return out;
-    out = n;
+  // Targeted soft-break joins — never glue every Arabic space (that creates glued-word rejects).
+  out = out
+    .replace(/ي\s+ؤ/g, 'يؤ')
+    .replace(/بالل\s+ه/g, 'بالله')
+    .replace(/الل\s+ه/g, 'الله')
+    .replace(/(^|[\s«"'])ق\s+ل(?=[\s»"'،,]|$)/g, '$1قل')
+    .replace(/(^|[\s«"'])إ\s+ن(?=[\s»"'،,]|$)/g, '$1إن')
+    .replace(/ف\s+لي/g, 'فلي')
+    .replace(/ل\s+يص/g, 'ليص')
+    .replace(/أم\s+تي/g, 'أمتي')
+    .replace(/الخ\s+طأ/g, 'الخطأ')
+    .replace(/است\s+كره/g, 'استكره')
+    .replace(/عل\s+يه/g, 'عليه')
+    .replace(/يعني\s+ه/g, 'يعنيه')
+    .replace(/الب\s+ضع/g, 'البضع')
+    .replace(/ان\s+واط/g, 'انواط')
+    .replace(/الري\s+اء/g, 'الرياء')
+    .replace(/فر\s+ائض/g, 'فرائض');
+  // Full letter-collapse only when single-letter OCR ratio is truly broken.
+  const toks = out.split(/\s+/).filter(Boolean);
+  const arabicToks = toks.filter((t) => t.replace(/[^\u0621-\u064A\u0671]/g, '').length > 0);
+  const singles = arabicToks.filter((t) => t.replace(/[^\u0621-\u064A\u0671]/g, '').length <= 1).length;
+  if (arabicToks.length >= 4 && singles / arabicToks.length >= 0.35) {
+    for (let i = 0; i < 50; i++) {
+      const n = out.replace(/([\u0621-\u064A\u0671])\s+(?=[\u0621-\u064A\u0671])/g, '$1');
+      if (n === out) break;
+      out = n;
+    }
   }
-  return out;
+  return out.replace(/\s+/g, ' ').trim();
 }
 
 function isWorksheetCitation(s) {
-  return /اكتبي|أجيبي|أجيب على|معاني الكلمات|اذكري مناسبة|الأسئلة التالية|س\s*:|ج\s*:|الدليل على أنه|لشيخ الإسلام محمد بن عبدالوهاب.*\d|^[\/.]|ماذا تعرف عن مؤلف/i.test(s || '');
+  // Note: do NOT use bare /س\s*:/ — it false-positives on words like «خمس:».
+  return /اكتبي|أجيبي|أجيب على|معاني الكلمات|اذكري مناسبة|الأسئلة التالية|(?:^|[\n\r.。])\s*س\s*:|(?:^|[\n\r.。])\s*ج\s*:|الدليل على أنه|لشيخ الإسلام محمد بن عبدالوهاب.*\d|^[\/.]|ماذا تعرف عن مؤلف/i.test(
+    s || ''
+  );
 }
 
 function hasGluedWords(s) {
@@ -5330,6 +5349,17 @@ function postFixCitationPhrases(s) {
     // Common OCR letter-level typos (display path).
     .replace(/االنتقال/g, 'الانتقال')
     .replace(/اإلحسان/g, 'الإحسان')
+    .replace(/اإليمان/g, 'الإيمان')
+    .replace(/اإلنسان/g, 'الإنسان')
+    .replace(/اإلسالم/g, 'الإسلام')
+    .replace(/اآلخر/g, 'الآخر')
+    .replace(/األركان/g, 'الأركان')
+    .replace(/األقوال/g, 'الأقوال')
+    .replace(/األعمال/g, 'الأعمال')
+    .replace(/األنعام/g, 'الأنعام')
+    .replace(/مالئكته/g, 'ملائكته')
+    .replace(/اهلل/g, 'الله')
+    .replace(/حممد/g, 'محمد')
     .replace(/يد عو/g, 'يدعو')
     .replace(/رمحه الله/g, 'رحمه الله')
     .replace(/تعاىل/g, 'تعالى')
@@ -5359,13 +5389,16 @@ function cleanArabicCitation(raw, questionId) {
   let s = raw.trim();
   // Strip PDF/OCR private-use glyphs and presentation forms leftovers.
   s = s.replace(/[\uE000-\uF8FF]/g, '');
+  s = s.replace(/[\uFB50-\uFDFF\uFE70-\uFEFF]/g, ''); // Arabic presentation / Quran-font OCR leftovers
   s = s.replace(/[\uFD3E\uFD3F]/g, ''); // ornate Quran paren ornaments often OCR'd empty
   s = s.replace(/[\uFE00-\uFE0F]/g, ''); // variation selectors
   s = s.replace(/^كتاب التوحيد[^.«]{0,120}?\d+\s*/u, '');
+  s = s.replace(/^كتاب التوحيد الذي هو حق الله على العبيد\s*\d*\s*/u, '');
   s = s.replace(/لشيخ الإسلام محمد بن عبدالوهاب[^\n«]*/gi, '');
-  s = s.replace(/[]/g, '');
+  s = s.replace(/[]/g, '');
   s = s.replace(/أجل\s*واب|واب\s*جلا|اجلا واب|اجل واب/gi, '');
   s = s.replace(/الإجابة\s*الصحيحة\s*:?\s*/gi, '');
+  s = s.replace(/^[:：؛]+\s*/u, '');
   s = s.replace(/\bص\s*\.?\s*\d{1,4}\b/gi, '');
   s = s.replace(/[|]{2,}|_{3,}|\.{4,}/g, ' ');
   s = s.replace(/\s+/g, ' ').trim();

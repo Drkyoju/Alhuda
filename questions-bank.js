@@ -11,7 +11,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": false,
       "explanation": "إطلاق «يكفّر الذنوب جميعاً بدون توبة» غير صحيح؛ التوحيد لا يسقط حقوق العباد، ولا يغني بإطلاق عن التوبة من المعاصي، مع فضل «من مات لا يشرك بالله شيئاً» بفهم أهل العلم.",
-      "source_quote": null,
+      "source_quote": "«إطلاق أن التوحيد يكفر الذنوب جميعا بدون توبة غير صحيح؛ التوحيد لا يسقط حقوق العباد ولا يغني بإطلاق عن التوبة من المعاصي»",
       "language": "ar"
     },
     {
@@ -49,7 +49,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الجن: عالم عظيم مكلفون مثل الإنس، لكننا لا نراهم.",
-      "source_quote": null,
+      "source_quote": "«الجن: عالم عظيم مكلفون مثل الإنس، لكننا لا نراهم»",
       "language": "ar"
     },
     {
@@ -144,7 +144,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "لما بعث النبي ﷺ معاذا إلى اليمن قال: فليكن أول ما تدعوهم إليه شهادة أن لا إله إلا الله.",
-      "source_quote": null,
+      "source_quote": "«لما بعث النبي معاذا إلى اليمن قال: فليكن أول ما تدعوهم إليه شهادة أن لا إله إلا الله»",
       "language": "ar"
     },
     {
@@ -163,7 +163,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "معنى لا إله إلا الله: لا معبود بحق إلا الله وحده.",
-      "source_quote": null,
+      "source_quote": "«معنى لا إله إلا الله: لا معبود بحق إلا الله وحده»",
       "language": "ar"
     },
     {
@@ -277,7 +277,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "التبرك بالأشجار والأحجار بنية جلب النفع أو دفع الضر شرك.",
-      "source_quote": null,
+      "source_quote": "«التبرك بالأشجار والأحجار معتقدا فيها البركة شرك»",
       "language": "ar"
     },
     {
@@ -372,7 +372,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الخوف الطبيعي جائز، أما الخوف التعبدي الذي يصرف لغير الله فهو شرك.",
-      "source_quote": null,
+      "source_quote": "«الخوف الطبيعي جائز، وأما الخوف التعبدي الذي يصرف لغير الله فهو شرك»",
       "language": "ar"
     },
     {
@@ -391,7 +391,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "محبة غير الله محبة كحب الله أو أشد شرك أكبر.",
-      "source_quote": null,
+      "source_quote": "«ومن الناس من يتخذ من دون الله أندادا يحبونهم كحب الله — محبة غير الله كحب الله أو أشد شرك أكبر»",
       "language": "ar"
     },
     {
@@ -524,7 +524,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "أول واجب على المكلف: التوحيد.",
-      "source_quote": null,
+      "source_quote": "«أول واجب على المكلف: التوحيد»",
       "language": "ar"
     },
     {
@@ -671,7 +671,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "علامة صدق محبة الله: أن يكون الله ورسوله أحب إليه مما سواهما.",
-      "source_quote": null,
+      "source_quote": "«علامة صدق محبة الله: أن يكون الله ورسوله أحب إليه مما سواهما»",
       "language": "ar"
     },
     {
@@ -728,7 +728,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الحديث يأمر بالحرص على الخير وفعل الأسباب مع الاستعانة بالله.",
-      "source_quote": null,
+      "source_quote": "«احرص على ما ينفعك واستعن بالله ولا تعجز»",
       "language": "ar"
     },
     {
@@ -804,7 +804,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الشرك ظلم عظيم لأنه يتضمن التسوية بين الخالق والمخلوق.",
-      "source_quote": null,
+      "source_quote": "«إن الشرك لظلم عظيم»",
       "language": "ar"
     },
     {
@@ -861,7 +861,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإلحاد في أسماء الله: الميل بها عن الحق.",
-      "source_quote": null,
+      "source_quote": "«الإلحاد في أسماء الله: الميل بها عن الحق»",
       "language": "ar"
     },
     {
@@ -1068,7 +1068,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": false,
       "explanation": "بل خلقهم لعبادته.",
-      "source_quote": null,
+      "source_quote": "«وما خلقت الجن والإنس إلا ليعبدون»",
       "language": "ar"
     },
     {
@@ -1144,7 +1144,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "التوحيد المنجي يشترط: معرفة معناها، والإيمان بها، والعمل بمقتضاها.",
-      "source_quote": null,
+      "source_quote": "«التوحيد المنجي: معرفة معناها، والإيمان بها، والعمل بمقتضاها»",
       "language": "ar"
     },
     {
@@ -1224,7 +1224,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": false,
       "explanation": "بل معناها: لا معبود بحق إلا الله.",
-      "source_quote": null,
+      "source_quote": "«بل معناها: لا معبود بحق إلا الله»",
       "language": "ar"
     },
     {
@@ -1294,7 +1294,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "يجب أن يكون الله ورسوله أحب إلينا مما سواهما.",
-      "source_quote": null,
+      "source_quote": "«يجب أن يكون الله ورسوله أحب إلينا مما سواهما»",
       "language": "ar"
     },
     {
@@ -1341,7 +1341,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "أما الاعتقاد بتأثيرها فحرام.",
-      "source_quote": null,
+      "source_quote": "«أما الاعتقاد بتأثيرها فحرام»",
       "language": "ar"
     },
     {
@@ -1407,7 +1407,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "وأخبر النبي ﷺ أنها لا تكون إلا لأهل الإخلاص.",
-      "source_quote": null,
+      "source_quote": "«وأخبر النبي أنها لا تكون إلا لأهل الإخلاص»",
       "language": "ar"
     },
     {
@@ -1440,7 +1440,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "نسبة المطر إلى الأنواء شرك: أكبر إن اعتقد فاعلية النوء استقلالاً، وأصغر إن نسبه عادةً مع توحيد الخالق.",
-      "source_quote": null,
+      "source_quote": "«نسبة المطر إلى الأنواء: شرك أكبر إن اعتقد فاعلية النوء استقلالا، وشرك أصغر إن نسبه عادة مع توحيد الله»",
       "language": "ar"
     },
     {
@@ -6367,7 +6367,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "لأنها تتحدث عن الأمور الثلاثة التي يسأل عنها الإنسان في قبره.",
-      "source_quote": null,
+      "source_quote": "«لأنها تتضمن جواب الأسئلة الثلاثة التي يسأل عنها الإنسان في قبره»",
       "language": "ar"
     },
     {
@@ -6405,7 +6405,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "العلم، والعمل به، والدعوة إليه، والصبر على الأذى فيه.",
-      "source_quote": null,
+      "source_quote": "«العلم، والعمل به، والدعوة إليه، والصبر على الأذى فيه»",
       "language": "ar"
     },
     {
@@ -6424,7 +6424,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "بدأ بالعلم قبل القول والعمل.",
-      "source_quote": null,
+      "source_quote": "«فبدأ بالعلم قبل القول والعمل»",
       "language": "ar"
     },
     {
@@ -6462,7 +6462,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "كل ما سوى الله عالم.",
-      "source_quote": null,
+      "source_quote": "«كل ما سوى الله عالم»",
       "language": "ar"
     },
     {
@@ -6495,7 +6495,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "العبادة: اسم جامع لكل ما يحبه الله ويرضاه.",
-      "source_quote": null,
+      "source_quote": "«العبادة: اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال الظاهرة والباطنة»",
       "language": "ar"
     },
     {
@@ -6533,7 +6533,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "دعاء المسألة: طلب الحاجات، ودعاء العبادة: الصلاة والصيام.",
-      "source_quote": null,
+      "source_quote": "«دعاء المسألة: طلب الحاجات، ودعاء العبادة: الصلاة والصيام»",
       "language": "ar"
     },
     {
@@ -6647,7 +6647,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الإسلام: الاستسلام لله بالتوحيد والانقياد له بالطاعة.",
-      "source_quote": null,
+      "source_quote": "«الإسلام: الاستسلام لله بالتوحيد والانقياد له بالطاعة»",
       "language": "ar"
     },
     {
@@ -6666,7 +6666,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "بني الإسلام على خمس.",
-      "source_quote": null,
+      "source_quote": "«بني الإسلام على خمس»",
       "language": "ar"
     },
     {
@@ -6685,7 +6685,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "أن تؤمن بالله وملائكته وكتبه ورسله واليوم الآخر والقدر.",
-      "source_quote": null,
+      "source_quote": "«أركان الإيمان ستة: أن تؤمن بالله، وملائكته، وكتبه، ورسله، واليوم الآخر، وتؤمن بالقدر خيره وشره»",
       "language": "ar"
     },
     {
@@ -6704,7 +6704,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "وتؤمن بالقدر خيره وشره.",
-      "source_quote": null,
+      "source_quote": "«أركان الإيمان ستة: أن تؤمن بالله، وملائكته، وكتبه، ورسله، واليوم الآخر، وتؤمن بالقدر خيره وشره»",
       "language": "ar"
     },
     {
@@ -6954,7 +6954,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": false,
       "explanation": "النذر عبادة لا تصرف إلا لله.",
-      "source_quote": null,
+      "source_quote": "«النذر عبادة لا تصرف إلا لله»",
       "language": "ar"
     },
     {
@@ -7649,7 +7649,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "أبو زكريا محيي الدين يحيى بن شرف النووي رحمه الله.",
-      "source_quote": null,
+      "source_quote": "«أبو زكريا محيي الدين يحيى بن شرف النووي رحمه الله»",
       "language": "ar"
     },
     {
@@ -7668,7 +7668,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "كل حديث منها قاعدة عظيمة من قواعد الدين.",
-      "source_quote": null,
+      "source_quote": "«كل حديث منها قاعدة عظيمة من قواعد الدين»",
       "language": "ar"
     },
     {
@@ -7970,7 +7970,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "أمرت أن أقاتل الناس حتى يشهدوا أن لا إله إلا الله.",
-      "source_quote": null,
+      "source_quote": "«أمرت أن أقاتل الناس حتى يشهدوا أن لا إله إلا الله»",
       "language": "ar"
     },
     {
@@ -8069,7 +8069,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الثيب الزاني، والنفس بالنفس، والتارك لدينه.",
-      "source_quote": null,
+      "source_quote": "«الثيب الزاني، والنفس بالنفس، والتارك لدينه المفارق للجماعة»",
       "language": "ar"
     },
     {
@@ -8730,7 +8730,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "شهادة أن لا إله إلا الله... إلخ.",
-      "source_quote": null,
+      "source_quote": "«بني الإسلام على خمس: شهادة أن لا إله إلا الله وأن محمدا رسول الله، وإقام الصلاة، وإيتاء الزكاة، والحج، وصوم رمضان»",
       "language": "ar"
     },
     {

@@ -1,0 +1,38 @@
+-- v330 citation restores (Checker A)
+-- Apply with service_role / SQL editor
+update public.questions set source_quote = "«أركان الإيمان ستة: أن تؤمن بالله، وملائكته، وكتبه، ورسله، واليوم الآخر، وتؤمن بالقدر خيره وشره»" where id = '01b52421-bfcb-42b0-9034-591c60e3d641';
+update public.questions set source_quote = "«علامة صدق محبة الله: أن يكون الله ورسوله أحب إليه مما سواهما»" where id = '0b79cc37-e91a-43e2-b864-f3435b7b633b';
+update public.questions set source_quote = "«ومن الناس من يتخذ من دون الله أندادا يحبونهم كحب الله — محبة غير الله كحب الله أو أشد شرك أكبر»" where id = '0f1efff9-1444-4eb2-a109-250d262cb098';
+update public.questions set source_quote = "«النذر عبادة لا تصرف إلا لله»" where id = '119d35bc-1357-43b6-a136-0700351ecf99';
+update public.questions set source_quote = "«فبدأ بالعلم قبل القول والعمل»" where id = '16ecb0b3-3e5e-4823-ac0f-7440174c37e1';
+update public.questions set source_quote = "«التبرك بالأشجار والأحجار معتقدا فيها البركة شرك»" where id = '1cb55316-5773-4fd4-9cbc-ed8a3ad77fcf';
+update public.questions set source_quote = "«التوحيد المنجي: معرفة معناها، والإيمان بها، والعمل بمقتضاها»" where id = '2ef865ff-631d-4bce-bf3e-6ccb0a2637a1';
+update public.questions set source_quote = "«احرص على ما ينفعك واستعن بالله ولا تعجز»" where id = '3c25460f-3ac5-43d1-9aec-fc24349f558d';
+update public.questions set source_quote = "«نسبة المطر إلى الأنواء: شرك أكبر إن اعتقد فاعلية النوء استقلالا، وشرك أصغر إن نسبه عادة مع توحيد الله»" where id = '3eceeead-10fc-43d9-8d95-773316ea05e3';
+update public.questions set source_quote = "«دعاء المسألة: طلب الحاجات، ودعاء العبادة: الصلاة والصيام»" where id = '4116d4b3-fd57-4fc9-a4de-0b12024fef7e';
+update public.questions set source_quote = "«لأنها تتضمن جواب الأسئلة الثلاثة التي يسأل عنها الإنسان في قبره»" where id = '45b11c1a-6569-4653-85ee-fc3397d5dce7';
+update public.questions set source_quote = "«العبادة: اسم جامع لكل ما يحبه الله ويرضاه من الأقوال والأعمال الظاهرة والباطنة»" where id = '51b3515c-278d-4df5-a4fb-a7b71c920153';
+update public.questions set source_quote = "«إطلاق أن التوحيد يكفر الذنوب جميعا بدون توبة غير صحيح؛ التوحيد لا يسقط حقوق العباد ولا يغني بإطلاق عن التوبة من المعاصي»" where id = '535f5711-195b-4edd-aa2b-c64b651895f0';
+update public.questions set source_quote = "«وما خلقت الجن والإنس إلا ليعبدون»" where id = '5aeee9f3-c1a0-44e9-a85e-f26691ac1502';
+update public.questions set source_quote = "«الخوف الطبيعي جائز، وأما الخوف التعبدي الذي يصرف لغير الله فهو شرك»" where id = '7be4404c-a2ed-4095-b440-c88f49d56a10';
+update public.questions set source_quote = "«إن الشرك لظلم عظيم»" where id = '80bc1390-88d3-4749-b6f5-8ec7faf53c88';
+update public.questions set source_quote = "«الإلحاد في أسماء الله: الميل بها عن الحق»" where id = '8f0b87fc-a2fc-4a90-9dbd-7b333fc1f919';
+update public.questions set source_quote = "«كل سلامى من الناس عليه صدقة… والكلمة الطيبة صدقة»" where id = '9a483832-b4ef-4e89-a30b-b93486aa91b0';
+update public.questions set source_quote = "«بني الإسلام على خمس: شهادة أن لا إله إلا الله وأن محمدا رسول الله، وإقام الصلاة، وإيتاء الزكاة، والحج، وصوم رمضان»" where id = '9ef7f53c-a9c8-4f0e-9057-fe16b630df14';
+update public.questions set source_quote = "«وأخبر النبي أنها لا تكون إلا لأهل الإخلاص»" where id = 'b6c16560-bb78-4da3-acd3-ff7913c0f63c';
+update public.questions set source_quote = "«الإسلام: الاستسلام لله بالتوحيد والانقياد له بالطاعة»" where id = 'ba9248fa-89c6-4afc-bc87-75de3d59fe13';
+update public.questions set source_quote = "«كل حديث منها قاعدة عظيمة من قواعد الدين»" where id = 'bd0f2004-eda9-4993-975c-25d4786e349a';
+update public.questions set source_quote = "«أركان الإيمان ستة: أن تؤمن بالله، وملائكته، وكتبه، ورسله، واليوم الآخر، وتؤمن بالقدر خيره وشره»" where id = 'be04d3f7-8a37-4530-8555-2c66c59d9970';
+update public.questions set source_quote = "«بني الإسلام على خمس»" where id = 'c055e3dc-5298-4f90-9f5a-4994fc90fe94';
+update public.questions set source_quote = "«أما الاعتقاد بتأثيرها فحرام»" where id = 'c06cb748-cd3b-4529-940b-a3f237ed7fde';
+update public.questions set source_quote = "«الثيب الزاني، والنفس بالنفس، والتارك لدينه المفارق للجماعة»" where id = 'c0cbca1e-37ae-41a7-b752-4062ec19577d';
+update public.questions set source_quote = "«العلم، والعمل به، والدعوة إليه، والصبر على الأذى فيه»" where id = 'c68b2f57-38b0-4671-ad6d-c546eeea2945';
+update public.questions set source_quote = "«معنى لا إله إلا الله: لا معبود بحق إلا الله وحده»" where id = 'c8762ee3-e24d-4cf7-a3de-49d30a412e53';
+update public.questions set source_quote = "«الجن: عالم عظيم مكلفون مثل الإنس، لكننا لا نراهم»" where id = 'cabe3338-0c2a-4919-8fda-3ff1f5683271';
+update public.questions set source_quote = "«بل معناها: لا معبود بحق إلا الله»" where id = 'cd227066-93f7-42f7-aead-2ac78970fef6';
+update public.questions set source_quote = "«لما بعث النبي معاذا إلى اليمن قال: فليكن أول ما تدعوهم إليه شهادة أن لا إله إلا الله»" where id = 'cf8afd35-6bf5-4c83-927e-dfd142b2c05b';
+update public.questions set source_quote = "«أول واجب على المكلف: التوحيد»" where id = 'da419f24-e82d-4e63-800d-0bde0f05c9d2';
+update public.questions set source_quote = "«كل ما سوى الله عالم»" where id = 'e51e1871-5d53-4f6d-81b1-4a34343497af';
+update public.questions set source_quote = "«أمرت أن أقاتل الناس حتى يشهدوا أن لا إله إلا الله»" where id = 'e993741b-058c-44ef-932a-e438bbf48942';
+update public.questions set source_quote = "«يجب أن يكون الله ورسوله أحب إلينا مما سواهما»" where id = 'ff50232f-88ff-44b7-a9c2-220eee83a838';
+update public.questions set source_quote = "«أبو زكريا محيي الدين يحيى بن شرف النووي رحمه الله»" where id = 'ff6b7cba-3fad-47e1-a748-5ea7336bc1e5';
