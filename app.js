@@ -5292,6 +5292,18 @@ function isGarbageCitation(s) {
   if ((s.match(/[a-zA-Z]/g) || []).length > 2) return true;
   // Private-use / mojibake leftovers from PDF OCR (األمة, , …).
   if (/[\uE000-\uF8FF]|اأ|ألم|ألمة|األ/.test(s)) return true;
+  // High-confidence OCR / reversed-letter garbage that still passes spacing checks.
+  if (
+    /ىلع|يشء|بيشء|افرتض|أويلاء|إيل\s|يد عو|اإلحسان|االنتقال|تعاىل|رمحه الله|حميي|حييى|مجعت المادة|لثالث\b|فليغريه|انلظر|نفيس\b|بسنيت|دلواء|يف حرام/.test(
+      s
+    )
+  ) {
+    return true;
+  }
+  // اال… (double-alef OCR) except الله/اللهم/والله family.
+  if (/اال(?![لهم])/.test(s)) return true;
+  // Leading colon leftovers after stripping «اجل واب».
+  if (/^[:：]/.test(String(s).replace(/^«\s*/, '').trim())) return true;
   // Leftovers after stripping «الإجابة الصحيحة:» are usually the answer option, not a book quote.
   if (/^(صح|خطأ|شرك\s*أكبر|شرك\s*أصغر|الأسماء\s*والصفات)\s*$/i.test(String(s).trim())) return true;
   return citationTextQuality(s) < 0.45;
@@ -5315,6 +5327,13 @@ function postFixCitationPhrases(s) {
     .replace(/الشركالأكبر/g, 'الشرك الأكبر')
     .replace(/والشركالأصغر/g, 'والشرك الأصغر')
     .replace(/الطيرةشرك/g, 'الطيرة شرك')
+    // Common OCR letter-level typos (display path).
+    .replace(/االنتقال/g, 'الانتقال')
+    .replace(/اإلحسان/g, 'الإحسان')
+    .replace(/يد عو/g, 'يدعو')
+    .replace(/رمحه الله/g, 'رحمه الله')
+    .replace(/تعاىل/g, 'تعالى')
+    .replace(/النجوم لثالث\b/g, 'النجوم لثلاث')
     .replace(/\s+/g, ' ')
     .trim();
 }

@@ -1,0 +1,79 @@
+{
+  "patched": 17,
+  "already": 10,
+  "missing": 0,
+  "errors": 0,
+  "patched_detail": [
+    [
+      "004bafb8-c799-4a85-a78a-46282c27ca1a",
+      "patch"
+    ],
+    [
+      "996dc082-6aba-408e-9709-9e2336e6e0c6",
+      "patch"
+    ],
+    [
+      "f9f15cec-cedd-45bc-a105-e7ce7f6ca806",
+      "patch"
+    ],
+    [
+      "14691ce7-a4a6-4aae-b4c1-084fe8dd206c",
+      "patch"
+    ],
+    [
+      "4c184ccc-c242-4821-a7e8-f97681fdb7e5",
+      "patch"
+    ],
+    [
+      "12da482a-40d3-42ed-88e9-bba88f44f521",
+      "patch"
+    ],
+    [
+      "83f5092b-7e8e-43b8-a99e-ee497a4cc30a",
+      "patch"
+    ],
+    [
+      "9c641ce1-8cb7-44c9-a944-d99e884599ac",
+      "patch"
+    ],
+    [
+      "cb18a215-07dd-4621-ab08-773096785520",
+      "patch"
+    ],
+    [
+      "e5367815-958c-4ec4-9138-ed6455725381",
+      "patch"
+    ],
+    [
+      "d4c2155a-db1c-4adc-aa8a-776f7991c93b",
+      "patch"
+    ],
+    [
+      "521e7ce5-fff3-455b-ad0d-92d7cd87b029",
+      "patch"
+    ],
+    [
+      "5963941f-e801-4c27-8a42-2e1bc89e00f6",
+      "patch"
+    ],
+    [
+      "7bf71509-12cb-415e-9974-2ea1b237c14a",
+      "patch"
+    ],
+    [
+      "c657e959-434b-4c9c-b1c7-60206d85138d",
+      "patch"
+    ],
+    [
+      "9a483832-b4ef-4e89-a30b-b93486aa91b0",
+      "patch"
+    ],
+    [
+      "ef0c9b86-fc95-4c6c-b10d-ef93a2e46153",
+      "v328:question_text,options"
+    ]
+  ],
+  "missing_ids": [],
+  "error_detail": [],
+  "anon_bads": []
+}
