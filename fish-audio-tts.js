@@ -519,6 +519,19 @@ export function prepareFishTtsText(text) {
   s = applySystematicCaseEndings(s);
   s = applyShortSpeechCarriers(s);
 
+  // v328: critical verb/noun disambiguation (exact written words + tashkeel only).
+  s = s.replace(/سنة\s+من\s+السنين/g, 'سَنَةٌ مِنَ السِّنِينَ');
+  s = s.replace(/من\s+السنين/g, 'مِنَ السِّنِينَ');
+  s = s.replace(/(^|[^\u0621-\u064A])السنين(?![\u0621-\u064A])/g, '$1السِّنِينَ');
+  // أرسل verb — never let Fish invent إرسال (masdar)
+  s = s.replace(/بماذا\s+أ[ُِ]?ر[ْ]?س[ِ]?ل[َ]?/g, 'بِمَاذَا أَرْسَلَ');
+  s = s.replace(/بماذا\s+ارسل/g, 'بِمَاذَا أَرْسَلَ');
+  s = s.replace(/(^|[^\u0621-\u064A])أُرْسِلَ(?=\s+الن)/g, '$1أَرْسَلَ');
+  s = s.replace(/(^|[^\u0621-\u064A])أرسل(?=\s)/g, '$1أَرْسَلَ');
+  s = s.replace(/(^|[^\u0621-\u064A])ارسل(?=\s)/g, '$1أَرْسَلَ');
+  s = s.replace(/فاذكروني\s+اذكركم/g, 'فَاذْكُرُونِي أَذْكُرْكُمْ');
+  s = s.replace(/فاذكروني\s+أذكركم/g, 'فَاذْكُرُونِي أَذْكُرْكُمْ');
+
   // v324: Fish Hakim A/B — strip harakat except KEEP (tawheed+usool+nawawi winners).
   // KEEP preserves contextual iʿrāb already on the token; bare often reads cleaner.
   s = applyHarakatPolicy(s);

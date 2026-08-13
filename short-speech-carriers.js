@@ -18,6 +18,10 @@ export function bareArabicKey(text) {
  * UI display stays bare; spoken form = same bare content words + فصيح إعراب.
  */
 export const SHORT_SPEECH_CARRIERS = Object.freeze({
+  "فاذكروني أذكركم": "فَاذْكُرُونِي أَذْكُرْكُمْ",
+  "أرسل": "أَرْسَلَ",
+  "سنة من السنين": "سَنَةٌ مِنَ السِّنِينَ",
+  "السنين": "السِّنِينَ",
   "صح": "صَحْ",
   "صحيح": "صَحِيحٌ",
   "خطأ": "خَطَأٌ",

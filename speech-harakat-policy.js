@@ -1251,11 +1251,19 @@ export const HARAKAT_KEEP_BARE = new Set([
   "من",
   "هم",
   "هو",
-  "هي"
+  "هي",
+  "ارسل",
+  "السنين",
+  "فاذكروني",
+  "اذكركم",
 ]);
 
 /** Documentation / preferred citation forms (NOT forced over contextual iʿrāb). */
 export const HARAKAT_KEEP_FORMS = Object.freeze({
+  "اذكركم": "أَذْكُرْكُمْ",
+  "فاذكروني": "فَاذْكُرُونِي",
+  "السنين": "السِّنِينَ",
+  "ارسل": "أَرْسَلَ",
   "الله": "اللَّهِ",
   "ان": "أَنْ",
   "بالله": "بِاللَّهِ",
@@ -2498,15 +2506,22 @@ export function softBareKey(tok) {
 /**
  * Strip harakat from tokens not in KEEP. Preserves KEEP tokens' existing marks
  * (so اللَّهُ / اللَّهَ / اللَّهِ stay context-correct).
+ * Bare KEEP tokens get HARAKAT_KEEP_FORMS when present — otherwise Fish invents
+ * wrong lemmas (أرسل→إرسال، سنين→سنن).
  */
-export function applyHarakatPolicy(text, keepSet = HARAKAT_KEEP_BARE) {
+export function applyHarakatPolicy(text, keepSet = HARAKAT_KEEP_BARE, forms = HARAKAT_KEEP_FORMS) {
   const s = String(text || '');
   if (!s) return '';
   return s.replace(TOKEN_RE, (tok) => {
-    if (!HARAKAT_RE.test(tok)) return tok;
     const bare = softBareKey(tok);
     if (!bare) return tok;
-    if (keepSet.has(bare)) return tok;
+    const hasMarks = HARAKAT_RE.test(tok);
+    if (keepSet.has(bare)) {
+      if (hasMarks) return tok;
+      const preferred = forms && forms[bare];
+      return preferred || tok;
+    }
+    if (!hasMarks) return tok;
     return tok.replace(HARAKAT_RE, '');
   });
 }
