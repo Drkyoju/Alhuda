@@ -1804,7 +1804,7 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "وجوب إفراد الله بالعبادة» هو",
+      "explanation": "وجوب إفراد الله بالعبادة",
       "source_quote": "وجوب إفراد الله بالعبادة",
       "language": "ar"
     },
@@ -2127,7 +2127,7 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "كتاب الله وسنة رسوله لأنهما طريق إلى الجنة» هو",
+      "explanation": "كتاب الله وسنة رسوله لأنهما طريق إلى الجنة",
       "source_quote": "كتاب الله وسنة رسوله لأنهما طريق إلى الجنة",
       "language": "ar"
     },
@@ -2165,8 +2165,8 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "الشرك» هو",
-      "source_quote": "الشرك» هو",
+      "explanation": "الشرك",
+      "source_quote": "الشرك",
       "language": "ar"
     },
     {
@@ -2374,7 +2374,7 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "اللهم إنا نسألك خير هذه الريح وخير ما فيها» هو",
+      "explanation": "اللهم إنا نسألك خير هذه الريح وخير ما فيها",
       "source_quote": "اللهم إنا نسألك خير هذه الريح وخير ما فيها",
       "language": "ar"
     },
@@ -2450,8 +2450,8 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "أشرك» هو",
-      "source_quote": "أشرك» هو",
+      "explanation": "أشرك",
+      "source_quote": "أشرك",
       "language": "ar"
     },
     {
@@ -3229,7 +3229,7 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "تعظيم الملائكة لكلامه» هو",
+      "explanation": "تعظيم الملائكة لكلامه",
       "source_quote": "تعظيم الملائكة لكلامه",
       "language": "ar"
     },
@@ -3419,8 +3419,8 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "غزوة تبوك» هو",
-      "source_quote": "غزوة تبوك» هو",
+      "explanation": "غزوة تبوك",
+      "source_quote": "غزوة تبوك",
       "language": "ar"
     },
     {
@@ -4407,7 +4407,7 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "فلا تجعلوا لله أندادا» هو",
+      "explanation": "فلا تجعلوا لله أندادا",
       "source_quote": "فلا تجعلوا لله أندادا",
       "language": "ar"
     },
@@ -4426,8 +4426,8 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "الله» هو",
-      "source_quote": "الله» هو",
+      "explanation": "الله",
+      "source_quote": "الله",
       "language": "ar"
     },
     {
@@ -4616,8 +4616,8 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "لله وحده» هو",
-      "source_quote": "لله وحده» هو",
+      "explanation": "لله وحده",
+      "source_quote": "لله وحده",
       "language": "ar"
     },
     {
@@ -5186,8 +5186,8 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "الصلاة على النبي » هو",
-      "source_quote": "الصلاة على النبي » هو",
+      "explanation": "الصلاة على النبي",
+      "source_quote": "الصلاة على النبي",
       "language": "ar"
     },
     {
@@ -5554,7 +5554,7 @@
     {
       "id": "f753ea43-605b-e427-0f91-a6cb245795e2",
       "book": "tawheed",
-      "chapter": "📚 النُّشرة",
+      "chapter": "📚 النُّشرة",
       "level": "easy",
       "type": "mc",
       "question_text": "ابن القيم قسم النشرة إلى:",
@@ -5737,8 +5737,8 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "نعبدهم» هو",
-      "source_quote": "نعبدهم» هو",
+      "explanation": "نعبدهم",
+      "source_quote": "نعبدهم",
       "language": "ar"
     },
     {
@@ -5953,7 +5953,7 @@
     {
       "id": "4d44fecd-56a7-0a37-f7ef-8592d55ffa1b",
       "book": "tawheed",
-      "chapter": "📚 حديث الذُّباب (الدخول بسبب التقرب)",
+      "chapter": "📚 حديث الذُّباب (الدخول بسبب التقرب)",
       "level": "medium",
       "type": "mc",
       "question_text": "والآخر دخل الجنة في:",
@@ -5972,7 +5972,7 @@
     {
       "id": "04ead794-5ebb-f8aa-0c35-51a79d9e612e",
       "book": "tawheed",
-      "chapter": "📚 حديث الذُّباب (الدخول بسبب التقرب)",
+      "chapter": "📚 حديث الذُّباب (الدخول بسبب التقرب)",
       "level": "hard",
       "type": "mc",
       "question_text": "القوم كان لهم صنم لا يجوزه أحد حتى:",
@@ -5991,7 +5991,7 @@
     {
       "id": "ad766d97-4821-ee7e-1a31-d35abbabb781",
       "book": "tawheed",
-      "chapter": "📚 حديث الذُّباب (الدخول بسبب التقرب)",
+      "chapter": "📚 حديث الذُّباب (الدخول بسبب التقرب)",
       "level": "easy",
       "type": "mc",
       "question_text": "الذي قرب ذبابا للصنم — مصيره:",
@@ -6010,7 +6010,7 @@
     {
       "id": "90c75869-6875-2303-b90c-7443a43c686a",
       "book": "tawheed",
-      "chapter": "📚 حديث الذُّباب (الدخول بسبب التقرب)",
+      "chapter": "📚 حديث الذُّباب (الدخول بسبب التقرب)",
       "level": "medium",
       "type": "mc",
       "question_text": "الذي أبى أن يقرب ولو ذبابا فضربوا عنقه — مصيره:",
@@ -6079,8 +6079,8 @@
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "العين والحمة» هو",
-      "source_quote": "العين والحمة» هو",
+      "explanation": "العين والحمة",
+      "source_quote": "العين والحمة",
       "language": "ar"
     },
     {
