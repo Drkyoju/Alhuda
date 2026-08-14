@@ -1053,8 +1053,8 @@ window.QUESTIONS_BANK = {
       "options": null,
       "correct_index": null,
       "is_true": true,
-      "explanation": "هذا ما جاء في حديث معاذ بن جبل.",
-      "source_quote": "هذا ما جاء في حديث معاذ بن جبل.",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -1700,7 +1700,7 @@ window.QUESTIONS_BANK = {
       "chapter": "كتاب التوحيد",
       "level": "easy",
       "type": "mc",
-      "question_text": "إثبات ما أثبته الله لنفسه من الأسماء والصفات هو توحيد:",
+      "question_text": "إثبات ما أثبته الله لنفسه هو توحيد:",
       "options": [
         "الأسماء والصفات",
         "الألوهية",
@@ -1729,7 +1729,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الشرك الأكبر.",
-      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "source_quote": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله",
       "language": "ar"
     },
     {
@@ -1785,7 +1785,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«تصفيته من الشرك والبدع والمعاصي» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "تصفيته من الشرك والبدع والمعاصي",
       "source_quote": "تصفيته من الشرك والبدع والمعاصي",
       "language": "ar"
     },
@@ -1804,7 +1804,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«وجوب إفراد الله بالعبادة» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "وجوب إفراد الله بالعبادة» هو",
       "source_quote": "وجوب إفراد الله بالعبادة",
       "language": "ar"
     },
@@ -1823,7 +1823,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أخوف ما أخاف عليكم الشرك الأصغر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "أخوف ما أخاف عليكم الشرك الأصغر",
       "source_quote": "أخوف ما أخاف عليكم الشرك الأصغر",
       "language": "ar"
     },
@@ -2032,8 +2032,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«التوحيد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "التوحيد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "التوحيد",
+      "source_quote": "التوحيد",
       "language": "ar"
     },
     {
@@ -2089,8 +2089,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«التذلل والخضوع» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
-      "source_quote": "التذلل والخضوع» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "التذلل والخضوع",
+      "source_quote": "التذلل والخضوع",
       "language": "ar"
     },
     {
@@ -2127,7 +2127,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«كتاب الله وسنة رسوله لأنهما طريق إلى الجنة» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "كتاب الله وسنة رسوله لأنهما طريق إلى الجنة» هو",
       "source_quote": "كتاب الله وسنة رسوله لأنهما طريق إلى الجنة",
       "language": "ar"
     },
@@ -2146,8 +2146,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«يخلطوا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
-      "source_quote": "يخلطوا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "يخلطوا",
+      "source_quote": "يخلطوا",
       "language": "ar"
     },
     {
@@ -2165,8 +2165,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": "الشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "الشرك» هو",
+      "source_quote": "الشرك» هو",
       "language": "ar"
     },
     {
@@ -2184,7 +2184,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«المقبل على الله المعرض عما سواه» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "المقبل على الله المعرض عما سواه",
       "source_quote": "المقبل على الله المعرض عما سواه",
       "language": "ar"
     },
@@ -2222,7 +2222,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«لا يطلبون من يرقيهم استغناء عن الناس» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "لا يطلبون من يرقيهم استغناء عن الناس",
       "source_quote": "لا يطلبون من يرقيهم استغناء عن الناس",
       "language": "ar"
     },
@@ -2241,7 +2241,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«لا يتشاءمون بالطيور ونحوها» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "لا يتشاءمون بالطيور ونحوها",
       "source_quote": "لا يتشاءمون بالطيور ونحوها",
       "language": "ar"
     },
@@ -2260,8 +2260,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«عكاشة بن محصن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "عكاشة بن محصن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "عكاشة بن محصن",
+      "source_quote": "عكاشة بن محصن",
       "language": "ar"
     },
     {
@@ -2336,7 +2336,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أن الشرك ينقسم إلى أكبر وأصغر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "أن الشرك ينقسم إلى أكبر وأصغر",
       "source_quote": "أن الشرك ينقسم إلى أكبر وأصغر",
       "language": "ar"
     },
@@ -2355,7 +2355,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«خلق مدبر، فيرجع السب إلى خالقها ومدبرها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "خلق مدبر، فيرجع السب إلى خالقها ومدبرها",
       "source_quote": "خلق مدبر، فيرجع السب إلى خالقها ومدبرها",
       "language": "ar"
     },
@@ -2374,7 +2374,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«اللهم إنا نسألك خير هذه الريح وخير ما فيها» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "اللهم إنا نسألك خير هذه الريح وخير ما فيها» هو",
       "source_quote": "اللهم إنا نسألك خير هذه الريح وخير ما فيها",
       "language": "ar"
     },
@@ -2450,8 +2450,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": "أشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "أشرك» هو",
+      "source_quote": "أشرك» هو",
       "language": "ar"
     },
     {
@@ -2508,7 +2508,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "شرك أكبر.",
-      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "source_quote": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله",
       "language": "ar"
     },
     {
@@ -2545,8 +2545,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«وهنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "وهنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "وهنا",
+      "source_quote": "وهنا",
       "language": "ar"
     },
     {
@@ -2602,8 +2602,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أنواط» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "أنواط» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "أنواط",
+      "source_quote": "أنواط",
       "language": "ar"
     },
     {
@@ -2678,8 +2678,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«من ذبح لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "من ذبح لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "من ذبح لغير الله",
+      "source_quote": "من ذبح لغير الله",
       "language": "ar"
     },
     {
@@ -2792,8 +2792,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«مساجد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "مساجد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "مساجد",
+      "source_quote": "مساجد",
       "language": "ar"
     },
     {
@@ -2830,8 +2830,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«تكرار قصده للعبادة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "تكرار قصده للعبادة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "تكرار قصده للعبادة",
+      "source_quote": "تكرار قصده للعبادة",
       "language": "ar"
     },
     {
@@ -2868,8 +2868,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«النساء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "النساء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "النساء",
+      "source_quote": "النساء",
       "language": "ar"
     },
     {
@@ -2887,8 +2887,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«بآبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "بآبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "بآبائكم",
+      "source_quote": "بآبائكم",
       "language": "ar"
     },
     {
@@ -2944,8 +2944,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«ما شاء الله ثم شئت» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "ما شاء الله ثم شئت» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "ما شاء الله ثم شئت",
+      "source_quote": "ما شاء الله ثم شئت",
       "language": "ar"
     },
     {
@@ -3058,8 +3058,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«عبادة أصحابها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "عبادة أصحابها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "عبادة أصحابها",
+      "source_quote": "عبادة أصحابها",
       "language": "ar"
     },
     {
@@ -3077,8 +3077,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«نصيب من الملك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "نصيب من الملك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "نصيب من الملك",
+      "source_quote": "نصيب من الملك",
       "language": "ar"
     },
     {
@@ -3134,8 +3134,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«إذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "إذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "إذنه",
+      "source_quote": "إذنه",
       "language": "ar"
     },
     {
@@ -3172,7 +3172,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الفزع والخوف عند سماع الوحي» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الفزع والخوف عند سماع الوحي",
       "source_quote": "الفزع والخوف عند سماع الوحي",
       "language": "ar"
     },
@@ -3191,8 +3191,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«غشية وخوف» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "غشية وخوف» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "غشية وخوف",
+      "source_quote": "غشية وخوف",
       "language": "ar"
     },
     {
@@ -3229,7 +3229,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«تعظيم الملائكة لكلامه» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "تعظيم الملائكة لكلامه» هو",
       "source_quote": "تعظيم الملائكة لكلامه",
       "language": "ar"
     },
@@ -3305,8 +3305,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الوقت والزمان» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
-      "source_quote": "الوقت والزمان» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "الوقت والزمان",
+      "source_quote": "الوقت والزمان",
       "language": "ar"
     },
     {
@@ -3324,8 +3324,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«مدبر الأمور وهو الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "مدبر الأمور وهو الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "مدبر الأمور وهو الله",
+      "source_quote": "مدبر الأمور وهو الله",
       "language": "ar"
     },
     {
@@ -3343,8 +3343,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«لا يرد حكمه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "لا يرد حكمه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "لا يرد حكمه",
+      "source_quote": "لا يرد حكمه",
       "language": "ar"
     },
     {
@@ -3419,8 +3419,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«غزوة تبوك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": "غزوة تبوك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "غزوة تبوك» هو",
+      "source_quote": "غزوة تبوك» هو",
       "language": "ar"
     },
     {
@@ -3438,8 +3438,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«ألسنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "ألسنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "ألسنا",
+      "source_quote": "ألسنا",
       "language": "ar"
     },
     {
@@ -3476,8 +3476,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«عوف بن مالك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "عوف بن مالك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "عوف بن مالك",
+      "source_quote": "عوف بن مالك",
       "language": "ar"
     },
     {
@@ -3534,7 +3534,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "شرك أكبر.",
-      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "source_quote": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله",
       "language": "ar"
     },
     {
@@ -3552,8 +3552,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«قرب ذبابا لصنم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "قرب ذبابا لصنم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "قرب ذبابا لصنم",
+      "source_quote": "قرب ذبابا لصنم",
       "language": "ar"
     },
     {
@@ -3571,7 +3571,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أبى أن يقرب شيئا للصنم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "أبى أن يقرب شيئا للصنم",
       "source_quote": "أبى أن يقرب شيئا للصنم",
       "language": "ar"
     },
@@ -3609,8 +3609,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«محدثا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "محدثا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "محدثا",
+      "source_quote": "محدثا",
       "language": "ar"
     },
     {
@@ -3685,8 +3685,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«بسحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "بسحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "بسحر مثله",
+      "source_quote": "بسحر مثله",
       "language": "ar"
     },
     {
@@ -3723,8 +3723,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«التوكل» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "التوكل» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "التوكل",
+      "source_quote": "التوكل",
       "language": "ar"
     },
     {
@@ -3780,8 +3780,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«كافر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "كافر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "كافر",
+      "source_quote": "كافر",
       "language": "ar"
     },
     {
@@ -3818,7 +3818,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«مؤمن بالله كافر بالكوكب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "مؤمن بالله كافر بالكوكب",
       "source_quote": "مؤمن بالله كافر بالكوكب",
       "language": "ar"
     },
@@ -3875,8 +3875,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الجاهلية» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الجاهلية» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الجاهلية",
+      "source_quote": "الجاهلية",
       "language": "ar"
     },
     {
@@ -4027,8 +4027,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«ينوطون بها أسلحتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "ينوطون بها أسلحتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "ينوطون بها أسلحتهم",
+      "source_quote": "ينوطون بها أسلحتهم",
       "language": "ar"
     },
     {
@@ -4217,8 +4217,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«آبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "آبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "آبائكم",
+      "source_quote": "آبائكم",
       "language": "ar"
     },
     {
@@ -4312,8 +4312,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الدهر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الدهر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الدهر",
+      "source_quote": "الدهر",
       "language": "ar"
     },
     {
@@ -4350,7 +4350,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أنا مدبر الزمان ومصرفه» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "أنا مدبر الزمان ومصرفه",
       "source_quote": "أنا مدبر الزمان ومصرفه",
       "language": "ar"
     },
@@ -4407,7 +4407,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«فلا تجعلوا لله أندادا» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "فلا تجعلوا لله أندادا» هو",
       "source_quote": "فلا تجعلوا لله أندادا",
       "language": "ar"
     },
@@ -4426,8 +4426,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الله» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": "الله» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "الله» هو",
+      "source_quote": "الله» هو",
       "language": "ar"
     },
     {
@@ -4445,8 +4445,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«طلب الغوث وكشف الشدة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "طلب الغوث وكشف الشدة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "طلب الغوث وكشف الشدة",
+      "source_quote": "طلب الغوث وكشف الشدة",
       "language": "ar"
     },
     {
@@ -4465,7 +4465,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "شرك أكبر.",
-      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "source_quote": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله",
       "language": "ar"
     },
     {
@@ -4483,8 +4483,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«تحويلا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "تحويلا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "تحويلا",
+      "source_quote": "تحويلا",
       "language": "ar"
     },
     {
@@ -4597,8 +4597,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الأرض",
+      "source_quote": "الأرض",
       "language": "ar"
     },
     {
@@ -4616,8 +4616,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«لله وحده» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": "لله وحده» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "لله وحده» هو",
+      "source_quote": "لله وحده» هو",
       "language": "ar"
     },
     {
@@ -4654,8 +4654,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«صنمهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "صنمهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "صنمهم",
+      "source_quote": "صنمهم",
       "language": "ar"
     },
     {
@@ -4692,8 +4692,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الشرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الشرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الشرك",
+      "source_quote": "الشرك",
       "language": "ar"
     },
     {
@@ -4711,8 +4711,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«سواه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "سواه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "سواه",
+      "source_quote": "سواه",
       "language": "ar"
     },
     {
@@ -4730,8 +4730,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«قدوة وإماما للخير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "قدوة وإماما للخير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "قدوة وإماما للخير",
+      "source_quote": "قدوة وإماما للخير",
       "language": "ar"
     },
     {
@@ -4749,8 +4749,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الطاعة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الطاعة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الطاعة",
+      "source_quote": "الطاعة",
       "language": "ar"
     },
     {
@@ -4768,8 +4768,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الواهنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الواهنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الواهنة",
+      "source_quote": "الواهنة",
       "language": "ar"
     },
     {
@@ -4807,7 +4807,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "أكبر.",
-      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "source_quote": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله",
       "language": "ar"
     },
     {
@@ -4844,8 +4844,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«ابن مسعود» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "ابن مسعود» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "ابن مسعود",
+      "source_quote": "ابن مسعود",
       "language": "ar"
     },
     {
@@ -4863,8 +4863,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«عقبة بن عامر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "عقبة بن عامر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "عقبة بن عامر",
+      "source_quote": "عقبة بن عامر",
       "language": "ar"
     },
     {
@@ -4901,7 +4901,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«عامله الله بنقيض قصده» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "عامله الله بنقيض قصده",
       "source_quote": "عامله الله بنقيض قصده",
       "language": "ar"
     },
@@ -4920,8 +4920,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«عدل رقبة (عتق رقبة)» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "عدل رقبة (عتق رقبة)» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "عدل رقبة (عتق رقبة)",
+      "source_quote": "عدل رقبة (عتق رقبة)",
       "language": "ar"
     },
     {
@@ -4958,8 +4958,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«العزائم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "العزائم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "العزائم",
+      "source_quote": "العزائم",
       "language": "ar"
     },
     {
@@ -5072,8 +5072,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الشيطان» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الشيطان» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الشيطان",
+      "source_quote": "الشيطان",
       "language": "ar"
     },
     {
@@ -5129,8 +5129,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«المسحور» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "المسحور» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "المسحور",
+      "source_quote": "المسحور",
       "language": "ar"
     },
     {
@@ -5148,8 +5148,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«ساحر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "ساحر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "ساحر",
+      "source_quote": "ساحر",
       "language": "ar"
     },
     {
@@ -5186,8 +5186,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الصلاة على النبي » هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": "الصلاة على النبي » هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "الصلاة على النبي » هو",
+      "source_quote": "الصلاة على النبي » هو",
       "language": "ar"
     },
     {
@@ -5281,8 +5281,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«البومة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "البومة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "البومة",
+      "source_quote": "البومة",
       "language": "ar"
     },
     {
@@ -5357,8 +5357,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«علامات يهتدى بها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "علامات يهتدى بها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "علامات يهتدى بها",
+      "source_quote": "علامات يهتدى بها",
       "language": "ar"
     },
     {
@@ -5452,8 +5452,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "دخل الجنة",
+      "source_quote": "دخل الجنة",
       "language": "ar"
     },
     {
@@ -5471,8 +5471,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«غير منار الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "غير منار الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "غير منار الأرض",
+      "source_quote": "غير منار الأرض",
       "language": "ar"
     },
     {
@@ -5509,8 +5509,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الشفاعة بإذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الشفاعة بإذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الشفاعة بإذنه",
+      "source_quote": "الشفاعة بإذنه",
       "language": "ar"
     },
     {
@@ -5585,8 +5585,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«سحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "سحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "سحر مثله",
+      "source_quote": "سحر مثله",
       "language": "ar"
     },
     {
@@ -5623,8 +5623,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الجاني أو المبتدع» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الجاني أو المبتدع» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الجاني أو المبتدع",
+      "source_quote": "الجاني أو المبتدع",
       "language": "ar"
     },
     {
@@ -5661,8 +5661,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "الحكم الصحيح هو «جائز»، كما قرره النص الشرعي في الباب.",
-      "source_quote": "الحكم الصحيح هو «جائز»، كما قرره النص الشرعي في الباب.",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -5737,8 +5737,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«نعبدهم» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": "نعبدهم» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "نعبدهم» هو",
+      "source_quote": "نعبدهم» هو",
       "language": "ar"
     },
     {
@@ -5775,8 +5775,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«التحليل والتحريم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "التحليل والتحريم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "التحليل والتحريم",
+      "source_quote": "التحليل والتحريم",
       "language": "ar"
     },
     {
@@ -5795,7 +5795,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "الشرك الأكبر.",
-      "source_quote": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "source_quote": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله",
       "language": "ar"
     },
     {
@@ -5889,8 +5889,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«صفات النقص» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
-      "source_quote": "صفات النقص» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "صفات النقص",
+      "source_quote": "صفات النقص",
       "language": "ar"
     },
     {
@@ -5908,8 +5908,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«نزول المصائب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "نزول المصائب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "نزول المصائب",
+      "source_quote": "نزول المصائب",
       "language": "ar"
     },
     {
@@ -5927,8 +5927,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«القضاء والقدر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "القضاء والقدر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "القضاء والقدر",
+      "source_quote": "القضاء والقدر",
       "language": "ar"
     },
     {
@@ -5946,8 +5946,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "لغير الله",
+      "source_quote": "لغير الله",
       "language": "ar"
     },
     {
@@ -6022,8 +6022,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "دخل الجنة",
+      "source_quote": "دخل الجنة",
       "language": "ar"
     },
     {
@@ -6041,8 +6041,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«يدخل النار» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "يدخل النار» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "يدخل النار",
+      "source_quote": "يدخل النار",
       "language": "ar"
     },
     {
@@ -6060,8 +6060,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«شرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "شرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "شرك",
+      "source_quote": "شرك",
       "language": "ar"
     },
     {
@@ -6079,8 +6079,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«العين والحمة» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": "العين والحمة» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "العين والحمة» هو",
+      "source_quote": "العين والحمة» هو",
       "language": "ar"
     },
     {
@@ -6098,8 +6098,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«بريء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "بريء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "بريء",
+      "source_quote": "بريء",
       "language": "ar"
     },
     {
@@ -6136,8 +6136,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«غير القرآن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "غير القرآن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "غير القرآن",
+      "source_quote": "غير القرآن",
       "language": "ar"
     },
     {
@@ -6174,8 +6174,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«العين» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "العين» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "العين",
+      "source_quote": "العين",
       "language": "ar"
     },
     {
@@ -6193,8 +6193,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "الحكم الصحيح هو «التحريم»، كما قرره النص الشرعي في الباب.",
-      "source_quote": "الحكم الصحيح هو «التحريم»، كما قرره النص الشرعي في الباب.",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -6231,8 +6231,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«كل يوم وليلة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "كل يوم وليلة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "كل يوم وليلة",
+      "source_quote": "كل يوم وليلة",
       "language": "ar"
     },
     {
@@ -6310,7 +6310,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "شيخ الإسلام محمد بن عبد الوهاب التميمي رحمه الله.",
-      "source_quote": "اسمه :هو شيخ الإسلام محمد بن عبد الوهاب بن سليمان بن علي بن محمد أ بن حمد الحن ظلي ا لتميم ي",
+      "source_quote": "شيخ الإسلام محمد بن عبد الوهاب التميمي رحمه الله.",
       "language": "ar"
     },
     {
@@ -6329,7 +6329,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "ولد في بلدة العيينة سنة 1115 ه.",
-      "source_quote": "مولده: ولد في بلدة العيينة سنة1115 هجرية في بيت علم وشرف ودين فأبوه .عالم وجده سليمان عالم كيف كانت نشأ ة المؤلف",
+      "source_quote": "مولده: ولد في بلدة العيينة سنة 1115 هجرية.",
       "language": "ar"
     },
     {
@@ -6452,7 +6452,7 @@ window.QUESTIONS_BANK = {
       "chapter": "🕌 الرب",
       "level": "medium",
       "type": "mc",
-      "question_text": "ما معنى (العالم)؟",
+      "question_text": "ما معنى العالم؟",
       "options": [
         "كل ما سوى الله",
         "البشر فقط",
@@ -6589,7 +6589,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "قوله تعالى: وَعَلَى اللَّهِ فَتَوَكَّلُوا إِن كُنتُم مُّؤْمِنِينَ.",
+      "explanation": "قوله تعالى: وَعَلَى اللَّهِ فَتَوَكَّلُوا إِن كُنتُم مُّؤْمِنِينَ.",
       "source_quote": "وعلى الله فتوكلوا إن كنتم مؤمنين",
       "language": "ar"
     },
@@ -6608,7 +6608,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "قوله تعالى: ﴿فَصَلِّ لِرَبِّكَ وَانْحَرْ﴾.",
+      "explanation": "قوله تعالى: ﴿فَصَلِّ لِرَبِّكَ وَانْحَرْ﴾.",
       "source_quote": "قوله: (فصل لربك وانحر)",
       "language": "ar"
     },
@@ -6751,7 +6751,7 @@ window.QUESTIONS_BANK = {
       "chapter": "👤 النبي",
       "level": "easy",
       "type": "mc",
-      "question_text": "كم عمر النبي ؟",
+      "question_text": "كم عمر النبي؟",
       "options": [
         "63 سنة",
         "50 سنة",
@@ -6761,7 +6761,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "له من العمر ثلاث وستون سنة.",
-      "source_quote": "وله من العمر ثلث وستون سنة",
+      "source_quote": "وله من العمر ثلاث وستون سنة.",
       "language": "ar"
     },
     {
@@ -6884,7 +6884,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": false,
       "explanation": "ولد في بلدة العيينة.",
-      "source_quote": "مولده: ولد في بلدة العيينة سنة1115 هجرية في بيت علم وشرف ودين فأبوه .عالم وجده سليمان عالم كيف كانت نشأ ة المؤلف",
+      "source_quote": "مولده: ولد في بلدة العيينة سنة 1115 هجرية.",
       "language": "ar"
     },
     {
@@ -7031,15 +7031,15 @@ window.QUESTIONS_BANK = {
       "type": "mc",
       "question_text": "ما المراد بالعمل الصالح؟",
       "options": [
-        "الإحسان ، ركن واحد وهو «أن تعبد الله كأنك تراه فإن لم تكن تراه فإنه يراك »",
-        "أول مرتبة الإسلام.",
-        "العمل الصالح هو العمل الموافق لسنة رسول الله",
-        "الصلوات الخمس المفروضة."
+        "العمل الكثير ولو خالف السنة",
+        "أول مرتبة الإسلام",
+        "العمل الموافق لسنة رسول الله",
+        "الصلوات الخمس المفروضة"
       ],
       "correct_index": 2,
       "is_true": null,
-      "explanation": "العمل الصالح هو العمل الموافق لسنة رسول الله .",
-      "source_quote": "العمل الصالح هو العمل الموافق لسنة رسول الله .",
+      "explanation": "العمل الصالح هو العمل الموافق لسنة رسول الله.",
+      "source_quote": "العمل الصالح هو العمل الموافق لسنة رسول الله.",
       "language": "ar"
     },
     {
@@ -7057,7 +7057,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«معرفة الله ونبيه ودينه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "معرفة الله ونبيه ودينه",
       "source_quote": "معرفة الله ونبيه ودينه",
       "language": "ar"
     },
@@ -7143,7 +7143,7 @@ window.QUESTIONS_BANK = {
       "chapter": "📖 الكتاب",
       "level": "medium",
       "type": "mc",
-      "question_text": "الدليل على وجوب الدعوة إلى الله من سورة:",
+      "question_text": "الدليل على وجوب الدعوة إلى الله نزل في سورة:",
       "options": [
         "العصر",
         "الفاتحة",
@@ -7152,8 +7152,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«العصر» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
-      "source_quote": "العصر» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "explanation": "سورة العصر. قال تعالى: ﴿وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ﴾.",
+      "source_quote": "والعصر إن الإنسان لفي خسر إلا الذين آمنوا وعملوا الصالحات وتواصوا بالحق وتواصوا بالصبر",
       "language": "ar"
     },
     {
@@ -7266,7 +7266,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«من بلد الشرك إلى بلد الإسلام» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "من بلد الشرك إلى بلد الإسلام",
       "source_quote": "من بلد الشرك إلى بلد الإسلام",
       "language": "ar"
     },
@@ -7361,7 +7361,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«على أقدار الله المؤلمة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "على أقدار الله المؤلمة",
       "source_quote": "على أقدار الله المؤلمة",
       "language": "ar"
     },
@@ -7437,7 +7437,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«إفراد الله بالعبادة وترك عبادة ما سواه» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "إفراد الله بالعبادة وترك عبادة ما سواه",
       "source_quote": "إفراد الله بالعبادة وترك عبادة ما سواه",
       "language": "ar"
     },
@@ -7456,7 +7456,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«إفراد الله بالعبادة والإعراض عما سواه» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "إفراد الله بالعبادة والإعراض عما سواه",
       "source_quote": "إفراد الله بالعبادة والإعراض عما سواه",
       "language": "ar"
     },
@@ -7513,7 +7513,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«نفي جميع ما يعبد من دون الله» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "نفي جميع ما يعبد من دون الله",
       "source_quote": "نفي جميع ما يعبد من دون الله",
       "language": "ar"
     },
@@ -7532,7 +7532,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«إثبات العبادة لله وحده» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "إثبات العبادة لله وحده",
       "source_quote": "إثبات العبادة لله وحده",
       "language": "ar"
     },
@@ -8824,8 +8824,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (1- النية).",
-      "source_quote": "هذه من فوائد حديث (1- النية).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -8843,8 +8843,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (28- السنة).",
-      "source_quote": "هذه من فوائد حديث (28- السنة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -8862,8 +8862,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (17- الإحسان).",
-      "source_quote": "هذه من فوائد حديث (17- الإحسان).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -8881,8 +8881,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (4- القدر).",
-      "source_quote": "هذه من فوائد حديث (4- القدر).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -8900,8 +8900,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (2- جبريل).",
-      "source_quote": "هذه من فوائد حديث (2- جبريل).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -8919,8 +8919,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (22- الجنة).",
-      "source_quote": "هذه من فوائد حديث (22- الجنة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -8938,8 +8938,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (23- جوامع الخير).",
-      "source_quote": "هذه من فوائد حديث (23- جوامع الخير).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -8957,8 +8957,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (24- فضل الله).",
-      "source_quote": "هذه من فوائد حديث (24- فضل الله).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -8976,8 +8976,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (30- الحدود).",
-      "source_quote": "هذه من فوائد حديث (30- الحدود).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -8995,8 +8995,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (8- الجهاد).",
-      "source_quote": "هذه من فوائد حديث (8- الجهاد).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9014,8 +9014,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (5- البدعة).",
-      "source_quote": "هذه من فوائد حديث (5- البدعة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9033,8 +9033,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (26- الصدقة).",
-      "source_quote": "هذه من فوائد حديث (26- الصدقة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9052,8 +9052,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (27- البر والإثم).",
-      "source_quote": "هذه من فوائد حديث (27- البر والإثم).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9071,8 +9071,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (18- التقوى).",
-      "source_quote": "هذه من فوائد حديث (18- التقوى).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9090,8 +9090,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (22- الجنة).",
-      "source_quote": "هذه من فوائد حديث (22- الجنة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9109,8 +9109,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (22- الجنة).",
-      "source_quote": "هذه من فوائد حديث (22- الجنة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9128,8 +9128,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (33- القضاء).",
-      "source_quote": "هذه من فوائد حديث (33- القضاء).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9147,8 +9147,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (36- طلب العلم).",
-      "source_quote": "هذه من فوائد حديث (36- طلب العلم).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9166,8 +9166,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (9- السؤال).",
-      "source_quote": "هذه من فوائد حديث (9- السؤال).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9185,8 +9185,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (2- جبريل).",
-      "source_quote": "هذه من فوائد حديث (2- جبريل).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9195,7 +9195,7 @@ window.QUESTIONS_BANK = {
       "chapter": "31- الزهد",
       "level": "easy",
       "type": "mc",
-      "question_text": "نعم، أن أوامر الله قسمان فريضة ونافلة",
+      "question_text": "من فوائد حديث الزهد:",
       "options": [
         "نعم، أن أوامر الله قسمان فريضة ونافلة",
         "نعم، الأمر بالأكل من الطيبات",
@@ -9223,8 +9223,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (33- القضاء).",
-      "source_quote": "هذه من فوائد حديث (33- القضاء).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9242,8 +9242,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (6- الشبهات).",
-      "source_quote": "هذه من فوائد حديث (6- الشبهات).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9261,8 +9261,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (13- المحبة).",
-      "source_quote": "هذه من فوائد حديث (13- المحبة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9280,8 +9280,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (15- الأخلاق).",
-      "source_quote": "هذه من فوائد حديث (15- الأخلاق).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9299,8 +9299,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (1- النية).",
-      "source_quote": "هذه من فوائد حديث (1- النية).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9318,8 +9318,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (16- الغضب).",
-      "source_quote": "هذه من فوائد حديث (16- الغضب).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9337,8 +9337,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (19- التوكل).",
-      "source_quote": "هذه من فوائد حديث (19- التوكل).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9356,8 +9356,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (24- فضل الله).",
-      "source_quote": "هذه من فوائد حديث (24- فضل الله).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9375,8 +9375,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (21- الاستقامة).",
-      "source_quote": "هذه من فوائد حديث (21- الاستقامة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9394,8 +9394,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (18- التقوى).",
-      "source_quote": "هذه من فوائد حديث (18- التقوى).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9413,8 +9413,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (23- جوامع الخير).",
-      "source_quote": "هذه من فوائد حديث (23- جوامع الخير).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9432,8 +9432,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (24- فضل الله).",
-      "source_quote": "هذه من فوائد حديث (24- فضل الله).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9451,8 +9451,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (6- الشبهات).",
-      "source_quote": "هذه من فوائد حديث (6- الشبهات).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9470,8 +9470,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (5- البدعة).",
-      "source_quote": "هذه من فوائد حديث (5- البدعة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9489,8 +9489,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (36- طلب العلم).",
-      "source_quote": "هذه من فوائد حديث (36- طلب العلم).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9508,8 +9508,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (27- البر والإثم).",
-      "source_quote": "هذه من فوائد حديث (27- البر والإثم).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9527,8 +9527,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (28- السنة).",
-      "source_quote": "هذه من فوائد حديث (28- السنة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9541,13 +9541,13 @@ window.QUESTIONS_BANK = {
       "options": [
         "نعم، أن الله تعالى فرض فرائض وأمر بالمحافظة عليها",
         "لا؛ بل: الحرص على الكلام الطيب",
-        "لا؛ بل: الحلال بيّن كلٌّ يعرفه",
+        "لا؛ بل: الحلال بيّن كلٌّ يعرفه",
         "لا؛ بل: الصبر على طاعة الله"
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (30- الحدود).",
-      "source_quote": "هذه من فوائد حديث (30- الحدود).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9565,8 +9565,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (31- الزهد).",
-      "source_quote": "هذه من فوائد حديث (31- الزهد).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9584,8 +9584,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (34- إنكار المنكر).",
-      "source_quote": "هذه من فوائد حديث (34- إنكار المنكر).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9603,8 +9603,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (36- طلب العلم).",
-      "source_quote": "هذه من فوائد حديث (36- طلب العلم).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9622,8 +9622,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (9- السؤال).",
-      "source_quote": "هذه من فوائد حديث (9- السؤال).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9641,8 +9641,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (37- الحسنات).",
-      "source_quote": "هذه من فوائد حديث (37- الحسنات).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9660,8 +9660,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (39- العفو).",
-      "source_quote": "هذه من فوائد حديث (39- العفو).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9679,8 +9679,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (10- الحلال).",
-      "source_quote": "هذه من فوائد حديث (10- الحلال).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9698,8 +9698,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (12- الفضول).",
-      "source_quote": "هذه من فوائد حديث (12- الفضول).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9717,8 +9717,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (14- الدماء).",
-      "source_quote": "هذه من فوائد حديث (14- الدماء).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9736,8 +9736,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (29- اللسان).",
-      "source_quote": "هذه من فوائد حديث (29- اللسان).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9755,8 +9755,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (2- جبريل).",
-      "source_quote": "هذه من فوائد حديث (2- جبريل).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9774,8 +9774,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (17- الإحسان).",
-      "source_quote": "هذه من فوائد حديث (17- الإحسان).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9793,8 +9793,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (19- التوكل).",
-      "source_quote": "هذه من فوائد حديث (19- التوكل).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9812,8 +9812,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (20- الحياء).",
-      "source_quote": "هذه من فوائد حديث (20- الحياء).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9831,8 +9831,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (2- جبريل).",
-      "source_quote": "هذه من فوائد حديث (2- جبريل).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9850,8 +9850,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (18- التقوى).",
-      "source_quote": "هذه من فوائد حديث (18- التقوى).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9869,8 +9869,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (25- الصدقة).",
-      "source_quote": "هذه من فوائد حديث (25- الصدقة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9888,8 +9888,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (25- الصدقة).",
-      "source_quote": "هذه من فوائد حديث (25- الصدقة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9907,8 +9907,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (7- النصيحة).",
-      "source_quote": "هذه من فوائد حديث (7- النصيحة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9917,17 +9917,17 @@ window.QUESTIONS_BANK = {
       "chapter": "6- الشبهات",
       "level": "hard",
       "type": "mc",
-      "question_text": "من فوائد الحديث (6- الشبهات): الحلال بيّن كلٌّ يعرفه؟",
+      "question_text": "من فوائد الحديث (6- الشبهات): الحلال بيّن كلٌّ يعرفه؟",
       "options": [
-        "نعم، الحلال بيّن كلٌّ يعرفه",
+        "نعم، الحلال بيّن كلٌّ يعرفه",
         "لا؛ بل: سعة رحمة الله ولطفه بعباده حيث رفع عنهم الإثم إذا صدرت منهم المعصية على هذه الوجوه الثلاثة",
         "لا؛ بل: ضعف المخلوقين وافتقارهم إلى الله",
         "لا؛ بل: علو همة الصحابة ، فإنهم لا يسألون إلا عما يفيدهم في الدنيا والآخرة أو فيهما جميعاً"
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (6- الشبهات).",
-      "source_quote": "هذه من فوائد حديث (6- الشبهات).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9945,8 +9945,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (15- الأخلاق).",
-      "source_quote": "هذه من فوائد حديث (15- الأخلاق).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9964,8 +9964,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (28- السنة).",
-      "source_quote": "هذه من فوائد حديث (28- السنة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -9983,8 +9983,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (30- الحدود).",
-      "source_quote": "هذه من فوائد حديث (30- الحدود).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10002,8 +10002,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (32- الضرر).",
-      "source_quote": "هذه من فوائد حديث (32- الضرر).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10021,8 +10021,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (34- إنكار المنكر).",
-      "source_quote": "هذه من فوائد حديث (34- إنكار المنكر).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10040,8 +10040,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (36- طلب العلم).",
-      "source_quote": "هذه من فوائد حديث (36- طلب العلم).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10059,8 +10059,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (9- السؤال).",
-      "source_quote": "هذه من فوائد حديث (9- السؤال).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10078,8 +10078,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (38- الأولياء).",
-      "source_quote": "هذه من فوائد حديث (38- الأولياء).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10097,8 +10097,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (40- الزهد).",
-      "source_quote": "هذه من فوائد حديث (40- الزهد).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10116,8 +10116,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (10- الحلال).",
-      "source_quote": "هذه من فوائد حديث (10- الحلال).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10135,8 +10135,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (13- المحبة).",
-      "source_quote": "هذه من فوائد حديث (13- المحبة).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10154,8 +10154,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (14- الدماء).",
-      "source_quote": "هذه من فوائد حديث (14- الدماء).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10173,8 +10173,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "هذه من فوائد حديث (15- الأخلاق).",
-      "source_quote": "هذه من فوائد حديث (15- الأخلاق).",
+      "explanation": "",
+      "source_quote": "",
       "language": "ar"
     },
     {
@@ -10192,8 +10192,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«النية والإخلاص» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "النية والإخلاص» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "النية والإخلاص",
+      "source_quote": "النية والإخلاص",
       "language": "ar"
     },
     {
@@ -10211,7 +10211,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الإسلام والإيمان والإحسان» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الإسلام والإيمان والإحسان",
       "source_quote": "الإسلام والإيمان والإحسان",
       "language": "ar"
     },
@@ -10230,8 +10230,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أربعين يوما نطفة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "أربعين يوما نطفة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "أربعين يوما نطفة",
+      "source_quote": "أربعين يوما نطفة",
       "language": "ar"
     },
     {
@@ -10268,7 +10268,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الله وكتابه ورسوله وأئمة المسلمين وعامتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الله وكتابه ورسوله وأئمة المسلمين وعامتهم",
       "source_quote": "الله وكتابه ورسوله وأئمة المسلمين وعامتهم",
       "language": "ar"
     },
@@ -10306,8 +10306,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الزهد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الزهد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الزهد",
+      "source_quote": "الزهد",
       "language": "ar"
     },
     {
@@ -10344,7 +10344,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«كأنك تراه فإن لم تكن تراه فإنه يراك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "كأنك تراه فإن لم تكن تراه فإنه يراك",
       "source_quote": "كأنك تراه فإن لم تكن تراه فإنه يراك",
       "language": "ar"
     },
@@ -10458,8 +10458,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الصادق المصدوق» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الصادق المصدوق» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الصادق المصدوق",
+      "source_quote": "الصادق المصدوق",
       "language": "ar"
     },
     {
@@ -10477,8 +10477,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«قدسي» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "قدسي» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "قدسي",
+      "source_quote": "قدسي",
       "language": "ar"
     },
     {
@@ -10496,8 +10496,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«رفع الحرج» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "رفع الحرج» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "رفع الحرج",
+      "source_quote": "رفع الحرج",
       "language": "ar"
     },
     {
@@ -10534,7 +10534,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«عمر بن الخطاب رضي الله عنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "عمر بن الخطاب رضي الله عنه",
       "source_quote": "عمر بن الخطاب رضي الله عنه",
       "language": "ar"
     },
@@ -10572,7 +10572,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الثالثة والعشرين من الهجرة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الثالثة والعشرين من الهجرة",
       "source_quote": "الثالثة والعشرين من الهجرة",
       "language": "ar"
     },
@@ -10591,8 +10591,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«مع أبيه بمكة وهو صغير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "مع أبيه بمكة وهو صغير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "مع أبيه بمكة وهو صغير",
+      "source_quote": "مع أبيه بمكة وهو صغير",
       "language": "ar"
     },
     {
@@ -10610,7 +10610,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«عبد الله بن مسعود رضي الله عنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "عبد الله بن مسعود رضي الله عنه",
       "source_quote": "عبد الله بن مسعود رضي الله عنه",
       "language": "ar"
     },
@@ -10629,8 +10629,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الحبشة ثم المدينة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "الحبشة ثم المدينة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الحبشة ثم المدينة",
+      "source_quote": "الحبشة ثم المدينة",
       "language": "ar"
     },
     {
@@ -10648,7 +10648,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أبو هريرة وابن عباس على الترتيب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "أبو هريرة وابن عباس على الترتيب",
       "source_quote": "أبو هريرة وابن عباس على الترتيب",
       "language": "ar"
     },
@@ -10667,7 +10667,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«العزم على فعل العبادة تقربا إلى الله وحمله بالحق» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "العزم على فعل العبادة تقربا إلى الله وحمله بالحق",
       "source_quote": "العزم على فعل العبادة تقربا إلى الله وحمله بالحق",
       "language": "ar"
     },
@@ -10686,8 +10686,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«خرج علينا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
-      "source_quote": "خرج علينا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "خرج علينا",
+      "source_quote": "خرج علينا",
       "language": "ar"
     },
     {
@@ -10705,7 +10705,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أنه لا يعرف من الصحابة وفيه غرابة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "أنه لا يعرف من الصحابة وفيه غرابة",
       "source_quote": "أنه لا يعرف من الصحابة وفيه غرابة",
       "language": "ar"
     },
@@ -10724,8 +10724,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«المملوكة» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
-      "source_quote": "المملوكة» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "المملوكة",
+      "source_quote": "المملوكة",
       "language": "ar"
     },
     {
@@ -10743,8 +10743,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الفقراء» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
-      "source_quote": "الفقراء» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "الفقراء",
+      "source_quote": "الفقراء",
       "language": "ar"
     },
     {
@@ -10762,7 +10762,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الاستسلام لله بالتوحيد والانقياد له بالطاعة والبراءة من الشرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الاستسلام لله بالتوحيد والانقياد له بالطاعة والبراءة من الشرك",
       "source_quote": "الاستسلام لله بالتوحيد والانقياد له بالطاعة والبراءة من الشرك",
       "language": "ar"
     },
@@ -10838,8 +10838,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أعلنت عليه الحرب» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
-      "source_quote": "أعلنت عليه الحرب» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "أعلنت عليه الحرب",
+      "source_quote": "أعلنت عليه الحرب",
       "language": "ar"
     },
     {
@@ -10857,8 +10857,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أداء الفرائض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
-      "source_quote": "أداء الفرائض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "أداء الفرائض",
+      "source_quote": "أداء الفرائض",
       "language": "ar"
     },
     {
@@ -10876,7 +10876,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«ما يرتكبه الإنسان من العمل من غير عمد» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "ما يرتكبه الإنسان من العمل من غير عمد",
       "source_quote": "ما يرتكبه الإنسان من العمل من غير عمد",
       "language": "ar"
     },
@@ -10895,7 +10895,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«ذهول القلب عن شيء معلوم من قبل» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "explanation": "ذهول القلب عن شيء معلوم من قبل",
       "source_quote": "ذهول القلب عن شيء معلوم من قبل",
       "language": "ar"
     },
@@ -10914,7 +10914,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«الخطأ والنسيان والإكراه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "الخطأ والنسيان والإكراه",
       "source_quote": "الخطأ والنسيان والإكراه",
       "language": "ar"
     },
@@ -10952,7 +10952,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "«أئمة المسلمين وعامتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "explanation": "أئمة المسلمين وعامتهم",
       "source_quote": "أئمة المسلمين وعامتهم",
       "language": "ar"
     },

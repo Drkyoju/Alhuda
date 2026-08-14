@@ -1,0 +1,3074 @@
+{
+  "counts": {
+    "tawheed": 176,
+    "usool": 21,
+    "nawawi": 186
+  },
+  "n": 383,
+  "log": [
+    {
+      "id": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذا ما جاء في حديث معاذ بن جبل.",
+      "to": ""
+    },
+    {
+      "id": "07483021-8f6a-44c8-9f32-1040d095f0c5",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذا ما جاء في حديث معاذ بن جبل.",
+      "to": ""
+    },
+    {
+      "id": "42842c86-b2e8-6c93-7a98-68cc42b89f2d",
+      "book": "tawheed",
+      "reason": "منع تسريب الجواب «الأسماء والصفات» في نص السؤال",
+      "field": "question_text",
+      "from": "إثبات ما أثبته الله لنفسه من الأسماء والصفات هو توحيد:",
+      "to": "إثبات ما أثبته الله لنفسه هو توحيد:"
+    },
+    {
+      "id": "c24fc4ba-bfe7-2b9e-7afb-bcb17b18d1a9",
+      "book": "tawheed",
+      "reason": "OCR ييسوي → يسوّي",
+      "field": "source_quote",
+      "from": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "to": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله"
+    },
+    {
+      "id": "ec30c523-46b4-dc9c-1f73-c43fac4f8848",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«تصفيته من الشرك والبدع والمعاصي» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "تصفيته من الشرك والبدع والمعاصي"
+    },
+    {
+      "id": "3c2dca5b-9bbb-c924-b7b3-30d829990edd",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«وجوب إفراد الله بالعبادة» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "وجوب إفراد الله بالعبادة» هو"
+    },
+    {
+      "id": "09846afa-dc24-2013-1ad9-f7a3ed6466f0",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أخوف ما أخاف عليكم الشرك الأصغر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أخوف ما أخاف عليكم الشرك الأصغر"
+    },
+    {
+      "id": "8f89d3ad-1032-db79-10a8-11bf2a058481",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«التوحيد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "التوحيد"
+    },
+    {
+      "id": "8f89d3ad-1032-db79-10a8-11bf2a058481",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "التوحيد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "التوحيد"
+    },
+    {
+      "id": "04781ea7-f7e9-1e10-89e4-92f12109f201",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«التذلل والخضوع» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "التذلل والخضوع"
+    },
+    {
+      "id": "04781ea7-f7e9-1e10-89e4-92f12109f201",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "التذلل والخضوع» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "التذلل والخضوع"
+    },
+    {
+      "id": "89818f30-b836-8da4-21a9-f9010f5b8dc8",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«كتاب الله وسنة رسوله لأنهما طريق إلى الجنة» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "كتاب الله وسنة رسوله لأنهما طريق إلى الجنة» هو"
+    },
+    {
+      "id": "dcf033d4-6c85-39f2-fbc3-c564255e8f7a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«يخلطوا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "يخلطوا"
+    },
+    {
+      "id": "dcf033d4-6c85-39f2-fbc3-c564255e8f7a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "يخلطوا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "يخلطوا"
+    },
+    {
+      "id": "c134a6e9-d0a8-9643-3943-267e128ea448",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "الشرك» هو"
+    },
+    {
+      "id": "c134a6e9-d0a8-9643-3943-267e128ea448",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "الشرك» هو"
+    },
+    {
+      "id": "de608085-2f6f-c6a3-ae18-f773910abb1d",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«المقبل على الله المعرض عما سواه» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "المقبل على الله المعرض عما سواه"
+    },
+    {
+      "id": "0bcddf92-25ad-85ef-148e-40e34a0f9afe",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«لا يطلبون من يرقيهم استغناء عن الناس» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "لا يطلبون من يرقيهم استغناء عن الناس"
+    },
+    {
+      "id": "91968af9-6184-e3c5-9501-a0c75ccce7c9",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«لا يتشاءمون بالطيور ونحوها» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "لا يتشاءمون بالطيور ونحوها"
+    },
+    {
+      "id": "eb80069a-736f-b2cd-a7db-4cfe0b3401ef",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«عكاشة بن محصن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عكاشة بن محصن"
+    },
+    {
+      "id": "eb80069a-736f-b2cd-a7db-4cfe0b3401ef",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "عكاشة بن محصن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عكاشة بن محصن"
+    },
+    {
+      "id": "4351cedc-3797-48f7-9bb5-140178721941",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أن الشرك ينقسم إلى أكبر وأصغر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أن الشرك ينقسم إلى أكبر وأصغر"
+    },
+    {
+      "id": "5bbc1f59-864b-2fc5-6d56-f19e86d03ee6",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«خلق مدبر، فيرجع السب إلى خالقها ومدبرها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "خلق مدبر، فيرجع السب إلى خالقها ومدبرها"
+    },
+    {
+      "id": "ce9e78b4-9639-1443-460c-2a525fef7661",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«اللهم إنا نسألك خير هذه الريح وخير ما فيها» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "اللهم إنا نسألك خير هذه الريح وخير ما فيها» هو"
+    },
+    {
+      "id": "adc7a568-4e61-f5de-b5c8-6066befcd2af",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "أشرك» هو"
+    },
+    {
+      "id": "adc7a568-4e61-f5de-b5c8-6066befcd2af",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "أشرك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "أشرك» هو"
+    },
+    {
+      "id": "43bbfed4-e1de-3362-041e-f83a0df7d062",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "to": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله"
+    },
+    {
+      "id": "3f9eedfa-40d0-20fe-15be-fdda9d03f1cd",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«وهنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "وهنا"
+    },
+    {
+      "id": "3f9eedfa-40d0-20fe-15be-fdda9d03f1cd",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "وهنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "وهنا"
+    },
+    {
+      "id": "4ff8f624-b5e4-d550-fd73-c7e6393b4a73",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أنواط» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أنواط"
+    },
+    {
+      "id": "4ff8f624-b5e4-d550-fd73-c7e6393b4a73",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "أنواط» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أنواط"
+    },
+    {
+      "id": "a64cee3b-138e-eea4-2145-25fee4f47a12",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«من ذبح لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "من ذبح لغير الله"
+    },
+    {
+      "id": "a64cee3b-138e-eea4-2145-25fee4f47a12",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "من ذبح لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "من ذبح لغير الله"
+    },
+    {
+      "id": "4c9efdcf-09d5-9b03-542c-8826bfcf3865",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«مساجد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "مساجد"
+    },
+    {
+      "id": "4c9efdcf-09d5-9b03-542c-8826bfcf3865",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "مساجد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "مساجد"
+    },
+    {
+      "id": "62522a88-5416-ba4f-e12d-561454ac5972",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«تكرار قصده للعبادة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "تكرار قصده للعبادة"
+    },
+    {
+      "id": "62522a88-5416-ba4f-e12d-561454ac5972",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "تكرار قصده للعبادة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "تكرار قصده للعبادة"
+    },
+    {
+      "id": "ae30c919-3a52-7ab5-a806-74e087ee5d8a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«النساء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "النساء"
+    },
+    {
+      "id": "ae30c919-3a52-7ab5-a806-74e087ee5d8a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "النساء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "النساء"
+    },
+    {
+      "id": "46929e1c-d963-b231-cf0e-86e1c81f0b90",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«بآبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "بآبائكم"
+    },
+    {
+      "id": "46929e1c-d963-b231-cf0e-86e1c81f0b90",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "بآبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "بآبائكم"
+    },
+    {
+      "id": "542fd77d-8c52-4278-b7d4-378820396a41",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«ما شاء الله ثم شئت» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ما شاء الله ثم شئت"
+    },
+    {
+      "id": "542fd77d-8c52-4278-b7d4-378820396a41",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "ما شاء الله ثم شئت» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ما شاء الله ثم شئت"
+    },
+    {
+      "id": "d753dca5-cc6a-7ded-d4da-9b283ce8289e",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«عبادة أصحابها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عبادة أصحابها"
+    },
+    {
+      "id": "d753dca5-cc6a-7ded-d4da-9b283ce8289e",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "عبادة أصحابها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عبادة أصحابها"
+    },
+    {
+      "id": "b878ea91-91ae-ff0b-7415-a26a2c629b0d",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«نصيب من الملك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "نصيب من الملك"
+    },
+    {
+      "id": "b878ea91-91ae-ff0b-7415-a26a2c629b0d",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "نصيب من الملك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "نصيب من الملك"
+    },
+    {
+      "id": "1daff522-fc91-45ac-53e5-97b695f61624",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«إذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "إذنه"
+    },
+    {
+      "id": "1daff522-fc91-45ac-53e5-97b695f61624",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "إذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "إذنه"
+    },
+    {
+      "id": "5ad52d9e-878d-9cff-5c86-676aa7551f7f",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الفزع والخوف عند سماع الوحي» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الفزع والخوف عند سماع الوحي"
+    },
+    {
+      "id": "cf01dde6-f233-bcb0-c1ef-9dfc31188179",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«غشية وخوف» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "غشية وخوف"
+    },
+    {
+      "id": "cf01dde6-f233-bcb0-c1ef-9dfc31188179",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "غشية وخوف» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "غشية وخوف"
+    },
+    {
+      "id": "0dd290e3-d278-598a-ed06-a8ab75e72506",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«تعظيم الملائكة لكلامه» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "تعظيم الملائكة لكلامه» هو"
+    },
+    {
+      "id": "5168477c-e114-9664-733e-2b8c0bf9d637",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الوقت والزمان» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "الوقت والزمان"
+    },
+    {
+      "id": "5168477c-e114-9664-733e-2b8c0bf9d637",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الوقت والزمان» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "الوقت والزمان"
+    },
+    {
+      "id": "180cb92e-7e47-cff4-d622-d7b03375cd0c",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«مدبر الأمور وهو الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "مدبر الأمور وهو الله"
+    },
+    {
+      "id": "180cb92e-7e47-cff4-d622-d7b03375cd0c",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "مدبر الأمور وهو الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "مدبر الأمور وهو الله"
+    },
+    {
+      "id": "ec0bc0b0-c001-76a6-0259-df26d8584598",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«لا يرد حكمه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "لا يرد حكمه"
+    },
+    {
+      "id": "ec0bc0b0-c001-76a6-0259-df26d8584598",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "لا يرد حكمه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "لا يرد حكمه"
+    },
+    {
+      "id": "e7bdf5fb-5aca-ead8-d265-89ed6e5a9b3a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«غزوة تبوك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "غزوة تبوك» هو"
+    },
+    {
+      "id": "e7bdf5fb-5aca-ead8-d265-89ed6e5a9b3a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "غزوة تبوك» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "غزوة تبوك» هو"
+    },
+    {
+      "id": "ca364f60-09e1-eb09-2b6b-aa6543dd8937",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«ألسنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ألسنا"
+    },
+    {
+      "id": "ca364f60-09e1-eb09-2b6b-aa6543dd8937",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "ألسنا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ألسنا"
+    },
+    {
+      "id": "db7233b3-b67d-3b3e-790a-bb13127866fe",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«عوف بن مالك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عوف بن مالك"
+    },
+    {
+      "id": "db7233b3-b67d-3b3e-790a-bb13127866fe",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "عوف بن مالك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عوف بن مالك"
+    },
+    {
+      "id": "964a2e87-d6a0-474f-e82c-431e42474753",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "to": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله"
+    },
+    {
+      "id": "2df78ba9-b5c9-a84a-2312-902f6e8a4814",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«قرب ذبابا لصنم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "قرب ذبابا لصنم"
+    },
+    {
+      "id": "2df78ba9-b5c9-a84a-2312-902f6e8a4814",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "قرب ذبابا لصنم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "قرب ذبابا لصنم"
+    },
+    {
+      "id": "f5e0a909-ac2d-a750-91c6-5c2c05aaade7",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أبى أن يقرب شيئا للصنم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أبى أن يقرب شيئا للصنم"
+    },
+    {
+      "id": "1ba321f4-a52a-8707-ce06-f21ba86c41f1",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«محدثا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "محدثا"
+    },
+    {
+      "id": "1ba321f4-a52a-8707-ce06-f21ba86c41f1",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "محدثا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "محدثا"
+    },
+    {
+      "id": "933e4b70-e0aa-c29c-a3e1-07a1c99a22dc",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«بسحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "بسحر مثله"
+    },
+    {
+      "id": "933e4b70-e0aa-c29c-a3e1-07a1c99a22dc",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "بسحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "بسحر مثله"
+    },
+    {
+      "id": "f508a223-2d15-9036-b3be-c8c4b67d067d",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«التوكل» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "التوكل"
+    },
+    {
+      "id": "f508a223-2d15-9036-b3be-c8c4b67d067d",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "التوكل» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "التوكل"
+    },
+    {
+      "id": "cb699104-13a4-c4d2-b960-2d755a7acc1b",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«كافر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "كافر"
+    },
+    {
+      "id": "cb699104-13a4-c4d2-b960-2d755a7acc1b",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "كافر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "كافر"
+    },
+    {
+      "id": "272794ec-4981-1e28-3199-eceefebda72a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«مؤمن بالله كافر بالكوكب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "مؤمن بالله كافر بالكوكب"
+    },
+    {
+      "id": "9056a278-446a-3482-7d53-beabdbbe4977",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الجاهلية» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الجاهلية"
+    },
+    {
+      "id": "9056a278-446a-3482-7d53-beabdbbe4977",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الجاهلية» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الجاهلية"
+    },
+    {
+      "id": "c1563c51-2b17-512e-d449-8fec776f6137",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«ينوطون بها أسلحتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ينوطون بها أسلحتهم"
+    },
+    {
+      "id": "c1563c51-2b17-512e-d449-8fec776f6137",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "ينوطون بها أسلحتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ينوطون بها أسلحتهم"
+    },
+    {
+      "id": "91eb89af-4c29-f159-bea4-d6c351552f31",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«آبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "آبائكم"
+    },
+    {
+      "id": "91eb89af-4c29-f159-bea4-d6c351552f31",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "آبائكم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "آبائكم"
+    },
+    {
+      "id": "39e56524-4689-3754-f7c7-7b3f5d144f9a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الدهر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الدهر"
+    },
+    {
+      "id": "39e56524-4689-3754-f7c7-7b3f5d144f9a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الدهر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الدهر"
+    },
+    {
+      "id": "a64e7df5-28bd-111f-29aa-8f7d514a7130",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أنا مدبر الزمان ومصرفه» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "أنا مدبر الزمان ومصرفه"
+    },
+    {
+      "id": "28aba9b7-8312-826c-21ed-ece8a4227029",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«فلا تجعلوا لله أندادا» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "فلا تجعلوا لله أندادا» هو"
+    },
+    {
+      "id": "8763fe64-4a49-cdc3-d58f-3f7d8649a5e8",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الله» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "الله» هو"
+    },
+    {
+      "id": "8763fe64-4a49-cdc3-d58f-3f7d8649a5e8",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الله» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "الله» هو"
+    },
+    {
+      "id": "787a9a22-8783-d394-629e-58d3ec982663",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«طلب الغوث وكشف الشدة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "طلب الغوث وكشف الشدة"
+    },
+    {
+      "id": "787a9a22-8783-d394-629e-58d3ec982663",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "طلب الغوث وكشف الشدة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "طلب الغوث وكشف الشدة"
+    },
+    {
+      "id": "a6bea38c-66ef-98f6-06de-9daa67e45f3e",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "to": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله"
+    },
+    {
+      "id": "320cbcbb-b9c0-5f5b-1e83-b6b6ba51200d",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«تحويلا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "تحويلا"
+    },
+    {
+      "id": "320cbcbb-b9c0-5f5b-1e83-b6b6ba51200d",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "تحويلا» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "تحويلا"
+    },
+    {
+      "id": "b47b0cea-8e73-b16f-d548-add5450fccf2",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الأرض"
+    },
+    {
+      "id": "b47b0cea-8e73-b16f-d548-add5450fccf2",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الأرض"
+    },
+    {
+      "id": "32063d02-b9d8-1c56-c796-ce94db8df17b",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«لله وحده» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "لله وحده» هو"
+    },
+    {
+      "id": "32063d02-b9d8-1c56-c796-ce94db8df17b",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "لله وحده» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "لله وحده» هو"
+    },
+    {
+      "id": "2df4c9b6-6eb9-bfc1-8d78-ff092cdba9b5",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«صنمهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "صنمهم"
+    },
+    {
+      "id": "2df4c9b6-6eb9-bfc1-8d78-ff092cdba9b5",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "صنمهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "صنمهم"
+    },
+    {
+      "id": "fa9ff40e-4c9d-a6e4-3593-d3a8083e5345",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الشرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الشرك"
+    },
+    {
+      "id": "fa9ff40e-4c9d-a6e4-3593-d3a8083e5345",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الشرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الشرك"
+    },
+    {
+      "id": "649bc12b-6203-aab8-429c-ac035ff905d0",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«سواه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "سواه"
+    },
+    {
+      "id": "649bc12b-6203-aab8-429c-ac035ff905d0",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "سواه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "سواه"
+    },
+    {
+      "id": "7da44f63-4cb4-c79d-4ac4-80a5af7bec84",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«قدوة وإماما للخير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "قدوة وإماما للخير"
+    },
+    {
+      "id": "7da44f63-4cb4-c79d-4ac4-80a5af7bec84",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "قدوة وإماما للخير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "قدوة وإماما للخير"
+    },
+    {
+      "id": "6f510ff6-25e8-0848-a982-09c25418cdcf",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الطاعة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الطاعة"
+    },
+    {
+      "id": "6f510ff6-25e8-0848-a982-09c25418cdcf",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الطاعة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الطاعة"
+    },
+    {
+      "id": "c069f2f4-4043-0233-c5b8-e09ff5e4e53e",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الواهنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الواهنة"
+    },
+    {
+      "id": "c069f2f4-4043-0233-c5b8-e09ff5e4e53e",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الواهنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الواهنة"
+    },
+    {
+      "id": "36cfda46-eb08-83b8-ad47-2e258a22f23d",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "to": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله"
+    },
+    {
+      "id": "4d63611d-ee84-9809-0edb-bcd81fed7f0a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«ابن مسعود» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ابن مسعود"
+    },
+    {
+      "id": "4d63611d-ee84-9809-0edb-bcd81fed7f0a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "ابن مسعود» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ابن مسعود"
+    },
+    {
+      "id": "1cc9fb32-7441-2bf5-ea1e-d267ad9e7198",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«عقبة بن عامر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عقبة بن عامر"
+    },
+    {
+      "id": "1cc9fb32-7441-2bf5-ea1e-d267ad9e7198",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "عقبة بن عامر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عقبة بن عامر"
+    },
+    {
+      "id": "10bd646c-d34c-ab41-147e-0a5d27b7a6b8",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«عامله الله بنقيض قصده» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عامله الله بنقيض قصده"
+    },
+    {
+      "id": "7242bea4-a5bd-6559-d95f-1a5b3be6f64e",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«عدل رقبة (عتق رقبة)» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عدل رقبة (عتق رقبة)"
+    },
+    {
+      "id": "7242bea4-a5bd-6559-d95f-1a5b3be6f64e",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "عدل رقبة (عتق رقبة)» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عدل رقبة (عتق رقبة)"
+    },
+    {
+      "id": "35308379-5670-5cf6-2bf4-01d362869250",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«العزائم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "العزائم"
+    },
+    {
+      "id": "35308379-5670-5cf6-2bf4-01d362869250",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "العزائم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "العزائم"
+    },
+    {
+      "id": "3bab8e81-9112-ec81-9eaf-3bfe54cf70cf",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الشيطان» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الشيطان"
+    },
+    {
+      "id": "3bab8e81-9112-ec81-9eaf-3bfe54cf70cf",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الشيطان» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الشيطان"
+    },
+    {
+      "id": "c2a14adb-0100-610e-a5c8-da341d438608",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«المسحور» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "المسحور"
+    },
+    {
+      "id": "c2a14adb-0100-610e-a5c8-da341d438608",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "المسحور» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "المسحور"
+    },
+    {
+      "id": "8efbe414-030b-94da-fd21-43b316ae0a0f",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«ساحر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ساحر"
+    },
+    {
+      "id": "8efbe414-030b-94da-fd21-43b316ae0a0f",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "ساحر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "ساحر"
+    },
+    {
+      "id": "0831673f-d9d3-beff-61d5-da9901236251",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الصلاة على النبي » هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "الصلاة على النبي » هو"
+    },
+    {
+      "id": "0831673f-d9d3-beff-61d5-da9901236251",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الصلاة على النبي » هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "الصلاة على النبي » هو"
+    },
+    {
+      "id": "4802c81b-9f3a-b5d0-cdee-ebce523cfb46",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«البومة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "البومة"
+    },
+    {
+      "id": "4802c81b-9f3a-b5d0-cdee-ebce523cfb46",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "البومة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "البومة"
+    },
+    {
+      "id": "51b62643-f330-5b1c-c5a0-93fffffe4109",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«علامات يهتدى بها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "علامات يهتدى بها"
+    },
+    {
+      "id": "51b62643-f330-5b1c-c5a0-93fffffe4109",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "علامات يهتدى بها» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "علامات يهتدى بها"
+    },
+    {
+      "id": "cf2cfe15-868b-5cb6-4b12-b1a7242bd9a9",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "دخل الجنة"
+    },
+    {
+      "id": "cf2cfe15-868b-5cb6-4b12-b1a7242bd9a9",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "دخل الجنة"
+    },
+    {
+      "id": "33c79ed1-d34d-8ec8-90ab-19356959ba12",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«غير منار الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "غير منار الأرض"
+    },
+    {
+      "id": "33c79ed1-d34d-8ec8-90ab-19356959ba12",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "غير منار الأرض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "غير منار الأرض"
+    },
+    {
+      "id": "6239765b-3c79-0f72-7df7-6d8632ee6443",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الشفاعة بإذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الشفاعة بإذنه"
+    },
+    {
+      "id": "6239765b-3c79-0f72-7df7-6d8632ee6443",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الشفاعة بإذنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الشفاعة بإذنه"
+    },
+    {
+      "id": "d4e74d12-8b9d-625b-1856-4b8f458758df",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«سحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "سحر مثله"
+    },
+    {
+      "id": "d4e74d12-8b9d-625b-1856-4b8f458758df",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "سحر مثله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "سحر مثله"
+    },
+    {
+      "id": "aaeba64a-6965-c291-3f4e-80d5d7c0e643",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الجاني أو المبتدع» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الجاني أو المبتدع"
+    },
+    {
+      "id": "aaeba64a-6965-c291-3f4e-80d5d7c0e643",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الجاني أو المبتدع» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الجاني أو المبتدع"
+    },
+    {
+      "id": "029f1425-5ec8-1c05-d21b-ec13af1f35b8",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "الحكم الصحيح هو «جائز»، كما قرره النص الشرعي في الباب.",
+      "to": ""
+    },
+    {
+      "id": "029f1425-5ec8-1c05-d21b-ec13af1f35b8",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الحكم الصحيح هو «جائز»، كما قرره النص الشرعي في الباب.",
+      "to": ""
+    },
+    {
+      "id": "9f928e75-908e-92b1-25d6-67b6c27a58f3",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«نعبدهم» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "نعبدهم» هو"
+    },
+    {
+      "id": "9f928e75-908e-92b1-25d6-67b6c27a58f3",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "نعبدهم» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "نعبدهم» هو"
+    },
+    {
+      "id": "7b4b13fd-83ea-7f6b-d4e5-558ce37b4324",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«التحليل والتحريم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "التحليل والتحريم"
+    },
+    {
+      "id": "7b4b13fd-83ea-7f6b-d4e5-558ce37b4324",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "التحليل والتحريم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "التحليل والتحريم"
+    },
+    {
+      "id": "c37d20ea-790d-5e1d-05d4-bca79e540be3",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الشرك الأكبر: هو أن ييسوي غير الله بالله فيما هو من خصائص الله",
+      "to": "الشرك الأكبر: هو أن يسوّي غير الله بالله فيما هو من خصائص الله"
+    },
+    {
+      "id": "29a83d41-8344-0fa1-2da6-28465ba5e4fd",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«صفات النقص» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "صفات النقص"
+    },
+    {
+      "id": "29a83d41-8344-0fa1-2da6-28465ba5e4fd",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "صفات النقص» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "صفات النقص"
+    },
+    {
+      "id": "c215efc0-7fd5-2526-153d-092fd52d6e5a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«نزول المصائب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "نزول المصائب"
+    },
+    {
+      "id": "c215efc0-7fd5-2526-153d-092fd52d6e5a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "نزول المصائب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "نزول المصائب"
+    },
+    {
+      "id": "c3392727-5339-0873-d08b-efd125e28b91",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«القضاء والقدر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "القضاء والقدر"
+    },
+    {
+      "id": "c3392727-5339-0873-d08b-efd125e28b91",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "القضاء والقدر» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "القضاء والقدر"
+    },
+    {
+      "id": "ccea4f17-e7ed-bbf2-3dc5-49a7a5a13e18",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "لغير الله"
+    },
+    {
+      "id": "ccea4f17-e7ed-bbf2-3dc5-49a7a5a13e18",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "لغير الله» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "لغير الله"
+    },
+    {
+      "id": "90c75869-6875-2303-b90c-7443a43c686a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "دخل الجنة"
+    },
+    {
+      "id": "90c75869-6875-2303-b90c-7443a43c686a",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "دخل الجنة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "دخل الجنة"
+    },
+    {
+      "id": "0275a719-afbb-f0d9-06e8-2dc9cdf36dd0",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«يدخل النار» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "يدخل النار"
+    },
+    {
+      "id": "0275a719-afbb-f0d9-06e8-2dc9cdf36dd0",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "يدخل النار» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "يدخل النار"
+    },
+    {
+      "id": "a0cd9a30-0663-ff17-2f92-32ba946394e7",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«شرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "شرك"
+    },
+    {
+      "id": "a0cd9a30-0663-ff17-2f92-32ba946394e7",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "شرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "شرك"
+    },
+    {
+      "id": "a3add015-2a87-d1fe-89c2-9ad5be364cb9",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«العين والحمة» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "العين والحمة» هو"
+    },
+    {
+      "id": "a3add015-2a87-d1fe-89c2-9ad5be364cb9",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "العين والحمة» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "العين والحمة» هو"
+    },
+    {
+      "id": "74959bce-d2f2-9144-73b8-10c9972290ba",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«بريء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "بريء"
+    },
+    {
+      "id": "74959bce-d2f2-9144-73b8-10c9972290ba",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "بريء» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "بريء"
+    },
+    {
+      "id": "b86c4401-c533-81ae-26c6-0d80bcfdb481",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«غير القرآن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "غير القرآن"
+    },
+    {
+      "id": "b86c4401-c533-81ae-26c6-0d80bcfdb481",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "غير القرآن» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "غير القرآن"
+    },
+    {
+      "id": "0b57c0bd-0666-e1f9-e03f-a59f92704a0e",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«العين» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "العين"
+    },
+    {
+      "id": "0b57c0bd-0666-e1f9-e03f-a59f92704a0e",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "العين» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "العين"
+    },
+    {
+      "id": "040e0de9-8969-8a02-267a-446de187da40",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "الحكم الصحيح هو «التحريم»، كما قرره النص الشرعي في الباب.",
+      "to": ""
+    },
+    {
+      "id": "040e0de9-8969-8a02-267a-446de187da40",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الحكم الصحيح هو «التحريم»، كما قرره النص الشرعي في الباب.",
+      "to": ""
+    },
+    {
+      "id": "b0d7fe00-2b72-a49e-2c28-309dd65fa569",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«كل يوم وليلة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "كل يوم وليلة"
+    },
+    {
+      "id": "b0d7fe00-2b72-a49e-2c28-309dd65fa569",
+      "book": "tawheed",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "كل يوم وليلة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "كل يوم وليلة"
+    },
+    {
+      "id": "323ba563-ffd8-455e-8551-dfc13d4656c3",
+      "book": "usool",
+      "reason": "تنظيف نسب OCR في الاستشهاد",
+      "field": "source_quote",
+      "from": "اسمه :هو شيخ الإسلام محمد بن عبد الوهاب بن سليمان بن علي بن محمد أ بن حمد الحن ظلي ا لتميم ي",
+      "to": "شيخ الإسلام محمد بن عبد الوهاب التميمي رحمه الله."
+    },
+    {
+      "id": "971de374-b952-4843-bd00-fbbb9f29be49",
+      "book": "usool",
+      "reason": "حذف سؤال متسرب «كيف كانت نشأة المؤلف» من الاستشهاد",
+      "field": "source_quote",
+      "from": "مولده: ولد في بلدة العيينة سنة1115 هجرية في بيت علم وشرف ودين فأبوه .عالم وجده سليمان عالم كيف كانت نشأ ة المؤلف",
+      "to": "مولده: ولد في بلدة العيينة سنة 1115 هجرية."
+    },
+    {
+      "id": "e51e1871-5d53-4f6d-81b1-4a34343497af",
+      "book": "usool",
+      "reason": "حذف قوسين زائدين (العالم) — نمط النسك",
+      "field": "question_text",
+      "from": "ما معنى (العالم)؟",
+      "to": "ما معنى العالم؟"
+    },
+    {
+      "id": "736116de-b4ed-4a86-88b9-864dc9d070d2",
+      "book": "usool",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "قوله تعالى: وَعَلَى اللَّهِ فَتَوَكَّلُوا إِن كُنتُم مُّؤْمِنِينَ.",
+      "to": "قوله تعالى: وَعَلَى اللَّهِ فَتَوَكَّلُوا إِن كُنتُم مُّؤْمِنِينَ."
+    },
+    {
+      "id": "06ded618-669a-40ce-8574-4da46b041242",
+      "book": "usool",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "قوله تعالى: ﴿فَصَلِّ لِرَبِّكَ وَانْحَرْ﴾.",
+      "to": "قوله تعالى: ﴿فَصَلِّ لِرَبِّكَ وَانْحَرْ﴾."
+    },
+    {
+      "id": "3de5c20f-1bb6-4549-b43b-be29806bc6f8",
+      "book": "usool",
+      "reason": "OCR ثلث→ثلاث؛ مسافة زائدة في السؤال",
+      "field": "question_text",
+      "from": "كم عمر النبي ؟",
+      "to": "كم عمر النبي؟"
+    },
+    {
+      "id": "3de5c20f-1bb6-4549-b43b-be29806bc6f8",
+      "book": "usool",
+      "reason": "OCR ثلث→ثلاث؛ مسافة زائدة في السؤال",
+      "field": "source_quote",
+      "from": "وله من العمر ثلث وستون سنة",
+      "to": "وله من العمر ثلاث وستون سنة."
+    },
+    {
+      "id": "390a98fa-c43d-41d2-80f0-82a6894ba5db",
+      "book": "usool",
+      "reason": "حذف سؤال متسرب من الاستشهاد",
+      "field": "source_quote",
+      "from": "مولده: ولد في بلدة العيينة سنة1115 هجرية في بيت علم وشرف ودين فأبوه .عالم وجده سليمان عالم كيف كانت نشأ ة المؤلف",
+      "to": "مولده: ولد في بلدة العيينة سنة 1115 هجرية."
+    },
+    {
+      "id": "ab907a81-fd29-4415-f55b-c9feb0449f8e",
+      "book": "usool",
+      "reason": "خيار مسروق من تعريف الإحسان",
+      "field": "explanation",
+      "from": "العمل الصالح هو العمل الموافق لسنة رسول الله .",
+      "to": "العمل الصالح هو العمل الموافق لسنة رسول الله."
+    },
+    {
+      "id": "ab907a81-fd29-4415-f55b-c9feb0449f8e",
+      "book": "usool",
+      "reason": "خيار مسروق من تعريف الإحسان",
+      "field": "source_quote",
+      "from": "العمل الصالح هو العمل الموافق لسنة رسول الله .",
+      "to": "العمل الصالح هو العمل الموافق لسنة رسول الله."
+    },
+    {
+      "id": "ab907a81-fd29-4415-f55b-c9feb0449f8e",
+      "book": "usool",
+      "reason": "خيار مسروق من تعريف الإحسان",
+      "field": "options",
+      "from": "الإحسان ، ركن واحد وهو «أن تعبد الله كأنك تراه فإن لم تكن تراه فإنه يراك »,أول مرتبة الإسلام.,العمل الصالح هو العمل الموافق لسنة رسول الله,الصلوات الخمس المفروض",
+      "to": "العمل الكثير ولو خالف السنة,أول مرتبة الإسلام,العمل الموافق لسنة رسول الله,الصلوات الخمس المفروضة"
+    },
+    {
+      "id": "6abbc82b-f777-1486-896d-a5101cc2393e",
+      "book": "usool",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«معرفة الله ونبيه ودينه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "معرفة الله ونبيه ودينه"
+    },
+    {
+      "id": "d510b762-1fe3-2f22-dd1e-88163a00e52b",
+      "book": "usool",
+      "reason": "استشهاد مقطوع بلا آية — إكمال آية العصر (قرآن) كما يستدل بها الكتاب",
+      "field": "question_text",
+      "from": "الدليل على وجوب الدعوة إلى الله من سورة:",
+      "to": "الدليل على وجوب الدعوة إلى الله نزل في سورة:"
+    },
+    {
+      "id": "d510b762-1fe3-2f22-dd1e-88163a00e52b",
+      "book": "usool",
+      "reason": "استشهاد مقطوع بلا آية — إكمال آية العصر (قرآن) كما يستدل بها الكتاب",
+      "field": "explanation",
+      "from": "«العصر» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "سورة العصر. قال تعالى: ﴿وَالْعَصْرِ إِنَّ الْإِنسَانَ لَفِي خُسْرٍ إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصّ"
+    },
+    {
+      "id": "d510b762-1fe3-2f22-dd1e-88163a00e52b",
+      "book": "usool",
+      "reason": "استشهاد مقطوع بلا آية — إكمال آية العصر (قرآن) كما يستدل بها الكتاب",
+      "field": "source_quote",
+      "from": "العصر» هو الموضع الصحيح الذي استدل به المؤلف في هذا الموطن.",
+      "to": "والعصر إن الإنسان لفي خسر إلا الذين آمنوا وعملوا الصالحات وتواصوا بالحق وتواصوا بالصبر"
+    },
+    {
+      "id": "9f0d840c-cbf5-1b33-f54b-3ccc7b0446b8",
+      "book": "usool",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«من بلد الشرك إلى بلد الإسلام» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "من بلد الشرك إلى بلد الإسلام"
+    },
+    {
+      "id": "d1612563-8194-6203-ef2a-5131e9299d10",
+      "book": "usool",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«على أقدار الله المؤلمة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "على أقدار الله المؤلمة"
+    },
+    {
+      "id": "02e39da8-d33e-cf41-05c0-0c522fe9f171",
+      "book": "usool",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«إفراد الله بالعبادة وترك عبادة ما سواه» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "إفراد الله بالعبادة وترك عبادة ما سواه"
+    },
+    {
+      "id": "331044a6-06d2-ba91-2958-fcfa40520cde",
+      "book": "usool",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«إفراد الله بالعبادة والإعراض عما سواه» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "إفراد الله بالعبادة والإعراض عما سواه"
+    },
+    {
+      "id": "ef35ad7a-6c9d-fac3-ea1f-c2baf59810f7",
+      "book": "usool",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«نفي جميع ما يعبد من دون الله» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "نفي جميع ما يعبد من دون الله"
+    },
+    {
+      "id": "b01efb63-f4b7-22fc-002a-2b8c93d4f79d",
+      "book": "usool",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«إثبات العبادة لله وحده» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "إثبات العبادة لله وحده"
+    },
+    {
+      "id": "a2193183-1fae-524d-f67a-aa8201744fa4",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (1- النية).",
+      "to": ""
+    },
+    {
+      "id": "a2193183-1fae-524d-f67a-aa8201744fa4",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (1- النية).",
+      "to": ""
+    },
+    {
+      "id": "6d926dd8-cfe5-8573-4427-38044f6ed8b8",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (28- السنة).",
+      "to": ""
+    },
+    {
+      "id": "6d926dd8-cfe5-8573-4427-38044f6ed8b8",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (28- السنة).",
+      "to": ""
+    },
+    {
+      "id": "906b9850-0a26-a499-222b-a33ecde138c5",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (17- الإحسان).",
+      "to": ""
+    },
+    {
+      "id": "906b9850-0a26-a499-222b-a33ecde138c5",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (17- الإحسان).",
+      "to": ""
+    },
+    {
+      "id": "75664f37-3afd-0dfb-adc9-cd9994b1dc3d",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (4- القدر).",
+      "to": ""
+    },
+    {
+      "id": "75664f37-3afd-0dfb-adc9-cd9994b1dc3d",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (4- القدر).",
+      "to": ""
+    },
+    {
+      "id": "f1a6c469-15e1-56f0-a44a-06b57f1780d8",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (2- جبريل).",
+      "to": ""
+    },
+    {
+      "id": "f1a6c469-15e1-56f0-a44a-06b57f1780d8",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (2- جبريل).",
+      "to": ""
+    },
+    {
+      "id": "2f1b3b32-0cdd-7502-4d4b-b946c30534da",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (22- الجنة).",
+      "to": ""
+    },
+    {
+      "id": "2f1b3b32-0cdd-7502-4d4b-b946c30534da",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (22- الجنة).",
+      "to": ""
+    },
+    {
+      "id": "03b27c61-5b02-557b-596e-9601c22a5e92",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (23- جوامع الخير).",
+      "to": ""
+    },
+    {
+      "id": "03b27c61-5b02-557b-596e-9601c22a5e92",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (23- جوامع الخير).",
+      "to": ""
+    },
+    {
+      "id": "64a1726d-4b2f-8504-3cfc-b18a7cdc42ee",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (24- فضل الله).",
+      "to": ""
+    },
+    {
+      "id": "64a1726d-4b2f-8504-3cfc-b18a7cdc42ee",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (24- فضل الله).",
+      "to": ""
+    },
+    {
+      "id": "437ad277-3c89-1263-1b74-9204fbc5f5aa",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (30- الحدود).",
+      "to": ""
+    },
+    {
+      "id": "437ad277-3c89-1263-1b74-9204fbc5f5aa",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (30- الحدود).",
+      "to": ""
+    },
+    {
+      "id": "4397f405-8af7-d524-a75f-435909283aac",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (8- الجهاد).",
+      "to": ""
+    },
+    {
+      "id": "4397f405-8af7-d524-a75f-435909283aac",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (8- الجهاد).",
+      "to": ""
+    },
+    {
+      "id": "425762b4-61b3-abfa-d422-cdc225e731a2",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (5- البدعة).",
+      "to": ""
+    },
+    {
+      "id": "425762b4-61b3-abfa-d422-cdc225e731a2",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (5- البدعة).",
+      "to": ""
+    },
+    {
+      "id": "896c6dfb-64c6-d874-95dc-dee6f3d668cb",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (26- الصدقة).",
+      "to": ""
+    },
+    {
+      "id": "896c6dfb-64c6-d874-95dc-dee6f3d668cb",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (26- الصدقة).",
+      "to": ""
+    },
+    {
+      "id": "cfc9e71a-7c34-4fcb-1e30-b70255ca7f4e",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (27- البر والإثم).",
+      "to": ""
+    },
+    {
+      "id": "cfc9e71a-7c34-4fcb-1e30-b70255ca7f4e",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (27- البر والإثم).",
+      "to": ""
+    },
+    {
+      "id": "9e259b14-a48b-93c8-6f84-7cdaf6bcb3c4",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (18- التقوى).",
+      "to": ""
+    },
+    {
+      "id": "9e259b14-a48b-93c8-6f84-7cdaf6bcb3c4",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (18- التقوى).",
+      "to": ""
+    },
+    {
+      "id": "6a19ccc6-f254-fe98-d63c-81a6dfa1cdda",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (22- الجنة).",
+      "to": ""
+    },
+    {
+      "id": "6a19ccc6-f254-fe98-d63c-81a6dfa1cdda",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (22- الجنة).",
+      "to": ""
+    },
+    {
+      "id": "8b5637fa-bb34-d293-074e-057706eaf146",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (22- الجنة).",
+      "to": ""
+    },
+    {
+      "id": "8b5637fa-bb34-d293-074e-057706eaf146",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (22- الجنة).",
+      "to": ""
+    },
+    {
+      "id": "91a6c372-020a-6863-2ba6-7e8483517391",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (33- القضاء).",
+      "to": ""
+    },
+    {
+      "id": "91a6c372-020a-6863-2ba6-7e8483517391",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (33- القضاء).",
+      "to": ""
+    },
+    {
+      "id": "25e5403b-55ef-a07f-9766-812f0057be86",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (36- طلب العلم).",
+      "to": ""
+    },
+    {
+      "id": "25e5403b-55ef-a07f-9766-812f0057be86",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (36- طلب العلم).",
+      "to": ""
+    },
+    {
+      "id": "8857258e-936b-5493-f566-1ad754f6fa30",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (9- السؤال).",
+      "to": ""
+    },
+    {
+      "id": "8857258e-936b-5493-f566-1ad754f6fa30",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (9- السؤال).",
+      "to": ""
+    },
+    {
+      "id": "d2a20a31-fd50-ad5c-5b27-54c2ae1671f0",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (2- جبريل).",
+      "to": ""
+    },
+    {
+      "id": "d2a20a31-fd50-ad5c-5b27-54c2ae1671f0",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (2- جبريل).",
+      "to": ""
+    },
+    {
+      "id": "4fb3f9eb-7397-0855-30d8-8a6bfd82d626",
+      "book": "nawawi",
+      "reason": "نص السؤال كان هو نفسه الخيار الصحيح",
+      "field": "question_text",
+      "from": "نعم، أن أوامر الله قسمان فريضة ونافلة",
+      "to": "من فوائد حديث الزهد:"
+    },
+    {
+      "id": "5e7bae87-bd7d-512c-9c59-70167b1259ee",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (33- القضاء).",
+      "to": ""
+    },
+    {
+      "id": "5e7bae87-bd7d-512c-9c59-70167b1259ee",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (33- القضاء).",
+      "to": ""
+    },
+    {
+      "id": "099f23ff-6051-2d9f-41cb-9c23238361e6",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (6- الشبهات).",
+      "to": ""
+    },
+    {
+      "id": "099f23ff-6051-2d9f-41cb-9c23238361e6",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (6- الشبهات).",
+      "to": ""
+    },
+    {
+      "id": "846fe9ec-4924-a41a-70e4-c51a9507d649",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (13- المحبة).",
+      "to": ""
+    },
+    {
+      "id": "846fe9ec-4924-a41a-70e4-c51a9507d649",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (13- المحبة).",
+      "to": ""
+    },
+    {
+      "id": "5a98a349-c5d8-544b-49ec-ee151c7a6fc4",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (15- الأخلاق).",
+      "to": ""
+    },
+    {
+      "id": "5a98a349-c5d8-544b-49ec-ee151c7a6fc4",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (15- الأخلاق).",
+      "to": ""
+    },
+    {
+      "id": "484b48a0-41f5-91cf-e39d-edb9ae868301",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (1- النية).",
+      "to": ""
+    },
+    {
+      "id": "484b48a0-41f5-91cf-e39d-edb9ae868301",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (1- النية).",
+      "to": ""
+    },
+    {
+      "id": "dd51ea0f-f4e5-f742-33e7-83462205db05",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (16- الغضب).",
+      "to": ""
+    },
+    {
+      "id": "dd51ea0f-f4e5-f742-33e7-83462205db05",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (16- الغضب).",
+      "to": ""
+    },
+    {
+      "id": "12c566c3-8740-a38c-1dde-5317d83b3ca5",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (19- التوكل).",
+      "to": ""
+    },
+    {
+      "id": "12c566c3-8740-a38c-1dde-5317d83b3ca5",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (19- التوكل).",
+      "to": ""
+    },
+    {
+      "id": "bb99556a-58c7-049a-d21c-0bd9d39a1708",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (24- فضل الله).",
+      "to": ""
+    },
+    {
+      "id": "bb99556a-58c7-049a-d21c-0bd9d39a1708",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (24- فضل الله).",
+      "to": ""
+    },
+    {
+      "id": "19d99ff8-694d-56fb-07dc-7c0e004794c9",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (21- الاستقامة).",
+      "to": ""
+    },
+    {
+      "id": "19d99ff8-694d-56fb-07dc-7c0e004794c9",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (21- الاستقامة).",
+      "to": ""
+    },
+    {
+      "id": "9a20847b-9b06-d2af-b0f4-60cd850bb674",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (18- التقوى).",
+      "to": ""
+    },
+    {
+      "id": "9a20847b-9b06-d2af-b0f4-60cd850bb674",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (18- التقوى).",
+      "to": ""
+    },
+    {
+      "id": "cbe119d0-2dd7-6ef0-2f2f-521675e8f85b",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (23- جوامع الخير).",
+      "to": ""
+    },
+    {
+      "id": "cbe119d0-2dd7-6ef0-2f2f-521675e8f85b",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (23- جوامع الخير).",
+      "to": ""
+    },
+    {
+      "id": "bd0fff2f-0a4f-399e-5cdb-d186571a8c92",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (24- فضل الله).",
+      "to": ""
+    },
+    {
+      "id": "bd0fff2f-0a4f-399e-5cdb-d186571a8c92",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (24- فضل الله).",
+      "to": ""
+    },
+    {
+      "id": "d814a840-58ac-2179-1c8e-bf09252504d9",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (6- الشبهات).",
+      "to": ""
+    },
+    {
+      "id": "d814a840-58ac-2179-1c8e-bf09252504d9",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (6- الشبهات).",
+      "to": ""
+    },
+    {
+      "id": "8be3cabe-ff07-592c-3b9c-5f3601dee012",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (5- البدعة).",
+      "to": ""
+    },
+    {
+      "id": "8be3cabe-ff07-592c-3b9c-5f3601dee012",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (5- البدعة).",
+      "to": ""
+    },
+    {
+      "id": "464b1057-57fe-aeb9-90a5-802d7f23a0ba",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (36- طلب العلم).",
+      "to": ""
+    },
+    {
+      "id": "464b1057-57fe-aeb9-90a5-802d7f23a0ba",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (36- طلب العلم).",
+      "to": ""
+    },
+    {
+      "id": "1bc930e0-47a5-ae0e-ee04-77c987ff4bd1",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (27- البر والإثم).",
+      "to": ""
+    },
+    {
+      "id": "1bc930e0-47a5-ae0e-ee04-77c987ff4bd1",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (27- البر والإثم).",
+      "to": ""
+    },
+    {
+      "id": "c56f0704-53a2-1ddd-1835-f6c779c2443a",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (28- السنة).",
+      "to": ""
+    },
+    {
+      "id": "c56f0704-53a2-1ddd-1835-f6c779c2443a",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (28- السنة).",
+      "to": ""
+    },
+    {
+      "id": "c297287c-cea1-ae05-3c35-7e5365404015",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (30- الحدود).",
+      "to": ""
+    },
+    {
+      "id": "c297287c-cea1-ae05-3c35-7e5365404015",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (30- الحدود).",
+      "to": ""
+    },
+    {
+      "id": "c297287c-cea1-ae05-3c35-7e5365404015",
+      "book": "nawawi",
+      "reason": "options destub/haraka",
+      "field": "options",
+      "from": "نعم، أن الله تعالى فرض فرائض وأمر بالمحافظة عليها,لا؛ بل: الحرص على الكلام الطيب,لا؛ بل: الحلال بيّن كلٌّ يعرفه,لا؛ بل: الصبر على طاعة الله",
+      "to": "نعم، أن الله تعالى فرض فرائض وأمر بالمحافظة عليها,لا؛ بل: الحرص على الكلام الطيب,لا؛ بل: الحلال بيّن كلٌّ يعرفه,لا؛ بل: الصبر على طاعة الله"
+    },
+    {
+      "id": "7c5e3c1f-d652-cdd6-31ea-88ee8a6cf830",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (31- الزهد).",
+      "to": ""
+    },
+    {
+      "id": "7c5e3c1f-d652-cdd6-31ea-88ee8a6cf830",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (31- الزهد).",
+      "to": ""
+    },
+    {
+      "id": "7a01ef3d-e455-3330-06ce-14e77ac64941",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (34- إنكار المنكر).",
+      "to": ""
+    },
+    {
+      "id": "7a01ef3d-e455-3330-06ce-14e77ac64941",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (34- إنكار المنكر).",
+      "to": ""
+    },
+    {
+      "id": "7ca0f3a8-fa82-1beb-f697-7342cfbf1c61",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (36- طلب العلم).",
+      "to": ""
+    },
+    {
+      "id": "7ca0f3a8-fa82-1beb-f697-7342cfbf1c61",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (36- طلب العلم).",
+      "to": ""
+    },
+    {
+      "id": "02f984b0-6e9b-c756-f74c-47ce3ab0d4a2",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (9- السؤال).",
+      "to": ""
+    },
+    {
+      "id": "02f984b0-6e9b-c756-f74c-47ce3ab0d4a2",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (9- السؤال).",
+      "to": ""
+    },
+    {
+      "id": "a74fd505-de4e-a44d-1446-80ed00ce0878",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (37- الحسنات).",
+      "to": ""
+    },
+    {
+      "id": "a74fd505-de4e-a44d-1446-80ed00ce0878",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (37- الحسنات).",
+      "to": ""
+    },
+    {
+      "id": "d073fc69-659f-a959-8a27-26547ac8e2af",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (39- العفو).",
+      "to": ""
+    },
+    {
+      "id": "d073fc69-659f-a959-8a27-26547ac8e2af",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (39- العفو).",
+      "to": ""
+    },
+    {
+      "id": "61306d65-b4a6-b6a7-0c02-0995070571b8",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (10- الحلال).",
+      "to": ""
+    },
+    {
+      "id": "61306d65-b4a6-b6a7-0c02-0995070571b8",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (10- الحلال).",
+      "to": ""
+    },
+    {
+      "id": "81217de3-9634-fe40-8bc5-901b2c899f7f",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (12- الفضول).",
+      "to": ""
+    },
+    {
+      "id": "81217de3-9634-fe40-8bc5-901b2c899f7f",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (12- الفضول).",
+      "to": ""
+    },
+    {
+      "id": "eaaebb18-d8d4-24f3-437d-6ccb291930b9",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (14- الدماء).",
+      "to": ""
+    },
+    {
+      "id": "eaaebb18-d8d4-24f3-437d-6ccb291930b9",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (14- الدماء).",
+      "to": ""
+    },
+    {
+      "id": "094dda57-ab07-a877-c831-35a1547406a7",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (29- اللسان).",
+      "to": ""
+    },
+    {
+      "id": "094dda57-ab07-a877-c831-35a1547406a7",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (29- اللسان).",
+      "to": ""
+    },
+    {
+      "id": "b23a3a09-6689-d7f6-a93a-54bf7a57001a",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (2- جبريل).",
+      "to": ""
+    },
+    {
+      "id": "b23a3a09-6689-d7f6-a93a-54bf7a57001a",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (2- جبريل).",
+      "to": ""
+    },
+    {
+      "id": "9098bdf4-f17e-a785-7da1-de1817bf8b74",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (17- الإحسان).",
+      "to": ""
+    },
+    {
+      "id": "9098bdf4-f17e-a785-7da1-de1817bf8b74",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (17- الإحسان).",
+      "to": ""
+    },
+    {
+      "id": "5e09b3cf-15ad-e7a0-a253-8d558d48999e",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (19- التوكل).",
+      "to": ""
+    },
+    {
+      "id": "5e09b3cf-15ad-e7a0-a253-8d558d48999e",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (19- التوكل).",
+      "to": ""
+    },
+    {
+      "id": "ea1bdf15-c744-c990-aabf-ac8449bc9e18",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (20- الحياء).",
+      "to": ""
+    },
+    {
+      "id": "ea1bdf15-c744-c990-aabf-ac8449bc9e18",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (20- الحياء).",
+      "to": ""
+    },
+    {
+      "id": "cf2f39f4-bbb9-3563-384b-f08871b45bc1",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (2- جبريل).",
+      "to": ""
+    },
+    {
+      "id": "cf2f39f4-bbb9-3563-384b-f08871b45bc1",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (2- جبريل).",
+      "to": ""
+    },
+    {
+      "id": "e6625894-00f3-6965-16d9-befd4807efde",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (18- التقوى).",
+      "to": ""
+    },
+    {
+      "id": "e6625894-00f3-6965-16d9-befd4807efde",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (18- التقوى).",
+      "to": ""
+    },
+    {
+      "id": "0fbc2f0d-d298-55b4-faf5-61d0bf47ae9c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (25- الصدقة).",
+      "to": ""
+    },
+    {
+      "id": "0fbc2f0d-d298-55b4-faf5-61d0bf47ae9c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (25- الصدقة).",
+      "to": ""
+    },
+    {
+      "id": "5e2b8c69-bffc-3fe5-494c-e219be557c6d",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (25- الصدقة).",
+      "to": ""
+    },
+    {
+      "id": "5e2b8c69-bffc-3fe5-494c-e219be557c6d",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (25- الصدقة).",
+      "to": ""
+    },
+    {
+      "id": "14a86a81-79b7-5025-81b6-cf28890e3cbc",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (7- النصيحة).",
+      "to": ""
+    },
+    {
+      "id": "14a86a81-79b7-5025-81b6-cf28890e3cbc",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (7- النصيحة).",
+      "to": ""
+    },
+    {
+      "id": "dcbd46f3-c4c0-4ad1-7338-fc307df1020c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "question_text",
+      "from": "من فوائد الحديث (6- الشبهات): الحلال بيّن كلٌّ يعرفه؟",
+      "to": "من فوائد الحديث (6- الشبهات): الحلال بيّن كلٌّ يعرفه؟"
+    },
+    {
+      "id": "dcbd46f3-c4c0-4ad1-7338-fc307df1020c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (6- الشبهات).",
+      "to": ""
+    },
+    {
+      "id": "dcbd46f3-c4c0-4ad1-7338-fc307df1020c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (6- الشبهات).",
+      "to": ""
+    },
+    {
+      "id": "dcbd46f3-c4c0-4ad1-7338-fc307df1020c",
+      "book": "nawawi",
+      "reason": "options destub/haraka",
+      "field": "options",
+      "from": "نعم، الحلال بيّن كلٌّ يعرفه,لا؛ بل: سعة رحمة الله ولطفه بعباده حيث رفع عنهم الإثم إذا صدرت منهم المعصية على هذه الوجوه الثلاثة,لا؛ بل: ضعف المخلوقين وافتقارهم إ",
+      "to": "نعم، الحلال بيّن كلٌّ يعرفه,لا؛ بل: سعة رحمة الله ولطفه بعباده حيث رفع عنهم الإثم إذا صدرت منهم المعصية على هذه الوجوه الثلاثة,لا؛ بل: ضعف المخلوقين وافتقارهم إ"
+    },
+    {
+      "id": "0cccbf55-d6f0-f0a9-1297-7c3763ad035d",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (15- الأخلاق).",
+      "to": ""
+    },
+    {
+      "id": "0cccbf55-d6f0-f0a9-1297-7c3763ad035d",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (15- الأخلاق).",
+      "to": ""
+    },
+    {
+      "id": "38d59623-17fa-6862-336b-d53c355a56a0",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (28- السنة).",
+      "to": ""
+    },
+    {
+      "id": "38d59623-17fa-6862-336b-d53c355a56a0",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (28- السنة).",
+      "to": ""
+    },
+    {
+      "id": "f7cad26c-0bd3-d972-68b9-0c0580d8126c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (30- الحدود).",
+      "to": ""
+    },
+    {
+      "id": "f7cad26c-0bd3-d972-68b9-0c0580d8126c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (30- الحدود).",
+      "to": ""
+    },
+    {
+      "id": "031be154-3c4f-ca8d-372a-ea9b94c806cc",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (32- الضرر).",
+      "to": ""
+    },
+    {
+      "id": "031be154-3c4f-ca8d-372a-ea9b94c806cc",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (32- الضرر).",
+      "to": ""
+    },
+    {
+      "id": "dea419eb-30e5-a731-fbac-fa1c33f149cb",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (34- إنكار المنكر).",
+      "to": ""
+    },
+    {
+      "id": "dea419eb-30e5-a731-fbac-fa1c33f149cb",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (34- إنكار المنكر).",
+      "to": ""
+    },
+    {
+      "id": "5dc0cd57-1d12-f4d9-e761-b34ed48cc0f0",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (36- طلب العلم).",
+      "to": ""
+    },
+    {
+      "id": "5dc0cd57-1d12-f4d9-e761-b34ed48cc0f0",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (36- طلب العلم).",
+      "to": ""
+    },
+    {
+      "id": "3d4d6b26-1dd8-f603-ac83-c7080a2a8a8e",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (9- السؤال).",
+      "to": ""
+    },
+    {
+      "id": "3d4d6b26-1dd8-f603-ac83-c7080a2a8a8e",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (9- السؤال).",
+      "to": ""
+    },
+    {
+      "id": "7439f688-1ff6-4811-0061-d148ba81bd44",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (38- الأولياء).",
+      "to": ""
+    },
+    {
+      "id": "7439f688-1ff6-4811-0061-d148ba81bd44",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (38- الأولياء).",
+      "to": ""
+    },
+    {
+      "id": "fd7131dd-dcbd-3e81-33d3-877b0e0d8de2",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (40- الزهد).",
+      "to": ""
+    },
+    {
+      "id": "fd7131dd-dcbd-3e81-33d3-877b0e0d8de2",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (40- الزهد).",
+      "to": ""
+    },
+    {
+      "id": "262dd6f0-29d6-3681-35c3-c67066d5fd6c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (10- الحلال).",
+      "to": ""
+    },
+    {
+      "id": "262dd6f0-29d6-3681-35c3-c67066d5fd6c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (10- الحلال).",
+      "to": ""
+    },
+    {
+      "id": "3fd9a284-0813-2253-4b49-c872aa4630aa",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (13- المحبة).",
+      "to": ""
+    },
+    {
+      "id": "3fd9a284-0813-2253-4b49-c872aa4630aa",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (13- المحبة).",
+      "to": ""
+    },
+    {
+      "id": "11041d31-a78a-671e-f791-5f9084e1de31",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (14- الدماء).",
+      "to": ""
+    },
+    {
+      "id": "11041d31-a78a-671e-f791-5f9084e1de31",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (14- الدماء).",
+      "to": ""
+    },
+    {
+      "id": "dec1f15b-7823-52e7-c041-486cdf6a2e2c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "هذه من فوائد حديث (15- الأخلاق).",
+      "to": ""
+    },
+    {
+      "id": "dec1f15b-7823-52e7-c041-486cdf6a2e2c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "هذه من فوائد حديث (15- الأخلاق).",
+      "to": ""
+    },
+    {
+      "id": "776a51ad-a027-f148-83e0-67d340e03717",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«النية والإخلاص» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "النية والإخلاص"
+    },
+    {
+      "id": "776a51ad-a027-f148-83e0-67d340e03717",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "النية والإخلاص» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "النية والإخلاص"
+    },
+    {
+      "id": "e7f55baf-38ae-a3d0-9b22-518a907121f7",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الإسلام والإيمان والإحسان» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الإسلام والإيمان والإحسان"
+    },
+    {
+      "id": "075d3586-414b-bfbc-263d-055b1319e4e5",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أربعين يوما نطفة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أربعين يوما نطفة"
+    },
+    {
+      "id": "075d3586-414b-bfbc-263d-055b1319e4e5",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "أربعين يوما نطفة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أربعين يوما نطفة"
+    },
+    {
+      "id": "6390fbbb-4776-88a6-95d5-3ac50f8941d5",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الله وكتابه ورسوله وأئمة المسلمين وعامتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الله وكتابه ورسوله وأئمة المسلمين وعامتهم"
+    },
+    {
+      "id": "76f476ff-04be-4845-49fb-df97aaceacf7",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الزهد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الزهد"
+    },
+    {
+      "id": "76f476ff-04be-4845-49fb-df97aaceacf7",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الزهد» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الزهد"
+    },
+    {
+      "id": "d4161bab-404d-2657-a0ed-267ce6957756",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«كأنك تراه فإن لم تكن تراه فإنه يراك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "كأنك تراه فإن لم تكن تراه فإنه يراك"
+    },
+    {
+      "id": "163a1e55-0fb2-4467-5564-2d0bff81f49c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الصادق المصدوق» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الصادق المصدوق"
+    },
+    {
+      "id": "163a1e55-0fb2-4467-5564-2d0bff81f49c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الصادق المصدوق» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الصادق المصدوق"
+    },
+    {
+      "id": "ec222f45-8bbf-390a-fa68-3ad07048f867",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«قدسي» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "قدسي"
+    },
+    {
+      "id": "ec222f45-8bbf-390a-fa68-3ad07048f867",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "قدسي» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "قدسي"
+    },
+    {
+      "id": "1ee43245-3fe9-14ea-1e14-6805cad62a82",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«رفع الحرج» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "رفع الحرج"
+    },
+    {
+      "id": "1ee43245-3fe9-14ea-1e14-6805cad62a82",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "رفع الحرج» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "رفع الحرج"
+    },
+    {
+      "id": "18aa1c12-194c-29fe-ca5f-31ccf419f8ee",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«عمر بن الخطاب رضي الله عنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عمر بن الخطاب رضي الله عنه"
+    },
+    {
+      "id": "b4abc0b2-0328-2c30-3a76-547e37e538c6",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الثالثة والعشرين من الهجرة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الثالثة والعشرين من الهجرة"
+    },
+    {
+      "id": "337ce515-4aa6-9d2a-28ae-08795f2bc485",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«مع أبيه بمكة وهو صغير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "مع أبيه بمكة وهو صغير"
+    },
+    {
+      "id": "337ce515-4aa6-9d2a-28ae-08795f2bc485",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "مع أبيه بمكة وهو صغير» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "مع أبيه بمكة وهو صغير"
+    },
+    {
+      "id": "40de4c27-f6cc-b509-95fc-a186a2a2e4f9",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«عبد الله بن مسعود رضي الله عنه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "عبد الله بن مسعود رضي الله عنه"
+    },
+    {
+      "id": "bb75112b-febb-9faa-7c11-71a057a47a74",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الحبشة ثم المدينة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الحبشة ثم المدينة"
+    },
+    {
+      "id": "bb75112b-febb-9faa-7c11-71a057a47a74",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الحبشة ثم المدينة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الحبشة ثم المدينة"
+    },
+    {
+      "id": "7b36acc7-c89d-5910-daad-5a9114b76e9f",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أبو هريرة وابن عباس على الترتيب» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أبو هريرة وابن عباس على الترتيب"
+    },
+    {
+      "id": "b36bcaec-d7b7-7b96-abe1-1a2e16cba89c",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«العزم على فعل العبادة تقربا إلى الله وحمله بالحق» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "العزم على فعل العبادة تقربا إلى الله وحمله بالحق"
+    },
+    {
+      "id": "963542fc-c630-6925-1386-98fe6d5a097e",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«خرج علينا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "خرج علينا"
+    },
+    {
+      "id": "963542fc-c630-6925-1386-98fe6d5a097e",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "خرج علينا» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "خرج علينا"
+    },
+    {
+      "id": "a849f4ad-9b6f-4ff0-52ef-e2c8b4ad68de",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أنه لا يعرف من الصحابة وفيه غرابة» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أنه لا يعرف من الصحابة وفيه غرابة"
+    },
+    {
+      "id": "4336ca8e-6857-af62-9d20-dbb932298be9",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«المملوكة» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "المملوكة"
+    },
+    {
+      "id": "4336ca8e-6857-af62-9d20-dbb932298be9",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "المملوكة» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "المملوكة"
+    },
+    {
+      "id": "8a6f4c97-74bc-18ca-a752-ca26b0d2f948",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الفقراء» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "الفقراء"
+    },
+    {
+      "id": "8a6f4c97-74bc-18ca-a752-ca26b0d2f948",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "الفقراء» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "الفقراء"
+    },
+    {
+      "id": "2d138f54-6f13-6935-33d2-146edf167b2e",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الاستسلام لله بالتوحيد والانقياد له بالطاعة والبراءة من الشرك» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الاستسلام لله بالتوحيد والانقياد له بالطاعة والبراءة من الشرك"
+    },
+    {
+      "id": "90740421-cfa1-e46f-042e-73d598f0c7b0",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أعلنت عليه الحرب» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "أعلنت عليه الحرب"
+    },
+    {
+      "id": "90740421-cfa1-e46f-042e-73d598f0c7b0",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "أعلنت عليه الحرب» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "أعلنت عليه الحرب"
+    },
+    {
+      "id": "1b0f4867-ddf6-9c9f-08e7-6553f70bcf05",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أداء الفرائض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أداء الفرائض"
+    },
+    {
+      "id": "1b0f4867-ddf6-9c9f-08e7-6553f70bcf05",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "source_quote",
+      "from": "أداء الفرائض» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أداء الفرائض"
+    },
+    {
+      "id": "9ab05330-bb0d-27e5-72fe-c230e166c37d",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«ما يرتكبه الإنسان من العمل من غير عمد» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "ما يرتكبه الإنسان من العمل من غير عمد"
+    },
+    {
+      "id": "24298053-bdf7-d3bc-f61c-0586b69520de",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«ذهول القلب عن شيء معلوم من قبل» هو المعنى الصحيح المذكور في شرح الكتاب لهذه الكلمة/المصطلح.",
+      "to": "ذهول القلب عن شيء معلوم من قبل"
+    },
+    {
+      "id": "34a96b6d-df2b-caa0-0b90-96edf2b022f4",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«الخطأ والنسيان والإكراه» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "الخطأ والنسيان والإكراه"
+    },
+    {
+      "id": "6dd9abd3-21db-3bb7-5430-76d389915cc8",
+      "book": "nawawi",
+      "reason": "destub/haraka/ayah-الله",
+      "field": "explanation",
+      "from": "«أئمة المسلمين وعامتهم» هو ما ثبت في لفظ الحديث/الأثر كما أورده الكتاب.",
+      "to": "أئمة المسلمين وعامتهم"
+    }
+  ]
+}
