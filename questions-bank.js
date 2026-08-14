@@ -324,7 +324,7 @@ window.QUESTIONS_BANK = {
       "chapter": "🤲 الدعاء",
       "level": "easy",
       "type": "mc",
-      "question_text": "قال النبي : الدعاء هو العبادة. ماذا يعني ذلك؟",
+      "question_text": "قال النبي: الدعاء هو العبادة. ماذا يعني ذلك؟",
       "options": [
         "لا يجوز دعاء غير الله لأن الدعاء عبادة",
         "يجوز دعاء الأولياء عند الشدة",
@@ -447,7 +447,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "الحلف بغير الله شرك أصغر، وقد قال النبي : من حلف بغير الله فقد أشرك.",
+      "explanation": "الحلف بغير الله شرك أصغر، وقد قال النبي: من حلف بغير الله فقد أشرك.",
       "source_quote": "من حلف بغير الله فقد كفر أو أشرك",
       "language": "ar"
     },
@@ -946,7 +946,7 @@ window.QUESTIONS_BANK = {
       "chapter": "📚 مسائل متنوعة",
       "level": "hard",
       "type": "mc",
-      "question_text": "ما معنى قول النبي : لا تقوم الساعة حتى تعبد قبائل من أمتي الأوثان؟",
+      "question_text": "ما معنى قول النبي: لا تقوم الساعة حتى تعبد قبائل من أمتي الأوثان؟",
       "options": [
         "وقوع الشرك في الأمة وعبادة غير الله",
         "انتشار الإسلام",
@@ -1124,8 +1124,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "قال : فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم.",
-      "source_quote": "قال : فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم",
+      "explanation": "قال: فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم.",
+      "source_quote": "قال: فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم",
       "language": "ar"
     },
     {
@@ -1176,8 +1176,8 @@ window.QUESTIONS_BANK = {
       "options": null,
       "correct_index": null,
       "is_true": true,
-      "explanation": "قال : إن الرقى والتمائم والتولة شرك.",
-      "source_quote": "قال : إن الرقى والتمائم والتولة شرك.",
+      "explanation": "قال: إن الرقى والتمائم والتولة شرك.",
+      "source_quote": "قال: إن الرقى والتمائم والتولة شرك.",
       "language": "ar"
     },
     {
@@ -1195,8 +1195,8 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "قال : أخوف ما أخاف عليكم الشرك الأصغر قالوا: وما هو؟ قال: الرياء.",
-      "source_quote": "قال : أخوف ما أخاف عليكم الشرك الأصغر قالوا: وما هو؟ قال: الرياء.",
+      "explanation": "قال: أخوف ما أخاف عليكم الشرك الأصغر قالوا: وما هو؟ قال: الرياء.",
+      "source_quote": "قال: أخوف ما أخاف عليكم الشرك الأصغر قالوا: وما هو؟ قال: الرياء.",
       "language": "ar"
     },
     {
@@ -1421,7 +1421,7 @@ window.QUESTIONS_BANK = {
       "correct_index": null,
       "is_true": true,
       "explanation": "من تعلق شيئا وكل إليه.",
-      "source_quote": "وقوله: «ومن سحر ، فقد أشرك، ومن تعلق شيئا، وكل إليه",
+      "source_quote": "وقوله: «ومن سحر، فقد أشرك، ومن تعلق شيئا وكل إليه»",
       "language": "ar"
     },
     {
@@ -1568,12 +1568,7 @@ window.QUESTIONS_BANK = {
       "level": "medium",
       "type": "tf",
       "question_text": "لعن الله من ذبح لغير الله.",
-      "options": [
-        "علي بن أبي طالب",
-        "ابن عباس",
-        "أبو هريرة",
-        "عمر"
-      ],
+      "options": null,
       "correct_index": null,
       "is_true": true,
       "explanation": "حديث صحيح.",
@@ -1606,16 +1601,11 @@ window.QUESTIONS_BANK = {
       "level": "medium",
       "type": "tf",
       "question_text": "من لقي الله لا يشرك به شيئا دخل الجنة.",
-      "options": [
-        "الجنة",
-        "النار",
-        "الأعراف",
-        "الحساب الطويل"
-      ],
+      "options": null,
       "correct_index": null,
       "is_true": true,
       "explanation": "حديث صحيح.",
-      "source_quote": "وعن جابر: أن رسول الله قال : «من لقي الله لا يشرك به شيئا ؛ دخل الجنة ومن لقيه",
+      "source_quote": "وعن جابر: أن رسول الله قال: «من لقي الله لا يشرك به شيئا؛ دخل الجنة»",
       "language": "ar"
     },
     {
@@ -1625,12 +1615,7 @@ window.QUESTIONS_BANK = {
       "level": "hard",
       "type": "tf",
       "question_text": "من سب الدهر فقد آذى الله.",
-      "options": [
-        "مدبر الأمور (الله)",
-        "الزمن المجرد",
-        "نفسه",
-        "المصائب"
-      ],
+      "options": null,
       "correct_index": null,
       "is_true": true,
       "explanation": "لقوله في الحديث القدسي: «يؤذيني ابن آدم يسب الدهر وأنا الدهر»؛ والمراد أن الله مصرّف الزمان ومدبّر الليل والنهار، لا أن الله هو الزمان نفسه.",
@@ -2565,7 +2550,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "إليه.",
-      "source_quote": "وقوله: «ومن سحر ، فقد أشرك، ومن تعلق شيئا، وكل إليه",
+      "source_quote": "وقوله: «ومن سحر، فقد أشرك، ومن تعلق شيئا وكل إليه»",
       "language": "ar"
     },
     {
@@ -2669,7 +2654,7 @@ window.QUESTIONS_BANK = {
       "chapter": "⚠️ الشرك",
       "level": "hard",
       "type": "mc",
-      "question_text": "الذبح لغير الله من الشرك، وقد لعن النبي :",
+      "question_text": "الذبح لغير الله من الشرك، وقد لعن النبي:",
       "options": [
         "من ذبح لغير الله",
         "من صام",
@@ -2698,7 +2683,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "دخل الجنة.",
-      "source_quote": "وعن جابر: أن رسول الله قال : «من لقي الله لا يشرك به شيئا ؛ دخل الجنة ومن لقيه",
+      "source_quote": "وعن جابر: أن رسول الله قال: «من لقي الله لا يشرك به شيئا؛ دخل الجنة»",
       "language": "ar"
     },
     {
@@ -2878,7 +2863,7 @@ window.QUESTIONS_BANK = {
       "chapter": "⚠️ الشرك",
       "level": "hard",
       "type": "mc",
-      "question_text": "الحلف بغير الله شرك، قال : \"لا تحلفوا\":",
+      "question_text": "الحلف بغير الله شرك، قال: \"لا تحلفوا\":",
       "options": [
         "بآبائكم",
         "بأموالكم",
@@ -3381,7 +3366,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "قال النبي : «إن الله هو الحكم وإليه الحكم».",
+      "explanation": "قال النبي: «إن الله هو الحكم وإليه الحكم».",
       "source_quote": "إن الله هو الحكم وإليه الحكم",
       "language": "ar"
     },
@@ -3458,7 +3443,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "كفر.",
-      "source_quote": "وفي الصحيح عن النبي ؛ أنه قال: «من قال : ل إله إل الله، وكفر بما يعبد من دون الله،",
+      "source_quote": "وفي الصحيح عن النبي أنه قال: «من قال: لا إله إلا الله، وكفر بما يعبد من دون الله»",
       "language": "ar"
     },
     {
@@ -3648,7 +3633,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "محمد .",
-      "source_quote": "عن أبي هريرة: «من أتى عرافا، أو كاهنا فصدقه بما يقول، فقد كفر بما أنزل على محمد",
+      "source_quote": "عن أبي هريرة: «من أتى عرافا، أو كاهنا فصدقه بما يقول، فقد كفر بما أنزل على محمد»",
       "language": "ar"
     },
     {
@@ -4122,7 +4107,7 @@ window.QUESTIONS_BANK = {
       ],
       "correct_index": 0,
       "is_true": null,
-      "explanation": "قال النبي : «واتق دعوة المظلوم؛ فإنه ليس بينها وبين الله حجاب».",
+      "explanation": "قال النبي: «واتق دعوة المظلوم؛ فإنه ليس بينها وبين الله حجاب».",
       "source_quote": "واتق دعوة المظلوم؛ فإنه ليس بينها وبين الله حجاب",
       "language": "ar"
     },
@@ -4208,7 +4193,7 @@ window.QUESTIONS_BANK = {
       "chapter": "🕌 الغلو والحلف",
       "level": "hard",
       "type": "mc",
-      "question_text": "قال : \"لا تحلفوا\" ب:",
+      "question_text": "قال: \"لا تحلفوا\" ب:",
       "options": [
         "آبائكم",
         "أنفسكم",
@@ -4854,7 +4839,7 @@ window.QUESTIONS_BANK = {
       "chapter": "📿 الرقى والتمائم",
       "level": "medium",
       "type": "mc",
-      "question_text": "\"من علق تميمة فلا أتم الله له\" — رواه عن النبي :",
+      "question_text": "\"من علق تميمة فلا أتم الله له\" — رواه عن النبي:",
       "options": [
         "عقبة بن عامر",
         "ابن مسعود",
@@ -5966,7 +5951,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "ذباب.",
-      "source_quote": "وعن طارق بن شهاب: أن رسول الله قال : «دخل الجنة رجل في ذباب ودخل النار رجل",
+      "source_quote": "وعن طارق بن شهاب: أن رسول الله قال: «دخل الجنة رجل في ذباب ودخل النار رجل في ذباب»",
       "language": "ar"
     },
     {
@@ -6004,7 +5989,7 @@ window.QUESTIONS_BANK = {
       "correct_index": 0,
       "is_true": null,
       "explanation": "دخل النار.",
-      "source_quote": "وعن طارق بن شهاب: أن رسول الله قال : «دخل الجنة رجل في ذباب ودخل النار رجل",
+      "source_quote": "وعن طارق بن شهاب: أن رسول الله قال: «دخل الجنة رجل في ذباب ودخل النار رجل في ذباب»",
       "language": "ar"
     },
     {
@@ -8219,7 +8204,7 @@ window.QUESTIONS_BANK = {
       "options": null,
       "correct_index": null,
       "is_true": true,
-      "explanation": "قال النبي : نعم.",
+      "explanation": "قال النبي: نعم.",
       "source_quote": null,
       "language": "ar"
     },
@@ -8626,12 +8611,7 @@ window.QUESTIONS_BANK = {
       "level": "medium",
       "type": "tf",
       "question_text": "كل بدعة ضلالة.",
-      "options": [
-        "الإحداث في الدين",
-        "الطاعة",
-        "العبادة",
-        "العلم"
-      ],
+      "options": null,
       "correct_index": null,
       "is_true": true,
       "explanation": "من أحدث في أمرنا هذا ما ليس منه فهو رد.",
@@ -8645,12 +8625,7 @@ window.QUESTIONS_BANK = {
       "level": "medium",
       "type": "tf",
       "question_text": "الحلال بين والحرام بين.",
-      "options": [
-        "اتقاء الشبهات",
-        "ترك العمل",
-        "الإكثار من المال",
-        "السفر"
-      ],
+      "options": null,
       "correct_index": null,
       "is_true": true,
       "explanation": "وبينهما أمور مشتبهات.",
@@ -8664,12 +8639,7 @@ window.QUESTIONS_BANK = {
       "level": "easy",
       "type": "tf",
       "question_text": "لا ضرر ولا ضرار.",
-      "options": [
-        "منع إلحاق الضرر بالنفس والغير",
-        "إباحة الضرر",
-        "وجوب الضرر",
-        "استحباب الضرر"
-      ],
+      "options": null,
       "correct_index": null,
       "is_true": true,
       "explanation": "حديث حسن.",
@@ -8721,12 +8691,7 @@ window.QUESTIONS_BANK = {
       "level": "easy",
       "type": "tf",
       "question_text": "بني الإسلام على خمس.",
-      "options": [
-        "عبد الله بن عمر رضي الله عنهما",
-        "عمر بن الخطاب",
-        "ابن مسعود",
-        "أبو هريرة"
-      ],
+      "options": null,
       "correct_index": null,
       "is_true": true,
       "explanation": "بني الإسلام على خمس: شهادة أن لا إله إلا الله وأن محمدا رسول الله، وإقام الصلاة، وإيتاء الزكاة، والحج، وصوم رمضان.",

@@ -1,0 +1,28 @@
+-- v349 display classes — apply in Supabase SQL editor (service_role).
+UPDATE public.questions SET question_text = 'قال النبي: الدعاء هو العبادة. ماذا يعني ذلك؟' WHERE id = 'c5249eee-758d-4e2e-8f28-b0f9306100cc';
+UPDATE public.questions SET explanation = 'الحلف بغير الله شرك أصغر، وقد قال النبي: من حلف بغير الله فقد أشرك.' WHERE id = 'd3ef73b7-d767-4445-a6d7-c1f92032be45';
+UPDATE public.questions SET question_text = 'ما معنى قول النبي: لا تقوم الساعة حتى تعبد قبائل من أمتي الأوثان؟' WHERE id = 'c7f49e10-f1b3-4e90-83b0-7e609c62df8c';
+UPDATE public.questions SET explanation = 'قال: فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم.', source_quote = 'قال: فوالله لأن يهدي الله بك رجلا واحدا خير لك من حمر النعم' WHERE id = 'de6475f4-5d82-4bb1-a4c6-2708898479dd';
+UPDATE public.questions SET explanation = 'قال: إن الرقى والتمائم والتولة شرك.', source_quote = 'قال: إن الرقى والتمائم والتولة شرك.' WHERE id = 'fc43ad7d-27ed-4266-816b-603cd16efb3e';
+UPDATE public.questions SET explanation = 'قال: أخوف ما أخاف عليكم الشرك الأصغر قالوا: وما هو؟ قال: الرياء.', source_quote = 'قال: أخوف ما أخاف عليكم الشرك الأصغر قالوا: وما هو؟ قال: الرياء.' WHERE id = 'cdcf1909-c177-465a-8192-c6ba6fd2bdd7';
+UPDATE public.questions SET source_quote = 'وقوله: «ومن سحر، فقد أشرك، ومن تعلق شيئا وكل إليه»' WHERE id = '87c0642e-bfe5-4aa1-8843-14455b9f2230';
+UPDATE public.questions SET options = NULL WHERE id = '00fb1757-a23c-46e3-a4dc-825537d500c3';
+UPDATE public.questions SET source_quote = 'وعن جابر: أن رسول الله قال: «من لقي الله لا يشرك به شيئا؛ دخل الجنة»', options = NULL WHERE id = '81b93c71-d614-4610-8da3-86aa7e75fa90';
+UPDATE public.questions SET options = NULL WHERE id = 'c54d1682-3662-427d-a959-c54766568898';
+UPDATE public.questions SET source_quote = 'وقوله: «ومن سحر، فقد أشرك، ومن تعلق شيئا وكل إليه»' WHERE id = 'a65b90a9-be7c-b2b5-de1f-1ed22818eedf';
+UPDATE public.questions SET question_text = 'الذبح لغير الله من الشرك، وقد لعن النبي:' WHERE id = 'a64cee3b-138e-eea4-2145-25fee4f47a12';
+UPDATE public.questions SET source_quote = 'وعن جابر: أن رسول الله قال: «من لقي الله لا يشرك به شيئا؛ دخل الجنة»' WHERE id = 'f9b205c9-d036-dcce-37a6-92d32684064b';
+UPDATE public.questions SET question_text = 'الحلف بغير الله شرك، قال: "لا تحلفوا":' WHERE id = '46929e1c-d963-b231-cf0e-86e1c81f0b90';
+UPDATE public.questions SET explanation = 'قال النبي: «إن الله هو الحكم وإليه الحكم».' WHERE id = '39d543ed-8c5d-a3ba-9480-c85261e939ca';
+UPDATE public.questions SET source_quote = 'وفي الصحيح عن النبي أنه قال: «من قال: لا إله إلا الله، وكفر بما يعبد من دون الله»' WHERE id = '1e0f8eb8-fb5d-489e-9d37-f0572539b34e';
+UPDATE public.questions SET source_quote = 'عن أبي هريرة: «من أتى عرافا، أو كاهنا فصدقه بما يقول، فقد كفر بما أنزل على محمد»' WHERE id = '6d35ab9a-e6e0-b6c7-53ae-638469077f13';
+UPDATE public.questions SET explanation = 'قال النبي: «واتق دعوة المظلوم؛ فإنه ليس بينها وبين الله حجاب».' WHERE id = '056c9e25-4057-d6bb-40b9-68c439b5ee1b';
+UPDATE public.questions SET question_text = 'قال: "لا تحلفوا" ب:' WHERE id = '91eb89af-4c29-f159-bea4-d6c351552f31';
+UPDATE public.questions SET question_text = '"من علق تميمة فلا أتم الله له" — رواه عن النبي:' WHERE id = '1cc9fb32-7441-2bf5-ea1e-d267ad9e7198';
+UPDATE public.questions SET source_quote = 'وعن طارق بن شهاب: أن رسول الله قال: «دخل الجنة رجل في ذباب ودخل النار رجل في ذباب»' WHERE id = '4d44fecd-56a7-0a37-f7ef-8592d55ffa1b';
+UPDATE public.questions SET source_quote = 'وعن طارق بن شهاب: أن رسول الله قال: «دخل الجنة رجل في ذباب ودخل النار رجل في ذباب»' WHERE id = 'ad766d97-4821-ee7e-1a31-d35abbabb781';
+UPDATE public.questions SET explanation = 'قال النبي: نعم.' WHERE id = 'af629576-73ef-4737-bf82-d57df3153728';
+UPDATE public.questions SET options = NULL WHERE id = 'a1d8f12b-4697-41c4-8b9a-ee32cacb22f3';
+UPDATE public.questions SET options = NULL WHERE id = '9218b66d-d695-4c63-bc4d-2cf6ea1419ee';
+UPDATE public.questions SET options = NULL WHERE id = '64108c2e-be22-4a6e-832c-73a5ccb6527d';
+UPDATE public.questions SET options = NULL WHERE id = '9ef7f53c-a9c8-4f0e-9057-fe16b630df14';
