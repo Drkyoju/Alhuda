@@ -2191,15 +2191,16 @@
       font-family: 'Amiri', 'Traditional Arabic', serif;
       font-size: clamp(0.95rem, 3.2vw, 1.08rem);
       font-weight: 700;
-      line-height: 1.75;
+      line-height: 2.05;
       text-align: center;
       color: #163828;
       margin: 0;
       padding: 4px 2px;
-      letter-spacing: 0.01em;
+      letter-spacing: 0;
       white-space: normal;
       word-break: normal;
       overflow-wrap: break-word;
+      font-feature-settings: "liga" 1, "calt" 1;
     }
     /* آية مدمجة بعد السؤال — مقروءة وليست صندوق منفصل */
     #game .q-ayah-inline.q-ayah-text,

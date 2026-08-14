@@ -2062,7 +2062,8 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
           if (signal.aborted) throw new DOMException('Aborted', 'AbortError');
           signal.addEventListener('abort', onAbort, { once: true });
         }
-        const timer = setTimeout(() => ctrl.abort(), 20000);
+        let timedOut = false;
+        const timer = setTimeout(() => { timedOut = true; ctrl.abort(); }, 28000);
         let res;
         try {
           // Only send a real Fish reference id — omit otherwise so Worker uses FISH_VOICE_ID.
@@ -2110,10 +2111,13 @@ async function fetchTtsBlob(text, voice = TTS_VOICE, signal, fishSpeed = TTS_FIS
         return blob;
       } catch (e) {
         if (e?.name === 'AbortError') {
-          // Prefer treating long hangs as miss so the next segment can play.
-          lastErr = e;
           if (signal?.aborted) throw e;
-          break;
+          if (timedOut) {
+            lastErr = new Error('tts timeout');
+            await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+            continue;
+          }
+          throw e;
         }
         lastErr = e;
         if (attempt < 1) await new Promise((r) => setTimeout(r, 250 * (attempt + 1)));
@@ -3818,10 +3822,29 @@ function getLocalAyahSnippet(verseKey) {
 }
 
 function formatAyahDisplay(text) {
-  const t = String(text || '').trim();
+  const t = normalizeArabicDisplayMarks(String(text || '').trim());
   if (!t) return '';
   if (/^[﴿]/.test(t)) return t;
   return `﴿ ${t} ﴾`;
+}
+
+/** Clean NFC ayah (avoid Quran.com uthmani maddah stacks that overlap on iOS). */
+const CANONICAL_AYAH_DISPLAY = {
+  '108:2': 'فَصَلِّ لِرَبِّكَ وَانْحَرْ',
+  '76:7': 'يُوفُونَ بِالنَّذْرِ وَيَخَافُونَ يَوْمًا كَانَ شَرُّهُ مُسْتَطِيرًا',
+  '74:1': 'يَا أَيُّهَا الْمُدَّثِّرُ',
+  '96:1': 'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ',
+  '9:60': 'إِنَّمَا الصَّدَقَاتُ لِلْفُقَرَاءِ وَالْمَسَاكِينِ وَالْعَامِلِينَ عَلَيْهَا وَالْمُؤَلَّفَةِ قُلُوبُهُمْ وَفِي الرِّقَابِ وَالْغَارِمِينَ وَفِي سَبِيلِ اللَّهِ وَابْنِ السَّبِيلِ فَرِيضَةً مِنَ اللَّهِ وَاللَّهُ عَلِيمٌ حَكِيمٌ',
+};
+
+function getCanonicalAyahDisplay(verseKey) {
+  return CANONICAL_AYAH_DISPLAY[verseKey] || '';
+}
+
+/** Asking «من سورة:» — do not paste the verse (leaks المدثر). */
+function questionStemAsksSurahName(q) {
+  const t = stripArabicDiacritics(String(q?.q || '')).replace(/\s+/g, ' ').trim();
+  return /سورة\s*:?\s*$/.test(t) || /نزل في سورة\s*:?\s*$/.test(t);
 }
 
 /** Compact ayah for the question card — snippet first, never dump a full long verse. */
@@ -3874,11 +3897,12 @@ function buildQuranAyahBlockHtml(verseKey, { withButton = true, id = '', compact
 
 async function fillAyahTextElements(root, verseKey, { preferSnippet = false, compact = false } = {}) {
   if (!root || !verseKey) return;
+  const canonical = getCanonicalAyahDisplay(verseKey);
   const local = getLocalAyahSnippet(verseKey);
-  let text = '';
-  if (preferSnippet && local) {
+  let text = canonical || '';
+  if (!text && preferSnippet && local) {
     text = local;
-  } else {
+  } else if (!text) {
     text = await fetchAyahUthmani(verseKey);
     if (!text && local) text = local;
   }
@@ -4484,7 +4508,7 @@ function updateQuranReciteSlot(q) {
 
   const verseKey = getPrimaryVerseKeyForQuestion(q);
   const main = document.querySelector('#game .q-main');
-  if (!verseKey || !shouldReciteHudhaifyForQuestion(q)) {
+  if (!verseKey || !shouldReciteHudhaifyForQuestion(q) || questionStemAsksSurahName(q)) {
     slot.style.display = 'none';
     slot.innerHTML = '';
     if (inline) {
@@ -4818,13 +4842,23 @@ function toastTtsFail() {
   if (last.includes('baked miss') && ttsSessionFailCount < 3 && stats.fails < 5) {
     return;
   }
+  if (/abort|Aborted|token|expectQuestion/i.test(last)) return;
   if (last.includes('needs tap')) {
     if (typeof showToast === 'function') showToast('اضغط/ي 🔊 لتشغيل الصوت', 'ok');
     return;
   }
+  if (last.includes('tts timeout')) {
+    if (typeof showToast === 'function') showToast('الصوت تأخر — أعد الضغط على 🔊', 'ok');
+    return;
+  }
+  if (/tts failed:(403|404|429)/.test(last)) {
+    if (typeof showToast === 'function') showToast('تعذّر الصوت مؤقتاً — أعد المحاولة', 'err');
+    return;
+  }
+  const offline = typeof navigator !== 'undefined' && navigator.onLine === false;
   const msg = ttsSessionFailCount >= 3 || stats.fails >= 5
-    ? 'تعذّر الصوت عدة مرات — تحقق من الاتصال أو جرّب لاحقاً'
-    : 'تعذّر تشغيل الصوت — تحقق من الاتصال';
+    ? (offline ? 'تعذّر الصوت عدة مرات — تحقق من الاتصال أو جرّب لاحقاً' : 'تعذّر الصوت عدة مرات — أعد المحاولة لاحقاً')
+    : (offline ? 'تعذّر تشغيل الصوت — تحقق من الاتصال' : 'تعذّر تشغيل الصوت — أعد الضغط على 🔊');
   if (typeof showToast === 'function') showToast(msg, 'err');
 }
 
@@ -4992,7 +5026,7 @@ function speakQuestion() {
 
         // 2) Ayah — sync key only (never hang on network verse search).
         const verseKeyForRecite = getPrimaryVerseKeyForQuestion(q);
-        if (verseKeyForRecite && shouldReciteHudhaifyForQuestion(q, questionText || q.q)) {
+        if (verseKeyForRecite && shouldReciteHudhaifyForQuestion(q, questionText || q.q) && !questionStemAsksSurahName(q)) {
           await awaitHudhaifyThenContinue(verseKeyForRecite, btn, { interruptAll: false });
         }
         if (token !== hybridSpeechToken || state.idx !== askIdx) return;
@@ -5193,14 +5227,27 @@ function getCorrectAnswerText(q) {
   return speechPart(q, `a${q.c}`, raw) || raw;
 }
 
-/** Visible label without tashkeel — speech maps keep harakat for TTS only. */
+/** Visible label — prefer curated tashkeel (speech map) so shadda / رُكْنَا / نبياً render. */
 function displayFieldText(q, field, raw) {
   const src = String(raw || '');
   if (!src.trim()) return src;
   const marks = src.match(/[✓✗]/g);
   const bare = src.replace(/[✓✗]/g, '').trim();
-  const shown = stripArabicDiacritics(bare).replace(/\s+/g, ' ').trim() || bare;
+  let shown = '';
+  if (q && field) shown = speechPart(q, field, bare);
+  if (!shown) shown = bare;
+  shown = normalizeArabicDisplayMarks(shown).replace(/\s+/g, ' ').trim() || bare;
   return marks?.length ? `${shown} ${marks.join('')}` : shown;
+}
+
+/** NFC + shadda-before-vowel so اللَّهِ / شَرُّهُ do not stack overlapping harakat. */
+function normalizeArabicDisplayMarks(s) {
+  let t = String(s || '').normalize('NFC');
+  t = t.replace(/([\u064B-\u0650\u0652-\u065F])(\u0651)/g, '$2$1');
+  if (typeof window !== 'undefined' && typeof window.fixAllahIrabInText === 'function') {
+    try { t = window.fixAllahIrabInText(t); } catch { /* keep */ }
+  }
+  return t;
 }
 
 function formatPageLabel(page) {
@@ -6093,9 +6140,30 @@ function dedupeQuestionList(questions) {
 }
 
 
+function overlayLocalBankQuestion(mappedQ) {
+  const bank = (typeof window !== 'undefined' && window.QUESTIONS_BANK) || null;
+  const rows = bank?.[mappedQ.book];
+  if (!rows?.length) return mappedQ;
+  let local = rows.find((r) => r.id === mappedQ.id);
+  if (!local) {
+    const bare = normalizeArabicForMatch(mappedQ.q);
+    local = rows.find((r) => normalizeArabicForMatch(r.question_text || '') === bare);
+  }
+  if (!local) return mappedQ;
+  return {
+    ...mappedQ,
+    q: local.question_text || mappedQ.q,
+    a: local.type === 'mc' ? (local.options || mappedQ.a) : mappedQ.a,
+    c: local.type === 'mc' && local.correct_index != null ? local.correct_index : mappedQ.c,
+    tf: local.type === 'tf' && local.is_true != null ? local.is_true : mappedQ.tf,
+    exp: local.explanation != null ? local.explanation : mappedQ.exp,
+    quote: local.source_quote != null ? local.source_quote : mappedQ.quote,
+  };
+}
+
 function ingestBookQuestions(book, rows) {
   if (!['tawheed', 'usool', 'nawawi'].includes(book)) return;
-  const mapped = (rows || []).map((q) => ({
+  const mapped = (rows || []).map((q) => overlayLocalBankQuestion({
     id: q.id, book: q.book, cat: q.chapter, level: q.level, type: q.type,
     q: q.question_text, a: q.type === 'mc' ? q.options : null,
     c: q.type === 'mc' ? q.correct_index : null, tf: q.type === 'tf' ? q.is_true : null, exp: q.explanation,
@@ -6952,7 +7020,6 @@ function renderQ() {
     qEl.textContent = displayFieldText(q, 'q', q.q) || stripArabicDiacritics(q.q || '');
   };
   paintQuestionText();
-  // No re-paint with speech-map tashkeel — user asked for undiacritized display.
   document.getElementById('q-book-badge').textContent = BOOK_LABELS[q.book] || q.book;
   document.getElementById('q-type-badge').style.display = q.type === 'tf' ? 'inline-block' : 'none';
   updateVoiceUI();

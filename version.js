@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v345: اللهو lemma clip (Whisper 5/5 exact); اللهو واللعب clip; A واللعب KEEP preserved) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v346: usool hard-quiz screenshot fixes + TTS abort toast) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v345",
+  cache: "alhuda-v346",
   styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 304,
+  app: 305,
   platform: 21,
   auth: 16,
-  sw: 345,
+  sw: 346,
 };
