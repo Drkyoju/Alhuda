@@ -4661,7 +4661,13 @@ async function playTtsElement(btn, playbackRate = TTS_DEFAULT_PLAYBACK_RATE, onS
       return;
     }
     el.onended = () => resolve();
-    el.onerror = () => reject(new Error('audio error'));
+    el.onerror = () => {
+      if (ttsAudio !== el || (speakToken != null && speakToken !== hybridSpeechToken)) {
+        reject(ttsAbortError());
+        return;
+      }
+      reject(new Error('audio error'));
+    };
   });
 }
 
@@ -4843,6 +4849,8 @@ function toastTtsFail() {
     return;
   }
   if (/abort|Aborted|token|expectQuestion/i.test(last)) return;
+  // Stale element / navigate races — abort guards already stopped playback.
+  if (/audio error/i.test(last) && ttsSessionFailCount < 3) return;
   if (last.includes('needs tap')) {
     if (typeof showToast === 'function') showToast('اضغط/ي 🔊 لتشغيل الصوت', 'ok');
     return;
@@ -4985,6 +4993,7 @@ function speakQuestion() {
             } catch (e) {
               if (e?.name === 'AbortError') {
                 if (token !== hybridSpeechToken) return;
+                if (state.questions?.[state.idx]?.id !== askId) return;
                 await new Promise((r) => setTimeout(r, 50));
                 continue;
               }
@@ -5244,6 +5253,8 @@ function displayFieldText(q, field, raw) {
 function normalizeArabicDisplayMarks(s) {
   let t = String(s || '').normalize('NFC');
   t = t.replace(/([\u064B-\u0650\u0652-\u065F])(\u0651)/g, '$2$1');
+  // Font/NFC: kasra+yeh or sukun-dot on ر making شِيْرْك / شِزْك — keep شِركٌ.
+  t = t.replace(/شِيْ?رْ?ك/g, 'شِرك').replace(/شِزْ?ك/g, 'شِرك').replace(/شيرك/g, 'شرك').replace(/شزك/g, 'شرك');
   if (typeof window !== 'undefined' && typeof window.fixAllahIrabInText === 'function') {
     try { t = window.fixAllahIrabInText(t); } catch { /* keep */ }
   }
@@ -5387,6 +5398,7 @@ function isGarbageCitation(s) {
   // اال… (double-alef OCR) except الله/اللهم/والله family.
   if (/اال(?![لهم])/.test(s)) return true;
   // Leading colon leftovers after stripping «اجل واب».
+  if (/أصل التطير حكم التوكل|اللهو الدهر|رو\s*اي\s*ة|من خالق\)/.test(s)) return true;
   if (/^[:：]/.test(String(s).replace(/^«\s*/, '').trim())) return true;
   // Leftovers after stripping «الإجابة الصحيحة:» are usually the answer option, not a book quote.
   if (/^(صح|خطأ|شرك\s*أكبر|شرك\s*أصغر|الأسماء\s*والصفات)\s*$/i.test(String(s).trim())) return true;
@@ -5435,6 +5447,12 @@ function postFixCitationPhrases(s) {
     .replace(/هم حبسنة/g, 'هم بحسنة')
     .replace(/حسنة اكملة/g, 'حسنة كاملة')
     .replace(/بني ذلك وفصله/g, 'بيّن ذلك وفصّله')
+    .replace(/من خالق\)/g, 'من خلاق)')
+    .replace(/ليس له عند الله من خالق/g, 'ليس له عند الله من خلاق')
+    .replace(/رو\s*اي\s*ة/g, 'رواية')
+    .replace(/\bل\s*تسبوا/g, 'لا تسبوا')
+    .replace(/فإن اللهو الدهر/g, 'فإن الله هو الدهر')
+    .replace(/أصل التطير حكم التوكل[^\n«»]{0,120}/g, 'أن الطيرة شرك')
     .replace(/\s+/g, ' ')
     .trim();
 }
