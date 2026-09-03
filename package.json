@@ -24,7 +24,7 @@
     "lighthouse": "npx lighthouse https://alhuda-zi6bbd.cranl.net --only-categories=performance,accessibility,best-practices --chrome-flags='--headless' --output=json --output-path=./lighthouse-report.json"
   },
   "dependencies": {
-    "express": "^4.22.2"
+    "express": "^5.2.1"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
