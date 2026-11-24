@@ -1,6 +1,13 @@
 
 const SUPABASE_URL = 'https://smcyaqwxbmhshhhhdece.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_4OhSsWwIfV4QxGRf1fujLA_TjE111eU';
+
+// Calendar-day state must follow the user's local timezone. UTC date keys
+// reset Saudi users' daily missions and streaks at 03:00 local time.
+function localDateKey(date = new Date()) {
+  const d = date instanceof Date ? date : new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
 /** Lazy client — Supabase CDN may load after first paint. */
 let dbClient = null;
 function getDb() {
@@ -1145,7 +1152,7 @@ function exportProgressBackup() {
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    const stamp = new Date().toISOString().slice(0, 10);
+    const stamp = localDateKey();
     a.href = url;
     a.download = `alhuda-progress-${stamp}.json`;
     document.body.appendChild(a);
@@ -1557,9 +1564,11 @@ function getLevelInfo(xp) {
 }
 function updateDailyStreak() {
   const p = ensureProgress();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDateKey();
   if (p.lastPlayDate === today) return p;
-  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterday = localDateKey(yesterdayDate);
   p.dailyStreak = p.lastPlayDate === yesterday ? (p.dailyStreak || 0) + 1 : 1;
   p.lastPlayDate = today;
   saveProgress(p);
@@ -1619,7 +1628,7 @@ function updateDailyMission() {
   const p = ensureProgress();
   const el = document.getElementById('daily-mission');
   if (!el) return;
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDateKey();
   if (p.dailyMissionDate !== today) {
     p.dailyMissionDate = today;
     p.dailyMissionDone = false;
@@ -2466,10 +2475,10 @@ function maybeWarnAzureQuota(chars) {
 function getTtsErrorStats() {
   try {
     const raw = JSON.parse(localStorage.getItem(TTS_ERROR_STATS_KEY) || '{}');
-    const day = new Date().toISOString().slice(0, 10);
+    const day = localDateKey();
     if (raw && raw.day === day) return { day, fails: Number(raw.fails) || 0, last: raw.last || '' };
   } catch (e) {}
-  return { day: new Date().toISOString().slice(0, 10), fails: 0, last: '' };
+  return { day: localDateKey(), fails: 0, last: '' };
 }
 
 function recordTtsError(err, context = 'tts') {
@@ -2485,7 +2494,7 @@ function recordTtsError(err, context = 'tts') {
 
 function maybeRemindAzureKeyRotation(hint) {
   if (!hint) return;
-  const day = new Date().toISOString().slice(0, 10);
+  const day = localDateKey();
   const flagKey = `azureKeyRotateRemind:${day}`;
   if (localStorage.getItem(flagKey) === '1') return;
   try { localStorage.setItem(flagKey, '1'); } catch (e) {}

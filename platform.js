@@ -23,6 +23,15 @@
     return esc(JSON.stringify(String(s || '')));
   }
 
+  function notifyUser(message, type) {
+    if (typeof showToast === 'function') {
+      showToast(message, type || 'info');
+    } else {
+      // Keep this optional platform layer non-blocking when loaded alone.
+      console.warn('[alhuda]', message);
+    }
+  }
+
   // Centralized error handler for DB calls. Returns {data, error}; on throw,
   // optionally shows a toast and returns a synthetic error so callers never
   // see an unhandled promise rejection.
@@ -191,7 +200,7 @@
   function recordGameHistory(entry) {
     const p = ensureProgressExt();
     p.gameHistory = [entry, ...(p.gameHistory || [])].slice(0, 8);
-    const today = new Date().toISOString().slice(0, 10);
+    const today = typeof localDateKey === 'function' ? localDateKey() : new Date().toLocaleDateString('en-CA');
     if (p.dailyMissionDate !== today) {
       p.dailyMissionDate = today;
       p.dailyMissionDone = false;
@@ -251,7 +260,7 @@
     const el = document.getElementById('daily-mission');
     const check = el?.querySelector('.dm-check');
     const sub = el?.querySelector('.dm-sub');
-    const today = new Date().toISOString().slice(0, 10);
+    const today = typeof localDateKey === 'function' ? localDateKey() : new Date().toLocaleDateString('en-CA');
     if (p.dailyMissionDate !== today) {
       p.dailyMissionDate = today;
       p.dailyMissionDone = false;
@@ -278,11 +287,7 @@
     const ids = getRepeatedWrongIds(p);
     const qs = ids.map(findQuestionById).filter(Boolean);
     if (!qs.length) {
-      if (typeof showToast === 'function') {
-        showToast('لا توجد أخطاء متكررة بعد — تظهر هنا الأسئلة التي أخطأت فيها أكثر من مرة', 'info');
-      } else {
-        alert('لا توجد أخطاء متكررة بعد — تظهر هنا الأسئلة التي أخطأت فيها أكثر من مرة');
-      }
+      notifyUser('لا توجد أخطاء متكررة بعد — تظهر هنا الأسئلة التي أخطأت فيها أكثر من مرة', 'info');
       return;
     }
     state.questions = shuffleArr(qs.slice(0, 20));
@@ -297,8 +302,7 @@
     const pool = getOrderedPool('merge3', 'all');
     const pick = shuffleArr(pool).slice(0, Math.min(30, pool.length));
     if (!pick.length) {
-      if (typeof showToast === 'function') showToast('لا توجد أسئلة كافية', 'info');
-      else alert('لا توجد أسئلة كافية');
+      notifyUser('لا توجد أسئلة كافية', 'info');
       return;
     }
     state.questions = pick;
@@ -378,8 +382,7 @@
     if (pct < 50 || acc < 70) {
       const msg = 'للحصول على الشهادة: أكمِل/ي ٥٠٪ من ' + BOOK_LABELS_LOCAL[book] +
         ' بدقة ٧٠٪ على الأقل (حالياً: ' + pct + '% تغطية، ' + acc + '% دقة)';
-      if (typeof showToast === 'function') showToast(msg, 'info');
-      else alert(msg);
+      notifyUser(msg, 'info');
       return;
     }
     const text = `شهادة إتمام\n\nتشهد مكتبة جمعية الهدى والحكمة التعليمية\nأن الطالب/ة: ${state.userName}\nأتم/ت ${pct}% من ${BOOK_LABELS_LOCAL[book]} بدقة ${acc}%\nبتاريخ: ${new Date().toLocaleDateString('ar-SA')}\n\nبارك الله فيك/ِ`;
@@ -395,7 +398,7 @@
     } else if (typeof showToast === 'function') {
       showToast('عذّر/ي النوافذ المنبثقة ثم حاول/ي مجدداً', 'info');
     } else {
-      alert(text);
+      notifyUser(text, 'info');
     }
   }
 
