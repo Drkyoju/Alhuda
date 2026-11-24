@@ -35,7 +35,7 @@ const ASSETS = [
   './fonts/tajawal-arabic-700-normal.woff2',
 ];
 
-const VERSION = 'v280';
+const VERSION = 'v352';
 
 self.addEventListener('message', (e) => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();

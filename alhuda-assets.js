@@ -1,11 +1,11 @@
-/** Bump these when deploying — keep service-worker CACHE in sync. (v351: anwaa cite خلاق + tawheed screenshots) */
+/** Bump these when deploying — keep service-worker CACHE in sync. (v352: local calendar-day state + non-blocking platform notices) */
 window.ALHUDA_ASSETS = {
-  cache: "alhuda-v351",
+  cache: "alhuda-v352",
   styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 307,
-  platform: 21,
+  app: 308,
+  platform: 22,
   auth: 16,
-  sw: 351,
+  sw: 352,
 };
