@@ -1600,15 +1600,18 @@ function updateBookProgress() {
     let easy = 0, medium = 0, hard = 0, solved = 0, total = 0;
     const books = book === 'merge3' ? ['tawheed', 'usool', 'nawawi'] : [book];
     for (const b of books) {
+      total += getAllQuestions(b).length;
       for (const lvl of LEVEL_FLOW) {
         const t = getTierProgress(b, lvl);
         if (lvl === 'easy') easy += t.solved;
         if (lvl === 'medium') medium += t.solved;
         if (lvl === 'hard') hard += t.solved;
-        solved += t.solved;
-        total += t.total;
+        // Tier pools are intentionally capped for staged progression. The book
+        // button, however, must show the complete bank rather than the capped
+        // sum (otherwise 589 available questions appeared as only 536).
       }
     }
+    solved = getSolvedIdSet(book).size;
     let prog = btn.querySelector('.book-progress');
     if (!prog) {
       prog = document.createElement('div');
