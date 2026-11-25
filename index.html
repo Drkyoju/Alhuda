@@ -368,7 +368,7 @@
             </div>
             <div class="q-controls-cluster" id="q-controls-cluster">
               <div id="quran-recite-slot" class="quran-recite-slot" style="display:none;"></div>
-              <button type="button" class="voice-btn voice-btn-sm" id="btn-speak-question" onclick="onQuestionSpeakerClick()" aria-label="القراءة الصوتية">🔊</button>
+              <button type="button" class="voice-btn voice-btn-sm" id="btn-speak-question" onclick="onQuestionSpeakerClick()" aria-label="القراءة الصوتية" aria-busy="false"><span aria-hidden="true">🔊</span><span class="sr-only" id="question-voice-status">تشغيل الصوت</span></button>
             </div>
           </div>
         </div>
@@ -564,7 +564,7 @@
   <script src="questions-bank-v311.js?v=352"></script>
   <script src="alhuda-assets.js?v=352"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-  <script src="app.js?v=309" defer></script>
+  <script src="app.js?v=310" defer></script>
 <script src="auth.js?v=16" defer></script>
 <script src="enhancements.js?v=18" defer></script>
 <script src="platform.js?v=22" defer></script>

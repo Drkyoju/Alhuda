@@ -4942,6 +4942,15 @@ function speakQuestion() {
     applyOfflineVoicePolicy();
   }
   const btn = document.getElementById('btn-speak-question');
+  const setVoiceState = (busy, label) => {
+    if (!btn) return;
+    btn.disabled = !!busy;
+    btn.setAttribute('aria-busy', busy ? 'true' : 'false');
+    btn.setAttribute('aria-label', label);
+    const status = document.getElementById('question-voice-status');
+    if (status) status.textContent = label;
+    btn.classList.toggle('is-loading', !!busy);
+  };
   const askIdx = state.idx;
   const askId = q.id;
   // Cut previous audio first, THEN kick current — avoids stale play after navigate.
@@ -4949,6 +4958,7 @@ function speakQuestion() {
   kickCurrentQuestionTts(q);
   const token = hybridSpeechToken;
   unlockTtsAudio();
+  setVoiceState(true, 'جاري تشغيل الصوت');
   void (async () => {
     try {
       void ensureSpeechMapsLoaded();
@@ -5102,6 +5112,7 @@ function speakQuestion() {
       } finally {
         if (token === hybridSpeechToken && btn) btn.classList.remove('speaking');
         if (token === hybridSpeechToken) clearTtsAudio();
+      if (token === hybridSpeechToken) setVoiceState(false, 'إيقاف الصوت');
       }
     } catch (e) {
       if (e?.name !== 'AbortError') {
@@ -5109,6 +5120,7 @@ function speakQuestion() {
         console.warn('speakQuestion:', e);
         if (!String(e?.message || '').includes('baked miss')) toastTtsFail();
       }
+      if (token === hybridSpeechToken) setVoiceState(false, 'إعادة تشغيل الصوت');
     }
   })();
 }
@@ -5124,6 +5136,8 @@ function applyOfflineVoicePolicy() {
 }
 
 function onQuestionSpeakerClick() {
+  const currentBtn = document.getElementById('btn-speak-question');
+  if (currentBtn?.getAttribute('aria-busy') === 'true') return;
   // MUST run unlock synchronously in the tap handler (iOS kills async play otherwise).
   unlockTtsAudio();
   if (voiceOn && isTtsSpeaking()) {
