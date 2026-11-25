@@ -4,7 +4,7 @@ window.ALHUDA_ASSETS = {
   styles: 86,
   kidsUi: 15,
   enhancements: 18,
-  app: 308,
+  app: 309,
   platform: 22,
   auth: 16,
   sw: 352,
